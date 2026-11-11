@@ -1,0 +1,105 @@
+{
+  "sourceAuditSha256": "b042bd7726a164b241cf672a21b990f7521de73c39fa3558d30174c384016f92",
+  "runtimeId": "489cb3a2-7211-4cf7-b364-70e65d7a0d6c",
+  "attemptedRequestFields": [
+    {
+      "at": "2026-11-02T06:12:44.2880000Z",
+      "source": "actual Agent error log URI; proves attempted request, not successful app acceptance",
+      "readerCapacityProtocol": "1",
+      "limit": 12,
+      "wecomCleanupProtocol": "1",
+      "runtimeId": "489cb3a2-7211-4cf7-b364-70e65d7a0d6c",
+      "originalParsedWecomProtocol": "1:",
+      "fixedLogErrorSeparatorRemoved": true
+    },
+    {
+      "at": "2026-11-02T06:12:44.3590000Z",
+      "source": "actual Agent error log URI; proves attempted request, not successful app acceptance",
+      "readerCapacityProtocol": "1",
+      "limit": 12,
+      "wecomCleanupProtocol": "1",
+      "runtimeId": "489cb3a2-7211-4cf7-b364-70e65d7a0d6c",
+      "originalParsedWecomProtocol": "1:",
+      "fixedLogErrorSeparatorRemoved": true
+    },
+    {
+      "at": "2026-11-02T06:12:44.7960000Z",
+      "source": "actual Agent error log URI; proves attempted request, not successful app acceptance",
+      "readerCapacityProtocol": "1",
+      "limit": 12,
+      "wecomCleanupProtocol": "1",
+      "runtimeId": "489cb3a2-7211-4cf7-b364-70e65d7a0d6c",
+      "originalParsedWecomProtocol": "1:",
+      "fixedLogErrorSeparatorRemoved": true
+    },
+    {
+      "at": "2026-11-02T06:12:45.3080000Z",
+      "source": "actual Agent error log URI; proves attempted request, not successful app acceptance",
+      "readerCapacityProtocol": "1",
+      "limit": 12,
+      "wecomCleanupProtocol": "1",
+      "runtimeId": "489cb3a2-7211-4cf7-b364-70e65d7a0d6c",
+      "originalParsedWecomProtocol": "1:",
+      "fixedLogErrorSeparatorRemoved": true
+    },
+    {
+      "at": "2026-11-02T06:12:45.8190000Z",
+      "source": "actual Agent error log URI; proves attempted request, not successful app acceptance",
+      "readerCapacityProtocol": "1",
+      "limit": 12,
+      "wecomCleanupProtocol": "1",
+      "runtimeId": "489cb3a2-7211-4cf7-b364-70e65d7a0d6c",
+      "originalParsedWecomProtocol": "1:",
+      "fixedLogErrorSeparatorRemoved": true
+    },
+    {
+      "at": "2026-11-02T06:12:46.3370000Z",
+      "source": "actual Agent error log URI; proves attempted request, not successful app acceptance",
+      "readerCapacityProtocol": "1",
+      "limit": 12,
+      "wecomCleanupProtocol": "1",
+      "runtimeId": "489cb3a2-7211-4cf7-b364-70e65d7a0d6c",
+      "originalParsedWecomProtocol": "1:",
+      "fixedLogErrorSeparatorRemoved": true
+    },
+    {
+      "at": "2026-11-02T06:12:46.8330000Z",
+      "source": "actual Agent error log URI; proves attempted request, not successful app acceptance",
+      "readerCapacityProtocol": "1",
+      "limit": 12,
+      "wecomCleanupProtocol": "1",
+      "runtimeId": "489cb3a2-7211-4cf7-b364-70e65d7a0d6c",
+      "originalParsedWecomProtocol": "1:",
+      "fixedLogErrorSeparatorRemoved": true
+    },
+    {
+      "at": "2026-11-02T06:12:47.3480000Z",
+      "source": "actual Agent error log URI; proves attempted request, not successful app acceptance",
+      "readerCapacityProtocol": "1",
+      "limit": 12,
+      "wecomCleanupProtocol": "1",
+      "runtimeId": "489cb3a2-7211-4cf7-b364-70e65d7a0d6c",
+      "originalParsedWecomProtocol": "1:",
+      "fixedLogErrorSeparatorRemoved": true
+    }
+  ],
+  "actualServerAdmissionLog": [
+    {
+      "used": null,
+      "limit": null,
+      "reason": "lookup_reader_report_invalid",
+      "mode": "reported",
+      "at": "2026-11-02T06:14:34.4160000Z"
+    },
+    {
+      "used": null,
+      "limit": 12,
+      "reason": "lookup_reader_report_valid",
+      "mode": "reported",
+      "at": "2026-11-02T06:15:34.6210000Z"
+    }
+  ],
+  "readerResidentLimitActuallyReported": 12,
+  "wecomCap1AppReceipt": "not_established_by_windows_attempt_log",
+  "phoneActions": 0
+}

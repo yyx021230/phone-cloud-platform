@@ -1,0 +1,51 @@
+{
+  "startedAtUtc": "2026-11-02T11:08:19.020118+00:00",
+  "sourceCommit": "ab8359c8b1f53cf82e8073db3b7d9e525f2e7dfd",
+  "sourceSha256": "deef98f246309e69b76fdc3a6f5106727e550249b9f87aa71dbcd4bdb0d9a116",
+  "fixedManifestHashesMatched": 6,
+  "sshArgv": [
+    "/usr/bin/ssh",
+    "-F",
+    "/dev/null",
+    "-S",
+    "/private/tmp/pc-lookup-20261102-win.sock",
+    "-o",
+    "ControlMaster=no",
+    "-o",
+    "BatchMode=yes",
+    "-o",
+    "ProxyCommand=/usr/bin/false",
+    "-T",
+    "Administrator@100.100.177.27"
+  ],
+  "remoteCommand": "D:\\PhoneCloud\\tools\\python39\\python.exe -I -B - --observe-contract",
+  "remoteBudget": 1,
+  "phoneActions": 0,
+  "adbCalls": 0,
+  "configChanges": 0,
+  "nativeAcceptance": false,
+  "exitCode": 0,
+  "failure": "",
+  "remoteCompletion": "ssh_exit_reported",
+  "elapsedMs": 89,
+  "stdoutBytes": 5413,
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "rawStderrStored": false,
+  "stdoutSha256": "141673f06d82daaacedd88d3d6b6cfb414f13d66f575df8547c12f7417d8b50b",
+  "classification": "observed_not_authority",
+  "finishedAtUtc": "2026-11-02T11:08:19.111890+00:00",
+  "commandRepresentation": {
+    "rawCommandPreserved": true,
+    "lexicallyNormalizedExecutable": "D:\\PhoneCloud\\tools\\python39\\python.exe",
+    "matchesFixedInterpreterPath": true,
+    "note": "Actual command used repeated backslash separators; original raw command retained rather than rewritten."
+  },
+  "resultScope": {
+    "windowsReadApisActuallyExecuted": true,
+    "pairedSamples": 16,
+    "windowsReadOnlySurveyReturnedObserved": true,
+    "clockAuthorityProven": false,
+    "phoneFlowExecuted": false
+  }
+}

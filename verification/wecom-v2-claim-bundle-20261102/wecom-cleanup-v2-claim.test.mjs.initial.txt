@@ -1,0 +1,133 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import { createWecomV2ClaimPreparer } from "./wecom-cleanup-v2-claim.mjs";
+import { previewOperationFingerprint } from "./wecom-preview.mjs";
+import { fixture } from "../verification/wecom-v2-claim-bundle-20261102/fixture.mjs";
+const prepare = f => createWecomV2ClaimPreparer({ readClaimContext: () => f.context });
+function freeze(v) { if (v && typeof v === "object") { for (const x of Object.values(v)) freeze(x); Object.freeze(v); } return v; }
+
+for (const mode of ["preview", "send"]) for (const slot of ["main", "clone"]) test(`${mode}/${slot} prepares held candidates, never permission or persistence ACK`, () => {
+  const f = fixture({ mode, slot }), original = structuredClone(f.input), b = f.context.binding;
+  const out = prepare(f)(f.input);
+  assert.equal(out.protocolPermit, false); assert.equal(out.durable, false); assert.equal(out.requiresPersistence, true);
+  assert.equal(out.requiresPhysicalExclusion, true); assert.equal(out.requiresLiveChecks, true);
+  assert.equal(out.candidate.windowsTask.status, "running"); assert.equal(out.candidate.automationJob.status, "running");
+  assert.equal(out.candidate.windowsTask.pickedAt, f.context.recordedAt);
+  assert.equal(out.candidate.windowsTask.payload.mode, mode); assert.equal(out.candidate.windowsTask.payload.previewOnly, mode === "preview");
+  assert.deepEqual(out.candidate.windowsTask.payload.physicalCleanup, b);
+  assert.equal(out.candidate.physicalHold.lockId, b.obligationId); assert.equal(out.candidate.physicalHold.expiresAt, "");
+  assert.equal(out.candidate.physicalHold.status, "cleanup_pending"); assert.equal(out.candidate.protocolState.fence, "held");
+  assert.equal(out.candidate.protocolState.revision, 0); assert.equal(out.candidate.claimData.claimOperationId, f.context.claimOperationId);
+  assert.deepEqual(out.expected.windowsTask, original.task); assert.deepEqual(out.expected.automationJob, original.job);
+  assert.deepEqual(out.expected.businessLock, original.businessLock); assert.deepEqual(f.input, original);
+  assert.equal(out.candidate.businessLock.appSlot, ""); assert.equal(out.candidate.physicalHold.appSlot, slot);
+});
+test("business hash matches independent literal and existing canonical API semantics", () => {
+  const f = fixture(), out = prepare(f)(f.input);
+  assert.equal(out.candidate.claimData.businessFingerprint, "67ec26e9133a22e02ad7784bbd779a72770a6ca0ba3b4e26bda38175992053ce");
+  assert.equal(out.candidate.claimData.businessFingerprint, previewOperationFingerprint(f.input.job));
+});
+test("full queued CAS snapshot preserves metadata while business fingerprint excludes later progress fields", () => {
+  const f = fixture(); f.input.task.events.push({ eventId: "queued-event", message: "fixture metadata" });
+  f.input.task.extraMetadata = { nested: [1, { keep: true }] };
+  const out = prepare(f)(f.input);
+  assert.deepEqual(out.expected.windowsTask, f.input.task); assert.deepEqual(out.candidate.windowsTask.extraMetadata, f.input.task.extraMetadata);
+  const changed = structuredClone(f.input.job); changed.status = "succeeded"; changed.events.push({ eventId: "completed" }); changed.updatedAt = "2026-11-02T06:00:00.000Z";
+  assert.equal(previewOperationFingerprint(changed), out.candidate.claimData.businessFingerprint);
+  assert.notDeepEqual({ ...out.expected.windowsTask, status: "running" }, out.expected.windowsTask);
+});
+test("claim_data contains fixed IDs/hash but no phone, remarks or credential fields", () => {
+  const f = fixture(), data = prepare(f)(f.input).candidate.claimData, text = JSON.stringify(data);
+  for (const forbidden of [f.input.job.phoneNumber, f.input.job.wecomRemarkName, f.input.job.wecomDescription, "agentToken", "password", "Cookie"]) assert.ok(!text.includes(forbidden));
+  assert.deepEqual(data.binding, f.context.binding); assert.equal(data.originalLockId, f.input.businessLock.lockId);
+});
+test("deep frozen input/provider stays unchanged; outputs do not alias inputs", () => {
+  const f = fixture(); freeze(f.input); freeze(f.context); const original = JSON.stringify(f);
+  const out = prepare(f)(f.input);
+  assert.equal(JSON.stringify(f), original); assert.ok(Object.isFrozen(out.candidate.windowsTask.payload.physicalCleanup));
+  assert.notEqual(out.expected.windowsTask, f.input.task); assert.notEqual(out.candidate.windowsTask.payload, f.input.task.payload);
+  assert.throws(() => { out.candidate.windowsTask.payload.mode = "send"; }, TypeError);
+});
+test("same fixed attempt is deterministic without Date.now/random or ID regeneration", () => {
+  const f = fixture(), fn = prepare(f), savedNow = Date.now, savedRandom = Math.random;
+  try {
+    Date.now = () => { throw Error("no_clock_read"); }; Math.random = () => { throw Error("no_random_generation"); };
+    assert.deepEqual(fn(f.input), fn(f.input));
+  } finally { Date.now = savedNow; Math.random = savedRandom; }
+});
+for (const change of [
+  c => { c.binding.executionId = "new-execution"; }, c => { c.claimOperationId = "new-claim"; },
+  c => { c.binding.nonce = "new-nonce"; }, c => { c.binding.handshakeNonce = "new-handshake"; },
+  c => { c.binding.serverEpoch = "new-epoch"; }, c => { c.recordedAt = "2026-11-02T06:00:00.000Z"; },
+]) test(`provider attempt change cannot silently create a new claim (${change.toString()})`, () => {
+  const f = fixture(), fn = prepare(f); change(f.context); assert.throws(() => fn(f.input), /context_changed/);
+});
+for (const [label, change] of [
+  ["task ID", f => { f.input.task.taskId = "other"; }],
+  ["job ID in both records", f => { f.input.job.jobId = "other"; f.input.task.payload.automationJobId = "other"; }],
+  ["job task link", f => { f.input.job.windowsTaskId = "other"; }],
+  ["owner in job and lock", f => { f.input.job.userId = f.input.businessLock.ownerUserId = "other"; }],
+  ["original lock in job and lock", f => { f.input.job.lockId = f.input.businessLock.lockId = "other"; }],
+  ["agent in task and job", f => { f.input.task.agentId = f.input.job.agentId = "other"; }],
+  ["device in task and job", f => { f.input.task.deviceId = f.input.job.deviceId = "adb:other"; }],
+  ["serial in task and job", f => { f.input.task.adbSerial = f.input.job.adbSerial = "other"; }],
+  ["request ID", f => { f.input.job.wecomRequestId = "other_request"; }],
+  ["session", f => { f.input.job.sessionId = f.input.task.payload.automationSessionId = "other-session"; }],
+  ["device mapping", f => { f.input.device.adb.serial = "other"; }],
+  ["device number", f => { f.input.device.deviceName = "25"; }],
+]) test(`identity association rejects wrong ${label}`, () => { const f = fixture(); change(f); assert.throws(() => prepare(f)(f.input), /wecom_v2_claim_/); });
+for (const [label, change] of [
+  ["preview becomes send", f => { f.input.task.payload.mode = f.input.job.wecomMode = "send"; f.input.task.payload.previewOnly = false; }],
+  ["preview flag", f => { f.input.task.payload.previewOnly = false; }],
+  ["slot", f => { f.input.task.payload.appSlot = f.input.job.wecomAppSlot = "clone"; }],
+  ["Android user", f => { f.input.task.payload.androidUser = f.input.job.wecomAndroidUser = 999; }],
+  ["both target phones changed", f => { f.input.task.payload.phoneNumber = f.input.job.phoneNumber = "13800000000"; }],
+  ["both remark values changed", f => { f.input.task.payload.remarkName = f.input.job.wecomRemarkName = "其他备注"; }],
+  ["both description values changed", f => { f.input.task.payload.description = f.input.job.wecomDescription = "其他描述"; }],
+  ["noncanonical remark", f => { f.input.task.payload.remarkName = f.input.job.wecomRemarkName = " 测试客户 "; }],
+  ["XHS slot", f => { f.input.task.payload.xhsAppSlot = f.input.job.xhsAppSlot = "app1"; }],
+  ["physical lock narrowed to clone", f => { f.input.businessLock.appSlot = "clone"; }],
+  ["lock task link", f => { f.input.businessLock.taskId = "other-job"; }],
+  ["released lock", f => { f.input.businessLock.status = "released"; }],
+]) test(`business/physical semantics reject ${label}`, () => { const f = fixture(); change(f); assert.throws(() => prepare(f)(f.input), /wecom_v2_claim_/); });
+for (const [label, change] of [
+  ["running task", f => { f.input.task.status = "running"; }],
+  ["picked task", f => { f.input.task.pickedAt = f.context.recordedAt; }],
+  ["previous result", f => { f.input.task.result = { status: "unknown" }; }],
+  ["send claim exists", f => { f.input.job.wecomSendClaimAt = f.context.recordedAt; }],
+  ["null protocol", f => { f.input.task.payload.wecomCleanupProtocol = null; }],
+  ["missing job protocol", f => { delete f.input.job.wecomCleanupProtocol; }],
+  ["v1 protocol", f => { f.input.task.payload.wecomCleanupProtocol = 1; }],
+  ["legacy null physical binding", f => { f.input.task.payload.physicalCleanup = null; }],
+]) test(`fresh v2 claim refuses ${label}`, () => { const f = fixture(); change(f); assert.throws(() => prepare(f)(f.input), /fresh_task_required/); });
+test("pure bundles alone do not serialize two tasks/main-clone on one physical key", () => {
+  const a = fixture({ suffix: "a", slot: "main", serial: "Fixture" }), b = fixture({ suffix: "b", slot: "clone", serial: "fixture" });
+  const one = prepare(a)(a.input), two = prepare(b)(b.input);
+  assert.equal(one.physicalKey, two.physicalKey); assert.notEqual(one.candidate.claimData.claimOperationId, two.candidate.claimData.claimOperationId);
+  assert.ok(one.requiresPhysicalExclusion && two.requiresPhysicalExclusion); assert.equal(one.protocolPermit || two.protocolPermit, false);
+});
+test("re-preparing already-running candidate is rejected; store must reconcile original attempt separately", () => {
+  const f = fixture(), fn = prepare(f), out = fn(f.input);
+  assert.throws(() => fn({ ...f.input, task: out.candidate.windowsTask, job: out.candidate.automationJob }), /fresh_task_required/);
+});
+test("no UI permission, ID factory or fake provider flags are accepted", () => {
+  const f = fixture(); assert.throws(() => createWecomV2ClaimPreparer({ readClaimContext: true }), /provider_required/);
+  assert.throws(() => prepare(f)({ ...f.input, authenticated: true }), /input_invalid/);
+  f.context.permit = true; assert.throws(() => prepare(f), /context_invalid/);
+});
+for (const value of [null, [], true]) test(`record must be JSON object, not ${JSON.stringify(value)}`, () => {
+  const f = fixture(); f.input.task = value; assert.throws(() => prepare(f)(f.input), /input_invalid/);
+});
+test("snapshot copying rejects silent JSON loss and never invokes accessors", () => {
+  for (const bad of [undefined, NaN, Infinity, 1n, new Date(), "\u0000", "\ud800", -0]) {
+    const f = fixture(); f.input.task.extra = bad; assert.throws(() => prepare(f)(f.input), /snapshot_invalid/);
+  }
+  const f = fixture(); let invoked = false;
+  Object.defineProperty(f.input.task, "hidden", { enumerable: true, get() { invoked = true; return "must_not_read"; } });
+  assert.throws(() => prepare(f)(f.input), /snapshot_invalid/); assert.equal(invoked, false);
+});
+test("audit time is not a live-clock lease or OS authority", () => {
+  const f = fixture(); f.context.recordedAt = "2099-01-01T00:00:00.000Z";
+  const out = prepare(f)(f.input); assert.equal(out.protocolPermit, false); assert.equal(out.requiresLiveChecks, true);
+  assert.equal(out.candidate.businessLock.expiresAt, f.input.businessLock.expiresAt);
+});

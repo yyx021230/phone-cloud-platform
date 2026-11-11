@@ -1,0 +1,16 @@
+{
+  "deviceNumber": "25",
+  "readonly": true,
+  "fields": {
+    "mWakefulness": "Asleep",
+    "mWakefulnessChanging": "false",
+    "mProximityPositive": "false",
+    "mRequestWaitForNegativeProximity": "false",
+    "mScreenOffBecauseOfProximity": "unknown",
+    "mScreenState": "unknown",
+    "mHoldingDisplaySuspendBlocker": "false",
+    "mDisplayReady": "true",
+    "mIsPowered": "unknown",
+    "mBootCompleted": "unknown"
+  }
+}

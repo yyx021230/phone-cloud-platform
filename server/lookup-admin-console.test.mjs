@@ -35,3 +35,41 @@ test('expired and cross-device blocking detail never substituted by latest failu
 test('recovered or cooling device does not advertise historical preparation block',()=>{
  for(const health of [{ready:true},{ready:false,reason:'accounts_cooling'}]){const f=fixture();Object.assign(f.pool.devices[0],{health,lastPreparationFailure:{jobId:'old',at:now}});assert.equal(buildLookupAdminOverview(f).devices[0].blockingFailure,null);}
 });
+
+test('exact archived failure is readable without rehydrating live state',async()=>{
+ const {state,job}=evidenceFixture();const task=state.windowsTasks[0];state.automationJobs=[];state.windowsTasks=[];
+ const before=JSON.stringify(state);const {lookupJobContext}=await import('./lookup-admin-console.mjs');let calls=[];
+ const ctx=await lookupJobContext(state,'j',async id=>{calls.push(id);return {job,task};});
+ assert.equal(jobDetail(ctx.state,ctx.job).evidence.length,1);assert.deepEqual(calls,['j']);assert.equal(JSON.stringify(state),before);
+});
+test('archive cannot substitute a different job, workflow, task or device',async()=>{
+ const {lookupJobContext}=await import('./lookup-admin-console.mjs');
+ for(const mutate of [j=>j.jobId='other',j=>j.kind='xhs_publish']){const {state,job}=evidenceFixture();state.automationJobs=[];mutate(job);assert.equal(await lookupJobContext(state,'j',async()=>({job})),null);}
+ for(const mutate of [t=>t.taskId='other',t=>t.deviceId='other']){const {state,job}=evidenceFixture();const task=structuredClone(state.windowsTasks[0]);mutate(task);state.automationJobs=[];state.windowsTasks=[];const ctx=await lookupJobContext(state,'j',async()=>({job,task}));assert.deepEqual(jobEvidence(ctx.state,ctx.job),[]);}
+});
+test('live detail wins, invalid IDs do not hit storage and storage failure is not reported as deletion',async()=>{
+ const {lookupJobContext}=await import('./lookup-admin-console.mjs');const {state,job}=evidenceFixture();
+ const read=async()=>{throw Error('storage_down');};assert.equal((await lookupJobContext(state,'j',read)).job,job);
+ assert.equal(await lookupJobContext(state,'../x',read),null);state.automationJobs=[];state.windowsTasks=[];await assert.rejects(lookupJobContext(state,'j',read),/storage_down/);
+});
+
+test('153-shaped archived preflight error exposes a safe cause without raw command data',async()=>{
+ const {lookupJobContext}=await import('./lookup-admin-console.mjs');const {state,job}=evidenceFixture();
+ job.kind='alipay_name_start';job.result={errorCode:'task_failed',error:'package_manager_unresponsive:private-serial:Command failed: private-path shell cmd package path private-package\n'};
+ const task=state.windowsTasks[0];state.automationJobs=[];state.windowsTasks=[];
+ const ctx=await lookupJobContext(state,'j',async()=>({job,task}));
+ const d=jobDetail(ctx.state,ctx.job);assert.equal(d.reason,'package_manager_unresponsive');assert.equal(d.code,'task_failed');assert.equal(d.evidence.length,0);assert.doesNotMatch(JSON.stringify(d),/private/);
+});
+test('failure detail uses only the exact matching task diagnostic and never arbitrary raw errors',()=>{
+ const {state,job}=evidenceFixture();job.result={};state.windowsTasks[0].result={errorCode:'task_failed',diagnostic:{runnerReason:'poco_query_resume_state_mismatch'}};
+ assert.equal(jobDetail(state,job).reason,'poco_query_resume_state_mismatch');assert.equal(jobDetail(state,job).code,'task_failed');
+ state.windowsTasks[0].deviceId='other';assert.equal(jobDetail(state,job).reason,'');assert.equal(jobDetail(state,job).code,'');
+ job.result={error:'private secret phone command'};assert.equal(jobDetail(state,job).reason,'');
+ job.result={error:'notpackage_manager_unresponsive:private'};assert.equal(jobDetail(state,job).reason,'');
+});
+test('live blocking preflight cause retains exact task and structured diagnostics take priority',()=>{
+ const f=fixture(),d=f.pool.devices[0];d.health={ready:false,reason:'preparation_failed_round'};d.lastPreparationFailure={jobId:'old',at:now,code:'task_failed'};
+ const j={jobId:'old',deviceId:'d',kind:'alipay_name_start',status:'failed',result:{error:'package_manager_unresponsive:private'}};f.state.automationJobs=[j];
+ assert.equal(buildLookupAdminOverview(f).devices[0].blockingFailure.reason,'package_manager_unresponsive');
+ j.result.diagnostic={runnerReason:'poco_query_before_input_failed'};assert.equal(buildLookupAdminOverview(f).devices[0].blockingFailure.reason,'poco_query_before_input_failed');
+});

@@ -1,0 +1,34 @@
+{
+  "source": "b4d77990ca7f3ec078b76c2c5895a66998293567",
+  "files": [
+    "deploy/xhs-batch/compose.override.yml",
+    "deploy/xhs-batch/config.example.json",
+    "deploy/xhs-batch/nginx-location.conf",
+    "deploy/xhs-batch/phone-cloud-xhs-batch.service",
+    "deploy/xhs-batch/prepare-platform-patch.mjs",
+    "deploy/xhs-batch/schema.sql",
+    "public/xhs-data-collection-ui.js",
+    "sdk/xhs_batch_client.py",
+    "server/xhs-account-identity.mjs",
+    "server/xhs-batch/engine.mjs",
+    "server/xhs-batch/fixtures.mjs",
+    "server/xhs-batch/http.mjs",
+    "server/xhs-batch/main.mjs",
+    "server/xhs-batch/platform.mjs",
+    "server/xhs-batch/store.mjs",
+    "server/xhs-data-collection.mjs",
+    "windows-agent/scripts/xhs_list_ocr.py",
+    "windows-agent/scripts/xhs_native_elements.py",
+    "windows-agent/scripts/xhs_native_navigation.py",
+    "windows-agent/scripts/xhs_native_ocr.ps1",
+    "windows-agent/scripts/xhs_native_window.py",
+    "windows-agent/scripts/xhs_ocr_digits.png",
+    "windows-agent/scripts/xhs_publish_poco.py",
+    "windows-agent/scripts/xhs_xml_uiautomator.py",
+    "windows-agent/src/xhs-data-collection.mjs"
+  ],
+  "matching": 24,
+  "retainedLaterComposeFix": [
+    "deploy/xhs-batch/compose.override.yml"
+  ]
+}

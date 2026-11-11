@@ -1,0 +1,201 @@
+{
+  "status": "bounded_production_API_check_complete_not_full_acceptance",
+  "observedWindowUtc": {
+    "firstPreflight": "2026-10-28T09:46:51.513Z",
+    "firstSubmit": "2026-10-28T09:50:15.688Z",
+    "lastPostflight": "2026-10-28T09:56:56.700Z"
+  },
+  "testedProduction": {
+    "version": "platform-integration-20261028-deployed.1",
+    "activeSha256": "4bb61c39a8a5cd912069ed494d84dba1af4cf3cc37adbac8285db935586b995a",
+    "image": "sha256:fca45ec32e72b0787e4375fd6812a5ac97d3aebec4b830b6393b03117554b45e",
+    "running": true,
+    "restarts": 0
+  },
+  "localCandidate": "platform-wecom-integration-20261028-rc.1 not deployed; this test does not validate its new runtime",
+  "baselineVerification": {
+    "cloudRuntimeFiles": 642,
+    "cloudMismatches": [],
+    "agentRuntimeAndFrozenFiles": 22,
+    "agentMismatches": [],
+    "agentPid": 26488,
+    "adbPid": 17764,
+    "owner": "NT AUTHORITY\\SYSTEM",
+    "adbPath": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe"
+  },
+  "sourceWorkbook": {
+    "sha256": "874c801e6f3eff06cd480c7ab81713b4f822bd54911a7696fa0d192143d31011",
+    "selectedCells": [
+      "B201",
+      "B202"
+    ],
+    "authorizedByUser": true,
+    "modified": false
+  },
+  "scope": {
+    "uniquePhones": 2,
+    "canonicalRequests": 3,
+    "controlledScreens": 0,
+    "cancelledOtherTasks": 0,
+    "newPreparationRounds": 0,
+    "configurationWrites": 0,
+    "runtimeFilesChanged": 0,
+    "restarts": 0,
+    "adbCommandsByThisTest": 0,
+    "authentication": "existing runtime HMAC client; secrets in RAM only",
+    "publicHttpGetResultVerified": true,
+    "apiKeyAuthenticationRetested": false
+  },
+  "results": [
+    {
+      "label": "A",
+      "httpStatus": 200,
+      "ok": true,
+      "lookupId": "b6b46203-6bbd-402b-8400-6ac491ff4e65",
+      "status": "completed",
+      "hasName": false,
+      "nameIsString": true
+    },
+    {
+      "label": "A-recheck",
+      "httpStatus": 200,
+      "ok": true,
+      "lookupId": "4a5e7bf3-f949-46b3-83fa-30421546a975",
+      "status": "completed",
+      "hasName": false,
+      "nameIsString": true
+    },
+    {
+      "label": "B",
+      "httpStatus": 200,
+      "ok": true,
+      "lookupId": "8b474191-ce03-4a47-ae67-715c51cbdfe4",
+      "status": "completed",
+      "hasName": true,
+      "nameIsString": true
+    }
+  ],
+  "sameKeyImmediateReplay": true,
+  "unfinishedChangedKeyRetry": {
+    "lookupId": "8b474191-ce03-4a47-ae67-715c51cbdfe4",
+    "elapsedSeconds": 205.35,
+    "sameId": true,
+    "reused": true
+  },
+  "completedEmptyBoundary": {
+    "firstLookupId": "b6b46203-6bbd-402b-8400-6ac491ff4e65",
+    "newKeyLookupId": "4a5e7bf3-f949-46b3-83fa-30421546a975",
+    "elapsedSeconds": 148.538,
+    "newQueryCreated": true,
+    "originalKeyAfterCompletionSameId": true,
+    "policy": "Existing 2026-10-23 policy: completed empty + new key queries again; unfinished + new key merges; original key always replays. Caller must retain original key on timeout."
+  },
+  "requests": [
+    {
+      "lookupId": "b6b46203-6bbd-402b-8400-6ac491ff4e65",
+      "status": "not_found",
+      "hasName": false,
+      "createdAt": "2026-10-28T09:50:15.688Z",
+      "completedAt": "2026-10-28T09:52:20.479Z",
+      "attempts": [
+        {
+          "number": "57",
+          "at": "2026-10-28T09:51:51.197Z"
+        }
+      ],
+      "automaticRecoveryCount": 0
+    },
+    {
+      "lookupId": "8b474191-ce03-4a47-ae67-715c51cbdfe4",
+      "status": "succeeded",
+      "hasName": true,
+      "createdAt": "2026-10-28T09:50:16.153Z",
+      "completedAt": "2026-10-28T09:53:45.064Z",
+      "attempts": [
+        {
+          "number": "176",
+          "at": "2026-10-28T09:51:51.958Z"
+        },
+        {
+          "number": "57",
+          "at": "2026-10-28T09:53:17.143Z"
+        }
+      ],
+      "automaticRecoveryCount": 1
+    },
+    {
+      "lookupId": "4a5e7bf3-f949-46b3-83fa-30421546a975",
+      "status": "not_found",
+      "hasName": false,
+      "createdAt": "2026-10-28T09:52:44.455Z",
+      "completedAt": "2026-10-28T09:54:20.279Z",
+      "attempts": [
+        {
+          "number": "163",
+          "at": "2026-10-28T09:53:36.156Z"
+        }
+      ],
+      "automaticRecoveryCount": 0
+    }
+  ],
+  "audits": [
+    {
+      "action": "lookup_automatic_recovery",
+      "at": "2026-10-28T09:52:52.293Z",
+      "lookupId": "8b474191-ce03-4a47-ae67-715c51cbdfe4",
+      "number": "176"
+    },
+    {
+      "action": "lookup_reroute_recovery_exhausted",
+      "at": "2026-10-28T09:53:03.275Z",
+      "lookupId": "8b474191-ce03-4a47-ae67-715c51cbdfe4",
+      "number": "176"
+    }
+  ],
+  "failureEvidence": {
+    "device": "176",
+    "codes": [
+      "alipay_human_verification_required",
+      "local_lookup_result_unconfirmed:post_human_input_changed",
+      "poco_query_resume_state_mismatch:length"
+    ],
+    "reroute": "lookup_reroute_recovery_exhausted",
+    "sameOriginalBusinessCompletedOn": "57",
+    "inputChangeCause": "not established; do not blame user or claim fixed"
+  },
+  "postflight": {
+    "at": "2026-10-28T09:56:56.700Z",
+    "healthy": true,
+    "ready": true,
+    "storage": "postgres",
+    "redis": "redis",
+    "configRevision": 124,
+    "concurrency": 6,
+    "unfinishedLimit": 30,
+    "counts": {
+      "registered": 48,
+      "executing": 4,
+      "waitingHuman": 0,
+      "queued": 0
+    },
+    "ownNonterminal": 0,
+    "ownChannels": 0,
+    "online": 129,
+    "otherActiveRequests": 4
+  },
+  "testToolCorrections": [
+    "First changed-key assertion incorrectly required same ID even after an empty result had completed. It stopped after one expected new query; reviewed the existing policy and added a nonterminal precheck before testing the still-pending second query. The extra empty-result query was tracked through completion.",
+    "Initial Agent hash probe assumed windows-agent directory; read the existing process entry path, then verified actual D:\\PhoneCloud\\agent without changing the process."
+  ],
+  "notVerified": [
+    "natural account-limit rotation or cooldown expiry",
+    "five newly started ready phones or fresh prepare round",
+    "individual visual ground-truth comparison of successful empty/name pages (no saved successful screenshots)",
+    "176 post-human input change root cause",
+    "X-API-Key authentication for this round",
+    "new local candidate runtime",
+    "full production acceptance"
+  ],
+  "runtimeOrConfigDeployed": false,
+  "pushed": false
+}

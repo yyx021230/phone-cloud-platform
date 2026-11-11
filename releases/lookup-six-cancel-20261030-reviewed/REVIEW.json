@@ -1,0 +1,367 @@
+{
+  "version": "lookup-six-cancel-20261030-reviewed.1",
+  "artifactType": "review_of_authorized_live_cancellation_not_runtime_code_release",
+  "reviewedAt": "2026-10-30T01:39:01.598642+00:00",
+  "rootBranch": "codex/lookup-cancel-six-20261030",
+  "rootBaseCommit": "81d8172e4f2bffaf92404f2e91cd87108d4b67a3",
+  "authorization": "Direct human instruction in root chat to abandon these original stuck queries and release phones; prior explicit authorization to collaborate with lookup chat",
+  "operationOwnerThread": "01a1629d-affe-7c60-b7d7-26ca2aba9863",
+  "operatorTag": "lookup-six-cancel-20261030-applied.1",
+  "operatorCommit": "5f83a295bfda626694664802c76ece1ada8cb445",
+  "operatorReceiptSha256": "f2b0783ec505d7adf46d2d87e576523167e25d2cb58a767496a9e4b1880f4ac4",
+  "beforeAt": "2026-10-30T01:36:39.622091+00:00",
+  "verifiedAt": "2026-10-30T01:37:13.584729+00:00",
+  "method": "Existing per-request admin cancel API, 53 first, then remaining sequential; server-generated same-generation real stops",
+  "rows": [
+    {
+      "deviceNumber": 53,
+      "lookupId": "b00297d9-bfa5-4439-bd0e-0d7e8c7def3f",
+      "windowsTaskId": "01fcdfb3-b96b-4da5-afe3-0b64102d610d",
+      "queryId": "9ccebe1f-a85b-43c8-a7db-34888cfc3517",
+      "sessionId": "b0d8e88f-6fe3-4568-a9bf-1bbbf22cf114",
+      "generation": "bce90516-dacf-4392-b3f7-54783449272c",
+      "originalRequestStatus": "cancelled",
+      "originalCode": "lookup_cancelled",
+      "completedAt": "2026-10-30T01:36:59.232Z",
+      "oldWindowsTaskStatus": "cancelled",
+      "oldDeliveryAttempts": 1,
+      "oldSessionStatus": "ended",
+      "oldChannelReleased": true,
+      "stop": {
+        "type": "alipay_name_stop",
+        "proof": {
+          "taskId": "d7be62fd-0e50-4ad8-99c4-9085c5f6d6f0",
+          "version": 1,
+          "sessionId": "b0d8e88f-6fe3-4568-a9bf-1bbbf22cf114",
+          "generation": "bce90516-dacf-4392-b3f7-54783449272c",
+          "readerCleanupConfirmed": true
+        },
+        "status": "succeeded",
+        "taskId": "d7be62fd-0e50-4ad8-99c4-9085c5f6d6f0",
+        "completedAt": "2026-10-30T01:36:59.100Z"
+      },
+      "latestHealth": {
+        "ready": true,
+        "reason": ""
+      },
+      "newChannel": {
+        "sessionId": "b1d4bb2d-fa89-4a46-8cef-6b4b81c01a49",
+        "generation": "bfb6fa94-692e-4612-98d5-4fe28e6cce7d",
+        "phase": "starting",
+        "requestId": "cf6977bd-e7dd-45e7-93f1-835e08502cea"
+      }
+    },
+    {
+      "deviceNumber": 57,
+      "lookupId": "da844359-e245-438d-ad7c-8ad658733969",
+      "windowsTaskId": "ac7d84b8-bddd-4a02-89ff-c120d0edaee2",
+      "queryId": "aeb86ec1-38e7-47a7-b258-711903470964",
+      "sessionId": "1e647cae-d732-45d4-94c4-76ec552bce06",
+      "generation": "0a0f57f5-4ee5-41b8-8a75-faaaab315496",
+      "originalRequestStatus": "cancelled",
+      "originalCode": "lookup_cancelled",
+      "completedAt": "2026-10-30T01:37:10.178Z",
+      "oldWindowsTaskStatus": "cancelled",
+      "oldDeliveryAttempts": 1,
+      "oldSessionStatus": "ended",
+      "oldChannelReleased": true,
+      "stop": {
+        "type": "alipay_name_stop",
+        "proof": {
+          "taskId": "7f44963f-4bd5-4b5a-bb81-85e09dfe7625",
+          "version": 1,
+          "sessionId": "1e647cae-d732-45d4-94c4-76ec552bce06",
+          "generation": "0a0f57f5-4ee5-41b8-8a75-faaaab315496",
+          "readerCleanupConfirmed": true
+        },
+        "status": "succeeded",
+        "taskId": "7f44963f-4bd5-4b5a-bb81-85e09dfe7625",
+        "completedAt": "2026-10-30T01:37:09.774Z"
+      },
+      "latestHealth": {
+        "ready": true,
+        "reason": ""
+      },
+      "newChannel": {
+        "sessionId": "c7423c63-644c-4ee2-9cf2-c120c43bc761",
+        "generation": "344ce41d-09b2-4ff4-8f66-092b4c57ecb1",
+        "phase": "starting",
+        "requestId": "ce56ca1c-27da-4d39-93ab-78a682130b3f"
+      }
+    },
+    {
+      "deviceNumber": 67,
+      "lookupId": "fde09268-9734-421e-afeb-819ed459b855",
+      "windowsTaskId": "1e68639a-3034-4a04-bd3e-2c035e2eae60",
+      "queryId": "5b0c4261-1010-4eb3-a527-4ad24539b006",
+      "sessionId": "dadbd90c-d05d-4e73-83d8-1b46478f33a7",
+      "generation": "1f8659d7-2c8c-4709-bbb9-7d10e11a2ce0",
+      "originalRequestStatus": "cancelled",
+      "originalCode": "lookup_cancelled",
+      "completedAt": "2026-10-30T01:37:10.506Z",
+      "oldWindowsTaskStatus": "cancelled",
+      "oldDeliveryAttempts": 1,
+      "oldSessionStatus": "ended",
+      "oldChannelReleased": true,
+      "stop": {
+        "type": "alipay_name_stop",
+        "proof": {
+          "taskId": "4b7c32f7-8825-4fac-8b95-18a8c422c6e8",
+          "version": 1,
+          "sessionId": "dadbd90c-d05d-4e73-83d8-1b46478f33a7",
+          "generation": "1f8659d7-2c8c-4709-bbb9-7d10e11a2ce0",
+          "readerCleanupConfirmed": true
+        },
+        "status": "succeeded",
+        "taskId": "4b7c32f7-8825-4fac-8b95-18a8c422c6e8",
+        "completedAt": "2026-10-30T01:37:10.407Z"
+      },
+      "latestHealth": {
+        "ready": true,
+        "reason": ""
+      },
+      "newChannel": {
+        "sessionId": "201ce646-6756-4b7c-8fbe-2afc0aebc565",
+        "generation": "12e7bd3b-4eae-4112-ad7d-b393304695d9",
+        "phase": "starting",
+        "requestId": "149bf3e2-1726-43d1-a642-4227e8caef14"
+      }
+    },
+    {
+      "deviceNumber": 101,
+      "lookupId": "323432cf-ff9c-4499-b11a-8f18e3900de7",
+      "windowsTaskId": "4fefb2e3-5b27-4698-a17a-9bd71ddf4620",
+      "queryId": "d74fab82-6d99-411f-b81f-834dd0071993",
+      "sessionId": "09fd5290-0f20-4268-bf0d-5d544faad2c5",
+      "generation": "48dc566a-10c7-4f9f-be14-18b83483503e",
+      "originalRequestStatus": "cancelled",
+      "originalCode": "lookup_cancelled",
+      "completedAt": "2026-10-30T01:37:10.998Z",
+      "oldWindowsTaskStatus": "cancelled",
+      "oldDeliveryAttempts": 1,
+      "oldSessionStatus": "ended",
+      "oldChannelReleased": true,
+      "stop": {
+        "type": "alipay_name_stop",
+        "proof": {
+          "taskId": "3a87b836-fb0b-4c67-bec8-1df2dddd6426",
+          "version": 1,
+          "sessionId": "09fd5290-0f20-4268-bf0d-5d544faad2c5",
+          "generation": "48dc566a-10c7-4f9f-be14-18b83483503e",
+          "readerCleanupConfirmed": true
+        },
+        "status": "succeeded",
+        "taskId": "3a87b836-fb0b-4c67-bec8-1df2dddd6426",
+        "completedAt": "2026-10-30T01:37:10.869Z"
+      },
+      "latestHealth": {
+        "ready": true,
+        "reason": ""
+      },
+      "newChannel": {
+        "sessionId": "9ddff23b-9dd0-4737-a47c-02b624ffcb64",
+        "generation": "6f3e4451-1420-4a0a-a64d-58f121948cb9",
+        "phase": "starting",
+        "requestId": "a8af02bb-c48c-4065-b2a1-0c757b86f3ff"
+      }
+    },
+    {
+      "deviceNumber": 112,
+      "lookupId": "484ddaa6-992e-4612-b727-8a404b49918a",
+      "windowsTaskId": "5c5b9b83-f3f4-43ba-9510-d5366460e6fb",
+      "queryId": "7bfa8b24-d035-452a-8976-62cb09064f4d",
+      "sessionId": "22a565f0-bf83-4073-9662-cfa99cb16fdb",
+      "generation": "0b7b5602-a95c-4a75-ad87-d400b91f57d1",
+      "originalRequestStatus": "cancelled",
+      "originalCode": "lookup_cancelled",
+      "completedAt": "2026-10-30T01:37:11.486Z",
+      "oldWindowsTaskStatus": "cancelled",
+      "oldDeliveryAttempts": 1,
+      "oldSessionStatus": "ended",
+      "oldChannelReleased": true,
+      "stop": {
+        "type": "alipay_name_stop",
+        "proof": {
+          "taskId": "22db355a-7829-4e87-8095-b47c3fe0de93",
+          "version": 1,
+          "sessionId": "22a565f0-bf83-4073-9662-cfa99cb16fdb",
+          "generation": "0b7b5602-a95c-4a75-ad87-d400b91f57d1",
+          "readerCleanupConfirmed": true
+        },
+        "status": "succeeded",
+        "taskId": "22db355a-7829-4e87-8095-b47c3fe0de93",
+        "completedAt": "2026-10-30T01:37:11.406Z"
+      },
+      "latestHealth": {
+        "ready": true,
+        "reason": ""
+      },
+      "newChannel": null
+    },
+    {
+      "deviceNumber": 161,
+      "lookupId": "729a1d92-3e43-4fbe-83aa-a968025ab6a4",
+      "windowsTaskId": "09997c01-2cc2-471e-a5e8-4b028768f210",
+      "queryId": "cb7bed0b-e3a3-4c59-abf1-1f75712efcdb",
+      "sessionId": "6f67d02b-3ca7-4520-948e-eee76b0de3be",
+      "generation": "4f99d807-34ff-41a3-af5f-52997544c0ee",
+      "originalRequestStatus": "cancelled",
+      "originalCode": "lookup_cancelled",
+      "completedAt": "2026-10-30T01:37:12.054Z",
+      "oldWindowsTaskStatus": "cancelled",
+      "oldDeliveryAttempts": 1,
+      "oldSessionStatus": "ended",
+      "oldChannelReleased": true,
+      "stop": {
+        "type": "alipay_name_stop",
+        "proof": {
+          "taskId": "a4d65c12-adac-40c5-8640-898e45f4d3ab",
+          "version": 1,
+          "sessionId": "6f67d02b-3ca7-4520-948e-eee76b0de3be",
+          "generation": "4f99d807-34ff-41a3-af5f-52997544c0ee",
+          "readerCleanupConfirmed": true
+        },
+        "status": "succeeded",
+        "taskId": "a4d65c12-adac-40c5-8640-898e45f4d3ab",
+        "completedAt": "2026-10-30T01:37:11.873Z"
+      },
+      "latestHealth": {
+        "ready": true,
+        "reason": ""
+      },
+      "newChannel": null
+    }
+  ],
+  "reviewChecks": [
+    {
+      "deviceNumber": 53,
+      "originalBindingMatches": true,
+      "requestCancelled": true,
+      "queryTaskCancelled": true,
+      "originalDeliveryAttempts": 1,
+      "originalSessionEnded": true,
+      "originalChannelReleased": true,
+      "stopProofMatchesTaskSessionGeneration": true,
+      "laterNaturalScheduling": {
+        "sessionId": "b1d4bb2d-fa89-4a46-8cef-6b4b81c01a49",
+        "generation": "bfb6fa94-692e-4612-98d5-4fe28e6cce7d",
+        "phase": "starting",
+        "requestId": "cf6977bd-e7dd-45e7-93f1-835e08502cea"
+      },
+      "latestHealth": {
+        "ready": true,
+        "reason": ""
+      }
+    },
+    {
+      "deviceNumber": 57,
+      "originalBindingMatches": true,
+      "requestCancelled": true,
+      "queryTaskCancelled": true,
+      "originalDeliveryAttempts": 1,
+      "originalSessionEnded": true,
+      "originalChannelReleased": true,
+      "stopProofMatchesTaskSessionGeneration": true,
+      "laterNaturalScheduling": {
+        "sessionId": "c7423c63-644c-4ee2-9cf2-c120c43bc761",
+        "generation": "344ce41d-09b2-4ff4-8f66-092b4c57ecb1",
+        "phase": "starting",
+        "requestId": "ce56ca1c-27da-4d39-93ab-78a682130b3f"
+      },
+      "latestHealth": {
+        "ready": true,
+        "reason": ""
+      }
+    },
+    {
+      "deviceNumber": 67,
+      "originalBindingMatches": true,
+      "requestCancelled": true,
+      "queryTaskCancelled": true,
+      "originalDeliveryAttempts": 1,
+      "originalSessionEnded": true,
+      "originalChannelReleased": true,
+      "stopProofMatchesTaskSessionGeneration": true,
+      "laterNaturalScheduling": {
+        "sessionId": "201ce646-6756-4b7c-8fbe-2afc0aebc565",
+        "generation": "12e7bd3b-4eae-4112-ad7d-b393304695d9",
+        "phase": "starting",
+        "requestId": "149bf3e2-1726-43d1-a642-4227e8caef14"
+      },
+      "latestHealth": {
+        "ready": true,
+        "reason": ""
+      }
+    },
+    {
+      "deviceNumber": 101,
+      "originalBindingMatches": true,
+      "requestCancelled": true,
+      "queryTaskCancelled": true,
+      "originalDeliveryAttempts": 1,
+      "originalSessionEnded": true,
+      "originalChannelReleased": true,
+      "stopProofMatchesTaskSessionGeneration": true,
+      "laterNaturalScheduling": {
+        "sessionId": "9ddff23b-9dd0-4737-a47c-02b624ffcb64",
+        "generation": "6f3e4451-1420-4a0a-a64d-58f121948cb9",
+        "phase": "starting",
+        "requestId": "a8af02bb-c48c-4065-b2a1-0c757b86f3ff"
+      },
+      "latestHealth": {
+        "ready": true,
+        "reason": ""
+      }
+    },
+    {
+      "deviceNumber": 112,
+      "originalBindingMatches": true,
+      "requestCancelled": true,
+      "queryTaskCancelled": true,
+      "originalDeliveryAttempts": 1,
+      "originalSessionEnded": true,
+      "originalChannelReleased": true,
+      "stopProofMatchesTaskSessionGeneration": true,
+      "laterNaturalScheduling": null,
+      "latestHealth": {
+        "ready": true,
+        "reason": ""
+      }
+    },
+    {
+      "deviceNumber": 161,
+      "originalBindingMatches": true,
+      "requestCancelled": true,
+      "queryTaskCancelled": true,
+      "originalDeliveryAttempts": 1,
+      "originalSessionEnded": true,
+      "originalChannelReleased": true,
+      "stopProofMatchesTaskSessionGeneration": true,
+      "laterNaturalScheduling": null,
+      "latestHealth": {
+        "ready": true,
+        "reason": ""
+      }
+    }
+  ],
+  "localTests": {
+    "command": "node --test server/managed-lookup-result-race.test.mjs server/lookup-stop-proof.test.mjs",
+    "passed": 52,
+    "failed": 0,
+    "logSha256": "3f794dc6d231090c49b7616860110a80ef8069c8c7731a3836364f8eed0d7b52"
+  },
+  "localEvidenceDirectory": "/private/tmp/pc-cancel-six-20261030-1kx1ymje",
+  "localPlanSha256": "71b1b935e4b0b5ecb1c5b3855c5b1013145dbeb3c80a672e5363c4b33f92443a",
+  "scope": [
+    "Six exact original canonical requests only; retain history and existing results",
+    "No replay, new test query, round stop, pool configuration change, direct DB or lock deletion",
+    "No source deployment, Agent reload, ADB server/identity/key, Windows or frozen media/control change"
+  ],
+  "limitations": [
+    "New channels starting are scheduling evidence, not completed new-business validation.",
+    "Runtime-loss permanent recovery defect is not fixed by this scoped cancellation."
+  ],
+  "rollback": "Do not restore original running rows or a whole-pool snapshot, which can replay submitted searches. This is an explicit cancellation, not a code rollback.",
+  "rootProductionActions": [],
+  "productionOutcome": "All six original requests cancelled and physical reader cleanup proven; old reservations released; four new natural preparation channels and two available phones observed, not six new business successes"
+}

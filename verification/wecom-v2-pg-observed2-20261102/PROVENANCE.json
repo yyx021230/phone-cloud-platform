@@ -1,0 +1,32 @@
+{
+  "status": "single_new_private_PG_passed_14_of_14",
+  "origin": "/private/tmp/pc-wecom-v2-pg-xeywe54s",
+  "runnerCommit": "073886ee24a8613598d90f68a87ffbdee8b9e460",
+  "runnerTag": "wecom-v2-pg-runner-20261102-draft.3",
+  "productCommit": "88633cc1cd5c29271494107d7b14206c0ce70e83",
+  "productTag": "wecom-v2-cas-m2-20261102-rc.3",
+  "copiedRawSha256": {
+    "RUN_RECEIPT.json": "e3c2a32a47fd829388dc595e00b40f763d0ba5e96abf6144278b85f45b2cc79f",
+    "NODE_TEST_OUTPUT.txt": "f46277225df5aa86b1c6a9b2e34c85428f09a7d69e7fce5a47ccc0220ea4f272",
+    "PG_EVIDENCE.json": "3914bb06b0fa2074b9192d5c9eafe6fc59998331f79ee18ab1e05390f47250e6",
+    "POSTGRES.txt": "d9aae25a5df2bf51a78c3c1d34455a9ce0e245f49210ad5c7a060f06a6094faf",
+    "INITDB.txt": "8e75689aa5712fc173750ed5a6d9898938e1a4dbcb01d62e3be747e31cae9357",
+    "CREATEDB.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "fixture.json": "296f588073886b020c5eba6c92b47beea6ec14eafe33cb59f8a5cdc0df87137f"
+  },
+  "rootReviewOrigin": "/private/tmp/pc-root-adb-incident-20261102/WECOM_PG_ACTUAL2_ROOT_REVIEW.json",
+  "rootReviewSha256": "e85260faf7d0d7c6224467aabcc0f0c2d10eee296fe73ea683bcb9dd5e72450d",
+  "executedSourceManifestOrigin": "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-v2-cas-m2-20261102/RUNNER_SOURCE_HASHES.json",
+  "sourceManifestMatchesExecutedHash": true,
+  "executedSourcesUnchanged": 13,
+  "actualTests": 14,
+  "pass": 14,
+  "fail": 0,
+  "faultCases": 7,
+  "nodeStoppedAndGroupAbsent": true,
+  "postgresStoppedConfirmed": true,
+  "successfulDbAbsentReadOnlyObserved": true,
+  "oldFailedDbStillExistsReadOnlyObserved": true,
+  "ownerReranTests": false,
+  "nativeOrProductionAccepted": false
+}

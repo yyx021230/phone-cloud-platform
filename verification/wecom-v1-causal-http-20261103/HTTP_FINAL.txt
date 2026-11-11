@@ -1,0 +1,28 @@
+✔ external client: discover -> four-field submit -> actual synthetic remark/send -> result; dual slots, timeout and restart never replay (1676.332583ms)
+ℹ WECOM_EXTERNAL_EVIDENCE {"simulatedTasks":4,"syntheticSearchCalls":4,"syntheticSaveCalls":4,"syntheticSendCalls":3,"recipientsDeliveryConfirmed":0,"realPhoneOperations":0,"realInvitations":0,"simultaneousDuplicatePosts":6,"duplicateTaskCount":1,"pausedPhoneDidNotBlockOtherPhone":true,"acceptanceReplyLostAndRecoveredOriginal":true,"unknownClaimReplyPreventedSend":true,"restartEnqueuedExtraWorkers":0,"publicEndpointKinds":3,"clientTimeoutMs":100,"perTask":[{"deviceNumber":"59","appSlot":"main","androidUser":0,"searchCalls":1,"saveCalls":1,"sendCalls":1,"claimCalls":1,"remarkVerified":true},{"deviceNumber":"155","appSlot":"clone","androidUser":999,"searchCalls":1,"saveCalls":1,"sendCalls":1,"claimCalls":1,"remarkVerified":true},{"deviceNumber":"59","appSlot":"main","androidUser":0,"searchCalls":1,"saveCalls":1,"sendCalls":0,"claimCalls":1,"remarkVerified":true},{"deviceNumber":"155","appSlot":"main","androidUser":0,"searchCalls":1,"saveCalls":1,"sendCalls":1,"claimCalls":1,"remarkVerified":true}]}
+✔ external client: mapping, ownership, malformed fields and authentication fail before any worker (262.866042ms)
+ℹ WECOM_EXTERNAL_NEGATIVE_EVIDENCE {"parameterOrMappingRejections":5,"invalidTokenRejections":3,"ordinaryUserRejections":3,"crossAdminResultRejections":1,"workersRun":0}
+✔ authenticated JSON: new capability, main/clone, wrong scope and lost ACK retain original identity (307.277209ms)
+✔ authenticated JSON: real write failure rolls back proof and keeps physical duty until same original proof commits (176.923333ms)
+✔ authenticated JSON: restart keeps original duty and rejects old epoch instead of issuing new verification (274.170208ms)
+✔ authenticated JSON: repeated challenge cannot renew expired3s and another phone still dispatches (3295.781167ms)
+✔ authenticated JSON: restart after persisted main/clone send claims cannot authorize or replay either original worker (319.053667ms)
+✔ authenticated JSON startup preserves running/queued causal audit-expired locks while unrelated and legacy records still expire (261.423667ms)
+✔ preview HTTP covers authentication, eight phones, leases, original-id reuse and restart (786.952542ms)
+▶ real Agent runTask -> taskStatus -> compactor -> HTTP persistence -> public result retains WeCom states
+  ✔ native click attempt remains unknown (21.701334ms)
+  ✔ definite prewrite block remains failed/not_attempted (14.132292ms)
+  ✔ unknown remark save remains held without a send claim (14.844041ms)
+  ✔ actual Python identity guard -> child wrapper -> Agent -> HTTP diagnostics (80.764792ms)
+  ✔ actual parent timeout catch stays unknown and exposes its code (15.922875ms)
+✔ real Agent runTask -> taskStatus -> compactor -> HTTP persistence -> public result retains WeCom states (452.447333ms)
+ℹ WECOM_STATUS_TRANSPORT_EVIDENCE {"scenarios":[{"scenario":"native click attempt remains unknown","status":"unknown","code":"invitation_click_issued_delivery_unknown","statusWrites":1},{"scenario":"definite prewrite block remains failed/not_attempted","status":"failed","code":"not_found","statusWrites":1},{"scenario":"unknown remark save remains held without a send claim","status":"unknown","code":"remark_persistence_unconfirmed","statusWrites":1},{"scenario":"actual Python identity guard -> child wrapper -> Agent -> HTTP diagnostics","status":"unknown","code":"adb_identity_unconfirmed","statusWrites":1},{"scenario":"actual parent timeout catch stays unknown and exposes its code","status":"unknown","code":"wecom_preview_worker_timeout_no_replay","statusWrites":1}],"persistedAfterRestart":5,"heldRepostsReuseOriginal":4,"extraWorkers":0,"actualAgentCompactor":true,"actualAgentTimeoutCatch":true,"realPhoneOperations":0,"realInvitations":0,"backend":"isolated JSON"}
+✔ WeCom status whitelist rejects arbitrary delivery claims and does not change unrelated transport (1.089292ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8097.747875

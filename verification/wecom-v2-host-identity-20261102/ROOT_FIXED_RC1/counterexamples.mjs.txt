@@ -1,0 +1,25 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import { createWecomV2HostState, createWecomV2HostPreparer } from "/private/tmp/pc-root-adb-incident-20261102/WECOM_M1_RC1_FIXED_COUNTEREXAMPLES/wecom-cleanup-v2-host.mjs";
+
+function fixture({ wall = "2026-11-02T00:00:00.000Z", slot = "main" } = {}) {
+  const binding = { version: 2, obligationId: "duty", originalTaskId: "task", executionId: "execution", deviceId: "adb:fixture",
+    serial: "fixture", agentId: "agent", appSlot: slot, androidUser: slot === "main" ? 0 : 999,
+    nonce: "binding-nonce", serverEpoch: "server-epoch", agentInstanceId: "agent-instance", handshakeNonce: "spawn-nonce" };
+  const parentHost = { role: "agent", pid: 100, createdAt: wall, creationToken: "0x1.9a00000000000p+30", machineId: "a".repeat(64) };
+  const readerHost = { ...parentHost, role: "reader", pid: 101, creationToken: "0x1.9a00000000001p+30" };
+  const facts = { agentInstanceId: binding.agentInstanceId, parentHost, readerHost, spawnNonce: binding.handshakeNonce, closeEventId: null };
+  const auth = structuredClone(binding);
+  const prepare = createWecomV2HostPreparer({ readAuthenticatedBinding: () => auth, readParentInstanceFacts: () => facts });
+  const first = createWecomV2HostState(binding);
+  const body = { binding: structuredClone(binding), operationId: "host-operation", expectedRevision: 0,
+    parentHost: structuredClone(parentHost), readerHost: structuredClone(readerHost), readyNonce: binding.handshakeNonce };
+  const register = () => prepare(first, "host", body);
+  function closeBody() {
+    return { ...structuredClone(body), operationId: "close-operation", expectedRevision: 1, closeEventId: "native-close-event" };
+  }
+  return { binding, facts, auth, prepare, first, body, register, closeBody };
+}
+
+
+for (const [name, mutate] of [["pid_above_DWORD", f=>{f.facts.readerHost.pid=4294967296;f.body.readerHost.pid=4294967296;}],["nonfinite_birth_token",f=>{f.facts.readerHost.creationToken="0x1.0000000000000p+9999";f.body.readerHost.creationToken=f.facts.readerHost.creationToken;}],["inconsistent_same_host_birth",f=>{f.facts.readerHost.createdAt="2000-01-01T00:00:00.000Z";f.body.readerHost.createdAt=f.facts.readerHost.createdAt;}]]) {const f=fixture();mutate(f);try{const r=f.register(); console.log(JSON.stringify({name,accepted:true,fence:r.nextState.fence,durable:r.replyCandidate.durable}));}catch(e){console.log(JSON.stringify({name,accepted:false,code:e.message}));}}

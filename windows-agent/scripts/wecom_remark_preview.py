@@ -1,4 +1,4 @@
-"""WeCom customer preview with default remarks. Never sends an invitation.
+"""WeCom customer preview with optional remarks. Never sends an invitation.
 
 Use run_customer_preview(PocoRemarkDriver(existing_poco, foreground, real_lease),
                         {"phoneNumber": authorized_phone}).
@@ -10,12 +10,39 @@ import wecom_invite_preview as w
 
 DEFAULT_REMARK = "测试客户"
 DEFAULT_DESCRIPTION = "接口联调测试"
+# ECMAScript trim whitespace, so API and Python canonicalize identically.
+INPUT_WHITESPACE = "\u0009\u000b\u000c\u0020\u00a0\ufeff\u000a\u000d\u2028\u2029\u1680\u202f\u205f\u3000" + "".join(chr(n) for n in range(0x2000, 0x200b))
+
+def validate_remark_input(request):
+    def normalize(key, fallback, limit):
+        value = request.get(key, fallback)
+        if not isinstance(value, str): raise w.StopPreview("invalid_wecom_" + key)
+        if key == "description": value = value.replace("\r\n", "\n").replace("\r", "\n")
+        value = value.strip(INPUT_WHITESPACE)
+        if len(value) > limit or any((ord(c) < 32 and not (key == "description" and c == "\n")) or 0x7f <= ord(c) <= 0x9f or 0xd800 <= ord(c) <= 0xdfff for c in value):
+            raise w.StopPreview("invalid_wecom_" + key)
+        return value or fallback
+    return (normalize("remarkName", DEFAULT_REMARK, 20), normalize("description", DEFAULT_DESCRIPTION, 120))
 NAME_ID = "com.tencent.wework:id/d0y"
 DESCRIPTION_ID = "com.tencent.wework:id/czj"
 BACK_ID = "com.tencent.wework:id/ns5"
+# Five-editor layouts observed on 67, 157 (5.0.12), and 59 (5.0.9).
+# Never combine IDs from different observed layouts.
+REMARK_LAYOUTS = ((NAME_ID, DESCRIPTION_ID, BACK_ID),
+                  ("com.tencent.wework:id/d67", "com.tencent.wework:id/d4r", "com.tencent.wework:id/o62"),
+                  ("com.tencent.wework:id/d0r", "com.tencent.wework:id/czc", "com.tencent.wework:id/nr7"),
+                  ("com.tencent.wework:id/d0s", "com.tencent.wework:id/czd", "com.tencent.wework:id/nr_"),
+                  ("com.tencent.wework:id/cqe", "com.tencent.wework:id/cp0", "com.tencent.wework:id/n24"),
+                  ("com.tencent.wework:id/cu1", "com.tencent.wework:id/csm", "com.tencent.wework:id/nc9"))
 REMARK_ACTIONS = ("open_remark", "fill_remark", "fill_description", "save_remark", "close_remark")
 EMPTY_VALUES = {NAME_ID: ("", "备注名"), DESCRIPTION_ID: ("", "添加更多备注信息")}
 DEFAULTS = {NAME_ID: DEFAULT_REMARK, DESCRIPTION_ID: DEFAULT_DESCRIPTION}
+for _name, _description, _back in REMARK_LAYOUTS[1:]:
+    EMPTY_VALUES[_name] = ("", "备注名")
+    EMPTY_VALUES[_description] = ("", "添加更多备注信息")
+    DEFAULTS[_name], DEFAULTS[_description] = DEFAULT_REMARK, DEFAULT_DESCRIPTION
+# Observed empty-field hint on WeCom 5.0.13, within its complete known layout.
+EMPTY_VALUES['com.tencent.wework:id/d67'] += ('添加备注',)
 
 
 def editors(screen):
@@ -26,18 +53,35 @@ def values(screen):
     return tuple((n.name, n.text, n.desc, n.enabled) for n in editors(screen))
 
 
-def remark_page(screen):
+def remark_layout(screen):
     if not all(screen.has(v) for v in ("设置备注和描述", "备注名", "企业", "电话", "描述", "保存")):
-        return False
+        return None
     nodes = editors(screen)
-    return (len(nodes) == 5 and all(n.enabled for n in nodes)
-            and all(sum(n.name == key for n in nodes) == 1 for key in DEFAULTS))
+    if len(nodes) != 5 or not all(n.enabled for n in nodes):
+        return None
+    layouts = [layout for layout in REMARK_LAYOUTS
+               if all(sum(n.name == key for n in nodes) == 1 for key in layout[:2])
+               and not any(n.name in DEFAULTS and n.name not in layout[:2] for n in nodes)]
+    return layouts[0] if len(layouts) == 1 else None
+
+
+def remark_page(screen):
+    return remark_layout(screen) is not None
+
+
+def remark_phone_matches(screen, phone):
+    # Only the independently observed telephone editors inside the complete
+    # known five-editor remark page count; a matching remark NAME is not proof.
+    return remark_page(screen) and sum(n.name == 'android.widget.EditText' and n.text == phone
+                                      for n in editors(screen)) == 1
 
 
 @dataclass(frozen=True)
 class RemarkContext:
     expected: tuple
     value: str = ""
+    requested: tuple = (DEFAULT_REMARK, DEFAULT_DESCRIPTION)
+    replace_name: bool = False
 
 
 def resolve_remark(action, screen, phone, context=None):
@@ -48,22 +92,26 @@ def resolve_remark(action, screen, phone, context=None):
         if screen.has("设置备注和描述"):
             return w.unique(screen.matching(lambda n: n.labeled("设置备注和描述")))
         return w.unique(screen.matching(lambda n: n.kind == "android.widget.TextView"
-                        and n.name == w.OBSERVED_PROFILE_DESCRIPTION and n.text == "描述"))
+                        and n.name in w.OBSERVED_PROFILE_DESCRIPTIONS and n.text == "描述"))
     if action not in REMARK_ACTIONS or not remark_page(screen) or context is None:
         raise w.StopPreview("remark_action_not_allowed")
     if values(screen) != context.expected:
         raise w.StopPreview("remark_fields_changed")
     if action in ("fill_remark", "fill_description"):
-        key = NAME_ID if action == "fill_remark" else DESCRIPTION_ID
+        key = remark_layout(screen)[0 if action == "fill_remark" else 1]
         node = w.unique(screen.matching(lambda n: n.kind == "android.widget.EditText" and n.name == key))
-        if node.text.strip() not in EMPTY_VALUES[key] or context.value != DEFAULTS[key]:
+        if not isinstance(context.requested, tuple) or len(context.requested) != 2:
+            raise w.StopPreview("invalid_remark_context")
+        requested = validate_remark_input(dict(zip(("remarkName", "description"), context.requested)))
+        desired = requested[0 if action == "fill_remark" else 1]
+        if (node.text.strip() not in EMPTY_VALUES[key] and not (action == "fill_remark" and context.replace_name is True)) or context.value != desired:
             raise w.StopPreview("remark_overwrite_forbidden")
         return node
     if action == "save_remark":
         return w.unique(screen.matching(lambda n: n.labeled("保存")))
     if action == "close_remark":
         return w.unique(screen.matching(lambda n: n.kind == "android.widget.TextView"
-                                       and n.name == BACK_ID and not n.text and not n.desc))
+                                       and n.name == remark_layout(screen)[2] and not n.text and not n.desc))
     raise w.StopPreview("remark_action_not_allowed")
 
 
@@ -98,8 +146,12 @@ class PocoRemarkDriver(w.PocoPreviewDriver):
 
 
 class _RemarkingDriver:
-    def __init__(self, driver, sleep):
+    def __init__(self, driver, sleep, requested, replace_name=False, require_remark_phone=False):
         self.driver, self.sleep = driver, sleep
+        self.requested = requested
+        self.replace_name = replace_name
+        self.require_remark_phone = require_remark_phone
+        self.remark_phone_set = False
         self.saved = False
         self.save_status = "not_attempted"
         self.prepared = False
@@ -108,16 +160,39 @@ class _RemarkingDriver:
     def snapshot(self):
         return self.driver.snapshot()
 
+    def guard_input_observation(self):
+        guard=getattr(self.driver,'guard_input_observation',None)
+        if guard is not None:guard()
+
+    def observe_input_change(self,before,after):
+        observe=getattr(self.driver,'observe_input_change',None)
+        if observe is not None:observe(before,after)
+
+    def observe_action_change(self,action,before,after):
+        observe=getattr(self.driver,'observe_action_change',None)
+        if observe is not None:observe(action,before,after)
+
     def read_until(self, predicate, check_budget):
-        for _ in range(30):
+        reads = 0
+        stable = None
+        while reads < 30:
             check_budget()
             screen = self.driver.snapshot()
             check_budget()
             w.guard(screen)
+            if w.is_observed_progress(screen):
+                stable = None
+                self.sleep(.25)
+                continue
+            reads += 1
             if screen.has(w.SEND):
                 raise w.StopPreview("unexpected_send_page")
             if predicate(screen):
-                return screen
+                if stable == screen:
+                    return screen
+                stable = screen
+            else:
+                stable = None
             self.sleep(.25)
         raise w.StopPreview("remark_observation_budget_exhausted")
 
@@ -132,7 +207,7 @@ class _RemarkingDriver:
 
     def profile(self, phone, check_budget):
         def matches(screen):
-            if screen.has("个人信息"):
+            if screen.has("个人信息") or screen.has("客户详情"):
                 if not w.profile_matches(screen, phone):
                     raise w.StopPreview("profile_phone_mismatch")
                 if screen.has("发消息"):
@@ -142,18 +217,23 @@ class _RemarkingDriver:
         return self.read_until(matches, check_budget)
 
     def prepare(self, screen, phone, check_budget):
+        if self.prepared: raise w.StopPreview("remark_prepare_repeated")
         self.perform("open_remark", screen, phone, check_budget)
         screen = self.read_until(remark_page, check_budget)
+        if self.require_remark_phone and not remark_phone_matches(screen, phone):
+            raise w.StopPreview('remark_phone_not_verified')
         expected = values(screen)
         changed = False
-        for key, action in ((NAME_ID, "fill_remark"), (DESCRIPTION_ID, "fill_description")):
+        name_id, description_id, _ = remark_layout(screen)
+        desired = {name_id: self.requested[0], description_id: self.requested[1]}
+        for key, action in ((name_id, "fill_remark"), (description_id, "fill_description")):
             node = w.unique([n for n in editors(screen) if n.name == key])
-            if node.text.strip() not in EMPTY_VALUES[key]:
+            if node.text == desired[key] or (node.text.strip() not in EMPTY_VALUES[key] and not (key == name_id and self.replace_name)):
                 continue  # Preserve an existing name/description, even on rerun.
             before = expected
-            after = tuple((name, DEFAULTS[key] if name == key else text, desc, enabled)
+            after = tuple((name, desired[key] if name == key else text, desc, enabled)
                           for name, text, desc, enabled in before)
-            self.perform(action, screen, phone, check_budget, RemarkContext(before, DEFAULTS[key]))
+            self.perform(action, screen, phone, check_budget, RemarkContext(before, desired[key], self.requested, self.replace_name))
             def readback(current):
                 if not remark_page(current):
                     return False
@@ -166,7 +246,7 @@ class _RemarkingDriver:
             screen = self.read_until(readback, check_budget)
             expected = after
             changed = True
-        context = RemarkContext(expected)
+        context = RemarkContext(expected, requested=self.requested)
         if changed:
             self.perform("save_remark", screen, phone, check_budget, context)
             screen = self.profile(phone, check_budget)
@@ -175,10 +255,20 @@ class _RemarkingDriver:
             screen = self.read_until(remark_page, check_budget)
             if values(screen) != expected:
                 raise w.StopPreview("remark_persistence_unconfirmed")
+            second = self.driver.snapshot(); w.guard(second)
+            if not remark_page(second) or values(second) != expected:
+                raise w.StopPreview("remark_persistence_unstable")
+            screen = second
             self.saved = True
             self.save_status = "confirmed"
         else:
             self.save_status = "not_needed"
+        if self.require_remark_phone:
+            second = self.driver.snapshot(); w.guard(second); check_budget()
+            if values(second) != expected or not remark_phone_matches(second, phone):
+                raise w.StopPreview('remark_phone_not_verified')
+            self.remark_phone_set = True
+            screen = second
         self.perform("close_remark", screen, phone, check_budget, context)
         screen = self.profile(phone, check_budget)
         self.prepared = True
@@ -191,17 +281,23 @@ class _RemarkingDriver:
 
 
 def run_customer_preview(driver, request, timeout=120, max_reads=90,
-                         cancelled=lambda: False, clock=time.monotonic, sleep=time.sleep):
-    """Default remark/description for empty fields, then stop before invitation.
+                         cancelled=lambda: False, clock=time.monotonic, sleep=time.sleep, replace_name=False, require_remark_phone=False):
+    """Requested or default remark/description for empty fields, then stop before invitation.
 
     Original nonempty fields and every other editor are preserved. Save is
     attempted at most once; uncertain writes stop without replay. The entire
     traversal shares the original deadline/cancellation and real lease gates.
     """
-    wrapper = _RemarkingDriver(driver, sleep)
-    result = w.run_preview(wrapper, request, timeout=timeout, max_reads=max_reads,
+    if not isinstance(request, dict) or set(request) - {"phoneNumber", "mode", "remarkName", "description"}:
+        raise w.StopPreview("invalid_request")
+    requested = validate_remark_input(request)
+    if type(require_remark_phone) is not bool:raise w.StopPreview('invalid_wecom_remark_phone_requirement')
+    wrapper = _RemarkingDriver(driver, sleep, requested, replace_name=replace_name, require_remark_phone=require_remark_phone)
+    core_request = {k: v for k, v in request.items() if k not in ("remarkName", "description")}
+    result = w.run_preview(wrapper, core_request, timeout=timeout, max_reads=max_reads,
                            cancelled=cancelled, clock=clock, sleep=sleep)
     result.update(workflowVersion="wecom-customer-preview-v2", remarkSaved=wrapper.saved,
                   remarkSaveStatus=wrapper.save_status, remarkPrepared=wrapper.prepared,
                   remarkEvents=wrapper.events)
+    if require_remark_phone:result['remarkPhoneSet'] = wrapper.remark_phone_set
     return result

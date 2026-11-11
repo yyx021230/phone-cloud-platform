@@ -1,0 +1,10 @@
+{
+  "result": "reproduced_code_behavior",
+  "scenario": "SEARCH then transient null then exact HOME",
+  "observed": "returns null before observing HOME",
+  "focusSamples": 2,
+  "mockBackCommands": 1,
+  "realDeviceCommands": 0,
+  "historical130181Cause": "not_proven",
+  "sourceSha256": "0647b0531937007590e58028edad45ce845678867881fd3b33476346541723d2"
+}

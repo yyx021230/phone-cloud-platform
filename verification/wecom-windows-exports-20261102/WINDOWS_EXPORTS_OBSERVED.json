@@ -1,0 +1,61 @@
+{
+  "scope": "readonly-kernel32-export-inspection",
+  "module": "kernel32.dll",
+  "searchPolicy": "System32Only",
+  "pid": 36000,
+  "pythonVersion": {
+    "major": 3,
+    "minor": 9,
+    "micro": 13,
+    "releaselevel": "final",
+    "serial": 0
+  },
+  "pointerBits": 64,
+  "sampleFunctionsCalled": 0,
+  "authoritySupported": false,
+  "nativeExecutionPermitted": false,
+  "physicalCleanupVerified": false,
+  "status": "exports_observed_not_authority",
+  "exports": [
+    {
+      "name": "GetTickCount64",
+      "present": true,
+      "errorType": "none"
+    },
+    {
+      "name": "QueryUnbiasedInterruptTimePrecise",
+      "present": false,
+      "errorType": "AttributeError"
+    },
+    {
+      "name": "GetSystemTimePreciseAsFileTime",
+      "present": true,
+      "errorType": "none"
+    },
+    {
+      "name": "QueryPerformanceCounter",
+      "present": true,
+      "errorType": "none"
+    },
+    {
+      "name": "QueryPerformanceFrequency",
+      "present": true,
+      "errorType": "none"
+    },
+    {
+      "name": "GetCurrentProcess",
+      "present": true,
+      "errorType": "none"
+    },
+    {
+      "name": "GetProcessTimes",
+      "present": true,
+      "errorType": "none"
+    },
+    {
+      "name": "GetSystemTimeAdjustment",
+      "present": true,
+      "errorType": "none"
+    }
+  ]
+}

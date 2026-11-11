@@ -1,0 +1,12 @@
+{
+  "windows-agent/scripts/alipay_name_lookup.py": "4d74085cac6c74227b83cb2fe377f3467e3ced2cc0b2e3f084f48b6827b96895",
+  "windows-agent/scripts/automation_runners_test.py": "621b1c041e37acb6a1499e46e23794584da47d8da9ec2ecb3630d25160df2730",
+  "windows-agent/scripts/test_lookup_account_cooldown.py": "25a1aed3eaeece25c0c79752acc3b955955cab201ae6ac6f7b2f6b967300fb02",
+  "windows-agent/scripts/test_lookup_navigation_read_timeout.py": "aa1f85dded548f1497bc196f39f7032ecd84423e0be920436dd4ac0cc3f4eba1",
+  "windows-agent/scripts/test_lookup_page_recovery.py": "03544e63a106c85be37580ef30e33c2e7c0e8d2060da32cc01de42269074ee61",
+  "windows-agent/scripts/test_lookup_prepare_notification_shade.py": "36fcb6806d5141a0704fc477256358067a41b951e7cb88df12e6aef6bfde4263",
+  "windows-agent/scripts/test_lookup_reader_boundary.py": "6dc19a49d218a04746a9efd6e5226abb222da669e96d4329a624ae4e4b023ed6",
+  "windows-agent/src/lookup-page-recovery.mjs": "2e8596fd22de5a22b40aa2ac7de076d0bd172a12942066f78b680b0446881fdf",
+  "windows-agent/src/lookup-page-recovery.test.mjs": "b72125ed5d6e58d8c312d10fdf57183cce637cb45b301f12322c18f97ef624f8",
+  "windows-agent/src/lookup-preinput-reattach.test.mjs": "3b1dd14924b108d93237992a98e31182cfc876d6ac71843dbc4b1ee326174bdc"
+}

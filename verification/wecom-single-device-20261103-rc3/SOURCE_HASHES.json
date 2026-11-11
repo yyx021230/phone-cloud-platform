@@ -1,0 +1,12 @@
+{
+  "scripts/qa/test_wecom_single_candidate.py": "cba4f0bd4483b1771ab44c6bdf16e0a37a6b82b8b9c0f834c0ceb4ab3608d1d4",
+  "scripts/qa/wecom_single_candidate.py": "bf6eba8582f778b712f197b951f1e7465312fc95b9795aebabedcb6bc2b72290",
+  "scripts/qa/wecom_single_capture.py": "fd04ef71c90a9c51b9487f9d6c95a7c38a1e2a26ce38da5481bdb40f0cf55f03",
+  "scripts/qa/wecom_single_reader.mjs": "781b92a9f1800b02752fa9d6a07293cfa54739f812ea5e97fe773a5c5ac53405",
+  "scripts/qa/wecom_single_reader.test.mjs": "6c193a06865c84d9a181d1f72d050978a9973191aa84201ccdbb4a7742c317c4",
+  "scripts/qa/wecom_single_state.py": "cfa198576f43e6f3ef34e5b65d567043afc0137018b20e719a3ecffe2bf72f72",
+  "windows-agent/scripts/test_wecom_qa_socket_peer.py": "022d2e9013d5a96cef837a1e9a5c5d11e59435cb12d2b2e00fcf9231bc0df394",
+  "windows-agent/scripts/wecom_qa_socket_peer.py": "c4720707e32219842be81a29146412223280b4a1542e28c6d4814f7a79bfee0a",
+  "windows-agent/scripts/wecom_standalone_peer_cleanup.py": "7586cf599e7d9d21f05aba9d3d387a2451a004903beaded40953846b66b9f978",
+  "windows-agent/scripts/wecom_standalone_peer_preview.py": "7d1562c70da66bad7afcba5b8cd1ba4669a3b8699d86ee6daeaeaa092ae6f7a5"
+}

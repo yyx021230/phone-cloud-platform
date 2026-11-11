@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: actual PG delivery: delivery-fields
+ok 1 - actual PG delivery: delivery-fields
+  ---
+  duration_ms: 31.244583
+  type: 'test'
+  ...
+# Subtest: actual PG delivery: delivery-stale-proposal
+ok 2 - actual PG delivery: delivery-stale-proposal
+  ---
+  duration_ms: 12.635292
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 122.622083

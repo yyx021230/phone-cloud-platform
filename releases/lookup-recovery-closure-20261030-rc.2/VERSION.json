@@ -1,0 +1,13 @@
+{
+  "candidate": "lookup-recovery-closure-20261030-rc.2",
+  "branch": "codex/lookup-recovery-closure-20261030",
+  "baseCommit": "cfffbdbfe37f1e56008b157b5c7dd7f0e40a65ca",
+  "production": "platform-integration-20261029-deployed.1",
+  "productionSource": "3a266d71ba861f8e81d6ec3a173d7efc12d5b245",
+  "productionImage": "sha256:a4db69c8a61befac7591924e354227146cb97fc6574556da35a2b86b7ddd6b4d",
+  "productionCodeChanged": false,
+  "temporaryWhitelistChangeRestored": true,
+  "published": false,
+  "pushed": false,
+  "fullNativeBusinessRecoveryPassed": false
+}

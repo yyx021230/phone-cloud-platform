@@ -1,0 +1,957 @@
+[
+  {
+    "at": "2026-11-05T02:59:49.753Z",
+    "kind": "ready",
+    "origin": "http://127.0.0.1:50959",
+    "mode": "preview",
+    "localDevices": [
+      "200",
+      "202"
+    ],
+    "sourceHead": "e1a7ade4bb58d62119993f90fce3de49d2f91162",
+    "boundary": "real CPS HTTP + local native adapter, not formal Windows Agent",
+    "adbIdentity": [
+      5057,
+      1793843355.335422,
+      "/opt/homebrew/Caskroom/android-platform-tools/37.0.0/platform-tools/adb"
+    ]
+  },
+  {
+    "at": "2026-11-05T02:59:54.364Z",
+    "kind": "http",
+    "request": {
+      "method": "POST",
+      "url": "http://127.0.0.1:50959/api/v1/lead/devices/query",
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "body": {
+        "online_only": false,
+        "app_id": "cps_local_observe",
+        "timestamp": 1793847594255,
+        "nonce": "be995236e9ff3063670ba57a",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "status": 200,
+      "headers": {
+        "cache-control": "no-store",
+        "connection": "keep-alive",
+        "content-length": "1095",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Thu, 05 Nov 2026 02:59:54 GMT",
+        "keep-alive": "timeout=5"
+      },
+      "body": {
+        "result": {
+          "devices": [
+            {
+              "device_number": "200",
+              "device_name": "200号本地测试手机",
+              "online": true,
+              "adb_online": true,
+              "agent_online": true,
+              "listed": true,
+              "busy": false,
+              "busy_reason": "",
+              "occupancy": null,
+              "accounts": [
+                {
+                  "app_slot": "main",
+                  "binding_verified": true,
+                  "enabled": true,
+                  "wecom_phone": "17508437040",
+                  "available": true,
+                  "unavailable_reason": ""
+                }
+              ],
+              "available": true,
+              "unavailable_reason": "",
+              "last_seen_at": "2026-11-05T02:59:54.360Z",
+              "adb_last_seen_at": "2026-11-05T02:59:54.360Z"
+            },
+            {
+              "device_number": "202",
+              "device_name": "202号本地测试手机",
+              "online": true,
+              "adb_online": true,
+              "agent_online": true,
+              "listed": true,
+              "busy": false,
+              "busy_reason": "",
+              "occupancy": null,
+              "accounts": [
+                {
+                  "app_slot": "main",
+                  "binding_verified": true,
+                  "enabled": true,
+                  "wecom_phone": "13067238489",
+                  "available": true,
+                  "unavailable_reason": ""
+                }
+              ],
+              "available": true,
+              "unavailable_reason": "",
+              "last_seen_at": "2026-11-05T02:59:54.360Z",
+              "adb_last_seen_at": "2026-11-05T02:59:54.360Z"
+            }
+          ],
+          "total": 2,
+          "updated_at": "2026-11-05T02:59:54.360Z",
+          "capacity": {
+            "limit": 2,
+            "active": 0,
+            "remaining": 2
+          }
+        },
+        "timestamp": 1793847594361,
+        "success": true,
+        "code": 200,
+        "message": "查询成功"
+      }
+    }
+  },
+  {
+    "at": "2026-11-05T03:00:08.163Z",
+    "kind": "http",
+    "request": {
+      "method": "POST",
+      "url": "http://127.0.0.1:50959/api/v1/lead/dispatch",
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "body": {
+        "lead_id": 61104202,
+        "phone": "136****6441",
+        "wecom_phone": "13067238489",
+        "wecom_corp_id": "local_test_corp",
+        "wecom_userid": "local_test_member_202",
+        "app_id": "cps_local_observe",
+        "timestamp": 1793847608032,
+        "nonce": "6206a16723b3152644730a1b",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "status": 200,
+      "headers": {
+        "cache-control": "no-store",
+        "connection": "keep-alive",
+        "content-length": "125",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Thu, 05 Nov 2026 03:00:08 GMT",
+        "keep-alive": "timeout=5"
+      },
+      "body": {
+        "result": null,
+        "timestamp": 1793847608162,
+        "success": true,
+        "code": 200,
+        "message": "已接收（本地预览，不发送邀请）"
+      }
+    }
+  },
+  {
+    "at": "2026-11-05T03:00:16.778Z",
+    "kind": "native_start",
+    "deviceNumber": "202",
+    "leadId": "61104202",
+    "jobId": "local_native_202_61104202",
+    "adapter": "Mac local native preview; not Windows Agent"
+  },
+  {
+    "at": "2026-11-05T03:00:16.796Z",
+    "kind": "internal_receipt_not_public_endpoint",
+    "service": {
+      "mode": "preview",
+      "fenced": false,
+      "stages": {
+        "submitted": 1
+      }
+    },
+    "nativeJobs": [
+      {
+        "jobId": "local_native_202_61104202",
+        "deviceNumber": "202",
+        "status": "running"
+      }
+    ],
+    "leads": [
+      {
+        "lead_id": "61104202",
+        "stage": "submitted",
+        "jobId": "local_native_202_61104202"
+      }
+    ],
+    "callbackCount": 0
+  },
+  {
+    "at": "2026-11-05T03:00:22.281Z",
+    "kind": "http",
+    "request": {
+      "method": "POST",
+      "url": "http://127.0.0.1:50959/api/v1/lead/dispatch",
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "body": {
+        "lead_id": 61104202,
+        "phone": "136****6441",
+        "wecom_phone": "13067238489",
+        "wecom_corp_id": "local_test_corp",
+        "wecom_userid": "local_test_member_202",
+        "app_id": "cps_local_observe",
+        "timestamp": 1793847622265,
+        "nonce": "3204dfcfcaef22d20c65bdae",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "status": 200,
+      "headers": {
+        "cache-control": "no-store",
+        "connection": "keep-alive",
+        "content-length": "89",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Thu, 05 Nov 2026 03:00:22 GMT",
+        "keep-alive": "timeout=5"
+      },
+      "body": {
+        "result": null,
+        "timestamp": 1793847622280,
+        "success": true,
+        "code": 200,
+        "message": "已接收"
+      }
+    }
+  },
+  {
+    "at": "2026-11-05T03:00:22.359Z",
+    "kind": "http",
+    "request": {
+      "method": "POST",
+      "url": "http://127.0.0.1:50959/api/v1/lead/devices/query",
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "body": {
+        "online_only": false,
+        "app_id": "cps_local_observe",
+        "timestamp": 1793847622283,
+        "nonce": "a59ac66be458b84a98a5e0c0",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "status": 200,
+      "headers": {
+        "cache-control": "no-store",
+        "connection": "keep-alive",
+        "content-length": "1185",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Thu, 05 Nov 2026 03:00:22 GMT",
+        "keep-alive": "timeout=5"
+      },
+      "body": {
+        "result": {
+          "devices": [
+            {
+              "device_number": "200",
+              "device_name": "200号本地测试手机",
+              "online": true,
+              "adb_online": true,
+              "agent_online": true,
+              "listed": true,
+              "busy": false,
+              "busy_reason": "",
+              "occupancy": null,
+              "accounts": [
+                {
+                  "app_slot": "main",
+                  "binding_verified": true,
+                  "enabled": true,
+                  "wecom_phone": "17508437040",
+                  "available": true,
+                  "unavailable_reason": ""
+                }
+              ],
+              "available": true,
+              "unavailable_reason": "",
+              "last_seen_at": "2026-11-05T03:00:22.358Z",
+              "adb_last_seen_at": "2026-11-05T03:00:22.358Z"
+            },
+            {
+              "device_number": "202",
+              "device_name": "202号本地测试手机",
+              "online": true,
+              "adb_online": true,
+              "agent_online": true,
+              "listed": true,
+              "busy": true,
+              "busy_reason": "local_preview_running",
+              "occupancy": {
+                "type": "automation",
+                "label": "企微本地预览"
+              },
+              "accounts": [
+                {
+                  "app_slot": "main",
+                  "binding_verified": true,
+                  "enabled": true,
+                  "wecom_phone": "13067238489",
+                  "available": false,
+                  "unavailable_reason": "device_busy"
+                }
+              ],
+              "available": false,
+              "unavailable_reason": "device_busy",
+              "last_seen_at": "2026-11-05T03:00:22.358Z",
+              "adb_last_seen_at": "2026-11-05T03:00:22.358Z"
+            }
+          ],
+          "total": 2,
+          "updated_at": "2026-11-05T03:00:22.358Z",
+          "capacity": {
+            "limit": 2,
+            "active": 1,
+            "remaining": 1
+          }
+        },
+        "timestamp": 1793847622359,
+        "success": true,
+        "code": 200,
+        "message": "查询成功"
+      }
+    }
+  },
+  {
+    "at": "2026-11-05T03:00:47.171Z",
+    "kind": "native_result",
+    "deviceNumber": "202",
+    "leadId": "61104202",
+    "jobId": "local_native_202_61104202",
+    "processExitCode": 0,
+    "elapsedMs": 30252,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "not_needed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true,
+      "sendStatus": "not_attempted",
+      "execution": {
+        "cleanupConfirmed": true
+      }
+    },
+    "status": "succeeded"
+  },
+  {
+    "at": "2026-11-05T03:00:47.231Z",
+    "kind": "internal_receipt_not_public_endpoint",
+    "service": {
+      "mode": "preview",
+      "fenced": false,
+      "stages": {
+        "preview_complete": 1
+      }
+    },
+    "nativeJobs": [
+      {
+        "jobId": "local_native_202_61104202",
+        "deviceNumber": "202",
+        "status": "succeeded",
+        "result": {
+          "workflowVersion": "wecom-customer-preview-v2",
+          "status": "ready_before_send",
+          "code": "stopped_before_send",
+          "readyToSend": true,
+          "invitationSent": false,
+          "remarkSaved": false,
+          "stage": "preview",
+          "events": [
+            {
+              "step": "open_menu"
+            },
+            {
+              "step": "open_add"
+            },
+            {
+              "step": "open_search"
+            },
+            {
+              "step": "enter_phone"
+            },
+            {
+              "step": "search"
+            },
+            {
+              "step": "open_preview"
+            }
+          ],
+          "remarkSaveStatus": "not_needed",
+          "remarkPrepared": true,
+          "remarkEvents": [
+            {
+              "step": "open_remark"
+            },
+            {
+              "step": "close_remark"
+            }
+          ],
+          "remarkPhoneSet": true,
+          "sendStatus": "not_attempted",
+          "execution": {
+            "cleanupConfirmed": true
+          }
+        }
+      }
+    ],
+    "leads": [
+      {
+        "lead_id": "61104202",
+        "stage": "preview_complete",
+        "error": "preview_only_not_sent",
+        "jobId": "local_native_202_61104202"
+      }
+    ],
+    "callbackCount": 0
+  },
+  {
+    "at": "2026-11-05T03:00:56.574Z",
+    "kind": "http",
+    "request": {
+      "method": "POST",
+      "url": "http://127.0.0.1:50959/api/v1/lead/dispatch",
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "body": {
+        "lead_id": 61104200,
+        "phone": "136****6441",
+        "wecom_phone": "17508437040",
+        "wecom_corp_id": "local_test_corp",
+        "wecom_userid": "local_test_member_200",
+        "app_id": "cps_local_observe",
+        "timestamp": 1793847656468,
+        "nonce": "d9feee7fc02d484b40f5146a",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "status": 200,
+      "headers": {
+        "cache-control": "no-store",
+        "connection": "keep-alive",
+        "content-length": "125",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Thu, 05 Nov 2026 03:00:56 GMT",
+        "keep-alive": "timeout=5"
+      },
+      "body": {
+        "result": null,
+        "timestamp": 1793847656573,
+        "success": true,
+        "code": 200,
+        "message": "已接收（本地预览，不发送邀请）"
+      }
+    }
+  },
+  {
+    "at": "2026-11-05T03:01:03.717Z",
+    "kind": "native_start",
+    "deviceNumber": "200",
+    "leadId": "61104200",
+    "jobId": "local_native_200_61104200",
+    "adapter": "Mac local native preview; not Windows Agent"
+  },
+  {
+    "at": "2026-11-05T03:01:03.737Z",
+    "kind": "internal_receipt_not_public_endpoint",
+    "service": {
+      "mode": "preview",
+      "fenced": false,
+      "stages": {
+        "preview_complete": 1,
+        "submitted": 1
+      }
+    },
+    "nativeJobs": [
+      {
+        "jobId": "local_native_202_61104202",
+        "deviceNumber": "202",
+        "status": "succeeded",
+        "result": {
+          "workflowVersion": "wecom-customer-preview-v2",
+          "status": "ready_before_send",
+          "code": "stopped_before_send",
+          "readyToSend": true,
+          "invitationSent": false,
+          "remarkSaved": false,
+          "stage": "preview",
+          "events": [
+            {
+              "step": "open_menu"
+            },
+            {
+              "step": "open_add"
+            },
+            {
+              "step": "open_search"
+            },
+            {
+              "step": "enter_phone"
+            },
+            {
+              "step": "search"
+            },
+            {
+              "step": "open_preview"
+            }
+          ],
+          "remarkSaveStatus": "not_needed",
+          "remarkPrepared": true,
+          "remarkEvents": [
+            {
+              "step": "open_remark"
+            },
+            {
+              "step": "close_remark"
+            }
+          ],
+          "remarkPhoneSet": true,
+          "sendStatus": "not_attempted",
+          "execution": {
+            "cleanupConfirmed": true
+          }
+        }
+      },
+      {
+        "jobId": "local_native_200_61104200",
+        "deviceNumber": "200",
+        "status": "running"
+      }
+    ],
+    "leads": [
+      {
+        "lead_id": "61104202",
+        "stage": "preview_complete",
+        "error": "preview_only_not_sent",
+        "jobId": "local_native_202_61104202"
+      },
+      {
+        "lead_id": "61104200",
+        "stage": "submitted",
+        "jobId": "local_native_200_61104200"
+      }
+    ],
+    "callbackCount": 0
+  },
+  {
+    "at": "2026-11-05T03:01:31.528Z",
+    "kind": "internal_receipt_not_public_endpoint",
+    "service": {
+      "mode": "preview",
+      "fenced": false,
+      "stages": {
+        "preview_complete": 1,
+        "submitted": 1
+      }
+    },
+    "nativeJobs": [
+      {
+        "jobId": "local_native_202_61104202",
+        "deviceNumber": "202",
+        "status": "succeeded",
+        "result": {
+          "workflowVersion": "wecom-customer-preview-v2",
+          "status": "ready_before_send",
+          "code": "stopped_before_send",
+          "readyToSend": true,
+          "invitationSent": false,
+          "remarkSaved": false,
+          "stage": "preview",
+          "events": [
+            {
+              "step": "open_menu"
+            },
+            {
+              "step": "open_add"
+            },
+            {
+              "step": "open_search"
+            },
+            {
+              "step": "enter_phone"
+            },
+            {
+              "step": "search"
+            },
+            {
+              "step": "open_preview"
+            }
+          ],
+          "remarkSaveStatus": "not_needed",
+          "remarkPrepared": true,
+          "remarkEvents": [
+            {
+              "step": "open_remark"
+            },
+            {
+              "step": "close_remark"
+            }
+          ],
+          "remarkPhoneSet": true,
+          "sendStatus": "not_attempted",
+          "execution": {
+            "cleanupConfirmed": true
+          }
+        }
+      },
+      {
+        "jobId": "local_native_200_61104200",
+        "deviceNumber": "200",
+        "status": "running"
+      }
+    ],
+    "leads": [
+      {
+        "lead_id": "61104202",
+        "stage": "preview_complete",
+        "error": "preview_only_not_sent",
+        "jobId": "local_native_202_61104202"
+      },
+      {
+        "lead_id": "61104200",
+        "stage": "submitted",
+        "jobId": "local_native_200_61104200"
+      }
+    ],
+    "callbackCount": 0
+  },
+  {
+    "at": "2026-11-05T03:01:55.447Z",
+    "kind": "native_result",
+    "deviceNumber": "200",
+    "leadId": "61104200",
+    "jobId": "local_native_200_61104200",
+    "processExitCode": 0,
+    "elapsedMs": 51598,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "not_needed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true,
+      "sendStatus": "not_attempted",
+      "execution": {
+        "cleanupConfirmed": true
+      }
+    },
+    "status": "succeeded"
+  },
+  {
+    "at": "2026-11-05T03:02:17.890Z",
+    "kind": "internal_receipt_not_public_endpoint",
+    "service": {
+      "mode": "preview",
+      "fenced": false,
+      "stages": {
+        "preview_complete": 2
+      }
+    },
+    "nativeJobs": [
+      {
+        "jobId": "local_native_202_61104202",
+        "deviceNumber": "202",
+        "status": "succeeded",
+        "result": {
+          "workflowVersion": "wecom-customer-preview-v2",
+          "status": "ready_before_send",
+          "code": "stopped_before_send",
+          "readyToSend": true,
+          "invitationSent": false,
+          "remarkSaved": false,
+          "stage": "preview",
+          "events": [
+            {
+              "step": "open_menu"
+            },
+            {
+              "step": "open_add"
+            },
+            {
+              "step": "open_search"
+            },
+            {
+              "step": "enter_phone"
+            },
+            {
+              "step": "search"
+            },
+            {
+              "step": "open_preview"
+            }
+          ],
+          "remarkSaveStatus": "not_needed",
+          "remarkPrepared": true,
+          "remarkEvents": [
+            {
+              "step": "open_remark"
+            },
+            {
+              "step": "close_remark"
+            }
+          ],
+          "remarkPhoneSet": true,
+          "sendStatus": "not_attempted",
+          "execution": {
+            "cleanupConfirmed": true
+          }
+        }
+      },
+      {
+        "jobId": "local_native_200_61104200",
+        "deviceNumber": "200",
+        "status": "succeeded",
+        "result": {
+          "workflowVersion": "wecom-customer-preview-v2",
+          "status": "ready_before_send",
+          "code": "stopped_before_send",
+          "readyToSend": true,
+          "invitationSent": false,
+          "remarkSaved": false,
+          "stage": "preview",
+          "events": [
+            {
+              "step": "open_menu"
+            },
+            {
+              "step": "open_add"
+            },
+            {
+              "step": "open_search"
+            },
+            {
+              "step": "enter_phone"
+            },
+            {
+              "step": "search"
+            },
+            {
+              "step": "open_preview"
+            }
+          ],
+          "remarkSaveStatus": "not_needed",
+          "remarkPrepared": true,
+          "remarkEvents": [
+            {
+              "step": "open_remark"
+            },
+            {
+              "step": "close_remark"
+            }
+          ],
+          "remarkPhoneSet": true,
+          "sendStatus": "not_attempted",
+          "execution": {
+            "cleanupConfirmed": true
+          }
+        }
+      }
+    ],
+    "leads": [
+      {
+        "lead_id": "61104202",
+        "stage": "preview_complete",
+        "error": "preview_only_not_sent",
+        "jobId": "local_native_202_61104202"
+      },
+      {
+        "lead_id": "61104200",
+        "stage": "preview_complete",
+        "error": "preview_only_not_sent",
+        "jobId": "local_native_200_61104200"
+      }
+    ],
+    "callbackCount": 0
+  },
+  {
+    "at": "2026-11-05T03:02:27.004Z",
+    "kind": "http",
+    "request": {
+      "method": "POST",
+      "url": "http://127.0.0.1:50959/api/v1/lead/devices/query",
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "body": {
+        "online_only": false,
+        "app_id": "cps_local_observe",
+        "timestamp": 1793847746871,
+        "nonce": "53da204a0725ad0c6d99148c",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "status": 200,
+      "headers": {
+        "cache-control": "no-store",
+        "connection": "keep-alive",
+        "content-length": "1095",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Thu, 05 Nov 2026 03:02:27 GMT",
+        "keep-alive": "timeout=5"
+      },
+      "body": {
+        "result": {
+          "devices": [
+            {
+              "device_number": "200",
+              "device_name": "200号本地测试手机",
+              "online": true,
+              "adb_online": true,
+              "agent_online": true,
+              "listed": true,
+              "busy": false,
+              "busy_reason": "",
+              "occupancy": null,
+              "accounts": [
+                {
+                  "app_slot": "main",
+                  "binding_verified": true,
+                  "enabled": true,
+                  "wecom_phone": "17508437040",
+                  "available": true,
+                  "unavailable_reason": ""
+                }
+              ],
+              "available": true,
+              "unavailable_reason": "",
+              "last_seen_at": "2026-11-05T03:02:27.003Z",
+              "adb_last_seen_at": "2026-11-05T03:02:27.003Z"
+            },
+            {
+              "device_number": "202",
+              "device_name": "202号本地测试手机",
+              "online": true,
+              "adb_online": true,
+              "agent_online": true,
+              "listed": true,
+              "busy": false,
+              "busy_reason": "",
+              "occupancy": null,
+              "accounts": [
+                {
+                  "app_slot": "main",
+                  "binding_verified": true,
+                  "enabled": true,
+                  "wecom_phone": "13067238489",
+                  "available": true,
+                  "unavailable_reason": ""
+                }
+              ],
+              "available": true,
+              "unavailable_reason": "",
+              "last_seen_at": "2026-11-05T03:02:27.003Z",
+              "adb_last_seen_at": "2026-11-05T03:02:27.003Z"
+            }
+          ],
+          "total": 2,
+          "updated_at": "2026-11-05T03:02:27.003Z",
+          "capacity": {
+            "limit": 2,
+            "active": 0,
+            "remaining": 2
+          }
+        },
+        "timestamp": 1793847747003,
+        "success": true,
+        "code": 200,
+        "message": "查询成功"
+      }
+    }
+  },
+  {
+    "at": "2026-11-05T03:02:27.062Z",
+    "kind": "closed",
+    "finalProbe": {
+      "identity": [
+        5057,
+        1793843355.335422,
+        "/opt/homebrew/Caskroom/android-platform-tools/37.0.0/platform-tools/adb"
+      ],
+      "states": {
+        "200": "device",
+        "202": "device"
+      }
+    },
+    "callbackCount": 0
+  }
+]

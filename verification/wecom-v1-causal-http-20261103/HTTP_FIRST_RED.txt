@@ -1,0 +1,112 @@
+✖ external client: discover -> four-field submit -> actual synthetic remark/send -> result; dual slots, timeout and restart never replay (10033.5315ms)
+✖ external client: mapping, ownership, malformed fields and authentication fail before any worker (10009.364ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'pg' imported from /Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-physical-cleanup.http.test.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:764:81)
+    at moduleResolve (node:internal/modules/esm/resolve:855:18)
+    at defaultResolve (node:internal/modules/esm/resolve:988:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:697:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:714:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:746:52)
+    at #resolve (node:internal/modules/esm/loader:679:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:599:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:162:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v25.9.0
+✖ server/wecom-physical-cleanup.http.test.mjs (66.358583ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'pg' imported from /Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-preview.http.test.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:764:81)
+    at moduleResolve (node:internal/modules/esm/resolve:855:18)
+    at defaultResolve (node:internal/modules/esm/resolve:988:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:697:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:714:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:746:52)
+    at #resolve (node:internal/modules/esm/loader:679:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:599:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:162:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v25.9.0
+✖ server/wecom-preview.http.test.mjs (47.431ms)
+✖ real Agent runTask -> taskStatus -> compactor -> HTTP persistence -> public result retains WeCom states (8033.820833ms)
+✔ WeCom status whitelist rejects arbitrary delivery claims and does not change unrelated transport (4.915917ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 1
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 28373.481542
+
+✖ failing tests:
+
+test at server/wecom-integration.e2e.test.mjs:119:1
+✖ external client: discover -> four-field submit -> actual synthetic remark/send -> result; dual slots, timeout and restart never replay (10033.5315ms)
+  AssertionError [ERR_ASSERTION]: timed out: local fixture readiness
+      at until (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-integration.e2e.test.mjs:20:10)
+      at async start (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-integration.e2e.test.mjs:35:5)
+      at async fixture (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-integration.e2e.test.mjs:67:3)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-integration.e2e.test.mjs:120:13)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'fail',
+    diff: 'simple'
+  }
+
+test at server/wecom-integration.e2e.test.mjs:181:1
+✖ external client: mapping, ownership, malformed fields and authentication fail before any worker (10009.364ms)
+  AssertionError [ERR_ASSERTION]: timed out: local fixture readiness
+      at until (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-integration.e2e.test.mjs:20:10)
+      at async start (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-integration.e2e.test.mjs:35:5)
+      at async fixture (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-integration.e2e.test.mjs:67:3)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-integration.e2e.test.mjs:182:13)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'fail',
+    diff: 'simple'
+  }
+
+test at server/wecom-physical-cleanup.http.test.mjs:1:1
+✖ server/wecom-physical-cleanup.http.test.mjs (66.358583ms)
+  'test failed'
+
+test at server/wecom-preview.http.test.mjs:1:1
+✖ server/wecom-preview.http.test.mjs (47.431ms)
+  'test failed'
+
+test at server/wecom-status-transport.http.test.mjs:83:1
+✖ real Agent runTask -> taskStatus -> compactor -> HTTP persistence -> public result retains WeCom states (8033.820833ms)
+  AssertionError [ERR_ASSERTION]: isolated JSON service not ready
+      at start (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-status-transport.http.test.mjs:61:12)
+      at async fixture (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-status-transport.http.test.mjs:70:3)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-status-transport.http.test.mjs:85:15)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'fail',
+    diff: 'simple'
+  }

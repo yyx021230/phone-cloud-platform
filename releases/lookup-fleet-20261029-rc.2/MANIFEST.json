@@ -1,0 +1,76 @@
+{
+  "candidateTag": "lookup-fleet-20261029-rc.2",
+  "branch": "codex/lookup-fleet-audit-20261029",
+  "state": "local_candidate_real_acceptance_incomplete",
+  "parents": {
+    "auditAndRc10": "b158b8c64fc62e3e0a6957c74e057352016f31c3",
+    "businessRc12": "f26cb5175f8426dabd74b36be277e6a8834ebfb1"
+  },
+  "commonBase": "179b124ad990c158f02010dbaa42acb20964abe1",
+  "files": {
+    "windows-agent/scripts/alipay_name_lookup.py": "8c60bb140a4e2bcf07ee29ccd85591b210f20365dc6638cd3f62451444fd4a63",
+    "windows-agent/scripts/test_lookup_navigation_focus_transition.py": "1cf3eb2ed196438490949608ced9dd8ad652e8887a6abc58420535a25c079000",
+    "releases/lookup-throughput-20261028-rc.11/README.md": "276fc06ef5e9508964e6ce77259077675e86f827d67097a2a685cbeb12afeced",
+    "server/lookup-failure-domain.mjs": "d256d831f639c19e7c111fc6541f0c215370d9b20fb3f47dc53bd005bea5a29a",
+    "server/lookup-technical-domain.test.mjs": "5f0092933b5e3b76584c07c605bb2f357c4336e9335eed6044024d3dbda7e7fb",
+    "server/lookup-ai-adapter.test.mjs": "16c63625502a8ca115aa6c78318d131a77aeddfa98c715e1d53ed0aca6bef4eb",
+    "releases/lookup-throughput-20261028-rc.12/README.md": "678477a6b856ccb96625ccb56c8cb00b24ec6614f9f9596bca3d2f6cdfb76c76",
+    "docs/PROJECT_DEVELOPMENT.md": "910d99349b465683cb4f3e0282ce367f4b353035d6e9f6d74fa68b00ef58a3a1"
+  },
+  "artifacts": {
+    "README.md": "b59dc168c8415f349cad536d27ee3fc87eecba45830cde458c81cbe31bf8b1f5",
+    "MATRIX.json": "ba4ff96c314c6fb042be4f60c4b2b51ccfee1bbc82f1983504fd92c6be327601",
+    "FOCUS_INDEPENDENT_REVIEW.json": "20a1396eeb4ffae06f573dc59ff066b97b8d6c51c105a407aebd682c2e0e7167",
+    "WMS_INDEPENDENT_REVIEW.json": "d03b9e49190be5af7a8bab0e0b436f6a5422335611144bcd1e70cdbfa5606bfd"
+  },
+  "validation": {
+    "pythonRc11ByCollaboratingChat": {
+      "testStar": 1013,
+      "starTest": 166
+    },
+    "nodeRc12FirstDefault": {
+      "pass": 1645,
+      "fail": 1,
+      "tests": 1646
+    },
+    "nodeRc12ScanIsolated": {
+      "pass": 1
+    },
+    "nodeRc12Concurrency4": {
+      "pass": 1646,
+      "fail": 0,
+      "tests": 1646
+    },
+    "defaultFailureCause": "unproven; Agent and threshold untouched",
+    "rootCheck": "passed; log SHA256 verified",
+    "independentAfterMerge": {
+      "python": 31,
+      "node": 137
+    },
+    "sameRuntimeSourceAsTestedIncoming": true,
+    "matrixRows": 48,
+    "failedJobs": 2708,
+    "refinedObservationGroups": 34,
+    "realBusinessAcceptance": "not_completed",
+    "newRealPhoneActions": 0,
+    "newInferenceCalls": 0,
+    "productionChanged": false
+  },
+  "evidence": {
+    "combined2-node-tests.txt": "94f9de4c23203d0ec672afa12405586ade2abfd7bf472db8668b01eb795e4202",
+    "combined2-python-tests.txt": "7d91684f456f1b84a8e6eee37239444f172ca824149a99ca26da01d707deb870",
+    "rc11OriginalManifestSha256": "d42b67ac0cd026e046e9b51e3d7f4941c0965b68ff0320e44015dfd0f0d9401b",
+    "pc-focus-transition-rc11.log": "209637c5270ea62667d3505f25f6e8e713fd220b3020983b799e40ff6ae4138a",
+    "pc-focus-python-discover-rc11.log": "7a386769a7f86d192915d0eddebe87276000c576278eaec546525a5ce353f7f2",
+    "pc-focus-python-legacy-rc11.log": "c0cae711fe8abad1f3706ac5391f6ff1ca1558426c7f198ba13ee098ff6da5d7",
+    "pc-focus-node-full-rc11.log": "4285ef3c614e59a3c9daced775bc35904fc6997939ecd827af854923f492c8ed",
+    "pc-focus-check-rc11.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "rc12OriginalManifestSha256": "9fb0d64032e50f74dad0752db8d7cd4f5be43fea43a07ca30ee0ae46310c4abf",
+    "pc-wms-targeted-rc12.log": "dcad3ffe852175f3c3f93db46aa05febb5a090546fe62a6659db4ec23125d393",
+    "pc-wms-full-rc12.log": "10309ce1f487b76a5b3b36cc1ea309aa1dfe6e4d8fe452da6a4f6b1cc1d62696",
+    "pc-wms-scan-isolated-rc12.log": "5cee5c7baf72b7a6fea99ba284eb6ec92b4581b32d1794a1d88f85b2a35d7bfb",
+    "pc-wms-full-bounded-rc12.log": "6d792796e55fe65c582f6c61662205d248c1d1e66108b41da30f2ebc9f84abb1",
+    "pc-wms-check-rc12.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+  },
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+}

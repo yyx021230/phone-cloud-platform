@@ -1,0 +1,290 @@
+{
+  "status": "limited isolated real-device API recovery chain passed; not deployed",
+  "productionCodeChanged": false,
+  "setting152": {
+    "authorizedOnlySwitch": "允许完全后台行为",
+    "before": false,
+    "after": true,
+    "otherSwitchesUnchanged": true,
+    "at": "2026-11-02T02:46:50.612954Z"
+  },
+  "control": {
+    "source": "047ac52",
+    "businessCount": 0,
+    "stopped": true,
+    "actualCleanupAll": true,
+    "frames": [
+      {
+        "file": "native-28232-private.jsonl",
+        "count": 10,
+        "failed": 0
+      },
+      {
+        "file": "native-35888-private.jsonl",
+        "count": 0,
+        "failed": 0
+      },
+      {
+        "file": "native-11468-private.jsonl",
+        "count": 1,
+        "failed": 0
+      }
+    ]
+  },
+  "candidate": {
+    "source": "dfa4102",
+    "attempt": 8,
+    "pending": false,
+    "ready": true,
+    "results": [
+      {
+        "index": 0,
+        "lookupId": "dbf29c70-d8d7-427e-9d85-05490c38291d",
+        "status": "completed",
+        "hasName": true,
+        "nameSha256": "19e522cd61e4f1a641fe423369ee701056a2da8a2ef4beff76bf18d72f34183d",
+        "elapsedMs": 95337
+      },
+      {
+        "index": 1,
+        "lookupId": "662bbc09-24ed-43a6-89f9-03dd3202aceb",
+        "status": "completed",
+        "hasName": true,
+        "nameSha256": "18f8680b2200ed63f33206f66248d50b9ab35d08d428dfe9111e8acb0b666470",
+        "elapsedMs": 48422
+      }
+    ],
+    "duplicateChecks": [
+      {
+        "index": 0,
+        "sameLookupId": true
+      },
+      {
+        "index": 1,
+        "sameLookupId": true
+      }
+    ],
+    "fault": {
+      "kind": "controlled-result-read-timeout-after-real-input-and-result",
+      "taskId": "d73148f7-9d28-4fe5-9bc9-0db723e7ab78",
+      "nativePersistentWorker": true,
+      "originalResultHasName": true
+    },
+    "calls": [
+      {
+        "operation": "query",
+        "ok": true,
+        "inputCount": 1,
+        "observationOnlyResume": false,
+        "allowEmptyInputRecovery": null
+      },
+      {
+        "operation": "query_resume",
+        "ok": true,
+        "inputCount": 0,
+        "observationOnlyResume": true,
+        "allowEmptyInputRecovery": false
+      }
+    ],
+    "fullBusinessRecoveryPassed": true,
+    "stopped": true,
+    "finalCleanup": [
+      {
+        "device": "152",
+        "cleanupConfirmed": true,
+        "workerRemaining": false
+      },
+      {
+        "device": "149",
+        "cleanupConfirmed": true,
+        "workerRemaining": false
+      }
+    ],
+    "acceptance": {
+      "passed": true,
+      "reasons": []
+    },
+    "processExitCode": 0,
+    "tasks": [
+      {
+        "taskId": "80b68f6f-6f22-4895-afb4-53fd77b84830",
+        "device": "152",
+        "type": "alipay_name_start",
+        "purpose": "account_preparation",
+        "startedAt": "2026-11-02T02:56:08.031Z",
+        "endedAt": "2026-11-02T02:57:31.003Z",
+        "status": "succeeded",
+        "code": null,
+        "reason": null,
+        "hasName": false
+      },
+      {
+        "taskId": "19c98505-b01d-4616-a4bf-278765e5b7f2",
+        "device": "149",
+        "type": "alipay_name_start",
+        "purpose": "account_preparation",
+        "startedAt": "2026-11-02T02:56:08.534Z",
+        "endedAt": "2026-11-02T02:57:40.714Z",
+        "status": "succeeded",
+        "code": null,
+        "reason": null,
+        "hasName": false
+      },
+      {
+        "taskId": "db883623-5fc6-4b6e-94c8-cf281256c761",
+        "device": "152",
+        "type": "alipay_name_query",
+        "purpose": "probe",
+        "startedAt": "2026-11-02T02:57:31.372Z",
+        "endedAt": "2026-11-02T02:58:52.214Z",
+        "status": "failed",
+        "code": "alipay_lookup_result_unconfirmed",
+        "reason": "local_lookup_result_unconfirmed:visual_card_not_proven",
+        "hasName": null
+      },
+      {
+        "taskId": "3b921920-8603-4022-9b4a-b8295ecab2f5",
+        "device": "149",
+        "type": "alipay_name_query",
+        "purpose": "probe",
+        "startedAt": "2026-11-02T02:57:40.965Z",
+        "endedAt": "2026-11-02T02:58:58.814Z",
+        "status": "failed",
+        "code": "alipay_lookup_result_unconfirmed",
+        "reason": "local_lookup_result_unconfirmed:visual_card_not_proven",
+        "hasName": null
+      },
+      {
+        "taskId": "d73148f7-9d28-4fe5-9bc9-0db723e7ab78",
+        "device": "149",
+        "type": "alipay_name_query",
+        "purpose": "business",
+        "startedAt": "2026-11-02T02:59:37.882Z",
+        "endedAt": "2026-11-02T03:01:12.303Z",
+        "status": "succeeded",
+        "code": null,
+        "reason": null,
+        "hasName": true
+      },
+      {
+        "taskId": "b7ba25e1-185f-4fce-b12d-2f6255e8bfd9",
+        "device": "152",
+        "type": "alipay_name_query",
+        "purpose": "business",
+        "startedAt": "2026-11-02T03:01:13.335Z",
+        "endedAt": "2026-11-02T03:02:01.073Z",
+        "status": "succeeded",
+        "code": null,
+        "reason": null,
+        "hasName": true
+      },
+      {
+        "taskId": "0bda941e-41ce-4d59-9a56-a407e7a9d043",
+        "device": "152",
+        "type": "alipay_name_stop",
+        "purpose": "cleanup",
+        "startedAt": "2026-11-02T03:02:02.005Z",
+        "endedAt": "2026-11-02T03:02:10.597Z",
+        "status": "succeeded",
+        "code": null,
+        "reason": null,
+        "hasName": false
+      },
+      {
+        "taskId": "375ba90c-cf36-4206-afe8-d8a3c572025a",
+        "device": "149",
+        "type": "alipay_name_stop",
+        "purpose": "cleanup",
+        "startedAt": "2026-11-02T03:02:02.515Z",
+        "endedAt": "2026-11-02T03:02:11.854Z",
+        "status": "succeeded",
+        "code": null,
+        "reason": null,
+        "hasName": false
+      }
+    ],
+    "frames": [
+      {
+        "device": "149",
+        "frames": 52,
+        "failed": 0,
+        "minMs": 71,
+        "maxMs": 1232
+      },
+      {
+        "device": "152",
+        "frames": 36,
+        "failed": 0,
+        "minMs": 43,
+        "maxMs": 1131
+      }
+    ]
+  },
+  "unverified": [
+    "natural first timeout root cause on all phones",
+    "same 149 second business in a new generation",
+    "permanent cleanup failure and old stopRetryCount=2 channels",
+    "shared production Agent main loop/outbox/runtime reload",
+    "sustained full-pool concurrency and throughput",
+    "natural limit/cooldown/cross-phone original-query recovery in this round"
+  ],
+  "probeAi": [
+    {
+      "status": "completed",
+      "readKind": "name",
+      "reason": "name",
+      "elapsedMs": 31550,
+      "rejectionCode": "",
+      "evidenceSha256": "f597aa70d8250534a9b7a1155c10e9770dd5c2bce713240ed25df9da49b5eecd"
+    },
+    {
+      "status": "completed",
+      "readKind": "name",
+      "reason": "name",
+      "elapsedMs": 43571,
+      "rejectionCode": "",
+      "evidenceSha256": "195f745465fa1b17f93f0c0f34942d94b14cc0605d9fbfb70bd02b0a55bbbdda"
+    }
+  ],
+  "restoration": {
+    "at": "2026-11-02T03:03:02.022757+00:00",
+    "beforeRevision": 168,
+    "afterRevision": 169,
+    "restoredNumbers": [
+      149,
+      152
+    ],
+    "otherConfigPreserved": true,
+    "physicalCleanupConfirmed": true,
+    "testOccupancyAbsent": true
+  },
+  "productionAfter": {
+    "at": "2026-11-02T03:03:33.173349+00:00",
+    "activeSha256": "a0b5b612359d617c2cbe1841189b69d566203fd308a80f46ae149bce51f2bb2a",
+    "version": "platform-integration-20261029-deployed.1",
+    "businessSourceCommit": "3a266d71ba861f8e81d6ec3a173d7efc12d5b245",
+    "imageId": "sha256:a4db69c8a61befac7591924e354227146cb97fc6574556da35a2b86b7ddd6b4d",
+    "restartImageId": "sha256:a4db69c8a61befac7591924e354227146cb97fc6574556da35a2b86b7ddd6b4d",
+    "actualImage": "sha256:a4db69c8a61befac7591924e354227146cb97fc6574556da35a2b86b7ddd6b4d",
+    "startedAt": "2026-11-01T15:02:01.075341907Z",
+    "restartCount": 148,
+    "health": "healthy"
+  },
+  "scope": "localhost public HTTP + candidate task/account functions + real Windows staged readers/stop; no shared Agent main loop",
+  "firstNameConsistency": {
+    "nativeBeforeAndResumeTailMatch": true,
+    "apiTailMatchesNative": true,
+    "nameHashes": [
+      {
+        "lookupId": "dbf29c70-d8d7-427e-9d85-05490c38291d",
+        "nameSha256": "19e522cd61e4f1a641fe423369ee701056a2da8a2ef4beff76bf18d72f34183d",
+        "lastHanSha256": "5469a6af4ceaad28a25e03057552cef11e8a8050f46465cfe5fccc4b9d65884e"
+      },
+      {
+        "lookupId": "662bbc09-24ed-43a6-89f9-03dd3202aceb",
+        "nameSha256": "18f8680b2200ed63f33206f66248d50b9ab35d08d428dfe9111e8acb0b666470",
+        "lastHanSha256": "3d8f910c30b7e861751dcb3b141b8e49dafc244f40fbc939a47288e37dc5c01a"
+      }
+    ]
+  }
+}

@@ -17,11 +17,11 @@ def remark(name='', description='添加更多备注信息'):
                  w.Node('android.widget.EditText', name=r.DESCRIPTION_ID, text=description))
 
 
-def scenario(name='', description='添加更多备注信息'):
+def scenario(name='', description='添加更多备注信息', requested_name=r.DEFAULT_REMARK, requested_description=r.DEFAULT_DESCRIPTION):
     pages = PATH[:6] + [remark(name, description)]
     actions = ['open_menu','open_add','open_search','enter_phone','search','open_remark']
-    final_name = r.DEFAULT_REMARK if name in r.EMPTY_VALUES[r.NAME_ID] else name
-    final_desc = r.DEFAULT_DESCRIPTION if description in r.EMPTY_VALUES[r.DESCRIPTION_ID] else description
+    final_name = requested_name if name in r.EMPTY_VALUES[r.NAME_ID] else name
+    final_desc = requested_description if description in r.EMPTY_VALUES[r.DESCRIPTION_ID] else description
     if name in r.EMPTY_VALUES[r.NAME_ID]:
         pages.append(remark(final_name, description));actions.append('fill_remark')
     if description in r.EMPTY_VALUES[r.DESCRIPTION_ID]:
@@ -34,8 +34,8 @@ def scenario(name='', description='添加更多备注信息'):
 
 
 class Driver:
-    def __init__(self, name='', description='添加更多备注信息'):
-        self.pages,self.expected_actions = scenario(name,description)
+    def __init__(self, name='', description='添加更多备注信息', requested_name=r.DEFAULT_REMARK, requested_description=r.DEFAULT_DESCRIPTION):
+        self.pages,self.expected_actions = scenario(name,description,requested_name,requested_description)
         self.index=0;self.calls=[]
     def snapshot(self):return self.pages[self.index]
     def apply(self, action, expected, phone, check_budget, context=None):
@@ -52,6 +52,55 @@ def run(driver,**kwargs):
 
 
 class RemarkFlowTests(unittest.TestCase):
+    def test_observed_5013_add_remark_hint_is_filled_and_persisted(self):
+        d=Driver();mapping={r.NAME_ID:'com.tencent.wework:id/d67',r.DESCRIPTION_ID:'com.tencent.wework:id/d4r',r.BACK_ID:'com.tencent.wework:id/o62'}
+        d.pages=[replace(page,nodes=tuple(replace(n,name=mapping.get(n.name,n.name),
+            text='添加备注'if n.name==r.NAME_ID and n.text==''else n.text)for n in page.nodes))for page in d.pages]
+        out=run(d);self.assertTrue(out['readyToSend']);self.assertEqual(out['remarkSaveStatus'],'confirmed')
+        self.assertEqual(d.calls.count('fill_remark'),1);self.assertEqual(d.calls.count('save_remark'),1)
+        self.assertNotIn('添加备注',r.EMPTY_VALUES[r.NAME_ID])
+    def test_matching_remark_page_must_finish_animation_before_it_can_be_used(self):
+        page=remark();moving=replace(page,nodes=page.nodes+(w.Node('android.view.View',position=(1.3,.7)),))
+        frames=iter([moving,page,page]);checks=[]
+        class Reader:
+            def snapshot(self):return next(frames)
+        wrapper=r._RemarkingDriver(Reader(),lambda _:None,(r.DEFAULT_REMARK,r.DEFAULT_DESCRIPTION))
+        self.assertEqual(wrapper.read_until(r.remark_page,lambda:checks.append(True)),page)
+        self.assertEqual(len(checks),6)
+
+    def test_custom_text_is_saved_once_and_persisted_without_leaking_into_result(self):
+        name,desc='客户甲😀','渠道A\n联调备注'
+        d=Driver(requested_name=name,requested_description=desc)
+        out=r.run_customer_preview(d,{'phoneNumber':PHONE,'remarkName':name,'description':desc},sleep=lambda _:None)
+        self.assertTrue(out['readyToSend']);self.assertEqual(out['remarkSaveStatus'],'confirmed')
+        self.assertEqual(d.calls.count('save_remark'),1);self.assertFalse(out['invitationSent'])
+        self.assertNotIn(name,json.dumps(out,ensure_ascii=False));self.assertNotIn(desc,json.dumps(out,ensure_ascii=False))
+
+    def test_custom_request_preserves_nonempty_fields_and_unknown_save_is_not_replayed(self):
+        request={'phoneNumber':PHONE,'remarkName':'新备注','description':'新描述'}
+        d=Driver('已有备注','已有描述')
+        out=r.run_customer_preview(d,request,sleep=lambda _:None)
+        self.assertTrue(out['readyToSend']);self.assertEqual(out['remarkSaveStatus'],'not_needed')
+        self.assertNotIn('fill_remark',d.calls);self.assertNotIn('fill_description',d.calls)
+        d=Driver(requested_name='新备注',requested_description='新描述');original=d.apply
+        def unknown(action,*args,**kwargs):
+            if action=='save_remark':d.calls.append(action);raise RuntimeError('private 新备注')
+            return original(action,*args,**kwargs)
+        d.apply=unknown;out=r.run_customer_preview(d,request,sleep=lambda _:None)
+        self.assertEqual(out['remarkSaveStatus'],'unknown');self.assertEqual(d.calls.count('save_remark'),1)
+        self.assertNotIn('open_preview',d.calls);self.assertNotIn('新备注',json.dumps(out,ensure_ascii=False))
+
+    def test_remark_validation_and_normalization_precede_all_page_reads(self):
+        self.assertEqual(r.validate_remark_input({'remarkName':' \ufeff ','description':'\n '}),(r.DEFAULT_REMARK,r.DEFAULT_DESCRIPTION))
+        self.assertEqual(r.validate_remark_input({'remarkName':' 客户甲😀 ','description':'渠道A\r\n联调'}),('客户甲😀','渠道A\n联调'))
+        self.assertEqual(len(r.validate_remark_input({'remarkName':'😀'*20})[0]),20)
+        class NoRead:
+            def snapshot(self):raise AssertionError('must not read phone')
+        for field,values in [('remarkName',[None,3,{},'字'*21,'甲\n乙','甲\x00乙','\ud800']),('description',[None,{},'字'*121,'甲\x01乙','\ud800'])]:
+            for value in values:
+                with self.subTest(field=field,value_type=type(value).__name__):
+                    with self.assertRaises(w.StopPreview):r.run_customer_preview(NoRead(),dict({'phoneNumber':PHONE},**{field:value}))
+
     def test_saved_description_profile_still_verifies_full_phone(self):
         saved = frame('个人信息','电话',PHONE,'设置标签','添加为联系人',
                       text('描述',name='com.tencent.wework:id/csu'))
@@ -105,6 +154,36 @@ class RemarkFlowTests(unittest.TestCase):
         self.assertEqual(out['remarkSaveStatus'],'unknown');self.assertEqual(d.calls.count('save_remark'),1)
         self.assertNotIn('open_preview',d.calls);self.assertNotIn(PHONE,json.dumps(out))
 
+    def test_slow_save_spinner_is_waited_then_persistence_verified_once(self):
+        busy=frame(text('请稍候…',name='com.tencent.wework:id/krm'))
+        class SlowSave(Driver):
+            remaining=40
+            def snapshot(self):
+                if self.calls and self.calls[-1]=='save_remark' and self.remaining:
+                    self.remaining-=1
+                    return busy
+                return super().snapshot()
+        d=SlowSave();out=run(d)
+        self.assertTrue(out['readyToSend'])
+        self.assertEqual(out['remarkSaveStatus'],'confirmed')
+        self.assertEqual(d.calls.count('save_remark'),1)
+
+    def test_permanent_save_spinner_keeps_deadline_and_unknown_outcome(self):
+        busy=frame(text('请稍候…',name='com.tencent.wework:id/krm'))
+        class PendingSave(Driver):
+            def snapshot(self):
+                if self.calls and self.calls[-1]=='save_remark':return busy
+                return super().snapshot()
+        now=[0]
+        def sleep(seconds):now[0]+=seconds
+        d=PendingSave()
+        out=r.run_customer_preview(d,{'phoneNumber':PHONE},timeout=4,
+                                  clock=lambda:now[0],sleep=sleep)
+        self.assertEqual(out['code'],'timeout')
+        self.assertEqual(out['remarkSaveStatus'],'unknown')
+        self.assertEqual(d.calls.count('save_remark'),1)
+        self.assertNotIn('open_preview',d.calls)
+
     def test_persistence_not_proven_by_successful_navigation(self):
         d=Driver();d.pages[10]=remark()
         out=run(d);self.assertEqual(out['code'],'remark_persistence_unconfirmed')
@@ -134,21 +213,22 @@ class RemarkFlowTests(unittest.TestCase):
 
 class RemarkAdapterTests(unittest.TestCase):
     def test_actual_adapter_full_flow_with_synthetic_poco(self):
-        pages,actions=scenario()
-        class Advancing(Poco):
-            def __call__(self,**selector):
-                items=super().__call__(**selector)
-                for item in items:
-                    click,set_text=item.click,item.set_text
-                    def do_click(original=click):
-                        original();self.screen=pages[len(self.effects)]
-                    def do_set(value,original=set_text):
-                        original(value);self.screen=pages[len(self.effects)]
-                    item.click,item.set_text=do_click,do_set
-                return items
-        p=Advancing(pages[0]);d=r.PocoRemarkDriver(p,lambda:w.PACKAGE,lambda:True)
-        out=run(d);self.assertTrue(out['readyToSend']);self.assertTrue(out['remarkSaved'])
-        self.assertEqual(len(p.effects),len(actions));self.assertFalse(any(v==w.SEND for _,v in p.effects))
+        for name,desc in [(r.DEFAULT_REMARK,r.DEFAULT_DESCRIPTION),('客户甲😀','渠道A\n联调备注')]:
+            pages,actions=scenario(requested_name=name,requested_description=desc)
+            class Advancing(Poco):
+                def __call__(self,**selector):
+                    items=super().__call__(**selector)
+                    for item in items:
+                        click,set_text=item.click,item.set_text
+                        def do_click(original=click):
+                            original();self.screen=pages[len(self.effects)]
+                        def do_set(value,original=set_text):
+                            original(value);self.screen=pages[len(self.effects)]
+                        item.click,item.set_text=do_click,do_set
+                    return items
+            p=Advancing(pages[0]);d=r.PocoRemarkDriver(p,lambda:w.PACKAGE,lambda:True)
+            out=r.run_customer_preview(d,{"phoneNumber":PHONE,"remarkName":name,"description":desc},sleep=lambda _:None);self.assertTrue(out['readyToSend']);self.assertTrue(out['remarkSaved'])
+            self.assertEqual(len(p.effects),len(actions));self.assertFalse(any(v==w.SEND for _,v in p.effects))
 
     def test_live_lease_lost_page_changed_and_budget_expired_prevent_save(self):
         screen=remark(r.DEFAULT_REMARK,r.DEFAULT_DESCRIPTION)
@@ -171,3 +251,20 @@ class RemarkAdapterTests(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+
+class CpsRemarkPhoneTests(unittest.TestCase):
+    def test_independent_phone_editor_is_confirmed_and_name_is_not_phone_proof(self):
+        d=Driver();out=r.run_customer_preview(d,{'phoneNumber':PHONE},sleep=lambda _:None,require_remark_phone=True)
+        self.assertTrue(out['remarkPhoneSet']);self.assertTrue(out['readyToSend']);self.assertFalse(out['invitationSent'])
+        self.assertNotIn(PHONE,json.dumps(out))
+        page=remark(name=PHONE)
+        page=replace(page,nodes=tuple(replace(n,text='添加电话号码')if n.name=='android.widget.EditText'else n for n in page.nodes))
+        self.assertFalse(r.remark_phone_matches(page,PHONE))
+
+    def test_missing_duplicate_or_changed_phone_stops_before_saving_or_sending(self):
+        for replacement in ('添加电话号码',OTHER):
+            d=Driver();page=d.pages[6];d.pages[6]=replace(page,nodes=tuple(replace(n,text=replacement)if n.name=='android.widget.EditText'and n.text==PHONE else n for n in page.nodes))
+            out=r.run_customer_preview(d,{'phoneNumber':PHONE},sleep=lambda _:None,require_remark_phone=True)
+            self.assertEqual(out['code'],'remark_phone_not_verified');self.assertFalse(out['remarkPhoneSet']);self.assertNotIn('save_remark',d.calls);self.assertNotIn('open_preview',d.calls)
+        page=remark();page=replace(page,nodes=tuple(replace(n,text=PHONE)if n.name=='android.widget.EditText'else n for n in page.nodes))
+        self.assertFalse(r.remark_phone_matches(page,PHONE))

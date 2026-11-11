@@ -1,0 +1,17 @@
+{
+  "sourceCommit": "fa2452df995abd8e5e0a5ac6de5a8ca0da99f55f",
+  "status": "observed_failed_partial_7_of_14",
+  "files": {
+    "verification/wecom-v2-pg-observed-20261102/fixture.json": "961ff7c802e3b251e8e291bd09c1cb13ba9d88b1ba084e0ecbfe9cba1fdea683",
+    "verification/wecom-v2-pg-observed-20261102/POSTGRES.txt": "4100656516e0bdaf4ca236559b5e1a48df67c3179fd177f7cbaeb05608a74cc1",
+    "verification/wecom-v2-pg-observed-20261102/PG_EVIDENCE.json": "309a61e860d3cafa6024d9432554df3622fbc1d1fb22213b33b0cae40cfe6485",
+    "verification/wecom-v2-pg-observed-20261102/DRIVER_SOURCE_EXCERPTS.json": "14098a76eaaa128115086ef0ddf8f8585a5c365c5a7389a7665e5d9bbfc05761",
+    "verification/wecom-v2-pg-observed-20261102/PROVENANCE.json": "e30e4969b09662ba00e8f0d7106bba10984e65fb613a60f931f4a98ffda95e4f",
+    "verification/wecom-v2-pg-observed-20261102/CREATEDB.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification/wecom-v2-pg-observed-20261102/INITDB.txt": "ab162c26d2792754de9bd28d1c938621524d7d2e4455cb71c7ee3329cc1ad37c",
+    "verification/wecom-v2-pg-observed-20261102/OBSERVATION.md": "875d54d0ff43ca7a62dc7e6cb02d6ee41d3d1848c058f9f45de83e605525aa2f",
+    "verification/wecom-v2-pg-observed-20261102/NODE_TEST_OUTPUT.txt": "01e3633c57dfdb946ea94a9c75972b881a33494c96d3907e8c2eecf3bd951f40",
+    "verification/wecom-v2-pg-observed-20261102/RUN_RECEIPT.json": "2ecccf3ec524fb7378abd909077eebd0af39989f26d490e8fb2ad2d1fc6924b8",
+    "docs/PROJECT_DEVELOPMENT.md": "e2e650a9257230c454a641d136817f94a2cfde9dac63792238ed97d8e7de56f3"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "candidateTag": "lookup-throughput-20261028-rc.12",
+  "state": "local-candidate-not-deployed",
+  "parentCommit": "4b816ad099eb35209bfc8088f62d9395e66a8e29",
+  "files": {
+    "server/lookup-failure-domain.mjs": "d256d831f639c19e7c111fc6541f0c215370d9b20fb3f47dc53bd005bea5a29a",
+    "server/lookup-technical-domain.test.mjs": "5f0092933b5e3b76584c07c605bb2f357c4336e9335eed6044024d3dbda7e7fb",
+    "server/lookup-ai-adapter.test.mjs": "16c63625502a8ca115aa6c78318d131a77aeddfa98c715e1d53ed0aca6bef4eb",
+    "docs/PROJECT_DEVELOPMENT.md": "4b40080ec6944bd6fb2e7ce087b2c85a0428fec6c889fa4c231d9f3e37bf4228",
+    "releases/lookup-throughput-20261028-rc.12/README.md": "678477a6b856ccb96625ccb56c8cb00b24ec6614f9f9596bca3d2f6cdfb76c76"
+  },
+  "validation": {
+    "nodeFirstDefaultConcurrency": {
+      "tests": 1646,
+      "passed": 1645,
+      "failed": 1,
+      "failure": "device-scan-agent first inventory <3000ms"
+    },
+    "unchangedScanIsolated": {
+      "tests": 1,
+      "passed": 1
+    },
+    "nodeFullConcurrency4": {
+      "tests": 1646,
+      "passed": 1646,
+      "failed": 0
+    },
+    "failureCause": "not proven; scheduling/load variance is a hypothesis, no threshold changed",
+    "targeted": 137,
+    "independentTargeted": 137,
+    "exactHistoricalMessages": 6,
+    "classifiedDevice": 6,
+    "terminalAiEligible": 0,
+    "rootCheck": "passed",
+    "python": "unchanged from rc.11; inherited 1179 tests, not rerun",
+    "newPhoneActions": 0,
+    "newInferenceCalls": 0,
+    "realBusinessApiRecovery": "not passed",
+    "productionChanged": false
+  },
+  "evidence": {
+    "pc-wms-targeted-rc12.log": "dcad3ffe852175f3c3f93db46aa05febb5a090546fe62a6659db4ec23125d393",
+    "pc-wms-full-rc12.log": "10309ce1f487b76a5b3b36cc1ea309aa1dfe6e4d8fe452da6a4f6b1cc1d62696",
+    "pc-wms-scan-isolated-rc12.log": "5cee5c7baf72b7a6fea99ba284eb6ec92b4581b32d1794a1d88f85b2a35d7bfb",
+    "pc-wms-full-bounded-rc12.log": "6d792796e55fe65c582f6c61662205d248c1d1e66108b41da30f2ebc9f84abb1",
+    "pc-wms-check-rc12.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "wms-timeout-exact-private.json": "5a9f88eab43cc59b65f41567c65ee025b969cc3813c9d09115560b6d60b03e3e",
+    "wms-timeout-candidate-replay.json": "326e513ef4f0c9cd79745be3c973893dca3591e22403bc394fb5c546665755df",
+    "WMS_INDEPENDENT_REVIEW.json": "d03b9e49190be5af7a8bab0e0b436f6a5422335611144bcd1e70cdbfa5606bfd",
+    "wms-independent-tests.txt": "f969614a579aaa8015e44298e2247bbc95e411b6883c29ea3c9adba571e485ce"
+  },
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+}

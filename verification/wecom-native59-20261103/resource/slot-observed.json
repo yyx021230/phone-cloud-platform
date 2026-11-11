@@ -1,0 +1,37 @@
+{
+  "capacity": {
+    "limit": 12,
+    "pids": [
+      4080,
+      13528,
+      20196,
+      20596,
+      20908,
+      25460,
+      26716,
+      27012,
+      28224,
+      34712,
+      36844
+    ]
+  },
+  "pool": {
+    "at": "2026-11-03T01:58:23.368Z",
+    "transactionReadOnly": "on",
+    "concurrency": "11",
+    "config_revision": "175",
+    "channels_type": "array",
+    "requests_type": "array",
+    "channel_phases": {
+      "idle": 3,
+      "human": 1,
+      "querying": 6,
+      "recovery": 1
+    },
+    "business_queued": 0,
+    "business_running": 5,
+    "productionWrites": 0,
+    "phoneActions": 0,
+    "httpControlViews": 0
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "baseCommit": "cd82c14f6baef51521d43213d22e445c7303ed8b",
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "server/wecom-cleanup-v2-postgres.test.mjs"
+  ],
+  "exitCode": 1,
+  "scope": "actual EventEmitter fake client unit only, 30 prior green/3 new red; no PG/network",
+  "sourceSha256": {
+    "server/wecom-cleanup-v2-postgres.mjs": "573e7363976db447d7950c6a856a16ef910fa747d9a2f0755e995a0d1aa7b143",
+    "server/wecom-cleanup-v2-postgres.test.mjs": "268d9a6543ec4eaf5affed6df9878414ada502ccd77038d264494225b6d56a54"
+  },
+  "outputSha256": "9fa841f44318e97791a4c9d42054e2c6ad067c7e06e7b6c14436fd868917d566"
+}

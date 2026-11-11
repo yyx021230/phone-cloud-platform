@@ -1,0 +1,16 @@
+{
+  "atUtc": "2026-11-02T07:38:50.747493+00:00",
+  "exitCode": 0,
+  "sourceSha256": {
+    "fixture_reader.py": "85e0428eb00fd7b9ff7f5b07a802d88034029e78c4ea4339ecd8690da18eeaaa",
+    "latency-prototype.mjs": "74eb1b63b524d3ddf81f54da04bd6c8d9f2825d08676ee98e5712df897a85dd2",
+    "latency-prototype.test.mjs": "6c95bdcafd78b03aba452b0dcb2e2ec3e18ffc8b5d69c02ebd8809efa893d221",
+    "windows-agent/scripts/wecom_physical_verify.py": "a0096840632976738d01374c6ac7e6d85bd5d3a764a30855cf793b488f79261b",
+    "windows-agent/scripts/wecom_cleanup.py": "0e6ea92f0cd738492a8e9599bebe08f56e6095d93764ea773d2926fc64a30922"
+  },
+  "outputSha256": "44fe8929dd26ed1ab46cae139da642e99b32564044ba1ee137f1c152564f845c",
+  "scope": "offline actual local child/HTTP and unchanged verify_empty; Android facts synthetic; no SYSTEM/ADB/production",
+  "productProtocolImplemented": false,
+  "suspendContinuityValidated": false,
+  "persistentTransactionValidated": false
+}

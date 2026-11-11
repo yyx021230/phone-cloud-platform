@@ -1,3 +1,5 @@
+import {pendingWecomContext} from './wecom-pending-context.mjs';
+
 export function createPostgresRepositories({ getPool, stringify = JSON.stringify } = {}) {
   if (typeof getPool !== "function") throw new TypeError("getPool is required");
 
@@ -21,7 +23,8 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
     `insert into phone_cloud_devices (device_id, data, updated_at)
      values ($1, $2::jsonb, now())
      on conflict (device_id) do update
-       set data = excluded.data, updated_at = now()`,
+       set data = excluded.data, updated_at = now()
+       where coalesce(phone_cloud_devices.data->>'inventoryRetiredAt','') = ''`,
     [requiredId(device?.deviceId, "device.deviceId"), stringify(device)]
   );
 
@@ -324,7 +327,7 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
       });
     },
 
-    async persistTaskMutation({ windowsTask = null, windowsTasks = [], xhsTask = null, automationJob = null, automationJobs = [], automationSession = null, device = null, deviceLock = null, events = [], audit = null, transactionClient = null } = {}) {
+    async persistTaskMutation({ windowsTask = null, windowsTasks = [], xhsTask = null, automationJob = null, automationJobs = [], automationSession = null, device = null, deviceLock = null, deviceLocks = [], events = [], audit = null, transactionClient = null } = {}) {
       const transaction = transactionClient ? (fn) => fn(transactionClient) : inTransaction;
       return transaction(async (client) => {
         if (device) await upsertDevice(client, device);
@@ -335,6 +338,7 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
         for (const item of automationJobs) await upsertAutomationJob(client, item);
         if (automationSession) await upsertAutomationSession(client, automationSession);
         if (deviceLock) await upsertDeviceLock(client, deviceLock);
+        for (const lock of deviceLocks) await upsertDeviceLock(client, lock);
         await insertTaskEvents(client, events);
         await insertAudit(client, audit);
       });
@@ -365,6 +369,17 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
       });
     },
 
+    // Exact IDs only: failure details must not rehydrate the full retained history.
+    async readLookupJob(jobId) {
+      if (!/^[A-Za-z0-9-]{1,80}$/.test(String(jobId))) return null;
+      const pool = await getPool();
+      const result = await pool.query({text: `select j.data as job, t.data as task
+        from phone_cloud_automation_jobs j
+        left join phone_cloud_windows_tasks t on t.task_id = j.data->>'windowsTaskId'
+        where j.job_id = $1 limit 1`, values: [jobId], query_timeout: 5000});
+      return result.rows[0] || null;
+    },
+
     async loadOverlay() {
       const pool = await getPool();
       // Bound startup query memory; returned rows and merge precedence stay unchanged.
@@ -372,11 +387,25 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
       const sessions = await loadDataRows(pool, "phone_cloud_sessions", "expires_at", 5_000);
       const devices = await loadDataRows(pool, "phone_cloud_devices", "updated_at", 5_000);
       const smsMessages = await loadDataRows(pool, "phone_cloud_sms_messages", "message_at", 50_000);
-      const windowsTasks = await loadDataRows(pool, "phone_cloud_windows_tasks", "updated_at", 5_000);
+      let windowsTasks = await loadDataRows(pool, "phone_cloud_windows_tasks", "updated_at", 5_000);
       const xhsTasks = await loadDataRows(pool, "phone_cloud_xhs_tasks", "updated_at", 5_000);
-      const automationJobs = await loadDataRows(pool, "phone_cloud_automation_jobs", "updated_at", 5_000);
+      let automationJobs = await loadDataRows(pool, "phone_cloud_automation_jobs", "updated_at", 5_000);
       const automationSessions = await loadDataRows(pool, "phone_cloud_automation_sessions", "updated_at", 1_000);
-      const deviceLocks = await loadDataRows(pool, "phone_cloud_device_locks", "expires_at", 5_000);
+      const recentDeviceLocks = await loadDataRows(pool, "phone_cloud_device_locks", "expires_at", 5_000);
+      // Pending physical obligations have no expiry and must not fall outside
+      // the recent-history window. Refuse startup instead of silently losing a fence.
+      const pendingPhysical = await pool.query(`select data from phone_cloud_device_locks
+        where data->>'lockType' = 'wecom_physical_cleanup' and status is distinct from 'released'
+        order by lock_id limit 5001`);
+      if (pendingPhysical.rows.length > 5000) throw new Error("wecom_cleanup_pending_load_overflow");
+      const pendingLocks = pendingPhysical.rows.map(r => r.data);
+      const context = pendingWecomContext(pendingLocks);
+      // Indexed primary-key reads, bounded by the pending-obligation cap above.
+      // Database originals take precedence over stale snapshot/recent copies.
+      windowsTasks = mergeByKey(await loadReferencedRows(pool, 'phone_cloud_windows_tasks', 'task_id', context.tasks), windowsTasks, 'taskId');
+      automationJobs = mergeByKey(await loadReferencedRows(pool, 'phone_cloud_automation_jobs', 'job_id', context.jobs), automationJobs, 'jobId');
+      const originals = await loadReferencedRows(pool, 'phone_cloud_device_locks', 'lock_id', context.locks);
+      const deviceLocks = mergeByKey(pendingLocks, mergeByKey(originals, recentDeviceLocks, 'lockId'), "lockId");
       const auditEvents = await loadDataRows(pool, "phone_cloud_audit_events", "created_at", 5_000);
       return { users, sessions, devices, smsMessages, windowsTasks, xhsTasks, automationJobs, automationSessions, deviceLocks, auditEvents };
     }
@@ -386,7 +415,8 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
 export function applyStructuredOverlay(state, overlay = {}) {
   state.users = mergeByKey(overlay.users, state.users, "userId");
   state.sessions = mergeByKey(overlay.sessions, state.sessions, "sessionId");
-  state.devices = mergeByKey(overlay.devices, state.devices, "deviceId");
+  state.devices = mergeByKey(overlay.devices, state.devices, "deviceId")
+    .filter(device => !device.inventoryRetiredAt);
   state.smsMessages = mergeByComputedKey(overlay.smsMessages, state.smsMessages, smsMessageBusinessKey);
   state.windowsTasks = mergeByKey(overlay.windowsTasks, state.windowsTasks, "taskId");
   state.xhsQrTasks = mergeByKey(overlay.xhsTasks, state.xhsQrTasks, "taskId");
@@ -403,6 +433,15 @@ async function loadDataRows(pool, table, orderColumn, limit) {
     [Math.max(1, Number(limit) || 1)]
   );
   return result.rows.map((row) => row.data).filter(Boolean);
+}
+
+async function loadReferencedRows(pool, table, key, ids) {
+  if (!ids.size) return [];
+  const result = await pool.query({
+    text: `select data from ${table} where ${key} = any($1::text[])`,
+    values: [[...ids]], query_timeout: 5000
+  });
+  return result.rows.map(row => row.data).filter(Boolean);
 }
 
 function mergeByKey(preferred = [], fallback = [], key) {

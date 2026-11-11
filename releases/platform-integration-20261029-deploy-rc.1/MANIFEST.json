@@ -1,0 +1,217 @@
+{
+  "state": "staged_not_deployed",
+  "businessSourceCommit": "3a266d71ba861f8e81d6ec3a173d7efc12d5b245",
+  "sourceCandidateTag": "platform-integration-20261029-rc.1",
+  "deploymentTag": "platform-integration-20261029-deploy-rc.1",
+  "cloud": {
+    "status": "inactive_image_staged_not_deployed",
+    "imageId": "sha256:a4db69c8a61befac7591924e354227146cb97fc6574556da35a2b86b7ddd6b4d",
+    "imageTag": "phone-cloud-platform:platform-integration-20261029-rc.1",
+    "sourceCommit": "3a266d71ba861f8e81d6ec3a173d7efc12d5b245",
+    "cloudRuntimeFiles": 29,
+    "stage": "/opt/phone-cloud-platform/staging/platform-integration-20261029-rc.1",
+    "availableBytes": 3337936896,
+    "atUtc": "2026-10-29T08:28:47Z"
+  },
+  "windowsFiles": [
+    {
+      "relative": "scripts/alipay_name_lookup.py",
+      "candidateSha256": "8c60bb140a4e2bcf07ee29ccd85591b210f20365dc6638cd3f62451444fd4a63",
+      "oldExists": true,
+      "oldSha256": "07bc870698663b4c63c071a8743b182972658db1d37b015eb79417c01cec87b2"
+    },
+    {
+      "relative": "scripts/alipay_visual_result.py",
+      "candidateSha256": "e5159fe17b3509fdd7accd997b3af03fc35071d5ae557181ed22f32fa140bd81",
+      "oldExists": true,
+      "oldSha256": "3f1a6315150fe7424724122947b418d2c4b8f4448db4d4d4372bf99749542e30"
+    },
+    {
+      "relative": "scripts/lookup_home_modal.py",
+      "candidateSha256": "17955787340edbc8558269199812ffa93b8fda5ec61ecee65e90b0dc3a8bce84",
+      "oldExists": false,
+      "oldSha256": null
+    },
+    {
+      "relative": "scripts/wecom_customer_invitation.py",
+      "candidateSha256": "5c8a4438318cb10dba2b3ddc0017aff9294aead36e3c99ad5878d0f3465cbd24",
+      "oldExists": false,
+      "oldSha256": null
+    },
+    {
+      "relative": "scripts/wecom_invite_preview.py",
+      "candidateSha256": "f7329cf01b0d9c7f750b730d570826099abba4df6581931eb395f74527ae8692",
+      "oldExists": true,
+      "oldSha256": "11bd468f1ca57ae193ea3e41f7911aebe404d1e7ad8f63898ccab8f5eb8d2f67"
+    },
+    {
+      "relative": "scripts/wecom_platform_preview.py",
+      "candidateSha256": "2211bc1afb3f3019cec5f5e0020bf7bbf64e287cb80f3633db10ee0ffff87cc6",
+      "oldExists": false,
+      "oldSha256": null
+    },
+    {
+      "relative": "scripts/wecom_preview_devices.json",
+      "candidateSha256": "2eab0e0415e7db2f7c00c8ccf8e55f36cb3987a22c03bdc5aee4b05f6167bc88",
+      "oldExists": false,
+      "oldSha256": null
+    },
+    {
+      "relative": "scripts/wecom_remark_preview.py",
+      "candidateSha256": "cffc8c9a60ace1a4cbf2d000965db79af9919f2966733fd4c070e7d27b307860",
+      "oldExists": true,
+      "oldSha256": "bcfadd95c6ad69b5b957d49e37f450ff1f1b0911411047dc7393dedf746d8207"
+    },
+    {
+      "relative": "scripts/wecom_rpc_budget.py",
+      "candidateSha256": "60aab705ab8b1a5282da225ac5e7f3ac27c90c01749e4637e0dfe732e906bff6",
+      "oldExists": false,
+      "oldSha256": null
+    },
+    {
+      "relative": "scripts/wecom_startup_guards.py",
+      "candidateSha256": "82fcf0d5ccc3d8aceab9901ac663725fcc9bf6b5f072715d18892036652f6d25",
+      "oldExists": false,
+      "oldSha256": null
+    },
+    {
+      "relative": "src/adb-serial-identity.mjs",
+      "candidateSha256": "9474bf4c3db8d144eda0eaa6c40a1ba912a0c0c53460747b8e638d79d79ba09f",
+      "oldExists": false,
+      "oldSha256": null
+    },
+    {
+      "relative": "src/alipay-poco-fallback-policy.mjs",
+      "candidateSha256": "d9cca5a6ce0e97f0d6145306f4322d5a8873aaa5e71c2a5441707a46d349f917",
+      "oldExists": true,
+      "oldSha256": "0d56fccc2d1b81541668cf2880e3da4b4547b54a34aef92120516bd6e9fd2f09"
+    },
+    {
+      "relative": "src/index.mjs",
+      "candidateSha256": "c309d1f6dd0bda9530ec6ff8dccc874509aa7cd57e8ef6bdea77a64b7a1c5a67",
+      "oldExists": true,
+      "oldSha256": "884bc370558e6b0b3f2d0d46dee309da4467757b613c0da03576de8f9b34df74"
+    },
+    {
+      "relative": "src/lookup-execution-metrics.mjs",
+      "candidateSha256": "880adc6afe1c2ae60a973bab7ed6aa375b77167966256df19737cb1c1cafae31",
+      "oldExists": false,
+      "oldSha256": null
+    },
+    {
+      "relative": "src/lookup-page-recovery.mjs",
+      "candidateSha256": "6ac3f752e52db13667b9f0d6a42380c4e3807bbe33c95777e823ef107d8f48b0",
+      "oldExists": true,
+      "oldSha256": "c15f74dad44d9199f0113fed9583fc331af7fc23e89242d20ab45357afacd499"
+    },
+    {
+      "relative": "src/lookup-reader-admission-log.mjs",
+      "candidateSha256": "4ebddfa2371e85841745d8a8c1bab9e9fffcfb2622d44c32465adce319c6dd7d",
+      "oldExists": false,
+      "oldSha256": null
+    },
+    {
+      "relative": "src/lookup-reader-capacity-report.mjs",
+      "candidateSha256": "feb2f97e05ad631f4ece7a6e49491d8204d3118b7bfaa6322094afcc10b33900",
+      "oldExists": false,
+      "oldSha256": null
+    },
+    {
+      "relative": "src/lookup-reader-lifecycle.mjs",
+      "candidateSha256": "d957d51ff0cba4bb1c504e979fb61eadf1fd4b7113c804882e62456210d70168",
+      "oldExists": true,
+      "oldSha256": "9ea791d3db7c185c889c142393c3255c69fe581291fa7d6b81a880c6fbd62860"
+    },
+    {
+      "relative": "src/lookup-recovery-trace.mjs",
+      "candidateSha256": "7d9a1e353564327df4129a4f600a265e5e86dc26a0970d6b96f3b47d9d8b49c7",
+      "oldExists": true,
+      "oldSha256": "7e26269618903b610784dca34331672d3e6d2d7fd0962039b3ed8c36231edd9d"
+    },
+    {
+      "relative": "src/lookup-xml-failure.mjs",
+      "candidateSha256": "2e6097bbe3aa23c433e68d8bdb414137a1a12fa349447364de90dbb13a852539",
+      "oldExists": false,
+      "oldSha256": null
+    },
+    {
+      "relative": "src/wecom-preview-task.mjs",
+      "candidateSha256": "f9f45f5b346f52c48b4f3c2c5bff7e19fd9dc0682adc55583cdf9a44138b8dde",
+      "oldExists": false,
+      "oldSha256": null
+    },
+    {
+      "relative": "src/xhs-data-collection.mjs",
+      "candidateSha256": "e1c6812a079ff078492797fb5d928b731675cf68ef20f87e93ad768733c79ffe",
+      "oldExists": true,
+      "oldSha256": "48ed1e5570732fabb36460056072bfbf9cb77f608a664bfece487c2ec8781842"
+    }
+  ],
+  "preservedProductionFrozen": [
+    {
+      "relative": "src/screen-stream.mjs",
+      "sha256": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232"
+    },
+    {
+      "relative": "src/serial-adb-health.mjs",
+      "sha256": "efb0f36c5b73511f5366704b30a10c5e0e6caf4fe13a23c328b60dec14c77c0d"
+    }
+  ],
+  "baseline": {
+    "version": "platform-integration-20261028-deployed.1",
+    "activeSha256": "4bb61c39a8a5cd912069ed494d84dba1af4cf3cc37adbac8285db935586b995a",
+    "imageId": "sha256:fca45ec32e72b0787e4375fd6812a5ac97d3aebec4b830b6393b03117554b45e",
+    "actualSourceRecorded": "baca5721214658b46f24c974c9147490b0bafada"
+  },
+  "gate": {
+    "file": "deploy/nginx-isolation/maintenance_gate.py",
+    "sha256": "872ff6edd17327b0b36335de8c11cce9c18941551bf3a4e378ad7655825e4eee",
+    "syntheticCases": 33,
+    "nonprivileged": true,
+    "notFunctionalAcceptance": true
+  },
+  "rollback": {
+    "existingOldImageVerified": true,
+    "cloud29ActualFilesBackedUp": true,
+    "composeAndActiveBytesBackedUp": true,
+    "windows22ActualOrAbsentRecorded": true,
+    "databaseMigrations": false,
+    "databaseRestorePlanned": false,
+    "criticalConfigurationSnapshot": {
+      "bytes": 1447797,
+      "sha256": "f21ff9f3d5779d4f4566ceb4a097b925fdacf95f6bdc1482dcf82c4d37d49fc0",
+      "tables": [
+        "phone_cloud_managed_lookup",
+        "phone_cloud_managed_lookup_aliases",
+        "phone_cloud_xhs_batch_records",
+        "phone_cloud_xhs_batch_nonces",
+        "phone_cloud_users",
+        "phone_cloud_devices",
+        "phone_cloud_device_locks"
+      ],
+      "fullDatabaseBackup": false,
+      "fullDecode": true
+    },
+    "fullDatabaseBackupThisRound": false,
+    "failedBackups": [
+      "full stream aborted and own PG backend cancelled",
+      "scoped attempts reached 512MiB bound; partial files not valid backups"
+    ],
+    "policy": "application-only rollback preserves current DB/claims/floor/outbox and all subsequent results"
+  },
+  "authorization": {
+    "skipAdditionalLocalFunctionalAcceptance": true,
+    "deployProduction": true,
+    "maintenanceWindowMinutes": 10,
+    "timing": "start only after preparation",
+    "existingLookupOriginalIdsAndPrepareRetained": true,
+    "freezeChangeAuthorized": false
+  },
+  "limitations": [
+    "This deploy composition preserves two actual production frozen files; it is not the full original candidate tree.",
+    "Corresponding frozen-module classification/serial-case changes are excluded, not claimed deployed.",
+    "Original candidate regression is historical evidence; no new mixed-tree functional regression at user request.",
+    "No new real WeCom invitation or full 100-slot XHS batch authorized by this receipt."
+  ],
+  "productionChanged": false
+}

@@ -1,0 +1,20 @@
+{
+  "baseCommit": "bb20bfaf1153f9fab77c0bf880b1dc26fa0328ff",
+  "candidateTag": "wecom-v2-job-hold-epq-20261102-observed.1",
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "dd0d5b652bba9710dd8f82d6e68c8f53e5a667e43b0d2acaad17fc55a3523293",
+    "verification/wecom-v2-job-hold-observed-20261102/CREATEDB.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification/wecom-v2-job-hold-observed-20261102/EXECUTED_SOURCE_MANIFEST.json": "c84f5ce74e23c9ed00411f4c66f80f7ff4705472240a957fbe3ab5aad780aa61",
+    "verification/wecom-v2-job-hold-observed-20261102/INITDB.txt": "c4c73a16e15633c57c67f5efece4eb978c313e8c942078f959b5dbc0047af6d4",
+    "verification/wecom-v2-job-hold-observed-20261102/NODE_TEST_OUTPUT.txt": "a3ec968ce24a5315afdff1a3a5d922ff538584b58b1cd692836a8e8986cd87c0",
+    "verification/wecom-v2-job-hold-observed-20261102/OBSERVATION.md": "8a29581303b1b46f67fbe870953ec55cdb80e63582bf64dc3e016b1f1157e1dd",
+    "verification/wecom-v2-job-hold-observed-20261102/PG_EVIDENCE.json": "74a114264d57b44ad5014987f5f7a8e16d1d5a87c9e43a59f994eca062ffacc0",
+    "verification/wecom-v2-job-hold-observed-20261102/POSTGRES.txt": "cca32c31da094d98f0f6fbdbf2d03610db3058723acff91724003e472cd84230",
+    "verification/wecom-v2-job-hold-observed-20261102/PROVENANCE.json": "df0e2c319f178e1b5268230b244e1ab4ab24d55639e11bb654e80525dc55a016",
+    "verification/wecom-v2-job-hold-observed-20261102/RAW_WHITESPACE.json": "e724acdbcc9f58dee9d01f12cbf78316c31a24faed3774d0b6c7198d89119012",
+    "verification/wecom-v2-job-hold-observed-20261102/ROOT_REVIEW.json": "16069eb6d0041a747902f9e58ed5f412b5cc25a9f03701ad35fe6d0c43f9a2e4",
+    "verification/wecom-v2-job-hold-observed-20261102/RUN_RECEIPT.json": "a6ac993ece65bc2d3aa71d0f88e6e8cb60b6750b144b48bd5ed02396da0b9885",
+    "verification/wecom-v2-job-hold-observed-20261102/fixture.json": "bae36e5b5a013b8a7baea65eb3d091d6008be20ba02ddee7ab98b9cefdd1a901",
+    "verification/wecom-v2-job-hold-observed-20261102/DIFFCHECK_RECEIPT.json": "4cb15fd0075e58798437f3079d1389d2f7d01ef305701c2d4d694d03b22c21a9"
+  }
+}

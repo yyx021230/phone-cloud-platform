@@ -1,0 +1,20 @@
+{
+  "atUtc": "2026-11-02T10:14:14.555055+00:00",
+  "baseCommit": "94a48081392ae87e537eecaaa8e431df1393382f",
+  "command": "node --test --test-reporter=tap verification/wecom-clock-adapter-20261102/authority.test.mjs",
+  "exitCode": 0,
+  "counts": {
+    "tests": 34,
+    "pass": 34,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "scope": "actual local pipe/HTTP/fsync, static synthetic counters plus explicit injected deltas; not real elapsed 3s bound",
+  "hostPlatform": "darwin",
+  "nativeAcceptance": false,
+  "productionRuntimeFixed": false,
+  "crossProcessRecoveryImplemented": false,
+  "oldSuitesRerun": false,
+  "outputSha256": "2c46cc335f6f3c7342088e2c850b828f1c079999ae81ba02b0b00648489dec94"
+}

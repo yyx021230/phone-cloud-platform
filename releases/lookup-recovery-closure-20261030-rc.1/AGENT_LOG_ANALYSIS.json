@@ -1,0 +1,563 @@
+{
+  "sampledAt": "2026-10-30T04:11:15.454364+00:00",
+  "fileBytes": 1633529078,
+  "firstFileAt": "2026-10-19T05:34:30.299Z",
+  "fromOffset": 1632532181,
+  "scannedBytes": 572882,
+  "boundedCompleteToCapturedEnd": false,
+  "firstScannedAt": "2026-10-30T04:04:00.000Z",
+  "lastScannedAt": "2026-10-30T04:07:59.998Z",
+  "scannedLogRecords": 2126,
+  "eventCounts": {
+    "lookup exited reader cleanup completed": 5,
+    "airtest worker exit diagnostic": 14,
+    "airtest worker stop completed": 14,
+    "Airtest/Poco worker admitted": 10,
+    "Airtest/Poco worker probe failed; rebuilding before task": 4,
+    "forcing stuck airtest worker to stop": 7,
+    "forced airtest cleanup failed": 1
+  },
+  "capacityReasons": {},
+  "byDevice": {
+    "163": {
+      "lookup exited reader cleanup completed": 1
+    },
+    "157": {
+      "airtest worker exit diagnostic": 1,
+      "airtest worker stop completed": 1
+    },
+    "116": {
+      "lookup exited reader cleanup completed": 1
+    },
+    "57": {
+      "airtest worker exit diagnostic": 2,
+      "airtest worker stop completed": 2,
+      "Airtest/Poco worker admitted": 1,
+      "forcing stuck airtest worker to stop": 1
+    },
+    "128": {
+      "lookup exited reader cleanup completed": 1
+    },
+    "176": {
+      "airtest worker exit diagnostic": 2,
+      "airtest worker stop completed": 2,
+      "Airtest/Poco worker admitted": 2
+    },
+    "161": {
+      "airtest worker exit diagnostic": 1,
+      "airtest worker stop completed": 1
+    },
+    "142": {
+      "lookup exited reader cleanup completed": 1
+    },
+    "53": {
+      "Airtest/Poco worker probe failed; rebuilding before task": 1,
+      "forcing stuck airtest worker to stop": 1,
+      "airtest worker exit diagnostic": 1,
+      "airtest worker stop completed": 1,
+      "Airtest/Poco worker admitted": 1
+    },
+    "164": {
+      "Airtest/Poco worker probe failed; rebuilding before task": 1,
+      "forcing stuck airtest worker to stop": 1,
+      "airtest worker exit diagnostic": 1,
+      "airtest worker stop completed": 1,
+      "Airtest/Poco worker admitted": 1
+    },
+    "101": {
+      "Airtest/Poco worker probe failed; rebuilding before task": 1,
+      "forcing stuck airtest worker to stop": 1,
+      "airtest worker exit diagnostic": 1,
+      "airtest worker stop completed": 1,
+      "Airtest/Poco worker admitted": 1
+    },
+    "162": {
+      "Airtest/Poco worker probe failed; rebuilding before task": 1,
+      "forcing stuck airtest worker to stop": 1,
+      "airtest worker exit diagnostic": 1,
+      "airtest worker stop completed": 1,
+      "Airtest/Poco worker admitted": 1
+    },
+    "112": {
+      "forcing stuck airtest worker to stop": 1,
+      "airtest worker exit diagnostic": 1,
+      "airtest worker stop completed": 1
+    },
+    "138": {
+      "airtest worker exit diagnostic": 1,
+      "airtest worker stop completed": 1,
+      "Airtest/Poco worker admitted": 1
+    },
+    "172": {
+      "airtest worker exit diagnostic": 1,
+      "airtest worker stop completed": 1,
+      "Airtest/Poco worker admitted": 1
+    },
+    "182": {
+      "lookup exited reader cleanup completed": 1
+    },
+    "152": {
+      "Airtest/Poco worker admitted": 1,
+      "forcing stuck airtest worker to stop": 1,
+      "airtest worker exit diagnostic": 1,
+      "forced airtest cleanup failed": 1,
+      "airtest worker stop completed": 1
+    }
+  },
+  "capacitySamples": [],
+  "failureSamples": [
+    {
+      "at": "2026-10-30T04:04:16.916Z",
+      "event": "lookup exited reader cleanup completed",
+      "number": "163",
+      "reason": "lookup_session_stopped",
+      "cleanupConfirmed": true
+    },
+    {
+      "at": "2026-10-30T04:04:55.298Z",
+      "event": "airtest worker exit diagnostic",
+      "number": "157",
+      "expectedStop": true,
+      "stage": "unknown",
+      "cause": "unknown",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "at": "2026-10-30T04:04:55.347Z",
+      "event": "airtest worker stop completed",
+      "number": "157",
+      "reason": "lookup_session_stopped",
+      "exited": true,
+      "forced": false,
+      "cleanupConfirmed": true,
+      "elapsedMs": 3234
+    },
+    {
+      "at": "2026-10-30T04:05:14.447Z",
+      "event": "lookup exited reader cleanup completed",
+      "number": "116",
+      "reason": "lookup_session_stopped",
+      "cleanupConfirmed": true
+    },
+    {
+      "at": "2026-10-30T04:06:06.002Z",
+      "event": "airtest worker exit diagnostic",
+      "number": "57",
+      "expectedStop": true,
+      "stage": "unknown",
+      "cause": "unknown",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "at": "2026-10-30T04:06:06.040Z",
+      "event": "airtest worker stop completed",
+      "number": "57",
+      "reason": "lookup_query_app_recovery",
+      "exited": true,
+      "forced": false,
+      "cleanupConfirmed": true,
+      "elapsedMs": 1278
+    },
+    {
+      "at": "2026-10-30T04:06:06.041Z",
+      "event": "Airtest/Poco worker admitted",
+      "number": "57",
+      "residentCount": 10,
+      "residentLimit": 12
+    },
+    {
+      "at": "2026-10-30T04:06:28.867Z",
+      "event": "lookup exited reader cleanup completed",
+      "number": "128",
+      "reason": "lookup_session_stopped",
+      "cleanupConfirmed": true
+    },
+    {
+      "at": "2026-10-30T04:06:31.286Z",
+      "event": "airtest worker exit diagnostic",
+      "number": "176",
+      "expectedStop": true,
+      "stage": "unknown",
+      "cause": "unknown",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "at": "2026-10-30T04:06:31.342Z",
+      "event": "airtest worker stop completed",
+      "number": "176",
+      "reason": "lookup_session_stopped",
+      "exited": true,
+      "forced": false,
+      "cleanupConfirmed": true,
+      "elapsedMs": 1134
+    },
+    {
+      "at": "2026-10-30T04:06:32.058Z",
+      "event": "airtest worker exit diagnostic",
+      "number": "161",
+      "expectedStop": true,
+      "stage": "unknown",
+      "cause": "unknown",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "at": "2026-10-30T04:06:32.168Z",
+      "event": "airtest worker stop completed",
+      "number": "161",
+      "reason": "lookup_session_stopped",
+      "exited": true,
+      "forced": false,
+      "cleanupConfirmed": false,
+      "elapsedMs": 665
+    },
+    {
+      "at": "2026-10-30T04:06:37.545Z",
+      "event": "lookup exited reader cleanup completed",
+      "number": "142",
+      "reason": "lookup_session_stopped",
+      "cleanupConfirmed": true
+    },
+    {
+      "at": "2026-10-30T04:06:38.622Z",
+      "event": "Airtest/Poco worker probe failed; rebuilding before task",
+      "number": "53"
+    },
+    {
+      "at": "2026-10-30T04:06:38.776Z",
+      "event": "Airtest/Poco worker probe failed; rebuilding before task",
+      "number": "164"
+    },
+    {
+      "at": "2026-10-30T04:06:38.827Z",
+      "event": "Airtest/Poco worker probe failed; rebuilding before task",
+      "number": "101"
+    },
+    {
+      "at": "2026-10-30T04:06:39.009Z",
+      "event": "Airtest/Poco worker probe failed; rebuilding before task",
+      "number": "162"
+    },
+    {
+      "at": "2026-10-30T04:06:39.649Z",
+      "event": "forcing stuck airtest worker to stop",
+      "number": "57",
+      "reason": "lookup_reader_task_timeout"
+    },
+    {
+      "at": "2026-10-30T04:06:39.661Z",
+      "event": "airtest worker exit diagnostic",
+      "number": "57",
+      "expectedStop": true,
+      "stage": "unknown",
+      "cause": "unknown",
+      "exitCode": null,
+      "signal": "SIGTERM"
+    },
+    {
+      "at": "2026-10-30T04:06:39.815Z",
+      "event": "forcing stuck airtest worker to stop",
+      "number": "112",
+      "reason": "lookup_reader_task_timeout"
+    },
+    {
+      "at": "2026-10-30T04:06:39.825Z",
+      "event": "airtest worker exit diagnostic",
+      "number": "112",
+      "expectedStop": true,
+      "stage": "unknown",
+      "cause": "unknown",
+      "exitCode": null,
+      "signal": "SIGTERM"
+    },
+    {
+      "at": "2026-10-30T04:06:40.151Z",
+      "event": "airtest worker stop completed",
+      "number": "57",
+      "reason": "lookup_reader_task_timeout",
+      "exited": true,
+      "forced": true,
+      "cleanupConfirmed": true,
+      "elapsedMs": 5555
+    },
+    {
+      "at": "2026-10-30T04:06:40.382Z",
+      "event": "airtest worker stop completed",
+      "number": "112",
+      "reason": "lookup_reader_task_timeout",
+      "exited": true,
+      "forced": true,
+      "cleanupConfirmed": true,
+      "elapsedMs": 5568
+    },
+    {
+      "at": "2026-10-30T04:06:43.661Z",
+      "event": "forcing stuck airtest worker to stop",
+      "number": "53",
+      "reason": "lookup_reader_task_timeout"
+    },
+    {
+      "at": "2026-10-30T04:06:43.690Z",
+      "event": "airtest worker exit diagnostic",
+      "number": "53",
+      "expectedStop": true,
+      "stage": "unknown",
+      "cause": "unknown",
+      "exitCode": null,
+      "signal": "SIGTERM"
+    },
+    {
+      "at": "2026-10-30T04:06:43.819Z",
+      "event": "forcing stuck airtest worker to stop",
+      "number": "164",
+      "reason": "lookup_reader_task_timeout"
+    },
+    {
+      "at": "2026-10-30T04:06:43.849Z",
+      "event": "airtest worker exit diagnostic",
+      "number": "164",
+      "expectedStop": true,
+      "stage": "unknown",
+      "cause": "unknown",
+      "exitCode": null,
+      "signal": "SIGTERM"
+    },
+    {
+      "at": "2026-10-30T04:06:43.871Z",
+      "event": "forcing stuck airtest worker to stop",
+      "number": "101",
+      "reason": "lookup_reader_task_timeout"
+    },
+    {
+      "at": "2026-10-30T04:06:43.893Z",
+      "event": "airtest worker exit diagnostic",
+      "number": "101",
+      "expectedStop": true,
+      "stage": "unknown",
+      "cause": "unknown",
+      "exitCode": null,
+      "signal": "SIGTERM"
+    },
+    {
+      "at": "2026-10-30T04:06:44.010Z",
+      "event": "forcing stuck airtest worker to stop",
+      "number": "162",
+      "reason": "lookup_reader_task_timeout"
+    },
+    {
+      "at": "2026-10-30T04:06:44.032Z",
+      "event": "airtest worker exit diagnostic",
+      "number": "162",
+      "expectedStop": true,
+      "stage": "unknown",
+      "cause": "unknown",
+      "exitCode": null,
+      "signal": "SIGTERM"
+    },
+    {
+      "at": "2026-10-30T04:06:44.212Z",
+      "event": "airtest worker stop completed",
+      "number": "53",
+      "reason": "lookup_reader_task_timeout",
+      "exited": true,
+      "forced": true,
+      "cleanupConfirmed": true,
+      "elapsedMs": 5590
+    },
+    {
+      "at": "2026-10-30T04:06:44.216Z",
+      "event": "Airtest/Poco worker admitted",
+      "number": "53",
+      "residentCount": 3,
+      "residentLimit": 12
+    },
+    {
+      "at": "2026-10-30T04:06:44.389Z",
+      "event": "airtest worker stop completed",
+      "number": "101",
+      "reason": "lookup_reader_task_timeout",
+      "exited": true,
+      "forced": true,
+      "cleanupConfirmed": true,
+      "elapsedMs": 5562
+    },
+    {
+      "at": "2026-10-30T04:06:44.392Z",
+      "event": "Airtest/Poco worker admitted",
+      "number": "101",
+      "residentCount": 4,
+      "residentLimit": 12
+    },
+    {
+      "at": "2026-10-30T04:06:44.535Z",
+      "event": "airtest worker stop completed",
+      "number": "164",
+      "reason": "lookup_reader_task_timeout",
+      "exited": true,
+      "forced": true,
+      "cleanupConfirmed": true,
+      "elapsedMs": 5759
+    },
+    {
+      "at": "2026-10-30T04:06:44.537Z",
+      "event": "Airtest/Poco worker admitted",
+      "number": "164",
+      "residentCount": 5,
+      "residentLimit": 12
+    },
+    {
+      "at": "2026-10-30T04:06:44.712Z",
+      "event": "airtest worker stop completed",
+      "number": "162",
+      "reason": "lookup_reader_task_timeout",
+      "exited": true,
+      "forced": true,
+      "cleanupConfirmed": true,
+      "elapsedMs": 5703
+    },
+    {
+      "at": "2026-10-30T04:06:44.713Z",
+      "event": "Airtest/Poco worker admitted",
+      "number": "162",
+      "residentCount": 6,
+      "residentLimit": 12
+    },
+    {
+      "at": "2026-10-30T04:06:45.192Z",
+      "event": "airtest worker exit diagnostic",
+      "number": "138",
+      "expectedStop": true,
+      "stage": "unknown",
+      "cause": "unknown",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "at": "2026-10-30T04:06:45.229Z",
+      "event": "airtest worker stop completed",
+      "number": "138",
+      "reason": "poco_query_result_channel_timeout",
+      "exited": true,
+      "forced": false,
+      "cleanupConfirmed": true,
+      "elapsedMs": 1410
+    },
+    {
+      "at": "2026-10-30T04:06:45.231Z",
+      "event": "Airtest/Poco worker admitted",
+      "number": "138",
+      "residentCount": 6,
+      "residentLimit": 12
+    },
+    {
+      "at": "2026-10-30T04:06:45.449Z",
+      "event": "airtest worker exit diagnostic",
+      "number": "172",
+      "expectedStop": true,
+      "stage": "unknown",
+      "cause": "unknown",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "at": "2026-10-30T04:06:45.505Z",
+      "event": "airtest worker stop completed",
+      "number": "172",
+      "reason": "poco_query_result_channel_timeout",
+      "exited": true,
+      "forced": false,
+      "cleanupConfirmed": true,
+      "elapsedMs": 1427
+    },
+    {
+      "at": "2026-10-30T04:06:45.519Z",
+      "event": "Airtest/Poco worker admitted",
+      "number": "172",
+      "residentCount": 6,
+      "residentLimit": 12
+    },
+    {
+      "at": "2026-10-30T04:07:16.584Z",
+      "event": "lookup exited reader cleanup completed",
+      "number": "182",
+      "reason": "lookup_session_stopped",
+      "cleanupConfirmed": true
+    },
+    {
+      "at": "2026-10-30T04:07:20.308Z",
+      "event": "Airtest/Poco worker admitted",
+      "number": "152",
+      "residentCount": 7,
+      "residentLimit": 12
+    },
+    {
+      "at": "2026-10-30T04:07:29.512Z",
+      "event": "Airtest/Poco worker admitted",
+      "number": "176",
+      "residentCount": 8,
+      "residentLimit": 12
+    },
+    {
+      "at": "2026-10-30T04:07:48.087Z",
+      "event": "airtest worker exit diagnostic",
+      "number": "176",
+      "expectedStop": true,
+      "stage": "unknown",
+      "cause": "unknown",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "at": "2026-10-30T04:07:48.107Z",
+      "event": "airtest worker stop completed",
+      "number": "176",
+      "reason": "lookup_query_app_recovery",
+      "exited": true,
+      "forced": false,
+      "cleanupConfirmed": true,
+      "elapsedMs": 1496
+    },
+    {
+      "at": "2026-10-30T04:07:48.122Z",
+      "event": "Airtest/Poco worker admitted",
+      "number": "176",
+      "residentCount": 8,
+      "residentLimit": 12
+    },
+    {
+      "at": "2026-10-30T04:07:51.523Z",
+      "event": "forcing stuck airtest worker to stop",
+      "number": "152",
+      "reason": "lookup_query_app_recovery"
+    },
+    {
+      "at": "2026-10-30T04:07:51.638Z",
+      "event": "airtest worker exit diagnostic",
+      "number": "152",
+      "expectedStop": true,
+      "stage": "unknown",
+      "cause": "unknown",
+      "exitCode": null,
+      "signal": "SIGTERM"
+    },
+    {
+      "at": "2026-10-30T04:07:55.721Z",
+      "event": "forced airtest cleanup failed",
+      "number": "152",
+      "reason": "lookup_query_app_recovery"
+    },
+    {
+      "at": "2026-10-30T04:07:55.731Z",
+      "event": "airtest worker stop completed",
+      "number": "152",
+      "reason": "lookup_query_app_recovery",
+      "exited": true,
+      "forced": true,
+      "cleanupConfirmed": false,
+      "elapsedMs": 9237
+    }
+  ]
+}

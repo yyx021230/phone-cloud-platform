@@ -1,0 +1,1019 @@
+{
+  "at": "2026-11-02T06:17:22.357978+00:00",
+  "rows": [
+    {
+      "sessionId": "0f253e1a-40e2-4441-be58-4907d2e46c62",
+      "oldPhase": "unknown",
+      "oldGeneration": "83afd305-8f77-46ab-aafd-ea854eb4a888",
+      "session": {
+        "status": "ended",
+        "endedAt": "2026-11-02T06:14:48.273Z",
+        "deviceId": "adb:BIX4RWFAXSJJS8WO",
+        "createdAt": "2026-10-30T01:31:42.252Z",
+        "sessionId": "0f253e1a-40e2-4441-be58-4907d2e46c62",
+        "updatedAt": "2026-11-02T06:14:48.273Z"
+      },
+      "sessionKeys": [
+        "error",
+        "lockId",
+        "source",
+        "status",
+        "userId",
+        "endedAt",
+        "results",
+        "clientId",
+        "deviceId",
+        "createdAt",
+        "sessionId",
+        "updatedAt",
+        "limitReason",
+        "pendingJobId",
+        "savedAccounts",
+        "accountChoices",
+        "currentAccount",
+        "successfulCount",
+        "lastAccountSwitch",
+        "restrictionHistory",
+        "accountQueryStarted",
+        "automationHaltReason",
+        "requiresAccountSwitch",
+        "lookupStopConfirmation",
+        "accountIdentityVerified",
+        "managedLookupGeneration"
+      ],
+      "tasks": [
+        {
+          "task": {
+            "status": "succeeded",
+            "taskId": "7c4dc29a-b090-42cd-8446-d5edffcade48",
+            "deviceId": "adb:BIX4RWFAXSJJS8WO",
+            "createdAt": "2026-11-02T06:14:47.747Z",
+            "updatedAt": "2026-11-02T06:14:48.273Z",
+            "completedAt": "2026-11-02T06:14:48.273Z"
+          },
+          "payload": {
+            "automationJobId": "64af5203-129c-4fce-bf90-dde2a69e420a",
+            "automationSessionId": "0f253e1a-40e2-4441-be58-4907d2e46c62"
+          },
+          "result": {},
+          "resultKeys": [
+            "error",
+            "action",
+            "wallMs",
+            "message",
+            "notFound",
+            "errorCode",
+            "diagnostic",
+            "durationMs",
+            "packageName",
+            "executionMode",
+            "savedAccounts",
+            "currentAccount",
+            "timeoutSeconds",
+            "accountSwitched",
+            "currentActivity",
+            "recoveryAttempts",
+            "alipayDisplayName",
+            "realNameTailCharacter"
+          ]
+        }
+      ]
+    },
+    {
+      "sessionId": "e583a34c-ade7-452d-afdd-eca2beeab128",
+      "oldPhase": "stopping",
+      "oldGeneration": "2be31e4d-ee96-44f9-9419-8459223cd61b",
+      "session": {
+        "status": "ended",
+        "endedAt": "2026-11-02T06:14:48.498Z",
+        "deviceId": "adb:WSCEWSIVEYAQ7PM7",
+        "createdAt": "2026-10-30T01:33:41.323Z",
+        "sessionId": "e583a34c-ade7-452d-afdd-eca2beeab128",
+        "updatedAt": "2026-11-02T06:14:48.498Z"
+      },
+      "sessionKeys": [
+        "error",
+        "lockId",
+        "source",
+        "status",
+        "userId",
+        "endedAt",
+        "results",
+        "clientId",
+        "deviceId",
+        "createdAt",
+        "sessionId",
+        "updatedAt",
+        "limitReason",
+        "pendingJobId",
+        "savedAccounts",
+        "accountChoices",
+        "currentAccount",
+        "successfulCount",
+        "lastAccountSwitch",
+        "restrictionHistory",
+        "accountQueryStarted",
+        "automationHaltReason",
+        "requiresAccountSwitch",
+        "lookupStopConfirmation",
+        "accountIdentityVerified",
+        "managedLookupGeneration"
+      ],
+      "tasks": [
+        {
+          "task": {
+            "status": "succeeded",
+            "taskId": "7a46dc8c-65f2-47f8-baea-6b44ba35708d",
+            "deviceId": "adb:WSCEWSIVEYAQ7PM7",
+            "createdAt": "2026-11-02T06:14:47.795Z",
+            "updatedAt": "2026-11-02T06:14:48.498Z",
+            "completedAt": "2026-11-02T06:14:48.498Z"
+          },
+          "payload": {
+            "automationJobId": "238b0570-1446-4e93-8a98-b598928e11b8",
+            "automationSessionId": "e583a34c-ade7-452d-afdd-eca2beeab128"
+          },
+          "result": {},
+          "resultKeys": [
+            "error",
+            "action",
+            "wallMs",
+            "message",
+            "notFound",
+            "errorCode",
+            "diagnostic",
+            "durationMs",
+            "packageName",
+            "executionMode",
+            "savedAccounts",
+            "currentAccount",
+            "timeoutSeconds",
+            "accountSwitched",
+            "currentActivity",
+            "recoveryAttempts",
+            "alipayDisplayName",
+            "realNameTailCharacter"
+          ]
+        }
+      ]
+    },
+    {
+      "sessionId": "342be99b-e655-4419-9c33-4b3afd52bf6f",
+      "oldPhase": "unknown",
+      "oldGeneration": "4d92674e-3377-4be5-b099-ce268c56cccc",
+      "session": {
+        "status": "ended",
+        "endedAt": "2026-11-02T06:14:48.377Z",
+        "deviceId": "adb:D64LK7FMMJAU9969",
+        "createdAt": "2026-10-30T01:36:07.603Z",
+        "sessionId": "342be99b-e655-4419-9c33-4b3afd52bf6f",
+        "updatedAt": "2026-11-02T06:14:48.377Z"
+      },
+      "sessionKeys": [
+        "error",
+        "lockId",
+        "source",
+        "status",
+        "userId",
+        "endedAt",
+        "results",
+        "clientId",
+        "deviceId",
+        "createdAt",
+        "sessionId",
+        "updatedAt",
+        "limitReason",
+        "pendingJobId",
+        "savedAccounts",
+        "accountChoices",
+        "currentAccount",
+        "successfulCount",
+        "lastAccountSwitch",
+        "restrictionHistory",
+        "accountQueryStarted",
+        "automationHaltReason",
+        "requiresAccountSwitch",
+        "lookupStopConfirmation",
+        "accountIdentityVerified",
+        "managedLookupGeneration"
+      ],
+      "tasks": [
+        {
+          "task": {
+            "status": "succeeded",
+            "taskId": "b8061df7-3228-4de1-900d-9565e43f07fe",
+            "deviceId": "adb:D64LK7FMMJAU9969",
+            "createdAt": "2026-11-02T06:14:47.849Z",
+            "updatedAt": "2026-11-02T06:14:48.377Z",
+            "completedAt": "2026-11-02T06:14:48.377Z"
+          },
+          "payload": {
+            "automationJobId": "072989d9-a44f-40d1-ae29-42994e19b0cf",
+            "automationSessionId": "342be99b-e655-4419-9c33-4b3afd52bf6f"
+          },
+          "result": {},
+          "resultKeys": [
+            "error",
+            "action",
+            "wallMs",
+            "message",
+            "notFound",
+            "errorCode",
+            "diagnostic",
+            "durationMs",
+            "packageName",
+            "executionMode",
+            "savedAccounts",
+            "currentAccount",
+            "timeoutSeconds",
+            "accountSwitched",
+            "currentActivity",
+            "recoveryAttempts",
+            "alipayDisplayName",
+            "realNameTailCharacter"
+          ]
+        }
+      ]
+    },
+    {
+      "sessionId": "e7e37436-0479-4e07-a5e7-41ad4c3758ac",
+      "oldPhase": "quarantined",
+      "oldGeneration": "cc91092c-3db8-408d-931d-7fafd82bb7eb",
+      "session": {
+        "status": "ended",
+        "endedAt": "2026-11-02T06:14:48.002Z",
+        "deviceId": "adb:3H164J00LN000000",
+        "createdAt": "2026-10-30T04:54:13.762Z",
+        "sessionId": "e7e37436-0479-4e07-a5e7-41ad4c3758ac",
+        "updatedAt": "2026-11-02T06:14:48.002Z"
+      },
+      "sessionKeys": [
+        "error",
+        "lockId",
+        "source",
+        "status",
+        "userId",
+        "endedAt",
+        "results",
+        "clientId",
+        "deviceId",
+        "createdAt",
+        "sessionId",
+        "updatedAt",
+        "limitReason",
+        "pendingJobId",
+        "savedAccounts",
+        "accountChoices",
+        "currentAccount",
+        "successfulCount",
+        "lastAccountSwitch",
+        "restrictionHistory",
+        "accountQueryStarted",
+        "automationHaltReason",
+        "requiresAccountSwitch",
+        "lookupStopConfirmation",
+        "accountIdentityVerified",
+        "managedLookupGeneration"
+      ],
+      "tasks": [
+        {
+          "task": {
+            "status": "succeeded",
+            "taskId": "79eafd01-96a7-47a1-98b3-d725c7ff6c23",
+            "deviceId": "adb:3H164J00LN000000",
+            "createdAt": "2026-11-02T06:14:47.197Z",
+            "updatedAt": "2026-11-02T06:14:48.002Z",
+            "completedAt": "2026-11-02T06:14:48.002Z"
+          },
+          "payload": {
+            "automationJobId": "0a1f4e1b-0e8e-499e-b245-561a55b31226",
+            "automationSessionId": "e7e37436-0479-4e07-a5e7-41ad4c3758ac"
+          },
+          "result": {},
+          "resultKeys": [
+            "error",
+            "action",
+            "wallMs",
+            "message",
+            "notFound",
+            "errorCode",
+            "diagnostic",
+            "durationMs",
+            "packageName",
+            "executionMode",
+            "savedAccounts",
+            "currentAccount",
+            "timeoutSeconds",
+            "accountSwitched",
+            "currentActivity",
+            "recoveryAttempts",
+            "alipayDisplayName",
+            "realNameTailCharacter"
+          ]
+        }
+      ]
+    },
+    {
+      "sessionId": "c7b11106-427e-4506-b196-17eb9afbdcd5",
+      "oldPhase": "human",
+      "oldGeneration": "5d18ec2f-3e43-4aad-9aad-b49a8cfda8da",
+      "session": {
+        "status": "ended",
+        "endedAt": "2026-11-02T06:14:48.419Z",
+        "deviceId": "adb:10AEAQ1D7P00583",
+        "createdAt": "2026-11-02T05:42:58.189Z",
+        "sessionId": "c7b11106-427e-4506-b196-17eb9afbdcd5",
+        "updatedAt": "2026-11-02T06:14:48.419Z"
+      },
+      "sessionKeys": [
+        "error",
+        "lockId",
+        "source",
+        "status",
+        "userId",
+        "endedAt",
+        "results",
+        "clientId",
+        "deviceId",
+        "createdAt",
+        "sessionId",
+        "updatedAt",
+        "limitReason",
+        "pendingJobId",
+        "savedAccounts",
+        "accountChoices",
+        "currentAccount",
+        "successfulCount",
+        "lastAccountSwitch",
+        "restrictionHistory",
+        "accountQueryStarted",
+        "automationHaltReason",
+        "requiresAccountSwitch",
+        "lookupStopConfirmation",
+        "accountIdentityVerified",
+        "managedLookupGeneration"
+      ],
+      "tasks": [
+        {
+          "task": {
+            "status": "succeeded",
+            "taskId": "f88857b3-f7fe-4a42-9df8-df38a91f7c3c",
+            "deviceId": "adb:10AEAQ1D7P00583",
+            "createdAt": "2026-11-02T06:14:47.335Z",
+            "updatedAt": "2026-11-02T06:14:48.419Z",
+            "completedAt": "2026-11-02T06:14:48.419Z"
+          },
+          "payload": {
+            "automationJobId": "0ba61fe1-f6b5-4058-b607-4186f4af5c2a",
+            "automationSessionId": "c7b11106-427e-4506-b196-17eb9afbdcd5"
+          },
+          "result": {},
+          "resultKeys": [
+            "error",
+            "action",
+            "wallMs",
+            "message",
+            "notFound",
+            "errorCode",
+            "diagnostic",
+            "durationMs",
+            "packageName",
+            "executionMode",
+            "savedAccounts",
+            "currentAccount",
+            "timeoutSeconds",
+            "accountSwitched",
+            "currentActivity",
+            "recoveryAttempts",
+            "alipayDisplayName",
+            "realNameTailCharacter"
+          ]
+        }
+      ]
+    },
+    {
+      "sessionId": "a2e3fcea-d3a8-4c13-9e78-7287dcaa1659",
+      "oldPhase": "stopping",
+      "oldGeneration": "a70ab641-62b1-4361-852a-5971bdb82473",
+      "session": {
+        "status": "ended",
+        "endedAt": "2026-11-02T06:11:19.120Z",
+        "deviceId": "adb:10AF2G1FNM009QL",
+        "createdAt": "2026-11-02T05:45:48.314Z",
+        "sessionId": "a2e3fcea-d3a8-4c13-9e78-7287dcaa1659",
+        "updatedAt": "2026-11-02T06:11:19.120Z"
+      },
+      "sessionKeys": [
+        "error",
+        "lockId",
+        "source",
+        "status",
+        "userId",
+        "endedAt",
+        "results",
+        "clientId",
+        "deviceId",
+        "createdAt",
+        "sessionId",
+        "updatedAt",
+        "limitReason",
+        "pendingJobId",
+        "savedAccounts",
+        "accountChoices",
+        "currentAccount",
+        "successfulCount",
+        "lastAccountSwitch",
+        "restrictionHistory",
+        "accountQueryStarted",
+        "automationHaltReason",
+        "requiresAccountSwitch",
+        "lookupStopConfirmation",
+        "accountIdentityVerified",
+        "managedLookupGeneration"
+      ],
+      "tasks": [
+        {
+          "task": {
+            "status": "succeeded",
+            "taskId": "a05bdf5b-77d1-4233-af79-d9ab44137278",
+            "deviceId": "adb:10AF2G1FNM009QL",
+            "createdAt": "2026-11-02T06:11:15.856Z",
+            "updatedAt": "2026-11-02T06:11:19.120Z",
+            "completedAt": "2026-11-02T06:11:19.120Z"
+          },
+          "payload": {
+            "automationJobId": "7a57efd2-ffdc-495d-b15d-026a9789b925",
+            "automationSessionId": "a2e3fcea-d3a8-4c13-9e78-7287dcaa1659"
+          },
+          "result": {},
+          "resultKeys": [
+            "error",
+            "action",
+            "wallMs",
+            "message",
+            "notFound",
+            "errorCode",
+            "diagnostic",
+            "durationMs",
+            "packageName",
+            "executionMode",
+            "savedAccounts",
+            "currentAccount",
+            "timeoutSeconds",
+            "accountSwitched",
+            "currentActivity",
+            "recoveryAttempts",
+            "alipayDisplayName",
+            "realNameTailCharacter"
+          ]
+        }
+      ]
+    },
+    {
+      "sessionId": "7f180027-7152-4f3c-ad7f-4de3375aa681",
+      "oldPhase": "stopping",
+      "oldGeneration": "56d84015-b78a-42b1-b783-3d574ecf53bb",
+      "session": {
+        "status": "ended",
+        "endedAt": "2026-11-02T06:11:20.803Z",
+        "deviceId": "adb:10HG1SF983000X8",
+        "createdAt": "2026-11-02T05:47:12.831Z",
+        "sessionId": "7f180027-7152-4f3c-ad7f-4de3375aa681",
+        "updatedAt": "2026-11-02T06:11:20.803Z"
+      },
+      "sessionKeys": [
+        "error",
+        "lockId",
+        "source",
+        "status",
+        "userId",
+        "endedAt",
+        "results",
+        "clientId",
+        "deviceId",
+        "createdAt",
+        "sessionId",
+        "updatedAt",
+        "limitReason",
+        "pendingJobId",
+        "savedAccounts",
+        "accountChoices",
+        "currentAccount",
+        "successfulCount",
+        "lastAccountSwitch",
+        "restrictionHistory",
+        "accountQueryStarted",
+        "automationHaltReason",
+        "requiresAccountSwitch",
+        "lookupStopConfirmation",
+        "accountIdentityVerified",
+        "managedLookupGeneration"
+      ],
+      "tasks": [
+        {
+          "task": {
+            "status": "succeeded",
+            "taskId": "5a76b275-958a-44cd-a7c6-f304bd38930e",
+            "deviceId": "adb:10HG1SF983000X8",
+            "createdAt": "2026-11-02T06:11:15.918Z",
+            "updatedAt": "2026-11-02T06:11:20.803Z",
+            "completedAt": "2026-11-02T06:11:20.803Z"
+          },
+          "payload": {
+            "automationJobId": "6612cc32-efb7-4a35-bec4-76d0ecc50419",
+            "automationSessionId": "7f180027-7152-4f3c-ad7f-4de3375aa681"
+          },
+          "result": {},
+          "resultKeys": [
+            "error",
+            "action",
+            "wallMs",
+            "message",
+            "notFound",
+            "errorCode",
+            "diagnostic",
+            "durationMs",
+            "packageName",
+            "executionMode",
+            "savedAccounts",
+            "currentAccount",
+            "timeoutSeconds",
+            "accountSwitched",
+            "currentActivity",
+            "recoveryAttempts",
+            "alipayDisplayName",
+            "realNameTailCharacter"
+          ]
+        }
+      ]
+    },
+    {
+      "sessionId": "a2b54527-1545-4a87-989e-e576c39cada8",
+      "oldPhase": "stopping",
+      "oldGeneration": "18930f0b-358b-4de2-8e7c-fc6039b7d766",
+      "session": {
+        "status": "ended",
+        "endedAt": "2026-11-02T06:14:48.822Z",
+        "deviceId": "adb:10AF7J261500DUS",
+        "createdAt": "2026-11-02T05:49:24.705Z",
+        "sessionId": "a2b54527-1545-4a87-989e-e576c39cada8",
+        "updatedAt": "2026-11-02T06:14:48.822Z"
+      },
+      "sessionKeys": [
+        "error",
+        "lockId",
+        "source",
+        "status",
+        "userId",
+        "endedAt",
+        "results",
+        "clientId",
+        "deviceId",
+        "createdAt",
+        "sessionId",
+        "updatedAt",
+        "limitReason",
+        "pendingJobId",
+        "savedAccounts",
+        "accountChoices",
+        "currentAccount",
+        "successfulCount",
+        "lastAccountSwitch",
+        "restrictionHistory",
+        "accountQueryStarted",
+        "automationHaltReason",
+        "requiresAccountSwitch",
+        "lookupStopConfirmation",
+        "accountIdentityVerified",
+        "managedLookupGeneration"
+      ],
+      "tasks": [
+        {
+          "task": {
+            "status": "succeeded",
+            "taskId": "f7febd66-5ff5-4d55-bc58-7915e0c90b7b",
+            "deviceId": "adb:10AF7J261500DUS",
+            "createdAt": "2026-11-02T06:11:15.978Z",
+            "updatedAt": "2026-11-02T06:14:48.822Z",
+            "completedAt": "2026-11-02T06:14:48.822Z"
+          },
+          "payload": {
+            "automationJobId": "cabda052-188c-4c2b-9f74-1b031d1c8d43",
+            "automationSessionId": "a2b54527-1545-4a87-989e-e576c39cada8"
+          },
+          "result": {},
+          "resultKeys": [
+            "error",
+            "action",
+            "wallMs",
+            "message",
+            "notFound",
+            "errorCode",
+            "diagnostic",
+            "durationMs",
+            "packageName",
+            "executionMode",
+            "savedAccounts",
+            "currentAccount",
+            "timeoutSeconds",
+            "accountSwitched",
+            "currentActivity",
+            "recoveryAttempts",
+            "alipayDisplayName",
+            "realNameTailCharacter"
+          ]
+        }
+      ]
+    },
+    {
+      "sessionId": "eedc72f3-bc1c-4139-9d89-0708b4f125a0",
+      "oldPhase": "stopping",
+      "oldGeneration": "2023e194-b385-4b76-8f2c-abac883087ce",
+      "session": {
+        "status": "ended",
+        "endedAt": "2026-11-02T06:11:20.543Z",
+        "deviceId": "adb:10AF2G1FNQ009QL",
+        "createdAt": "2026-11-02T05:49:47.583Z",
+        "sessionId": "eedc72f3-bc1c-4139-9d89-0708b4f125a0",
+        "updatedAt": "2026-11-02T06:11:20.543Z"
+      },
+      "sessionKeys": [
+        "error",
+        "lockId",
+        "source",
+        "status",
+        "userId",
+        "endedAt",
+        "results",
+        "clientId",
+        "deviceId",
+        "createdAt",
+        "sessionId",
+        "updatedAt",
+        "limitReason",
+        "pendingJobId",
+        "savedAccounts",
+        "accountChoices",
+        "currentAccount",
+        "successfulCount",
+        "lastAccountSwitch",
+        "restrictionHistory",
+        "accountQueryStarted",
+        "automationHaltReason",
+        "requiresAccountSwitch",
+        "lookupStopConfirmation",
+        "accountIdentityVerified",
+        "managedLookupGeneration"
+      ],
+      "tasks": [
+        {
+          "task": {
+            "status": "succeeded",
+            "taskId": "3ebe50d3-544e-43eb-b894-84aa0f182a70",
+            "deviceId": "adb:10AF2G1FNQ009QL",
+            "createdAt": "2026-11-02T06:11:16.039Z",
+            "updatedAt": "2026-11-02T06:11:20.543Z",
+            "completedAt": "2026-11-02T06:11:20.543Z"
+          },
+          "payload": {
+            "automationJobId": "e560ddc3-18d1-4cb7-9692-2b7ad5064fea",
+            "automationSessionId": "eedc72f3-bc1c-4139-9d89-0708b4f125a0"
+          },
+          "result": {},
+          "resultKeys": [
+            "error",
+            "action",
+            "wallMs",
+            "message",
+            "notFound",
+            "errorCode",
+            "diagnostic",
+            "durationMs",
+            "packageName",
+            "executionMode",
+            "savedAccounts",
+            "currentAccount",
+            "timeoutSeconds",
+            "accountSwitched",
+            "currentActivity",
+            "recoveryAttempts",
+            "alipayDisplayName",
+            "realNameTailCharacter"
+          ]
+        }
+      ]
+    },
+    {
+      "sessionId": "4b58b629-0a91-46a2-8be4-701d081bd161",
+      "oldPhase": "stopping",
+      "oldGeneration": "68317c18-34b2-44da-9b5f-eab1258d6517",
+      "session": {
+        "status": "ended",
+        "endedAt": "2026-11-02T06:11:20.793Z",
+        "deviceId": "adb:10HFC6F3S0000T4",
+        "createdAt": "2026-11-02T05:54:18.798Z",
+        "sessionId": "4b58b629-0a91-46a2-8be4-701d081bd161",
+        "updatedAt": "2026-11-02T06:11:20.793Z"
+      },
+      "sessionKeys": [
+        "error",
+        "lockId",
+        "source",
+        "status",
+        "userId",
+        "endedAt",
+        "results",
+        "clientId",
+        "deviceId",
+        "createdAt",
+        "sessionId",
+        "updatedAt",
+        "limitReason",
+        "pendingJobId",
+        "savedAccounts",
+        "accountChoices",
+        "currentAccount",
+        "successfulCount",
+        "lastAccountSwitch",
+        "restrictionHistory",
+        "accountQueryStarted",
+        "automationHaltReason",
+        "requiresAccountSwitch",
+        "lookupStopConfirmation",
+        "accountIdentityVerified",
+        "managedLookupGeneration"
+      ],
+      "tasks": [
+        {
+          "task": {
+            "status": "succeeded",
+            "taskId": "d76c2433-91ec-40fd-b8cb-ff98e2ed353b",
+            "deviceId": "adb:10HFC6F3S0000T4",
+            "createdAt": "2026-11-02T06:11:16.105Z",
+            "updatedAt": "2026-11-02T06:11:20.793Z",
+            "completedAt": "2026-11-02T06:11:20.793Z"
+          },
+          "payload": {
+            "automationJobId": "5bb62c06-99bc-42ad-9dec-4d29ef55dc56",
+            "automationSessionId": "4b58b629-0a91-46a2-8be4-701d081bd161"
+          },
+          "result": {},
+          "resultKeys": [
+            "error",
+            "action",
+            "wallMs",
+            "message",
+            "notFound",
+            "errorCode",
+            "diagnostic",
+            "durationMs",
+            "packageName",
+            "executionMode",
+            "savedAccounts",
+            "currentAccount",
+            "timeoutSeconds",
+            "accountSwitched",
+            "currentActivity",
+            "recoveryAttempts",
+            "alipayDisplayName",
+            "realNameTailCharacter"
+          ]
+        }
+      ]
+    },
+    {
+      "sessionId": "9d32e3cd-fe78-4ba8-adfe-faf1fa7d516f",
+      "oldPhase": "stopping",
+      "oldGeneration": "8b11fe9a-2dbe-4221-82d7-25532e50574d",
+      "session": {
+        "status": "ended",
+        "endedAt": "2026-11-02T06:11:20.485Z",
+        "deviceId": "adb:1f9ed7bc",
+        "createdAt": "2026-11-02T06:08:23.318Z",
+        "sessionId": "9d32e3cd-fe78-4ba8-adfe-faf1fa7d516f",
+        "updatedAt": "2026-11-02T06:11:20.485Z"
+      },
+      "sessionKeys": [
+        "error",
+        "lockId",
+        "source",
+        "status",
+        "userId",
+        "endedAt",
+        "results",
+        "clientId",
+        "deviceId",
+        "createdAt",
+        "sessionId",
+        "updatedAt",
+        "limitReason",
+        "pendingJobId",
+        "savedAccounts",
+        "accountChoices",
+        "currentAccount",
+        "successfulCount",
+        "lastAccountSwitch",
+        "restrictionHistory",
+        "accountQueryStarted",
+        "automationHaltReason",
+        "requiresAccountSwitch",
+        "lookupStopConfirmation",
+        "accountIdentityVerified",
+        "managedLookupGeneration"
+      ],
+      "tasks": [
+        {
+          "task": {
+            "status": "succeeded",
+            "taskId": "c3914c25-74bb-432a-8608-7e5936ae77c1",
+            "deviceId": "adb:1f9ed7bc",
+            "createdAt": "2026-11-02T06:11:16.234Z",
+            "updatedAt": "2026-11-02T06:11:20.485Z",
+            "completedAt": "2026-11-02T06:11:20.485Z"
+          },
+          "payload": {
+            "automationJobId": "d65ba1e5-b794-4e63-85c4-6e546253e1c8",
+            "automationSessionId": "9d32e3cd-fe78-4ba8-adfe-faf1fa7d516f"
+          },
+          "result": {},
+          "resultKeys": [
+            "error",
+            "action",
+            "wallMs",
+            "message",
+            "notFound",
+            "errorCode",
+            "diagnostic",
+            "durationMs",
+            "packageName",
+            "executionMode",
+            "savedAccounts",
+            "currentAccount",
+            "timeoutSeconds",
+            "accountSwitched",
+            "currentActivity",
+            "recoveryAttempts",
+            "alipayDisplayName",
+            "realNameTailCharacter"
+          ]
+        }
+      ]
+    },
+    {
+      "sessionId": "c2e81adc-31e4-4d1e-bf69-d04d82fa62ec",
+      "oldPhase": "stopping",
+      "oldGeneration": "fbc9e82a-4c9b-4485-bd73-cdb1f1a138f0",
+      "session": {
+        "status": "ended",
+        "endedAt": "2026-11-02T06:14:48.970Z",
+        "deviceId": "adb:10HFC6F1SU000T4",
+        "createdAt": "2026-11-02T06:10:01.532Z",
+        "sessionId": "c2e81adc-31e4-4d1e-bf69-d04d82fa62ec",
+        "updatedAt": "2026-11-02T06:14:48.970Z"
+      },
+      "sessionKeys": [
+        "error",
+        "lockId",
+        "source",
+        "status",
+        "userId",
+        "endedAt",
+        "results",
+        "clientId",
+        "deviceId",
+        "createdAt",
+        "sessionId",
+        "updatedAt",
+        "limitReason",
+        "pendingJobId",
+        "savedAccounts",
+        "accountChoices",
+        "currentAccount",
+        "successfulCount",
+        "lastAccountSwitch",
+        "restrictionHistory",
+        "accountQueryStarted",
+        "automationHaltReason",
+        "requiresAccountSwitch",
+        "lookupStopConfirmation",
+        "accountIdentityVerified",
+        "managedLookupGeneration"
+      ],
+      "tasks": [
+        {
+          "task": {
+            "status": "succeeded",
+            "taskId": "f63af657-bcc2-4e1d-8a5c-d9866debb066",
+            "deviceId": "adb:10HFC6F1SU000T4",
+            "createdAt": "2026-11-02T06:11:16.305Z",
+            "updatedAt": "2026-11-02T06:14:48.970Z",
+            "completedAt": "2026-11-02T06:14:48.970Z"
+          },
+          "payload": {
+            "automationJobId": "14a0e3ba-2cb5-436e-ab1f-40d0719d678b",
+            "automationSessionId": "c2e81adc-31e4-4d1e-bf69-d04d82fa62ec"
+          },
+          "result": {},
+          "resultKeys": [
+            "error",
+            "action",
+            "wallMs",
+            "message",
+            "notFound",
+            "errorCode",
+            "diagnostic",
+            "durationMs",
+            "packageName",
+            "executionMode",
+            "savedAccounts",
+            "currentAccount",
+            "timeoutSeconds",
+            "accountSwitched",
+            "currentActivity",
+            "recoveryAttempts",
+            "alipayDisplayName",
+            "realNameTailCharacter"
+          ]
+        }
+      ]
+    },
+    {
+      "sessionId": "4b28068a-7a29-4191-a88e-071a9871933d",
+      "oldPhase": "stopping",
+      "oldGeneration": "e4e6b4a9-c2b0-4510-97b3-be77fc86c2cf",
+      "session": {
+        "status": "ended",
+        "endedAt": "2026-11-02T06:14:48.000Z",
+        "deviceId": "adb:10AF1D0CGG0091C",
+        "createdAt": "2026-11-02T06:10:06.490Z",
+        "sessionId": "4b28068a-7a29-4191-a88e-071a9871933d",
+        "updatedAt": "2026-11-02T06:14:48.000Z"
+      },
+      "sessionKeys": [
+        "error",
+        "lockId",
+        "source",
+        "status",
+        "userId",
+        "endedAt",
+        "results",
+        "clientId",
+        "deviceId",
+        "createdAt",
+        "sessionId",
+        "updatedAt",
+        "limitReason",
+        "pendingJobId",
+        "savedAccounts",
+        "accountChoices",
+        "currentAccount",
+        "successfulCount",
+        "lastAccountSwitch",
+        "restrictionHistory",
+        "accountQueryStarted",
+        "automationHaltReason",
+        "requiresAccountSwitch",
+        "lookupStopConfirmation",
+        "accountIdentityVerified",
+        "managedLookupGeneration"
+      ],
+      "tasks": [
+        {
+          "task": {
+            "status": "succeeded",
+            "taskId": "b01962c6-4075-48f7-9e37-797e47857b79",
+            "deviceId": "adb:10AF1D0CGG0091C",
+            "createdAt": "2026-11-02T06:11:16.369Z",
+            "updatedAt": "2026-11-02T06:14:48.000Z",
+            "completedAt": "2026-11-02T06:14:48.000Z"
+          },
+          "payload": {
+            "automationJobId": "1ec72647-78ff-4188-aa87-7df223e29be6",
+            "automationSessionId": "4b28068a-7a29-4191-a88e-071a9871933d"
+          },
+          "result": {},
+          "resultKeys": [
+            "error",
+            "action",
+            "wallMs",
+            "message",
+            "notFound",
+            "errorCode",
+            "diagnostic",
+            "durationMs",
+            "packageName",
+            "executionMode",
+            "savedAccounts",
+            "currentAccount",
+            "timeoutSeconds",
+            "accountSwitched",
+            "currentActivity",
+            "recoveryAttempts",
+            "alipayDisplayName",
+            "realNameTailCharacter"
+          ]
+        }
+      ]
+    }
+  ]
+}

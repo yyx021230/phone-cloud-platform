@@ -1,0 +1,236 @@
+{
+  "version": "wecom-platform-20261028-rc.2",
+  "mode": "preview_only",
+  "sourceCommit": "f2e8bf7689d044dd088af6359eb03439507e01d8",
+  "baselineVersion": "platform-integration-20261028-deployed.1",
+  "baselineImage": "sha256:fca45ec32e72b0787e4375fd6812a5ac97d3aebec4b830b6393b03117554b45e",
+  "baselineTag": "phone-cloud-platform:platform-integration-20261028-rc.2",
+  "imageTag": "phone-cloud-platform:wecom-preview-20261028-rc2",
+  "cloudFiles": {
+    "server/index.mjs": {
+      "before": "999bef9821e57ec9729f14ca5d8bb19ec2099f8ab6c0d64f445d9cd2433218da",
+      "after": "4c018404102c65801a04ec4aba181678d7e52161bf591ebcbbc44f68e32e3436"
+    },
+    "server/automation-center.mjs": {
+      "before": "49cc414f4b6dd1edf550d94140b32f46f98493a2db0bf9781660cdcd323a6344",
+      "after": "e1d7e001bfe42582bacf2366f89ddda4df2c7cdb0fa306996c96a15e3bd97d9d"
+    },
+    "server/wecom-preview.mjs": {
+      "before": null,
+      "after": "02f57813db413cdd4b694afbb814681256e1f63f1970be306492bad90c4b4820"
+    },
+    "server/wecom-preview-devices.json": {
+      "before": null,
+      "after": "13a9bb4004cfbbd22153a2944d822eba888473055ed525a2e2db91659b424159"
+    },
+    "public/index.html": {
+      "before": "185aded6485a64a9f905389b09c8cc18530540a5a01691e8305c5728333bd7ee",
+      "after": "123a85de9e915b33aac58ef6d7cacbe36b541a61217b3c866a996c86812aa757"
+    },
+    "public/wecom-preview.html": {
+      "before": null,
+      "after": "c7890db70517a635224046c289eb096e5f05b407a35236415b5b22d68850da96"
+    },
+    "public/wecom-preview.js": {
+      "before": null,
+      "after": "650bd1c61121a6a06bde09e4597c36a258ae8e3265e434f243ade04604352cf2"
+    },
+    "public/wecom-preview.css": {
+      "before": null,
+      "after": "1238557a85819a9fe7c160e62bc9ec38fac7e1afbe99226a79b81c07c381e4c8"
+    },
+    "public/wecom-preview-api.md": {
+      "before": null,
+      "after": "88126a769738c85d61d3d104af2bbb8a20a07c9e3c02f37cfb0d597ab1cd2d81"
+    }
+  },
+  "baselineCompose": [
+    {
+      "path": "/opt/phone-cloud-platform/docker-compose.yml",
+      "sha256": "8687bf4176f8f0d78ab73380a7ef0fd6b71bf044de5474f172ef5483d3e47435"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/platform-api-integration-20261012-rc.3/compose.candidate.json",
+      "sha256": "45f735c99379398e200b9323e4016fd75dc6f1b7a6c0895340b5434f3f02a14e"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/platform-core-20261014-rc.7/compose.candidate.json",
+      "sha256": "378eed4ea3daba1dd3513c6f2f1ec14bf3fefdab0aa4b9c1bb9e73175f919c4d"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/platform-core-20261014-rc.7/compose.coordinator.json",
+      "sha256": "99ad53a185e5a6f603a5adfe0d6c86f2d630f9365ae4dedeaec05a898a767f5d"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-delivery-20261014-rc.1/compose.delivery.json",
+      "sha256": "2e4812b1cc488aad42a2ac08741aaeeea3fd2f53effce0c0a10a3a06ac61b01b"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-readiness-20261015-rc.1/compose.readiness.json",
+      "sha256": "a66295d203cd2525123c9f32b9168bbbb4320e45f6ed92043ff65bb39174e933"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-readiness-20261015-rc.3/compose.pending.json",
+      "sha256": "f5c40ceaf29d6667f9b610f3285892faad52ca11cab012f397cbfb938161374b"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-readiness-20261015-rc.8/compose.pending.json",
+      "sha256": "1f62d68c0c88a06c59d1a4427b4ce40ca30c7733492ba20bed03daf0e08e2fde"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-readiness-20261015-rc.13/compose.pending.json",
+      "sha256": "c33ca7e966eeabf1a0e749f28eccd364c01c547735b24d9517d17f02dde5eb76"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-readiness-20261015-rc.14/compose.pending.json",
+      "sha256": "219af8cfef1f124b39a7d58fd2bb44f59c2c82f1b5ade1301bbc9af0f2f5c9b8"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-readiness-20261015-rc.15/compose.pending.json",
+      "sha256": "ede1c88807ca9698aed508965802e72fc4e920889bc0b0b8f78ba106fdcd7638"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-readiness-20261016-rc.16/compose.pending.json",
+      "sha256": "d0c25199840f5a36acb4e8c12b6c252396f2cae9a152e5e9ae6dc1ee8bb77436"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-public-docs-20261016-rc.1/compose.pending.json",
+      "sha256": "987bdbefc20f68805b3d8f0498ec645ad85d5f6e5fa19a13d85386640ed8c0fa"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-http-guide-20261016-rc.1/compose.pending.json",
+      "sha256": "b216af8c4e68d641818e9539d4c1b55a3b4429ab904228ae0fb2bf38e6e9123b"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-api-key-20261016-rc.2/compose.pending.json",
+      "sha256": "f3823f6ec1a5a04257a07aa0ba3de3e041e449038f92e463b6bc9e936465966d"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-account-offline-20261016-rc.1/compose.pending.json",
+      "sha256": "7f3601809eae0e23a48b4690ee3c70e81b569256471dd8699ac14ce7cd9a5de2"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-auto-recovery-20261016-rc.1/compose.pending.json",
+      "sha256": "5a8de49adecbfb66086ecfd93460f43b6c9dee4e40acf47ca0987aa695dbe096"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-round-stop-20261016-rc.1/compose.pending.json",
+      "sha256": "5240bf294415130e75c0da3e41736a3f82454a27fc736b1afe593106b029e4a1"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/recovery-feedback-20261019-rc.1/compose.frontend.json",
+      "sha256": "d2041afb6ff7f29c95083fc80d0adc0fdafddd0b66de596574e96712a6a29e58"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-idle-refresh-20261020-rc.2/compose.pending.json",
+      "sha256": "62b5e28d971d9e8b7b2cdbae9ec930d94f459b04c368581897e72d8ee2865e49"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-offline-round-stop-20261020-rc.2/compose.pending.json",
+      "sha256": "caac8029057751f549235d389b84079aa97eb5bb38dff1526783e1d02a6e5933"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-snapshot-recovery-20261021-rc.1/compose.pending.json",
+      "sha256": "142f87106f19a593fd4ba61b8c0bdf8679d19bebe26b4014cb12cfea37de9faf"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-ocr-snapshot-20261021-rc.1/compose.pending.json",
+      "sha256": "8815a4121ad58caf1970683ce5246f4a08a699f3191d3ccf350a7c18c06ce970"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-scheduling-20261021-rc.3/compose.pending.json",
+      "sha256": "6bfe7c79d89e62ebb2f56b7a3fa830d7ca1e0c746a204465f8b16191c598fe72"
+    },
+    {
+      "path": "/opt/phone-cloud-staging/lookup-throughput-20261022-rc.4-prep.1/compose.pending.json",
+      "sha256": "bbbbc75b6bd570ac32f95573ff5a82b01013bdbb711356302217793a61c94ae6"
+    },
+    {
+      "path": "/opt/phone-cloud-staging/lookup-ai-vision-20261022-rc.1/compose.pending.json",
+      "sha256": "65226acb7e5380048a3efcd57af6160decfbd484f99d6006e772dc8ce8c4784f"
+    },
+    {
+      "path": "/opt/phone-cloud-staging/lookup-recovery-20261023-rc.6/compose.pending.json",
+      "sha256": "5672277f368aeb3eedef96ac9bda60e02407d928b15d4a26bcd510e0b084c918"
+    },
+    {
+      "path": "/opt/phone-cloud-staging/lookup-final-20261023-rc.1/compose.pending.json",
+      "sha256": "ee03052205d418f2cd680b07000cbd644f3e22dff06f035f5640ea5476c9c769"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/platform-oom-recovery-20261026-rc2/compose.pending.json",
+      "sha256": "5ccb9ffe5d684b8f6af9ed4227abcb258d75f52abefaa4a5a0ff05f719a4c5c5"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/lookup-rc5-streaming-20261026-rc1/compose.pending.json",
+      "sha256": "57d3939dd3962591e9c0216ddc1579928da0227a002c38851940e73800163aaf"
+    },
+    {
+      "path": "/opt/phone-cloud-platform/staging/platform-integration-20261028-rc.2/compose.platform.json",
+      "sha256": "c38598a990dfd64e0b0c9bb39eb72206900a1897a48a4dbbbb8348f0f95daf9a"
+    }
+  ],
+  "baselineActiveSha256": "0331c108d9ffd150ecc3118ff984ff1fc2edbd24f5c99454e56ccc8d539e51e8",
+  "status": "candidate_ready_pending_maintenance",
+  "deployed": false,
+  "productionAcceptanceComplete": false,
+  "windowsSourceCommit": "7f32118aff797069bc173ec332bf2188dba480b6",
+  "windowsFiles": {
+    "src/index.mjs": {
+      "before": "884bc370558e6b0b3f2d0d46dee309da4467757b613c0da03576de8f9b34df74",
+      "after": "cbd6dceca618b57471594d602f46e092c5f6f4b7cff2ea26df19dff050d34e3f"
+    },
+    "src/wecom-preview-task.mjs": {
+      "before": null,
+      "after": "126546338fd08bdda693d0e7964c8cd9dde011851263883ca81b6f5815645b1e"
+    },
+    "scripts/wecom_invite_preview.py": {
+      "before": "11bd468f1ca57ae193ea3e41f7911aebe404d1e7ad8f63898ccab8f5eb8d2f67",
+      "after": "f7329cf01b0d9c7f750b730d570826099abba4df6581931eb395f74527ae8692"
+    },
+    "scripts/wecom_remark_preview.py": {
+      "before": "bcfadd95c6ad69b5b957d49e37f450ff1f1b0911411047dc7393dedf746d8207",
+      "after": "8109a5cd7f35a877f29fe431dbf85040282e70c70d8b63dc86f0034083a536b5"
+    },
+    "scripts/wecom_rpc_budget.py": {
+      "before": null,
+      "after": "60aab705ab8b1a5282da225ac5e7f3ac27c90c01749e4637e0dfe732e906bff6"
+    },
+    "scripts/wecom_startup_guards.py": {
+      "before": null,
+      "after": "82fcf0d5ccc3d8aceab9901ac663725fcc9bf6b5f072715d18892036652f6d25"
+    },
+    "scripts/wecom_platform_preview.py": {
+      "before": null,
+      "after": "0f2946f219e5f1138674d3372d256be521063930385b6ef2eebb1c3d6b0e0e04"
+    },
+    "scripts/wecom_preview_devices.json": {
+      "before": null,
+      "after": "13a9bb4004cfbbd22153a2944d822eba888473055ed525a2e2db91659b424159"
+    }
+  },
+  "imageId": "sha256:8abefc2f1d6217704ebf3ea43e621000d5fc5e554fbed9e87f249fb1726e62ee",
+  "baselineFinalActiveSha256": "4bb61c39a8a5cd912069ed494d84dba1af4cf3cc37adbac8285db935586b995a",
+  "baselineFinalReceiptMetadataOnly": true,
+  "cloudPreparationSourceCommit": "f2e8bf7689d044dd088af6359eb03439507e01d8",
+  "coreSourceCommit": "e01c40fa48200bfdeb32d281fa29049ea00f7d21",
+  "adbIdentityFrozen": true,
+  "candidateTag": "wecom-platform-20261028-rc.2",
+  "productionApiRealPhoneAcceptance": false,
+  "rules": {
+    "/Users/yyx/.codex/worktrees/wecom-platform-20261028-v2/phone-cloud-platform/AGENTS.md": "549a35afefa84f1556420ca85c4506c304fca2dc6aeed18b498d38277fcde06a",
+    "/Users/yyx/ztqc/PROJECT_WORKFLOW.md": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+  },
+  "deviceNumbers": [
+    "23",
+    "25",
+    "43",
+    "59",
+    "93",
+    "145",
+    "155",
+    "157"
+  ],
+  "maxNonterminalJobs": 2,
+  "invitationSendingSupported": false
+}

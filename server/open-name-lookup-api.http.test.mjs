@@ -92,6 +92,7 @@ test("isolated external name lookup API covers auth, idempotency, human resume a
     return response.task;
   }
   async function finishTask(agentToken, task, status, result) {
+    if (status === "succeeded" && task.type === "alipay_name_stop") result={...result,diagnostic:{lookupStopProof:{version:1,readerCleanupConfirmed:true,taskId:task.taskId,sessionId:task.payload.automationSessionId,generation:String(task.payload.managedLookup?.generation||"")}}};
     // Model the verified picker returned by the protocol-v1 fake Agent.
     // Missing or ambiguous identity must still be rejected by the server.
     if (status === "succeeded" && task.type !== "alipay_name_stop"

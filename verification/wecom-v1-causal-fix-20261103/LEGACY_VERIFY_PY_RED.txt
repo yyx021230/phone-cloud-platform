@@ -1,0 +1,75 @@
+F.EE..FFF
+======================================================================
+ERROR: test_fixed_wire_scope_and_two_earliest_fact_frames_without_writes (test_wecom_cleanup_verify.VerifyWireTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_cleanup_verify.py", line 27, in test_fixed_wire_scope_and_two_earliest_fact_frames_without_writes
+    value,kwargs,calls,now=self.context();proof=execute(value,**kwargs)
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/wecom_cleanup_verify.py", line 67, in execute
+    config=validate_config(value);began=clock();end=began+3
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/wecom_cleanup_verify.py", line 34, in validate_config
+    if not isinstance(value,dict)or set(value)!=FIELDS:raise VerifyStop('wecom_cleanup_config_invalid')
+wecom_physical_verify.VerifyStop: wecom_cleanup_config_invalid
+
+======================================================================
+ERROR: test_historical_id_case_does_not_rewrite_actual_selector (test_wecom_cleanup_verify.VerifyWireTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_cleanup_verify.py", line 49, in test_historical_id_case_does_not_rewrite_actual_selector
+    self.assertEqual(validate_config(value)['serial'],'fixture')
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/wecom_cleanup_verify.py", line 34, in validate_config
+    if not isinstance(value,dict)or set(value)!=FIELDS:raise VerifyStop('wecom_cleanup_config_invalid')
+wecom_physical_verify.VerifyStop: wecom_cleanup_config_invalid
+
+======================================================================
+FAIL: test_cancel_or_expired_verification_has_no_fallback_reads (test_wecom_cleanup_verify.VerifyWireTests)
+----------------------------------------------------------------------
+wecom_physical_verify.VerifyStop: wecom_cleanup_config_invalid
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_cleanup_verify.py", line 89, in test_cancel_or_expired_verification_has_no_fallback_reads
+    with self.assertRaisesRegex(VerifyStop,'wecom_cleanup_cancelled'):execute(value,**kwargs)
+AssertionError: "wecom_cleanup_cancelled" does not match "wecom_cleanup_config_invalid"
+
+======================================================================
+FAIL: test_residual_reader_or_legal_scrcpy_forward_cannot_generate_proof (test_wecom_cleanup_verify.VerifyWireTests)
+----------------------------------------------------------------------
+wecom_physical_verify.VerifyStop: wecom_cleanup_config_invalid
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_cleanup_verify.py", line 85, in test_residual_reader_or_legal_scrcpy_forward_cannot_generate_proof
+    with self.assertRaisesRegex(VerifyStop,'wecom_(reader|forward)_still_present'):execute(value,**kwargs)
+AssertionError: "wecom_(reader|forward)_still_present" does not match "wecom_cleanup_config_invalid"
+
+======================================================================
+FAIL: test_slow_first_frame_is_rejected_not_restamped_at_serialize (test_wecom_cleanup_verify.VerifyWireTests)
+----------------------------------------------------------------------
+wecom_physical_verify.VerifyStop: wecom_cleanup_config_invalid
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_cleanup_verify.py", line 75, in test_slow_first_frame_is_rejected_not_restamped_at_serialize
+    with self.assertRaisesRegex(VerifyStop,'wecom_tool_proof_stale'):execute(value,**kwargs)
+AssertionError: "wecom_tool_proof_stale" does not match "wecom_cleanup_config_invalid"
+
+======================================================================
+FAIL: test_system_guard_rejection_happens_before_any_lease_or_phone (test_wecom_cleanup_verify.VerifyWireTests)
+----------------------------------------------------------------------
+wecom_physical_verify.VerifyStop: wecom_cleanup_config_invalid
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_cleanup_verify.py", line 65, in test_system_guard_rejection_happens_before_any_lease_or_phone
+    with self.assertRaisesRegex(VerifyStop,'wecom_agent_entry_unconfirmed'):execute(value,**kwargs)
+AssertionError: "wecom_agent_entry_unconfirmed" does not match "wecom_cleanup_config_invalid"
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.001s
+
+FAILED (failures=4, errors=2)

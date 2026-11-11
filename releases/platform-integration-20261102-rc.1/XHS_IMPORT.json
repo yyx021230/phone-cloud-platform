@@ -1,0 +1,68 @@
+[
+  {
+    "path": "windows-agent/scripts/小红书数据同步.py",
+    "before": "9a95226108c70ed8830dd322bdbd32c9d932f163ebbc509ff371703888b1fddf",
+    "after": "c4f0fd8cb50bd87085de18d781d52c52bb49cf9537abf11094e9592cafb3a179",
+    "source": "986d5db8977dd45aeaf7315891eb8476d95dd80a"
+  },
+  {
+    "path": "windows-agent/scripts/test_xhs_collection_20261102.py",
+    "before": null,
+    "after": "3ce9f50024889082bef53a65639ed7e8537b41efea5f7af1060856681f9ae119",
+    "source": "986d5db8977dd45aeaf7315891eb8476d95dd80a"
+  },
+  {
+    "path": "windows-agent/scripts/test_xhs_compatibility_20261015.py",
+    "before": "e43de91beb259454af3be05056e3e95b1d1c4ddc99678ecba32111c1139058d8",
+    "after": "9d72f914a9ea16045d1f64ecef002f9550b8dc227878dc565ebef189fcd6c7ca",
+    "source": "986d5db8977dd45aeaf7315891eb8476d95dd80a"
+  },
+  {
+    "path": "windows-agent/scripts/test_xhs_data_sync.py",
+    "before": "11dd3ff7d543100c02e5b8c937825bf69412ac9413a7aef2b92de8ea9e5ae751",
+    "after": "f94c32e740aa5b8e723a42fe6f27c14a658148e4f6d99094e3a2e6d953ff5f7f",
+    "source": "986d5db8977dd45aeaf7315891eb8476d95dd80a"
+  },
+  {
+    "path": "windows-agent/scripts/test_xhs_element_pair.py",
+    "before": "3a22c495f069e6bf91b0d95489faf9916aba778dc33efa2ec70e3d2731d1c72b",
+    "after": "c62a4c4a726f65e74d4b20810d7b8e77375a0c9f711921065a1015f2b755ef4b",
+    "source": "986d5db8977dd45aeaf7315891eb8476d95dd80a"
+  },
+  {
+    "path": "windows-agent/scripts/test_xhs_loading_wait.py",
+    "before": "c191c281eb100931c70e95c9c3eb9eb662f5f35ff72c968cacb258d49b9db738",
+    "after": "5c0a0a9e624c454eaa08798bc072aefa314fb289c3562104444c0821c26d588b",
+    "source": "986d5db8977dd45aeaf7315891eb8476d95dd80a"
+  },
+  {
+    "path": "docs/XHS_COMPAT_INTEGRITY_20261102.md",
+    "before": null,
+    "after": "591544e1c2e9349315330612f224652db8d5edf5053316bad5ec7c4fd2cb5934",
+    "source": "986d5db8977dd45aeaf7315891eb8476d95dd80a"
+  },
+  {
+    "path": "windows-agent/scripts/fixtures/xhs/login-controls-90.xml",
+    "before": null,
+    "after": "e845725f63e1c406cbfc006ad3bc10c49f1b338c55e7ce19b3ee6cb9684971a7",
+    "source": "986d5db8977dd45aeaf7315891eb8476d95dd80a"
+  },
+  {
+    "path": "windows-agent/scripts/fixtures/xhs/notification-card-140.xml",
+    "before": null,
+    "after": "5374dbffcb1b85dda95ba7947a6f77a1624ccc5e68949bb67db19a5c881124bb",
+    "source": "986d5db8977dd45aeaf7315891eb8476d95dd80a"
+  },
+  {
+    "path": "windows-agent/scripts/fixtures/xhs/offline-notice-158.xml",
+    "before": null,
+    "after": "361a9e0f0748b5b940da9a4ee73b4fcdbcf0204051d40941a4ec4f7aab76b59c",
+    "source": "986d5db8977dd45aeaf7315891eb8476d95dd80a"
+  },
+  {
+    "path": "windows-agent/scripts/fixtures/xhs/smart-upgrade-121.xml",
+    "before": null,
+    "after": "34a666a1f6d99884d27356c253415c3849cb5b10f89d8fe1ab9f6f94d533f670",
+    "source": "986d5db8977dd45aeaf7315891eb8476d95dd80a"
+  }
+]

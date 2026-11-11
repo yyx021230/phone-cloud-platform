@@ -43,6 +43,7 @@ test('real isolated HTTP:phone-only result,49-device mapping,max5,duplicate repl
   async function complete(task){
     const lose=loseNextAck;loseNextAck=false;const prepared=await hydrateManagedLookupTask(task,{request:async(p,o)=>{const result=await request(p,o);if(lose&&p.endsWith('/ack'))throw new Error('simulated ACK response lost');return result;}});if(!prepared.acknowledged){uncertain.add(task.taskId);return;}task=prepared.task;tasks.push(task);
     const m=task.payload.managedLookup.generation;let result={},status='succeeded';
+    if(task.type==='alipay_name_stop')result={diagnostic:{lookupStopProof:{version:1,readerCleanupConfirmed:true,taskId:task.taskId,sessionId:task.payload.automationSessionId,generation:m}}};
     if(task.type!=='alipay_name_stop')result={currentAccount:'fixture-account',accountIdentityVerified:true,savedAccounts:[{account:'fixture-account',current:true}]};
     if(task.type==='alipay_name_query'){
       assert.equal(live.has(task.adbSerial),false,'same phone cannot overlap');live.set(task.adbSerial,task.taskId);max=Math.max(max,live.size);queryCount++;
@@ -78,7 +79,10 @@ test('real isolated HTTP:phone-only result,49-device mapping,max5,duplicate repl
   await sleep(2100);probes=(await api('GET',probePath,token)).probes;assert.equal((await api('POST',probePath,token,{probeId:probes[0].probeId,state:'search_ready'})).resumed,false);
   for(let i=0;i<150;i++){const p=(await api('GET','/api/v1/admin/lookup-pool',admin)).pool;if(p.requests.find(r=>r.lookupId===original.lookupId)?.status==='succeeded')break;await sleep(20);}
   const recovered=await signed('13800009991',puzzleKey);assert.deepEqual(recovered.body,{ok:true,name:'测*'});const after=(await api('GET','/api/v1/admin/lookup-pool',admin)).pool.requests.find(r=>r.lookupId===original.lookupId);assert.equal(after.queryId,queryId,'human recovery writes original result');
-  await api('PUT','/api/v1/admin/lookup-pool',admin,{waitMs:1000});const recoveryKey=crypto.randomUUID();const failedRecovery=await signed('13800009994',recoveryKey);assert.equal(failedRecovery.body.code,'lookup_recovery_required');
+  // The 800ms ACK-loss scenario above owns timeout behavior. Recovery and
+  // cross-phone progress retain the prior 3000ms fixture budget; do not leak
+  // a 1-second deadline into assertions about completed business results.
+  await api('PUT','/api/v1/admin/lookup-pool',admin,{waitMs:3000});const recoveryKey=crypto.randomUUID();const failedRecovery=await signed('13800009994',recoveryKey);assert.equal(failedRecovery.body.code,'lookup_recovery_required');
   const recoverable=(await api('GET','/api/v1/admin/lookup-pool',admin)).pool.requests.find(r=>r.status==='needs_recovery');assert.ok(recoverable);
   await api('POST',`/api/v1/admin/lookup-pool/requests/${recoverable.lookupId}/retry`,admin,{});assert.equal((await signed('13800009994',recoveryKey)).body.name,'测*');assert.equal((await api('GET','/api/v1/admin/lookup-pool',admin)).pool.requests.find(r=>r.lookupId===recoverable.lookupId).queryId,recoverable.queryId);
   // A first query with ambiguous evidence stays active across a new partner request ID.

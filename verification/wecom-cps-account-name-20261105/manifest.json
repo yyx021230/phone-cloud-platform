@@ -1,0 +1,88 @@
+{
+  "status": "local_wecom_names_active_production_untouched",
+  "branch": "codex/wecom-search200-20261105",
+  "baselineHead": "662191654e44fd1c4bf5bdf58a7135de6aa0e527",
+  "runtimeCodeCommit": "1f7444ec45d886b07fbe882831ba8cbaf296ea80",
+  "protocolVersion": "v0.5",
+  "responseField": "accounts[].wecom_name",
+  "requestFieldsAndSignaturesUnchanged": true,
+  "nicknameIdentity": "display only; configured source; duplicates allowed",
+  "registeredDevices": [
+    "200",
+    "201",
+    "202",
+    "203",
+    "204"
+  ],
+  "physicalTargets": [
+    "200",
+    "202"
+  ],
+  "offlineRegistryOnly": [
+    "201",
+    "203",
+    "204"
+  ],
+  "capacity": 2,
+  "appId": "PRi5GUYYuW",
+  "credentialsChanged": false,
+  "baseUrl": "http://192.168.10.119:8797",
+  "oldLocalApiPid": 44710,
+  "newLocalApiPid": 49008,
+  "newLocalApiCreated": 1793859674.806972,
+  "adbUnchanged": {
+    "pid": 5057,
+    "created": 1793843355.335422
+  },
+  "preserved": {
+    "leads": 12,
+    "recipients": 2,
+    "limits": 0,
+    "executionMode": "preview",
+    "criticalObjectsEqual": true
+  },
+  "checks": {
+    "phoneFocusedPassed": 13,
+    "CPSFullTotal": 63,
+    "CPSFullPassed": 62,
+    "CPSFullFailed": 0,
+    "CPSFullSkipped": 1,
+    "skipReason": "independent Postgres environment not configured",
+    "rootCheckExitCode": 0,
+    "liveHTTPPassed": 7,
+    "embeddedClientPassed": true
+  },
+  "newPhoneTasks": 0,
+  "realInvitations": 0,
+  "productionTouched": false,
+  "handoffFile": "/Users/yyx/.codex/private/wecom-cps-account-name-20261105/CPS企微本地联调交接单-20261105-v0.5-含昵称.md",
+  "handoffFileSha256": "3274e6d881e644715e1a70c6d9ee35a837e9c91c56c225de9ea5ce02e9ad3587",
+  "handoffMode": "0o600",
+  "secretInRepository": false,
+  "privateHarnessSha256": {
+    "before": "89b8f9581bec06787496c05878a8091c02583e2de7f04032f54ecdf2163567a8",
+    "after": "02f841ec583d4bafdaff823ff59cd239935ea853aeffcbb75f18f2e0f0af961c"
+  },
+  "rollback": "Drain local QA API; restore backed up configuration/harness and previous CPS projection with a new reviewed commit. Keep current ledger, task history and current credentials; no Agent/ADB/production operation.",
+  "sourceFilesSha256": {
+    "server/cps-wecom/protocol.mjs": "cb8574eede7f1865c92fc7e8574b25603b2180557a4aabc5785e15d84b55d189",
+    "server/cps-wecom/service.mjs": "a5a07cad8050ff5674a592d37f92b3cba880cabeabe5b74b6fc455e39084ebbe",
+    "server/cps-wecom-phone.test.mjs": "6c662d4224f46d6e14ea464de4f4598f24c36c3fc4320c1fb985181e2823a029",
+    "server/cps-wecom.client-http.test.mjs": "0630842449776d6853dea99c82e606fd9dece6981ad03698098a771986d4e7b1",
+    "docs/PROJECT_DEVELOPMENT.md": "df1b5197635bb81bdbf89aea0fcb4d6aa98184cd2c451bfd0967e757f6d8be8a",
+    "docs/CPS本地开发联调.md": "55a97df8451a01558d92b600c5d9290a71fd5c724c651d7c6b7ff2a53ebe3d8a",
+    "docs/CPS企微客户对接方案-v0.1.md": "2e926b937e0e9f9840f9c422bbaf1f0f6d56ac7c4668d61c1f30b723a1e79b7a",
+    "docs/CPS企微接口本地候选验收与启用说明.md": "a8bc26250bc2e968983a1e8fcba78c7c0db017bdb83de7f6a31407e1d0aa41be",
+    "public/cps-wecom-integration-api.md": "d144ed81722f61156a1ff3fddaf95e1a135184d3fb704f6c1703d6a24ac86acb"
+  },
+  "artifactSha256": {
+    "REPORT.md": "b8733555f9882128953dd3ee8ec9b13b7cf5e863ff69c2960ac0dab2a2c04d47",
+    "validation.redacted.json": "624ad51424f327521ccd3c3990ed857fbd3cf8829ea00ad7aab5e93b44e5d6a9",
+    "embedded-client-validation.redacted.json": "ac95d167744871721387597fb0fa58fc9828ee61b4e7b039c69ff894ed868618",
+    "cps-tests.txt": "d9a465c84fd6c02d798fc496ad3c1e2f20c1bcad95fdc968a82ed3e223fff78d",
+    "local-registry.patch": "acef9e810698e07abff521115736ba9904307a16dcfad2d90d26d182ba00ec57",
+    "root-check.txt": "911e593ec5bbaee54fd78a05e2117732024691fb0c018bb4a1b2316dcbd30e78"
+  },
+  "auditLogNormalization": "Saved root-check text has terminal blank lines trimmed; raw private log retained unchanged. No source or test result change.",
+  "rawRootCheckSha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+}

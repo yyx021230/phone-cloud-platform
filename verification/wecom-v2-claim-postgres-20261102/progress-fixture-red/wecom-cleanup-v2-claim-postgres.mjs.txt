@@ -1,0 +1,253 @@
+// Unwired storage candidate. No initializer, live mapping barrier, executor,
+// release, clock, environment, route or production permission is provided.
+import { createHash } from "node:crypto";
+import { isDeepStrictEqual as equal } from "node:util";
+import { createWecomV2ClaimPreparer } from "./wecom-cleanup-v2-claim.mjs";
+import { validateWecomV2HostState } from "./wecom-cleanup-v2-host.mjs";
+
+const specs = [
+  ["phone_cloud_wecom_v2_physical_anchors", "physical_key", "physical_key,device_id,active_obligation_id,active_claim_operation_id,agent_id,mapping_revision,mapping_fingerprint,mapping_state"],
+  ["phone_cloud_windows_tasks", "task_id", "task_id,agent_id,adb_serial,status,created_at,updated_at,data"],
+  ["phone_cloud_automation_jobs", "job_id", "job_id,device_id,user_id,kind,status,created_at,updated_at,data"],
+  ["phone_cloud_device_locks", "lock_id", "lock_id,device_id,status,expires_at,data"],
+  ["phone_cloud_device_locks", "lock_id", "lock_id,device_id,status,expires_at,data"],
+  ["phone_cloud_wecom_cleanup_v2", "obligation_id", "obligation_id,server_epoch,revision,host_operation_id,close_operation_id,protocol_state,claim_data"]
+];
+const select = specs.map(([table, key, columns]) => `SELECT ${columns} FROM ${table} WHERE ${key}=$1 FOR UPDATE NOWAIT`);
+const taskUpdate = `UPDATE phone_cloud_windows_tasks SET status='running',updated_at=$7,data=$8::jsonb
+ WHERE task_id=$1 AND agent_id=$2 AND adb_serial=$3 AND status='queued'
+ AND created_at IS NOT DISTINCT FROM $4::timestamptz AND updated_at IS NOT DISTINCT FROM $5::timestamptz
+ AND data=$6::jsonb RETURNING ${specs[1][2]}`;
+const jobUpdate = `UPDATE phone_cloud_automation_jobs SET status='running',updated_at=$8,data=$9::jsonb
+ WHERE job_id=$1 AND device_id=$2 AND user_id=$3 AND kind=$4 AND status='queued'
+ AND created_at IS NOT DISTINCT FROM $5::timestamptz AND updated_at IS NOT DISTINCT FROM $6::timestamptz
+ AND data=$7::jsonb RETURNING ${specs[2][2]}`;
+const holdInsert = `INSERT INTO phone_cloud_device_locks (${specs[3][2]}) VALUES ($1,$2,$3,NULL,$4::jsonb) RETURNING ${specs[3][2]}`;
+const ledgerInsert = `INSERT INTO phone_cloud_wecom_cleanup_v2 (${specs[5][2]}) VALUES ($1,$2,0,NULL,NULL,$3::jsonb,$4::jsonb) RETURNING ${specs[5][2]}`;
+const anchorUpdate = `UPDATE phone_cloud_wecom_v2_physical_anchors SET active_obligation_id=$2,active_claim_operation_id=$3
+ WHERE physical_key=$1 AND active_obligation_id IS NULL AND active_claim_operation_id IS NULL
+ AND mapping_revision=$4::bigint AND mapping_fingerprint=$5 AND mapping_state='ready'
+ RETURNING ${specs[0][2]}`;
+const clone = value => structuredClone(value);
+const hash = value => createHash("sha256").update(JSON.stringify(value)).digest("hex");
+const exact = (value, keys) => value && typeof value === "object" && !Array.isArray(value)
+  && Reflect.ownKeys(value).length === keys.length && keys.every(k => Object.hasOwn(value, k));
+const fail = code => { throw new Error(`wecom_v2_claim_db_${code}`); };
+function freeze(value) { if (value && typeof value === "object") { for (const v of Object.values(value)) freeze(v); Object.freeze(value); } return value; }
+function outcome(storageStatus, commitKnown = false) {
+  return freeze({ storageStatus, commitKnown, fence: "held", protocolPermit: false,
+    liveChecksRequired: true, mappingBarrierVerified: false, productionEnabled: false });
+}
+function iso(value) {
+  if (value === null) return null;
+  const date = value instanceof Date ? value : typeof value === "string" ? new Date(value) : null;
+  if (!date || !Number.isFinite(date.getTime())) fail("row_invalid");
+  return date.toISOString();
+}
+function time(value) { return value === "" || value === null ? null : iso(value); }
+function projected(index, row) {
+  if (!exact(row, specs[index][2].split(","))) fail("row_invalid");
+  if (index === 0) {
+    if (typeof row.physical_key !== "string" || typeof row.device_id !== "string" || typeof row.agent_id !== "string"
+      || !/^[1-9][0-9]*$/.test(String(row.mapping_revision)) || !/^[a-f0-9]{64}$/.test(row.mapping_fingerprint)
+      || !["ready", "disabled"].includes(row.mapping_state)
+      || ![row.active_obligation_id, row.active_claim_operation_id].every(v => v === null || (typeof v === "string" && /^[A-Za-z0-9_-]{1,160}$/.test(v)))
+      || (row.active_obligation_id === null) !== (row.active_claim_operation_id === null)) fail("row_invalid");
+    return row;
+  }
+  if (index === 5) {
+    let state;
+    try { state = validateWecomV2HostState(row.protocol_state); }
+    catch { fail("row_invalid"); }
+    if (row.obligation_id !== state.binding.obligationId || row.server_epoch !== state.binding.serverEpoch
+      || row.revision !== state.revision || row.host_operation_id !== state.hostOperationId
+      || row.close_operation_id !== state.closeOperationId) fail("row_invalid");
+    return row;
+  }
+  const d = row.data;
+  if (!d || typeof d !== "object" || Array.isArray(d)) fail("row_invalid");
+  const pairs = index === 1 ? { task_id: "taskId", agent_id: "agentId", adb_serial: "adbSerial", status: "status" }
+    : index === 2 ? { job_id: "jobId", device_id: "deviceId", user_id: "userId", kind: "kind", status: "status" }
+      : { lock_id: "lockId", device_id: "deviceId", status: "status" };
+  for (const [column, key] of Object.entries(pairs)) if (typeof row[column] !== "string" || row[column] !== d[key]) fail("row_invalid");
+  if (index <= 2) {
+    if (iso(row.created_at) !== time(d.createdAt) || iso(row.updated_at) !== time(d.updatedAt)) fail("row_invalid");
+  } else if (iso(row.expires_at) !== time(d.expiresAt)) fail("row_invalid");
+  return row;
+}
+function one(answer, index, missing = false) {
+  if (missing && answer?.rowCount === 0 && Array.isArray(answer.rows) && answer.rows.length === 0) return null;
+  if (answer?.rowCount !== 1 || !Array.isArray(answer.rows) || answer.rows.length !== 1) fail("row_invalid");
+  return projected(index, answer.rows[0]);
+}
+
+export function createWecomV2ClaimPostgresRepository(options = {}) {
+  if (!exact(options, ["getPool", "readClaimContext", "readDeviceMapping"])
+    || !["getPool", "readClaimContext", "readDeviceMapping"].every(k => typeof Object.getOwnPropertyDescriptor(options, k)?.value === "function")) fail("providers_required");
+  const { getPool, readClaimContext, readDeviceMapping } = options;
+  let observed;
+  const prepare = createWecomV2ClaimPreparer({ readClaimContext: () => (observed = readClaimContext()) });
+  const fixed = clone(observed), b = fixed.binding;
+  if (!/^\d{4}-/.test(fixed.recordedAt) || fixed.recordedAt.startsWith("0000")) fail("audit_range");
+  const claimData = Object.fromEntries(["claimOperationId", "originalJobId", "originalLockId", "ownerUserId", "requestId", "mode", "businessFingerprint", "recordedAt", "binding"].map(k => [k, clone(fixed[k])]));
+  claimData.version = 1;
+  const physicalKey = b.serial.toLowerCase();
+  const keys = [physicalKey, b.originalTaskId, fixed.originalJobId, b.obligationId, fixed.originalLockId, b.obligationId];
+  function context() {
+    const current = readClaimContext();
+    createWecomV2ClaimPreparer({ readClaimContext: () => current });
+    if (!equal(current, fixed)) fail("context_changed");
+  }
+  function mapping() {
+    const m = readDeviceMapping();
+    if (!exact(m, ["device", "mappingRevision"]) || !Number.isSafeInteger(m.mappingRevision) || m.mappingRevision <= 0
+      || !m.device || m.device.deviceId !== b.deviceId || m.device.deviceName !== fixed.target.deviceNumber
+      || m.device.adb?.serial !== b.serial || m.device.adb?.agentId !== b.agentId) fail("mapping_unconfirmed");
+    return { device: clone(m.device), revision: String(m.mappingRevision), fingerprint: hash([b.deviceId, b.serial, b.agentId, m.device.deviceName]) };
+  }
+  // This provider is a fresh device projection, never proof that every old
+  // configuration writer has joined the future mapping barrier.
+  const initialMapping = mapping();
+  function gate() {
+    context(); const m = mapping();
+    if (m.revision !== initialMapping.revision || m.fingerprint !== initialMapping.fingerprint) fail("mapping_changed");
+    return m;
+  }
+  async function load(client) {
+    const rows = [];
+    for (let i = 0; i < 6; i++) {
+      rows.push(one(await client.query(select[i], [keys[i]]), i, true));
+      if (i === 0 && !rows[0]) fail("anchor_missing");
+    }
+    return rows;
+  }
+  function anchor(row, m) {
+    if (row.physical_key !== physicalKey || row.device_id !== b.deviceId || row.agent_id !== b.agentId
+      || String(row.mapping_revision) !== m.revision || row.mapping_fingerprint !== m.fingerprint
+      || row.mapping_state !== "ready") fail("mapping_unconfirmed");
+  }
+  function recorded(rows, m) {
+    const [a, t, j, h, l, v] = rows; anchor(a, m);
+    if (a.active_obligation_id !== b.obligationId || a.active_claim_operation_id !== fixed.claimOperationId
+      || ![t, j, h, l, v].every(Boolean)) fail("tuple_incomplete");
+    if (!equal(v.claim_data, claimData) || !equal(v.protocol_state.binding, b)
+      || !equal(t.data.wecomV2Claim, claimData) || !equal(j.data.wecomV2Claim, claimData)
+      || !equal(t.data.payload?.physicalCleanup, b)
+      || [v.host_operation_id, v.close_operation_id].includes(fixed.claimOperationId)
+      || t.data.pickedAt !== fixed.recordedAt || j.data.pickedAt !== fixed.recordedAt) fail("tuple_conflict");
+    const progress = ["running", "stalled", "succeeded", "failed", "cancelled", "expired"];
+    if (!progress.includes(t.status) || !progress.includes(j.status)) fail("projection_regressed");
+    const hold = h.data;
+    if (hold.lockId !== b.obligationId || hold.taskId !== b.obligationId || hold.deviceId !== b.deviceId
+      || hold.appSlot !== b.appSlot || hold.ownerUserId !== fixed.ownerUserId || hold.lockType !== "wecom_physical_cleanup"
+      || hold.status !== "cleanup_pending" || h.expires_at !== null || hold.expiresAt !== ""
+      || !equal(hold.physicalCleanup?.binding, b) || hold.physicalCleanup.originalJobId !== fixed.originalJobId
+      || hold.physicalCleanup.originalLockId !== fixed.originalLockId
+      || !["awaiting_host", "awaiting_host_close", "awaiting_verification", "maintenance"].includes(hold.physicalCleanup.phase)) fail("hold_conflict");
+    if (!["active", "released", "expired"].includes(l.status)) fail("lock_conflict");
+    // Check immutable business associations through the already reviewed pure
+    // validator. Legitimate mutable progress is not the original queued CAS.
+    const task = clone(t.data), job = clone(j.data), lock = clone(l.data);
+    delete task.wecomV2Claim; delete task.payload.physicalCleanup; delete job.wecomV2Claim;
+    for (const item of [task, job]) { item.status = "queued"; item.pickedAt = null; item.completedAt = null; item.result = {}; }
+    job.wecomSendClaimAt = ""; lock.status = "active";
+    try { prepare({ task, job, businessLock: lock, device: m.device }); }
+    catch { fail("tuple_conflict"); }
+    return outcome("recorded", true);
+  }
+  async function transaction(work, writes) {
+    let client = null, listening = false, first = null, commitAttempted = false;
+    const remember = error => { first ||= error instanceof Error ? error : new Error("client_error_unconfirmed"); };
+    const observer = error => remember(error);
+    async function query(sql, args, committing = false) {
+      if (first) throw first;
+      if (committing) commitAttempted = true;
+      let answer;
+      try { answer = await client.query(sql, args); } catch (e) { remember(e); throw first; }
+      if (first) throw first;
+      return answer;
+    }
+    function retire(destroy) {
+      if (!client) return;
+      const c = client; client = null;
+      if (listening) { c.removeListener("error", observer); listening = false; }
+      if (typeof c.release === "function") c.release(destroy ? first || new Error("claim_client_retired") : undefined);
+    }
+    try {
+      gate(); const pool = await getPool(); gate();
+      client = await pool.connect();
+      if (typeof client.on !== "function" || typeof client.removeListener !== "function" || typeof client.release !== "function") fail("client_unconfirmed");
+      client.on("error", observer); listening = true; gate();
+      await query("BEGIN ISOLATION LEVEL READ COMMITTED");
+      await query("SET LOCAL lock_timeout = '2000ms'");
+      await query("SET LOCAL statement_timeout = '3000ms'");
+      await query("SET LOCAL idle_in_transaction_session_timeout = '5000ms'");
+      const value = await work({ query }, gate()); gate();
+      const end = await query(writes ? "COMMIT" : "ROLLBACK", undefined, writes);
+      if (end?.command !== (writes ? "COMMIT" : "ROLLBACK")) throw new Error("transaction_end_unconfirmed");
+      retire(false);
+      try { gate(); } catch { return { value: outcome("obsolete_context", writes) }; }
+      return { value };
+    } catch (error) {
+      if (commitAttempted) { retire(true); return { unknown: true }; }
+      // No further SQL after a client/query error. Destroying the checked-out
+      // connection aborts its owned transaction; no blanket error handler.
+      if (first) retire(true);
+      else if (client) {
+        try { const end = await query("ROLLBACK"); retire(end?.command !== "ROLLBACK"); }
+        catch { retire(true); }
+      }
+      return { value: outcome(error.message?.startsWith("wecom_v2_claim_db_") ? "conflict" : "unavailable") };
+    } finally { retire(true); }
+  }
+  async function readStored() {
+    const answer = await transaction(async (client, m) => {
+      const rows = await load(client); anchor(rows[0], m);
+      if (!rows[0].active_obligation_id && !rows[3] && !rows[5]) {
+        if (rows.slice(1).every(v => v === null)) return outcome("not_recorded");
+        if (!rows[1] || !rows[2] || !rows[4]) fail("tuple_incomplete");
+        prepare({ task: rows[1].data, job: rows[2].data, businessLock: rows[4].data, device: m.device });
+        return outcome("not_recorded");
+      }
+      return recorded(rows, m);
+    }, false);
+    return answer.value || outcome("unknown");
+  }
+  return Object.freeze({
+    async createClaim(input) {
+      gate(); const bundle = prepare(input);
+      const answer = await transaction(async (client, m) => {
+        const rows = await load(client), [a, t, j, h, l, v] = rows; anchor(a, m);
+        if (a.active_obligation_id) {
+          if (a.active_obligation_id !== b.obligationId || a.active_claim_operation_id !== fixed.claimOperationId) return outcome("busy");
+          return recorded(rows, m);
+        }
+        if (!t || !j || !l || h || v || !equal(t.data, bundle.expected.windowsTask)
+          || !equal(j.data, bundle.expected.automationJob) || !equal(l.data, bundle.expected.businessLock)) fail("queued_snapshot_conflict");
+        const next = bundle.candidate;
+        const changedTask = one(await client.query(taskUpdate, [t.task_id, t.agent_id, t.adb_serial, iso(t.created_at), iso(t.updated_at),
+          JSON.stringify(t.data), next.windowsTask.updatedAt, JSON.stringify(next.windowsTask)]), 1);
+        if (!equal(changedTask.data, next.windowsTask)) fail("returning_conflict");
+        const changedJob = one(await client.query(jobUpdate, [j.job_id, j.device_id, j.user_id, j.kind, iso(j.created_at), iso(j.updated_at),
+          JSON.stringify(j.data), next.automationJob.updatedAt, JSON.stringify(next.automationJob)]), 2);
+        if (!equal(changedJob.data, next.automationJob)) fail("returning_conflict");
+        const hold = next.physicalHold;
+        const changedHold = one(await client.query(holdInsert, [hold.lockId, hold.deviceId, hold.status, JSON.stringify(hold)]), 3);
+        if (!equal(changedHold.data, hold)) fail("returning_conflict");
+        const changedLedger = one(await client.query(ledgerInsert, [b.obligationId, b.serverEpoch,
+          JSON.stringify(next.protocolState), JSON.stringify(next.claimData)]), 5);
+        if (!equal(changedLedger.claim_data, next.claimData) || !equal(changedLedger.protocol_state, next.protocolState)) fail("returning_conflict");
+        const changedAnchor = one(await client.query(anchorUpdate, [physicalKey, b.obligationId, fixed.claimOperationId, m.revision, m.fingerprint]), 0);
+        if (!equal(changedAnchor, { ...a, active_obligation_id: b.obligationId, active_claim_operation_id: fixed.claimOperationId })) fail("returning_conflict");
+        recorded([changedAnchor, changedTask, changedJob, changedHold, l, changedLedger], m);
+        return outcome("recorded", true);
+      }, true);
+      if (answer.unknown) {
+        const stored = await readStored();
+        return stored.storageStatus === "recorded" ? stored : outcome("unknown");
+      }
+      return answer.value;
+    },
+    async reconcileClaim() { return readStored(); }
+  });
+}

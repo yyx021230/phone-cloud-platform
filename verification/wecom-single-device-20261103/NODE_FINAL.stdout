@@ -1,0 +1,17 @@
+✔ private diagnostics still reject UI, parameters and arbitrary labels (1.17375ms)
+✔ safe stack is metadata only and does not preserve thread names or locals (0.165958ms)
+✔ resource proof cannot name arbitrary ports or publish UI output (0.263084ms)
+✔ tail records retain only one bounded sanitized layer (0.057791ms)
+✔ target snapshot stays read-only and uses pure runtime inventory (3.242375ms)
+✔ unknown stop array shape rejects rather than treating it as empty (1.510542ms)
+✔ failed matching stop and disabled device channel are still exclusion evidence (1.2165ms)
+✔ another phones historical stop does not block this target (0.396083ms)
+✔ multiple physical aliases deny admission (0.28825ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 73.217791

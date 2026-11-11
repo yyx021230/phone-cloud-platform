@@ -1,0 +1,41 @@
+{
+  "atUtc": "2026-11-02T10:27:24.618632+00:00",
+  "reviewedCommit": "20882a65c5787948dc0eb9a30837c5f3a0d32d43",
+  "reviewedSourceHashes": {
+    "windows_metadata.ps1": "080d110be479cb1ce62577416480960cd57e566f13fbddceec31274e67081eb0",
+    "windows_clock_survey.py": "153c7a6ed6fda7eb1b8a0c910826e14618ad5a495dd6ca78c1047251c317bae7"
+  },
+  "steps": [
+    {
+      "stage": "metadata",
+      "sourceSha256": "080d110be479cb1ce62577416480960cd57e566f13fbddceec31274e67081eb0",
+      "exitCode": 0,
+      "failure": "",
+      "remoteCompletion": "ssh_exit_reported",
+      "elapsedMs": 326,
+      "stdoutBytes": 416,
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawStderrStored": false,
+      "evidence": "observed_not_authority"
+    },
+    {
+      "stage": "clock",
+      "sourceSha256": "153c7a6ed6fda7eb1b8a0c910826e14618ad5a495dd6ca78c1047251c317bae7",
+      "exitCode": 0,
+      "failure": "",
+      "remoteCompletion": "ssh_exit_reported",
+      "elapsedMs": 72,
+      "stdoutBytes": 371,
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawStderrStored": false,
+      "evidence": "unconfirmed_response"
+    }
+  ],
+  "phoneActions": 0,
+  "adbClientCalls": 0,
+  "productionConfigChanges": 0,
+  "nativeAcceptance": false,
+  "completedAtUtc": "2026-11-02T10:27:25.020839+00:00"
+}

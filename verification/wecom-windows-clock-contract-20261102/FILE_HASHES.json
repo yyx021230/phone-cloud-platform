@@ -1,0 +1,12 @@
+{
+  "baseCommit": "15bcb3c8e6a0ce84b1c0ae684baee10ee99054ab",
+  "scope": "local explicit API-set binding candidate; no Windows execution",
+  "sha256": {
+    "docs/PROJECT_DEVELOPMENT.md": "508e6748933b635d82c017aad130f7ee7b8270afa433d60cb89f45cf70433df9",
+    "verification/wecom-windows-clock-contract-20261102/PLAN.md": "51724f058698e43c9bcfea7113a1a33e69d3a6bfbefdc6c239b0bfbffb88d7fd",
+    "verification/wecom-windows-clock-contract-20261102/TEST_OUTPUT.txt": "c0c6d4b2c4ac32d8d483dcd36c79424f957affd3328a4e442961739e3470ffd6",
+    "verification/wecom-windows-clock-contract-20261102/TEST_RECEIPT.json": "168991b5f0037d7a14219e6c4ac86cb7923263a3855578eb78f1df68e6869ee6",
+    "verification/wecom-windows-clock-contract-20261102/survey.py": "deef98f246309e69b76fdc3a6f5106727e550249b9f87aa71dbcd4bdb0d9a116",
+    "verification/wecom-windows-clock-contract-20261102/test_survey.py": "c4a19987ddc0c16325b3002574635cb34098902f11975e41fa46ef887324682b"
+  }
+}

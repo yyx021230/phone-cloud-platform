@@ -126,3 +126,20 @@ test('normal spare capacity wins before a half-open circuit; physical occupancy 
  const f=fixture();await oldCircuits(f,[51,52,54]);await f.store.transact(s=>{s.config.concurrency=2;s.devices[2].lookupUnavailable=false;delete s.devices[2].lastPreparationFailure;});
  await Promise.all([f.service.tick(),f.service.tick()]);assert.equal(f.events[0].device,'d54');assert.equal(f.store.snapshot().channels.length,2);assert.equal(f.store.snapshot().requests.filter(r=>r.deviceReprobe).length,1);
 });
+
+test('manual verification on one half-open phone cannot monopolize the fleet reprobe ticket',async()=>{
+ const f=fixture();await oldCircuits(f,[51,52,54]);await f.service.configure({concurrency:2},'test');await f.service.tick();
+ let c=f.store.snapshot().channels[0];await f.readyStart(c);f.obs.set(c.deviceId,{human:true});await f.service.tick();f.advance(60000);await f.service.tick();
+ const s=f.store.snapshot();assert.equal(s.channels.length,2);assert.equal(s.channels.find(x=>x.deviceId===c.deviceId).phase,'human');assert.equal(f.events.filter(e=>e.kind==='start').length,2);assert.ok(s.devices.every(d=>d.lookupUnavailable));
+ f.advance(60000);await f.service.tick();assert.equal(f.store.snapshot().channels.length,2,'physical cap still includes manual phone');
+});
+
+test('all accounts cooling is not a technical streak and legacy round block expires with actual cooldown',async()=>{
+ const f=fixture();f.adapter.preparationFailure=()=>({domain:'cooldown',code:'alipay_no_available_account',jobId:'cooling'});
+ await f.configure([51]);await f.prepare();await f.service.tick();await fail(f,'d51');
+ let d=f.store.snapshot().devices[0];assert.equal(d.prepareFailureCount,0);assert.equal(d.preparationIssue,undefined);assert.equal(d.lookupUnavailable,false);
+ await f.store.transact(s=>{const p=s.preparations[0];s.devices[0].preparationIssue={domain:'unknown',code:'alipay_no_available_account',at:Date.now(),rounds:[{clientId:p.clientId,preparationId:p.preparationId,count:2}]};});
+ f.adapter.health=()=>({ready:false,reason:'accounts_cooling'});f.advance(60000);await f.service.tick();assert.equal(f.events.filter(e=>e.kind==='start').length,1);
+ f.adapter.health=()=>({ready:true});await f.service.tick();assert.equal(f.events.filter(e=>e.kind==='start').length,2);assert.equal((await f.prepare()).ready,false,'fresh probe still required');
+ const c=f.store.snapshot().channels[0];await f.readyStart(c);await f.result(c);assert.equal((await f.prepare()).readyCount,1);
+});

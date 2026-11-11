@@ -1,0 +1,3 @@
+08ada17ed464772e1c8038ba673c9df560ce985899cfc2828bad697a9d109f45  scripts/qa/wecom_qa_proof.py
+efbd513b1472522a7c74f62a3711980fc8a13da35fe90572236fd165ac24d8de  scripts/qa/wecom_single_candidate.py
+f153fe80592d83bafbcd39db6f4bffb56bee17a3d4dcab070ef1148a04e93f55  scripts/qa/test_wecom_qa_proof.py

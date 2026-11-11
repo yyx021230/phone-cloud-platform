@@ -1,0 +1,41 @@
+{
+  "sourceGuardOnlyMatched": 18,
+  "dependencyGuardOnlyMatched": 6,
+  "noPgBinaryOrSocketOrServiceActions": true,
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "-I",
+        "-B",
+        "verification/wecom-v2-claim-postgres-20261102/test_owned_runner.py"
+      ],
+      "exitCode": 0,
+      "file": "RUNNER_FINAL_0.txt",
+      "sha256": "f78bc80de25c6e0cb06a8e702a6b68a7d773ea784f6bc20c429ed5c64c35d436"
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "verification/wecom-v2-claim-postgres-20261102/postgres.integration.mjs"
+      ],
+      "exitCode": 0,
+      "file": "RUNNER_FINAL_1.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "verification/wecom-v2-claim-postgres-20261102/owned-pg.mjs"
+      ],
+      "exitCode": 0,
+      "file": "RUNNER_FINAL_2.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "sourceManifestSha256": "b22cd3e5b086f7474e9b15a21a61d1dffef5eee9869fdeb9f965694d8e5c422b",
+  "pythonVersion": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+  "nodeVersion": "v25.9.0"
+}

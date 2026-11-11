@@ -1,0 +1,19 @@
+{
+  "xhsPython": {
+    "command": "python3 -m unittest discover -s windows-agent/scripts -p 'test_xhs*.py'",
+    "tests": 511,
+    "failed": 0,
+    "exitCode": 0,
+    "durationSeconds": 14.569
+  },
+  "rootSyntax": {
+    "command": "npm run check",
+    "exitCode": 0
+  },
+  "sourceImportCheck": {
+    "files": 11,
+    "matching": 11
+  },
+  "priorIntegratedValidation": "releases/wecom-cleanup-integrated-20261102-rc.1/RESULTS.json",
+  "newNativeValidation": false
+}

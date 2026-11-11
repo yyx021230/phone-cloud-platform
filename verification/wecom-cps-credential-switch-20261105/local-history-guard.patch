@@ -1,0 +1,10 @@
+--- a/private-local-preview-dev-server.mjs
++++ b/private-local-preview-dev-server.mjs
+@@ -87,6 +87,7 @@
+   try{
+    const b=parseBody(raw);authenticate(b,clients);
+    if(b.phone!==inputs.customer)return {status:200,body:{success:false,code:2003,message:'本地联调仅允许本轮已授权测试客户号码',result:null,timestamp:Date.now()}};
++   if(typeof b.lead_id==='bigint'&&store.snapshot().leads.some(r=>r.appId!==config.app_id&&r.leadId===String(b.lead_id)))return {status:200,body:{success:false,code:2003,message:'该测试线索ID已有旧接入记录，请核对原任务；更换凭据不会重新执行历史测试任务',result:null,timestamp:Date.now()}};
+   }catch{return service.handle(method,route,raw);}
+  }
+  return service.handle(method,route,raw);

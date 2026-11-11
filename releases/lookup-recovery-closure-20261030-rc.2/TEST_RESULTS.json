@@ -1,0 +1,39 @@
+{
+  "syntaxCheck": "passed",
+  "node": {
+    "total": 1956,
+    "passed": 1954,
+    "failed": 0,
+    "skipped": 2
+  },
+  "pythonFinalPassed": 1381,
+  "pythonSuites": [
+    1129,
+    13,
+    13,
+    10,
+    10,
+    3,
+    30,
+    166,
+    7
+  ],
+  "nativeWindowsUnitPassed": 42,
+  "smoke": "passed",
+  "combinedSingleCommandPassed": false,
+  "allSuitesCompletedInSegments": true,
+  "retestReason": "166-runner suite initially failed one source-location assertion after dependency check extraction. Updated assertion to verify actual read-only helper and managed caller; reran all166 plus remaining7 SDK and smoke. Runtime source unchanged after Node/Python main suites.",
+  "otherFailedAttempts": [
+    "initial direct worktree Node run missing ws; rerun in dependency-isolated runtime",
+    "first Windows unittest wrapper treated normal stderr as PowerShell failure; rerun with stdout runner passed",
+    "native attempt1 BOM config error before phone operations"
+  ],
+  "fullNativeBusinessRecoveryPassed": false,
+  "nativeBusinessSubmissions": 0,
+  "nativeFailuresRemain": [
+    "191 missing PocoService; installation approval pending",
+    "188 bounded HRPC reads time out; root cause unresolved",
+    "API stop attempt6 not observed complete; finally cleanup is separate",
+    "adapter cancellation/budgets and shared main-loop/outbox not fully equivalent"
+  ]
+}

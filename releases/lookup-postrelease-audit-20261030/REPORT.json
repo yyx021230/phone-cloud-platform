@@ -1,0 +1,4167 @@
+{
+  "artifactType": "read_only_production_audit_not_fix_or_release",
+  "version": "lookup-postrelease-audit-20261030.1",
+  "generatedAt": "2026-10-30T01:13:49.572608+00:00",
+  "branch": "codex/lookup-postrelease-audit-20261030",
+  "baseCommit": "83fd306db99dcc08734f6978240986d46b3ce56a",
+  "deliveryAnnotatedTag": "lookup-postrelease-audit-20261030.1",
+  "workflow": {
+    "revision": "2026-09-30",
+    "sha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+  },
+  "production": {
+    "version": "platform-integration-20261029-deployed.1",
+    "status": "deployed_pending_fixes_and_acceptance",
+    "businessSourceCommit": "3a266d71ba861f8e81d6ec3a173d7efc12d5b245",
+    "receiptCommit": "11b6645981df7366bdc04a923ca3ce3abef1e6c3",
+    "receiptTag": "platform-integration-20261029-deployed.1",
+    "imageId": "sha256:a4db69c8a61befac7591924e354227146cb97fc6574556da35a2b86b7ddd6b4d",
+    "agentPid": 20232,
+    "adbServerPid": 17764
+  },
+  "containers": {
+    "phone-cloud-platform": {
+      "image": "sha256:a4db69c8a61befac7591924e354227146cb97fc6574556da35a2b86b7ddd6b4d",
+      "pid": 3184375,
+      "startedAt": "2026-10-29T08:47:53.272641045Z",
+      "status": "running",
+      "health": "healthy",
+      "restarts": 0,
+      "oom": false
+    },
+    "phone-cloud-platform-xhs-batch-1": {
+      "image": "sha256:be21335b016bf17e24cd0e0580f9e536944401c89f64506536d980edd7c75608",
+      "pid": 3195875,
+      "startedAt": "2026-10-29T08:55:04.777806024Z",
+      "status": "running",
+      "health": "healthy",
+      "restarts": 0,
+      "oom": false
+    },
+    "phone-cloud-postgres": {
+      "image": "sha256:09e4f20b14ddb3dfe3a0c825b206032aaf8f28300ba2070c0b60fc1c10c6abc7",
+      "pid": 3293663,
+      "startedAt": "2026-09-11T02:03:34.78677268Z",
+      "status": "running",
+      "health": "healthy",
+      "restarts": 0,
+      "oom": false
+    },
+    "phone-cloud-redis": {
+      "image": "sha256:d146f83b1e0f02fc27c26a50cee39338c736674c5959db84363e6ae3cd9e02d2",
+      "pid": 3293937,
+      "startedAt": "2026-09-11T02:03:34.809581167Z",
+      "status": "running",
+      "health": "healthy",
+      "restarts": 0,
+      "oom": false
+    }
+  },
+  "windowsIdentity": {
+    "agentPid": 20232,
+    "agentCreated": "2026-10-29T08:47:39.1338090Z",
+    "agentOwner": "NT AUTHORITY\\SYSTEM",
+    "adbPid": 17764,
+    "adbCreated": "2026-10-28T08:29:24.8041910Z",
+    "adbOwner": "NT AUTHORITY\\SYSTEM",
+    "adbPath": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe"
+  },
+  "sourceVerification": {
+    "checks": [
+      {
+        "component": "cloud",
+        "path": "server/index.mjs",
+        "productionSha256": "53fc2b55dcb330762a437a1be3e248dd7dccafc9a041606020eb5ae85cf351cf",
+        "localSha256": "53fc2b55dcb330762a437a1be3e248dd7dccafc9a041606020eb5ae85cf351cf",
+        "matches": true
+      },
+      {
+        "component": "cloud",
+        "path": "server/managed-lookup.mjs",
+        "productionSha256": "c58747a82c750aa7ab643e84ca7028475ed4b9d797dc1542b96cb495f37ad3c0",
+        "localSha256": "c58747a82c750aa7ab643e84ca7028475ed4b9d797dc1542b96cb495f37ad3c0",
+        "matches": true
+      },
+      {
+        "component": "cloud",
+        "path": "server/managed-lookup-platform.mjs",
+        "productionSha256": "2340aac9014ed006ab39a29dcbe0259d53b47fb68c3227d398f5979122439ec7",
+        "localSha256": "2340aac9014ed006ab39a29dcbe0259d53b47fb68c3227d398f5979122439ec7",
+        "matches": true
+      },
+      {
+        "component": "cloud",
+        "path": "server/managed-lookup-store.mjs",
+        "productionSha256": "78e79206181fd3e4fb3529175b08fa67c5c1431f9600f35de8e5c1e4087f75c6",
+        "localSha256": "78e79206181fd3e4fb3529175b08fa67c5c1431f9600f35de8e5c1e4087f75c6",
+        "matches": true
+      },
+      {
+        "component": "cloud",
+        "path": "server/lookup-reader-admission.mjs",
+        "productionSha256": "6143dc1f18d25eb0e3e0d82c0075b80d5a069360d1ed9d70a818e7122954d3ec",
+        "localSha256": "6143dc1f18d25eb0e3e0d82c0075b80d5a069360d1ed9d70a818e7122954d3ec",
+        "matches": true
+      },
+      {
+        "component": "cloud",
+        "path": "server/lookup-reader-capacity.mjs",
+        "productionSha256": "cd27eb166caf02eddf54322685e475fae3edb7f375cb923cf7e78a487b0455d7",
+        "localSha256": "cd27eb166caf02eddf54322685e475fae3edb7f375cb923cf7e78a487b0455d7",
+        "matches": true
+      },
+      {
+        "component": "cloud",
+        "path": "server/lookup-stop-proof.mjs",
+        "productionSha256": "f36587d11613679ff013b2aa071d552a8719851ee80890b45e685b5884ae6a18",
+        "localSha256": "f36587d11613679ff013b2aa071d552a8719851ee80890b45e685b5884ae6a18",
+        "matches": true
+      },
+      {
+        "component": "cloud",
+        "path": "server/lookup-readiness.mjs",
+        "productionSha256": "139a3d44cd2130d8f9f7c1c1c05f1e254995c7b71057346468846f0518d3de6c",
+        "localSha256": "139a3d44cd2130d8f9f7c1c1c05f1e254995c7b71057346468846f0518d3de6c",
+        "matches": true
+      },
+      {
+        "component": "cloud",
+        "path": "server/lookup-failure-domain.mjs",
+        "productionSha256": "d256d831f639c19e7c111fc6541f0c215370d9b20fb3f47dc53bd005bea5a29a",
+        "localSha256": "d256d831f639c19e7c111fc6541f0c215370d9b20fb3f47dc53bd005bea5a29a",
+        "matches": true
+      },
+      {
+        "component": "cloud",
+        "path": "server/lookup-ai-vision.mjs",
+        "productionSha256": "27179e050b12abdca392534962cfbe4dbda1b8bbd15eaf81193cee6009878269",
+        "localSha256": "27179e050b12abdca392534962cfbe4dbda1b8bbd15eaf81193cee6009878269",
+        "matches": true
+      },
+      {
+        "component": "cloud",
+        "path": "server/lookup-ai-recovery.mjs",
+        "productionSha256": "5d5acf90a7fbf70f22940372bb9d8e62db896b1813b37c4a1ea150fbea60962e",
+        "localSha256": "5d5acf90a7fbf70f22940372bb9d8e62db896b1813b37c4a1ea150fbea60962e",
+        "matches": true
+      },
+      {
+        "component": "agent",
+        "path": "windows-agent/src/index.mjs",
+        "productionSha256": "c309d1f6dd0bda9530ec6ff8dccc874509aa7cd57e8ef6bdea77a64b7a1c5a67",
+        "localSha256": "c309d1f6dd0bda9530ec6ff8dccc874509aa7cd57e8ef6bdea77a64b7a1c5a67",
+        "matches": true
+      },
+      {
+        "component": "agent",
+        "path": "windows-agent/scripts/alipay_name_lookup.py",
+        "productionSha256": "8c60bb140a4e2bcf07ee29ccd85591b210f20365dc6638cd3f62451444fd4a63",
+        "localSha256": "8c60bb140a4e2bcf07ee29ccd85591b210f20365dc6638cd3f62451444fd4a63",
+        "matches": true
+      },
+      {
+        "component": "agent",
+        "path": "windows-agent/scripts/alipay_visual_result.py",
+        "productionSha256": "e5159fe17b3509fdd7accd997b3af03fc35071d5ae557181ed22f32fa140bd81",
+        "localSha256": "e5159fe17b3509fdd7accd997b3af03fc35071d5ae557181ed22f32fa140bd81",
+        "matches": true
+      },
+      {
+        "component": "agent",
+        "path": "windows-agent/src/lookup-page-recovery.mjs",
+        "productionSha256": "6ac3f752e52db13667b9f0d6a42380c4e3807bbe33c95777e823ef107d8f48b0",
+        "localSha256": "6ac3f752e52db13667b9f0d6a42380c4e3807bbe33c95777e823ef107d8f48b0",
+        "matches": true
+      },
+      {
+        "component": "agent",
+        "path": "windows-agent/src/lookup-reader-lifecycle.mjs",
+        "productionSha256": "d957d51ff0cba4bb1c504e979fb61eadf1fd4b7113c804882e62456210d70168",
+        "localSha256": "d957d51ff0cba4bb1c504e979fb61eadf1fd4b7113c804882e62456210d70168",
+        "matches": true
+      },
+      {
+        "component": "agent",
+        "path": "windows-agent/src/lookup-reader-capacity-report.mjs",
+        "productionSha256": "feb2f97e05ad631f4ece7a6e49491d8204d3118b7bfaa6322094afcc10b33900",
+        "localSha256": "feb2f97e05ad631f4ece7a6e49491d8204d3118b7bfaa6322094afcc10b33900",
+        "matches": true
+      },
+      {
+        "component": "agent",
+        "path": "windows-agent/src/alipay-poco-fallback-policy.mjs",
+        "productionSha256": "d9cca5a6ce0e97f0d6145306f4322d5a8873aaa5e71c2a5441707a46d349f917",
+        "localSha256": "d9cca5a6ce0e97f0d6145306f4322d5a8873aaa5e71c2a5441707a46d349f917",
+        "matches": true
+      }
+    ],
+    "allMatch": true
+  },
+  "cohort": {
+    "fromCreatedAt": "2026-10-29T08:52:20.000Z",
+    "capturedAt": "2026-10-30T00:52:09.024695Z",
+    "canonicalDedupe": "lookupId; prefer live row over archive",
+    "acceptedRows": 3779,
+    "business": {
+      "count": 3335,
+      "statuses": {
+        "succeeded": 2749,
+        "not_found": 533,
+        "failed": 24,
+        "running": 7,
+        "queued": 22
+      },
+      "codeCounts": {
+        "lookup_result_unconfirmed": 9,
+        "lookup_execution_failed": 15
+      },
+      "devicesUsed": 22,
+      "completedLatencySeconds": {
+        "n": 3306,
+        "p50": 47.15,
+        "p95": 257.67,
+        "max": 1089.09
+      },
+      "queueToFirstAttemptSeconds": {
+        "n": 3313,
+        "p50": 0.47,
+        "p95": 210.65,
+        "max": 1053.97
+      },
+      "firstAttemptToFinishSeconds": {
+        "n": 3306,
+        "p50": 31.28,
+        "p95": 87.91,
+        "max": 599.21
+      },
+      "multiAttemptCount": 152,
+      "failedByLastDevice": {
+        "116": 3,
+        "172": 5,
+        "182": 1,
+        "155": 1,
+        "154": 11,
+        "162": 1,
+        "57": 1,
+        "118": 1
+      },
+      "failures": [
+        {
+          "id": "84629c6f-2b31-4cea-a8aa-6565a69e6525",
+          "status": "failed",
+          "code": "lookup_result_unconfirmed",
+          "number": 116,
+          "createdAt": "2026-10-29T09:01:30.245Z",
+          "completedAt": "2026-10-29T09:02:52.135Z",
+          "attempts": 1
+        },
+        {
+          "id": "75608bdd-5e5d-4d2d-b5a1-b3ffbd1da3b8",
+          "status": "failed",
+          "code": "lookup_result_unconfirmed",
+          "number": 172,
+          "createdAt": "2026-10-29T09:10:32.031Z",
+          "completedAt": "2026-10-29T09:13:05.883Z",
+          "attempts": 1
+        },
+        {
+          "id": "a4d1ce92-c6a0-4306-9ede-5aeb15af4b3e",
+          "status": "failed",
+          "code": "lookup_result_unconfirmed",
+          "number": 182,
+          "createdAt": "2026-10-29T09:22:30.440Z",
+          "completedAt": "2026-10-29T09:25:18.697Z",
+          "attempts": 1
+        },
+        {
+          "id": "fff1188a-8ef6-4cba-a5ba-c4fb717bf34b",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 116,
+          "createdAt": "2026-10-29T09:30:30.196Z",
+          "completedAt": "2026-10-29T09:31:41.158Z",
+          "attempts": 1
+        },
+        {
+          "id": "3e9604bd-ba1b-425f-b9ae-91816a50b93d",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 155,
+          "createdAt": "2026-10-29T10:37:30.184Z",
+          "completedAt": "2026-10-29T10:38:11.616Z",
+          "attempts": 1
+        },
+        {
+          "id": "ef143c6d-e025-425c-83d9-fed691d480cb",
+          "status": "failed",
+          "code": "lookup_result_unconfirmed",
+          "number": 172,
+          "createdAt": "2026-10-29T11:49:30.896Z",
+          "completedAt": "2026-10-29T11:52:52.750Z",
+          "attempts": 1
+        },
+        {
+          "id": "ac3985c1-9bfd-46ff-8170-a5144232f8c9",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T12:02:30.115Z",
+          "completedAt": "2026-10-29T12:05:05.790Z",
+          "attempts": 1
+        },
+        {
+          "id": "b8cc9837-4797-4139-bb64-df328ffebb96",
+          "status": "failed",
+          "code": "lookup_result_unconfirmed",
+          "number": 172,
+          "createdAt": "2026-10-29T12:21:00.193Z",
+          "completedAt": "2026-10-29T12:24:41.401Z",
+          "attempts": 1
+        },
+        {
+          "id": "4b5620e2-1b91-4c9f-a722-e25c7432da9c",
+          "status": "failed",
+          "code": "lookup_result_unconfirmed",
+          "number": 162,
+          "createdAt": "2026-10-29T12:28:00.193Z",
+          "completedAt": "2026-10-29T12:31:57.472Z",
+          "attempts": 1
+        },
+        {
+          "id": "908ccec9-c562-4896-a67b-b61bd0b4f795",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 57,
+          "createdAt": "2026-10-29T12:32:32.003Z",
+          "completedAt": "2026-10-29T12:39:10.993Z",
+          "attempts": 1
+        },
+        {
+          "id": "9a94a73b-9e60-440b-902d-bfd693e6f790",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T12:56:00.285Z",
+          "completedAt": "2026-10-29T12:56:40.391Z",
+          "attempts": 1
+        },
+        {
+          "id": "30185f88-98e7-443f-829a-b817aa9048c9",
+          "status": "failed",
+          "code": "lookup_result_unconfirmed",
+          "number": 172,
+          "createdAt": "2026-10-29T13:38:30.154Z",
+          "completedAt": "2026-10-29T13:40:01.358Z",
+          "attempts": 1
+        },
+        {
+          "id": "84b76378-aab0-46b9-9903-f0c59b908fe9",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T13:42:00.188Z",
+          "completedAt": "2026-10-29T13:42:40.812Z",
+          "attempts": 1
+        },
+        {
+          "id": "61891dc7-91ab-45de-b588-ca997962ded1",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T14:30:00.225Z",
+          "completedAt": "2026-10-29T14:30:40.492Z",
+          "attempts": 1
+        },
+        {
+          "id": "cd49fc41-ff28-44a9-8f2c-bd721f808ff1",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 116,
+          "createdAt": "2026-10-29T14:43:00.334Z",
+          "completedAt": "2026-10-29T14:43:05.856Z",
+          "attempts": 1
+        },
+        {
+          "id": "7b048e05-ce93-4138-ba49-f425d1eff1a6",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T14:58:30.225Z",
+          "completedAt": "2026-10-29T14:59:10.393Z",
+          "attempts": 1
+        },
+        {
+          "id": "47b1d87a-5a52-4a27-a49e-2651f6288417",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T15:52:30.153Z",
+          "completedAt": "2026-10-29T15:53:11.471Z",
+          "attempts": 1
+        },
+        {
+          "id": "50fa17e8-0c57-4efe-94d0-451bf4bb59ed",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T16:12:30.274Z",
+          "completedAt": "2026-10-29T16:13:13.393Z",
+          "attempts": 1
+        },
+        {
+          "id": "72a04d1d-7b65-4344-a375-db8572c4f683",
+          "status": "failed",
+          "code": "lookup_result_unconfirmed",
+          "number": 118,
+          "createdAt": "2026-10-29T16:32:30.617Z",
+          "completedAt": "2026-10-29T16:34:03.196Z",
+          "attempts": 1
+        },
+        {
+          "id": "8009f9de-d8c3-4491-ac9e-4903fc2540cb",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T16:41:00.227Z",
+          "completedAt": "2026-10-29T16:41:40.379Z",
+          "attempts": 1
+        },
+        {
+          "id": "66602c09-f3ff-47e6-b532-d66914d5d257",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T17:05:30.274Z",
+          "completedAt": "2026-10-29T17:06:10.574Z",
+          "attempts": 1
+        },
+        {
+          "id": "20ba0c3a-3711-45e6-b37e-d087510293f0",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T18:36:00.265Z",
+          "completedAt": "2026-10-29T18:36:40.781Z",
+          "attempts": 1
+        },
+        {
+          "id": "8965bf3a-6c34-4d1e-afdf-ce6d8c8fc44a",
+          "status": "failed",
+          "code": "lookup_result_unconfirmed",
+          "number": 172,
+          "createdAt": "2026-10-29T20:09:30.139Z",
+          "completedAt": "2026-10-29T20:13:00.666Z",
+          "attempts": 1
+        },
+        {
+          "id": "b40f470a-049d-46ef-9bb0-1bf1c561f0af",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T20:13:00.152Z",
+          "completedAt": "2026-10-29T20:13:41.513Z",
+          "attempts": 1
+        }
+      ],
+      "slowest": [
+        {
+          "id": "64235f76-24a7-4349-87e7-92e7855e749d",
+          "number": 57,
+          "seconds": 1089.1,
+          "attempts": 1
+        },
+        {
+          "id": "d1e1ea7d-7ec0-4bf8-8c30-6a160c64b994",
+          "number": 101,
+          "seconds": 1074.6,
+          "attempts": 1
+        },
+        {
+          "id": "c3b910c8-2c28-4b3d-87bc-8d1065db015f",
+          "number": 57,
+          "seconds": 1058.8,
+          "attempts": 1
+        },
+        {
+          "id": "0a551f71-781e-479c-907c-27bf7c377ca5",
+          "number": 57,
+          "seconds": 1054.1,
+          "attempts": 1
+        },
+        {
+          "id": "f0be630e-438e-4501-8661-bf23173292c0",
+          "number": 57,
+          "seconds": 1022.9,
+          "attempts": 2
+        },
+        {
+          "id": "5ad55120-8523-4495-bc0f-495249a2868a",
+          "number": 101,
+          "seconds": 1009.9,
+          "attempts": 1
+        },
+        {
+          "id": "825988bb-3cc4-4e3b-b278-6f3f54a6f783",
+          "number": 101,
+          "seconds": 1008.7,
+          "attempts": 1
+        },
+        {
+          "id": "4ad9dc5a-2424-4021-8c8a-f422271abc46",
+          "number": 57,
+          "seconds": 991.5,
+          "attempts": 1
+        }
+      ]
+    },
+    "probe": {
+      "count": 444,
+      "statuses": {
+        "succeeded": 274,
+        "failed": 108,
+        "cancelled": 60,
+        "waiting_human": 1,
+        "preparing": 1
+      },
+      "codeCounts": {
+        "lookup_probe_failed": 61,
+        "lookup_accounts_cooling": 33,
+        "lookup_execution_failed": 8,
+        "lookup_account_login_required": 4,
+        "lookup_probe_page_unsupported": 2
+      },
+      "devicesUsed": 38,
+      "completedLatencySeconds": {
+        "n": 442,
+        "p50": 127.87,
+        "p95": 280.21,
+        "max": 779.69
+      },
+      "queueToFirstAttemptSeconds": {
+        "n": 444,
+        "p50": 0.03,
+        "p95": 0.05,
+        "max": 0.64
+      },
+      "firstAttemptToFinishSeconds": {
+        "n": 442,
+        "p50": 127.85,
+        "p95": 280.18,
+        "max": 779.67
+      },
+      "multiAttemptCount": 0,
+      "failedByLastDevice": {
+        "157": 1,
+        "155": 6,
+        "87": 6,
+        "53": 3,
+        "101": 3,
+        "74": 8,
+        "183": 3,
+        "79": 1,
+        "146": 5,
+        "154": 17,
+        "181": 2,
+        "112": 3,
+        "176": 6,
+        "159": 3,
+        "188": 3,
+        "158": 3,
+        "182": 4,
+        "164": 2,
+        "116": 4,
+        "162": 3,
+        "86": 1,
+        "58": 3,
+        "6": 4,
+        "172": 4,
+        "57": 2,
+        "10": 1,
+        "115": 1,
+        "161": 1,
+        "156": 3,
+        "192": 1,
+        "118": 1
+      },
+      "failures": [
+        {
+          "id": "541247c1-133e-42f9-8b32-c85052c004cb",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 157,
+          "createdAt": "2026-10-29T08:53:29.718Z",
+          "completedAt": "2026-10-29T08:54:00.278Z",
+          "attempts": 1
+        },
+        {
+          "id": "31c63bf0-e3d1-4799-ab80-d6203a677498",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 155,
+          "createdAt": "2026-10-29T08:58:07.126Z",
+          "completedAt": "2026-10-29T08:58:30.798Z",
+          "attempts": 1
+        },
+        {
+          "id": "ef87c45a-f044-44e0-a4c3-fe44b344fba1",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 87,
+          "createdAt": "2026-10-29T09:03:36.712Z",
+          "completedAt": "2026-10-29T09:07:13.297Z",
+          "attempts": 1
+        },
+        {
+          "id": "3302c31f-b0c6-49cc-b024-cf7a529904af",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 53,
+          "createdAt": "2026-10-29T09:07:14.698Z",
+          "completedAt": "2026-10-29T09:09:33.648Z",
+          "attempts": 1
+        },
+        {
+          "id": "f9803c49-117f-4dbf-a839-c0e894cb1b5b",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 101,
+          "createdAt": "2026-10-29T09:08:18.812Z",
+          "completedAt": "2026-10-29T09:11:11.853Z",
+          "attempts": 1
+        },
+        {
+          "id": "4df509f0-7ef4-4708-bb36-0059fff2002c",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 74,
+          "createdAt": "2026-10-29T09:13:10.974Z",
+          "completedAt": "2026-10-29T09:15:49.606Z",
+          "attempts": 1
+        },
+        {
+          "id": "b4ae467a-6161-45e6-8012-7056d8eebbc9",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 87,
+          "createdAt": "2026-10-29T09:31:42.590Z",
+          "completedAt": "2026-10-29T09:34:30.338Z",
+          "attempts": 1
+        },
+        {
+          "id": "9a73e687-d884-4f10-88ea-e0b006045d24",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 183,
+          "createdAt": "2026-10-29T09:34:31.914Z",
+          "completedAt": "2026-10-29T09:36:25.902Z",
+          "attempts": 1
+        },
+        {
+          "id": "3497bbfc-ff56-47c4-b40c-701afc44896f",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 74,
+          "createdAt": "2026-10-29T09:35:10.910Z",
+          "completedAt": "2026-10-29T09:37:42.232Z",
+          "attempts": 1
+        },
+        {
+          "id": "9fae1017-f4e6-4ced-bf99-7b3bb3f9fa37",
+          "status": "failed",
+          "code": "lookup_account_login_required",
+          "number": 79,
+          "createdAt": "2026-10-29T09:36:30.916Z",
+          "completedAt": "2026-10-29T09:36:50.786Z",
+          "attempts": 1
+        },
+        {
+          "id": "67225625-7ff6-44cc-a148-6bf303ad0ecb",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 146,
+          "createdAt": "2026-10-29T09:43:10.983Z",
+          "completedAt": "2026-10-29T09:44:52.843Z",
+          "attempts": 1
+        },
+        {
+          "id": "b0f9aa70-74e6-4b71-8233-7f7160270965",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 155,
+          "createdAt": "2026-10-29T09:43:11.102Z",
+          "completedAt": "2026-10-29T09:43:40.931Z",
+          "attempts": 1
+        },
+        {
+          "id": "298bfadd-84a9-4e37-b1ab-179202ef4e30",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 87,
+          "createdAt": "2026-10-29T09:59:19.748Z",
+          "completedAt": "2026-10-29T10:02:50.123Z",
+          "attempts": 1
+        },
+        {
+          "id": "4b8ca096-5b9c-43b6-93fb-16d564eb4d4b",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 74,
+          "createdAt": "2026-10-29T10:15:31.296Z",
+          "completedAt": "2026-10-29T10:18:00.505Z",
+          "attempts": 1
+        },
+        {
+          "id": "5ff387a0-1a76-4a34-b11e-8081dbc8aebc",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T10:18:01.932Z",
+          "completedAt": "2026-10-29T10:19:54.658Z",
+          "attempts": 1
+        },
+        {
+          "id": "f717d470-a006-4597-bede-0f55160f2cd0",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 146,
+          "createdAt": "2026-10-29T10:20:30.972Z",
+          "completedAt": "2026-10-29T10:22:09.991Z",
+          "attempts": 1
+        },
+        {
+          "id": "a7ec06bc-a951-4273-9eeb-5b835e6d46ee",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 181,
+          "createdAt": "2026-10-29T10:38:12.975Z",
+          "completedAt": "2026-10-29T10:41:38.509Z",
+          "attempts": 1
+        },
+        {
+          "id": "48229057-b847-4d83-a1f2-73991590781f",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 112,
+          "createdAt": "2026-10-29T10:39:31.115Z",
+          "completedAt": "2026-10-29T10:42:27.045Z",
+          "attempts": 1
+        },
+        {
+          "id": "20a45abc-8a42-4eaa-9842-dc72cbe5ac5c",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 176,
+          "createdAt": "2026-10-29T10:47:00.401Z",
+          "completedAt": "2026-10-29T10:48:53.785Z",
+          "attempts": 1
+        },
+        {
+          "id": "674f4c68-d395-4636-b9c3-326907f541d6",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 159,
+          "createdAt": "2026-10-29T11:15:32.313Z",
+          "completedAt": "2026-10-29T11:21:08.904Z",
+          "attempts": 1
+        },
+        {
+          "id": "2d10a5b0-2148-48bc-a071-f9d85130785c",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 101,
+          "createdAt": "2026-10-29T11:21:10.779Z",
+          "completedAt": "2026-10-29T11:23:41.355Z",
+          "attempts": 1
+        },
+        {
+          "id": "7c85022e-a054-4950-8fd1-966757bdff73",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 146,
+          "createdAt": "2026-10-29T11:22:45.224Z",
+          "completedAt": "2026-10-29T11:24:47.267Z",
+          "attempts": 1
+        },
+        {
+          "id": "be09dc90-82a8-45ab-b3f9-ba47cc3f75a7",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 155,
+          "createdAt": "2026-10-29T11:23:23.683Z",
+          "completedAt": "2026-10-29T11:23:49.452Z",
+          "attempts": 1
+        },
+        {
+          "id": "bf1bb616-fc4e-4938-9717-5ec66698d77b",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 188,
+          "createdAt": "2026-10-29T11:25:22.964Z",
+          "completedAt": "2026-10-29T11:27:23.938Z",
+          "attempts": 1
+        },
+        {
+          "id": "78486bde-1117-481d-90a4-77f9317569f1",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 159,
+          "createdAt": "2026-10-29T11:56:21.472Z",
+          "completedAt": "2026-10-29T12:00:05.732Z",
+          "attempts": 1
+        },
+        {
+          "id": "eaed9c94-0068-4800-8840-c0695eb376d3",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 158,
+          "createdAt": "2026-10-29T12:00:07.103Z",
+          "completedAt": "2026-10-29T12:01:58.133Z",
+          "attempts": 1
+        },
+        {
+          "id": "0d7ef381-5da7-4e71-8766-5878de1e2ecb",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 146,
+          "createdAt": "2026-10-29T12:01:59.502Z",
+          "completedAt": "2026-10-29T12:03:35.209Z",
+          "attempts": 1
+        },
+        {
+          "id": "6174d184-90b9-41b9-b008-177c84af1cee",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 155,
+          "createdAt": "2026-10-29T12:05:41.925Z",
+          "completedAt": "2026-10-29T12:05:59.109Z",
+          "attempts": 1
+        },
+        {
+          "id": "2f81519f-7cfb-4771-9fe6-be31fa95e48e",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 188,
+          "createdAt": "2026-10-29T12:10:28.008Z",
+          "completedAt": "2026-10-29T12:11:56.680Z",
+          "attempts": 1
+        },
+        {
+          "id": "957a008a-8c9e-4dea-a199-8a498dfcdc6e",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 53,
+          "createdAt": "2026-10-29T12:18:37.177Z",
+          "completedAt": "2026-10-29T12:20:58.641Z",
+          "attempts": 1
+        },
+        {
+          "id": "98a304e6-a061-4f58-be30-2d069ab75de4",
+          "status": "failed",
+          "code": "lookup_probe_page_unsupported",
+          "number": 159,
+          "createdAt": "2026-10-29T12:24:45.145Z",
+          "completedAt": "2026-10-29T12:30:38.393Z",
+          "attempts": 1
+        },
+        {
+          "id": "eda3fdb8-18f4-4a53-baac-e264b613e12f",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 158,
+          "createdAt": "2026-10-29T12:27:05.736Z",
+          "completedAt": "2026-10-29T12:28:04.499Z",
+          "attempts": 1
+        },
+        {
+          "id": "2c2cc9e2-b283-4817-9185-42e5b6a7384a",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 146,
+          "createdAt": "2026-10-29T12:30:01.742Z",
+          "completedAt": "2026-10-29T12:31:36.279Z",
+          "attempts": 1
+        },
+        {
+          "id": "462d7d5a-6800-49fc-99a3-28945e9192bc",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T12:30:40.517Z",
+          "completedAt": "2026-10-29T12:32:30.700Z",
+          "attempts": 1
+        },
+        {
+          "id": "7a9f26fe-b986-437d-a301-6dd4336835bf",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 155,
+          "createdAt": "2026-10-29T12:31:59.998Z",
+          "completedAt": "2026-10-29T12:32:42.728Z",
+          "attempts": 1
+        },
+        {
+          "id": "003ec64e-ce20-4c23-b19b-0ad446f799cc",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 188,
+          "createdAt": "2026-10-29T12:32:12.164Z",
+          "completedAt": "2026-10-29T12:33:34.423Z",
+          "attempts": 1
+        },
+        {
+          "id": "d4ca1e4a-bbd3-4cf7-8275-d0047b73dc8c",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 158,
+          "createdAt": "2026-10-29T12:33:53.329Z",
+          "completedAt": "2026-10-29T12:35:20.996Z",
+          "attempts": 1
+        },
+        {
+          "id": "a29ed4e2-b9d1-4ee9-ae4d-74059a83dce4",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 182,
+          "createdAt": "2026-10-29T12:45:16.157Z",
+          "completedAt": "2026-10-29T12:47:37.073Z",
+          "attempts": 1
+        },
+        {
+          "id": "1e828d80-a867-4f2a-a3e9-f186aebb8576",
+          "status": "failed",
+          "code": "lookup_probe_page_unsupported",
+          "number": 155,
+          "createdAt": "2026-10-29T12:47:38.187Z",
+          "completedAt": "2026-10-29T12:50:42.985Z",
+          "attempts": 1
+        },
+        {
+          "id": "949ed0e9-15e3-483f-96ba-e538f270215f",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 164,
+          "createdAt": "2026-10-29T12:50:46.051Z",
+          "completedAt": "2026-10-29T12:53:49.959Z",
+          "attempts": 1
+        },
+        {
+          "id": "1a321b9d-ca4f-4809-bc34-6302820beb1a",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 181,
+          "createdAt": "2026-10-29T13:23:12.707Z",
+          "completedAt": "2026-10-29T13:25:49.248Z",
+          "attempts": 1
+        },
+        {
+          "id": "e9932a15-33c9-47e9-8f1e-973cec4d8b99",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 116,
+          "createdAt": "2026-10-29T13:25:34.799Z",
+          "completedAt": "2026-10-29T13:26:39.931Z",
+          "attempts": 1
+        },
+        {
+          "id": "9788771f-5804-49b8-b5a2-d95925b6b5ba",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T13:25:50.083Z",
+          "completedAt": "2026-10-29T13:27:49.083Z",
+          "attempts": 1
+        },
+        {
+          "id": "2e8b8032-feb1-4af2-8c39-e09cbe6b7587",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 162,
+          "createdAt": "2026-10-29T13:30:31.104Z",
+          "completedAt": "2026-10-29T13:35:18.048Z",
+          "attempts": 1
+        },
+        {
+          "id": "9f8560c2-371d-463e-9f16-1da713519432",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T13:35:19.406Z",
+          "completedAt": "2026-10-29T13:37:22.026Z",
+          "attempts": 1
+        },
+        {
+          "id": "a07248b3-c8a7-4159-ab6a-7d92d20b1b2b",
+          "status": "failed",
+          "code": "lookup_account_login_required",
+          "number": 86,
+          "createdAt": "2026-10-29T13:51:12.233Z",
+          "completedAt": "2026-10-29T13:51:30.566Z",
+          "attempts": 1
+        },
+        {
+          "id": "8ca8e9df-8bd6-4b6e-b2b1-fdf779c6ace1",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T13:56:26.365Z",
+          "completedAt": "2026-10-29T13:58:11.247Z",
+          "attempts": 1
+        },
+        {
+          "id": "95ce672f-2461-4901-a088-1a6eec1856b1",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T14:17:37.241Z",
+          "completedAt": "2026-10-29T14:19:28.682Z",
+          "attempts": 1
+        },
+        {
+          "id": "1b7ae31f-93d5-45cc-b2e9-749b6fd5e949",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 182,
+          "createdAt": "2026-10-29T14:23:43.893Z",
+          "completedAt": "2026-10-29T14:25:57.364Z",
+          "attempts": 1
+        },
+        {
+          "id": "9c025ee9-a803-41ea-800e-60c998687330",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T14:44:26.155Z",
+          "completedAt": "2026-10-29T14:46:28.207Z",
+          "attempts": 1
+        },
+        {
+          "id": "aadc387d-3da4-4090-a648-4128a4b35f1c",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T15:01:09.432Z",
+          "completedAt": "2026-10-29T15:03:06.328Z",
+          "attempts": 1
+        },
+        {
+          "id": "cc8840a4-25c8-486a-956f-8962acfd2087",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 58,
+          "createdAt": "2026-10-29T15:17:17.445Z",
+          "completedAt": "2026-10-29T15:17:30.890Z",
+          "attempts": 1
+        },
+        {
+          "id": "581b9500-cc2a-40c1-943a-522423237306",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 74,
+          "createdAt": "2026-10-29T15:17:32.009Z",
+          "completedAt": "2026-10-29T15:20:09.076Z",
+          "attempts": 1
+        },
+        {
+          "id": "b26040b6-0d24-46c8-baf9-d2257cffc999",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 6,
+          "createdAt": "2026-10-29T15:19:19.852Z",
+          "completedAt": "2026-10-29T15:22:09.171Z",
+          "attempts": 1
+        },
+        {
+          "id": "f9df73ba-eac6-4f73-bc7a-ba123d29a57b",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T15:22:10.570Z",
+          "completedAt": "2026-10-29T15:24:00.761Z",
+          "attempts": 1
+        },
+        {
+          "id": "f683f927-db5f-4f59-8a42-ac59863a62c1",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T15:33:03.111Z",
+          "completedAt": "2026-10-29T15:34:50.383Z",
+          "attempts": 1
+        },
+        {
+          "id": "09dcb708-9359-4b2f-b6cd-4d4c41603902",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 172,
+          "createdAt": "2026-10-29T15:33:59.873Z",
+          "completedAt": "2026-10-29T15:34:54.328Z",
+          "attempts": 1
+        },
+        {
+          "id": "895839ad-dcf1-4a2b-98b1-ccf0c970b8c4",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 57,
+          "createdAt": "2026-10-29T15:34:03.906Z",
+          "completedAt": "2026-10-29T15:35:15.363Z",
+          "attempts": 1
+        },
+        {
+          "id": "7afa0a6d-0e37-417a-9db5-4bc0a1ba5b73",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 112,
+          "createdAt": "2026-10-29T16:03:35.492Z",
+          "completedAt": "2026-10-29T16:06:40.549Z",
+          "attempts": 1
+        },
+        {
+          "id": "25a781a9-32df-4ba1-904d-e645a948f74b",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T16:07:12.567Z",
+          "completedAt": "2026-10-29T16:09:00.379Z",
+          "attempts": 1
+        },
+        {
+          "id": "beedce01-8e8e-48b1-95b8-50a21f25c269",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 10,
+          "createdAt": "2026-10-29T16:08:19.186Z",
+          "completedAt": "2026-10-29T16:11:15.192Z",
+          "attempts": 1
+        },
+        {
+          "id": "f56e9d82-f0f0-4341-ba6a-1e5c6078efe1",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 162,
+          "createdAt": "2026-10-29T16:13:49.579Z",
+          "completedAt": "2026-10-29T16:16:55.698Z",
+          "attempts": 1
+        },
+        {
+          "id": "eb02a7b6-6309-4f01-9678-f1d51515581a",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 58,
+          "createdAt": "2026-10-29T16:34:05.312Z",
+          "completedAt": "2026-10-29T16:37:56.072Z",
+          "attempts": 1
+        },
+        {
+          "id": "eba53f7f-832c-49cd-9593-7c67f437f52c",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T16:35:31.197Z",
+          "completedAt": "2026-10-29T16:37:17.710Z",
+          "attempts": 1
+        },
+        {
+          "id": "d5e5ab05-4c91-4a06-8be1-88532fbfb44b",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 176,
+          "createdAt": "2026-10-29T16:37:57.399Z",
+          "completedAt": "2026-10-29T16:39:28.871Z",
+          "attempts": 1
+        },
+        {
+          "id": "93b6f747-a72a-4af8-ba32-77e315eaee99",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 176,
+          "createdAt": "2026-10-29T16:53:18.155Z",
+          "completedAt": "2026-10-29T16:55:15.963Z",
+          "attempts": 1
+        },
+        {
+          "id": "ad4af2e8-59a0-419c-9357-773be7618c84",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 87,
+          "createdAt": "2026-10-29T17:06:48.020Z",
+          "completedAt": "2026-10-29T17:11:59.799Z",
+          "attempts": 1
+        },
+        {
+          "id": "b395f4b4-e03f-4ba0-898d-6d7323e26786",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 74,
+          "createdAt": "2026-10-29T17:17:28.424Z",
+          "completedAt": "2026-10-29T17:19:55.338Z",
+          "attempts": 1
+        },
+        {
+          "id": "e1978b25-93ae-436a-93cc-d8e3aa10acf7",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 6,
+          "createdAt": "2026-10-29T17:21:45.554Z",
+          "completedAt": "2026-10-29T17:25:00.116Z",
+          "attempts": 1
+        },
+        {
+          "id": "febfab3f-b430-4af2-be41-bfb19970d981",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 87,
+          "createdAt": "2026-10-29T17:34:07.184Z",
+          "completedAt": "2026-10-29T17:36:53.084Z",
+          "attempts": 1
+        },
+        {
+          "id": "be974829-c2b0-4f37-9bad-d7c92fbfb03d",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 57,
+          "createdAt": "2026-10-29T17:42:00.683Z",
+          "completedAt": "2026-10-29T17:43:45.773Z",
+          "attempts": 1
+        },
+        {
+          "id": "68c3d0f5-d135-4cbd-8cf1-f5788dd9500e",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 74,
+          "createdAt": "2026-10-29T17:45:02.121Z",
+          "completedAt": "2026-10-29T17:47:35.852Z",
+          "attempts": 1
+        },
+        {
+          "id": "8eabd878-1248-461b-a6ec-7a03edb17305",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 58,
+          "createdAt": "2026-10-29T17:47:28.743Z",
+          "completedAt": "2026-10-29T17:49:35.737Z",
+          "attempts": 1
+        },
+        {
+          "id": "ef9e3446-7e21-48ab-903b-06d75f3b8f6a",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T18:17:17.008Z",
+          "completedAt": "2026-10-29T18:19:14.066Z",
+          "attempts": 1
+        },
+        {
+          "id": "4fd1f2d6-a120-402e-838d-17f9c834ebcf",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 74,
+          "createdAt": "2026-10-29T18:17:46.350Z",
+          "completedAt": "2026-10-29T18:20:25.347Z",
+          "attempts": 1
+        },
+        {
+          "id": "ead2e53f-3e4e-4bcd-9813-7e31ef5fd3bd",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 176,
+          "createdAt": "2026-10-29T18:18:46.259Z",
+          "completedAt": "2026-10-29T18:19:12.253Z",
+          "attempts": 1
+        },
+        {
+          "id": "3b1e3d82-e6b0-4a2f-8d4b-0b7654eed6b0",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T18:20:26.003Z",
+          "completedAt": "2026-10-29T18:24:55.360Z",
+          "attempts": 1
+        },
+        {
+          "id": "6f51b818-2657-488c-8e62-896126e61215",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 176,
+          "createdAt": "2026-10-29T18:20:26.526Z",
+          "completedAt": "2026-10-29T18:22:08.961Z",
+          "attempts": 1
+        },
+        {
+          "id": "1bb0d1c1-9506-4a2e-9768-dee9a3d2ab42",
+          "status": "failed",
+          "code": "lookup_account_login_required",
+          "number": 115,
+          "createdAt": "2026-10-29T18:22:05.812Z",
+          "completedAt": "2026-10-29T18:22:26.550Z",
+          "attempts": 1
+        },
+        {
+          "id": "4699b30a-b498-4371-9520-2e4096c03f31",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 176,
+          "createdAt": "2026-10-29T18:25:37.738Z",
+          "completedAt": "2026-10-29T18:27:07.231Z",
+          "attempts": 1
+        },
+        {
+          "id": "086aefb5-c511-4a88-afea-af91d715430b",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 172,
+          "createdAt": "2026-10-29T18:27:08.895Z",
+          "completedAt": "2026-10-29T18:30:04.361Z",
+          "attempts": 1
+        },
+        {
+          "id": "eced7783-834f-4871-9324-53a4803986f0",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 183,
+          "createdAt": "2026-10-29T18:30:05.995Z",
+          "completedAt": "2026-10-29T18:30:36.019Z",
+          "attempts": 1
+        },
+        {
+          "id": "8afcd340-bf07-4b43-85d7-0d41d97079d3",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 87,
+          "createdAt": "2026-10-29T18:30:37.134Z",
+          "completedAt": "2026-10-29T18:32:57.714Z",
+          "attempts": 1
+        },
+        {
+          "id": "cb23c08d-b9f4-4c05-a0b2-e2e3a4e74790",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 172,
+          "createdAt": "2026-10-29T18:57:33.359Z",
+          "completedAt": "2026-10-29T19:01:58.339Z",
+          "attempts": 1
+        },
+        {
+          "id": "d914d097-e72e-4785-848f-a2f9ac14466d",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 183,
+          "createdAt": "2026-10-29T18:58:36.182Z",
+          "completedAt": "2026-10-29T19:01:48.092Z",
+          "attempts": 1
+        },
+        {
+          "id": "82d87e7e-896e-47cc-ba1e-57ba9ed0956a",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 116,
+          "createdAt": "2026-10-29T19:30:00.925Z",
+          "completedAt": "2026-10-29T19:31:44.522Z",
+          "attempts": 1
+        },
+        {
+          "id": "0bc17ad8-fc30-4eb7-be3e-8f47fc70380c",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 164,
+          "createdAt": "2026-10-29T20:08:01.339Z",
+          "completedAt": "2026-10-29T20:09:27.194Z",
+          "attempts": 1
+        },
+        {
+          "id": "37e6678a-9430-45d0-ba46-8cadf8465bac",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 112,
+          "createdAt": "2026-10-29T20:09:28.816Z",
+          "completedAt": "2026-10-29T20:11:18.725Z",
+          "attempts": 1
+        },
+        {
+          "id": "a352f5f1-e5e4-4e6a-9697-b27a3fcb3a95",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 6,
+          "createdAt": "2026-10-29T20:13:05.003Z",
+          "completedAt": "2026-10-29T20:16:49.793Z",
+          "attempts": 1
+        },
+        {
+          "id": "91bd2956-0bbe-4462-bccc-5083924bf640",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 182,
+          "createdAt": "2026-10-29T20:14:18.420Z",
+          "completedAt": "2026-10-29T20:14:26.671Z",
+          "attempts": 1
+        },
+        {
+          "id": "7ef222b6-92ae-4864-b08b-bea111f5c46b",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 161,
+          "createdAt": "2026-10-29T20:38:09.709Z",
+          "completedAt": "2026-10-29T20:39:41.537Z",
+          "attempts": 1
+        },
+        {
+          "id": "c3567b84-3419-42a0-88a1-8ede512edfba",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 101,
+          "createdAt": "2026-10-29T20:40:07.079Z",
+          "completedAt": "2026-10-29T20:41:33.267Z",
+          "attempts": 1
+        },
+        {
+          "id": "07f31287-6557-456b-aef1-9fb204614ba2",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 156,
+          "createdAt": "2026-10-29T20:40:57.925Z",
+          "completedAt": "2026-10-29T20:42:55.959Z",
+          "attempts": 1
+        },
+        {
+          "id": "959c37be-1b85-45bc-9dfa-c812003d791b",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 172,
+          "createdAt": "2026-10-29T20:43:47.566Z",
+          "completedAt": "2026-10-29T20:45:20.385Z",
+          "attempts": 1
+        },
+        {
+          "id": "69083211-c051-4bed-ab13-893b5c7ffc01",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 154,
+          "createdAt": "2026-10-29T20:44:20.581Z",
+          "completedAt": "2026-10-29T20:47:51.371Z",
+          "attempts": 1
+        },
+        {
+          "id": "af771ed5-b1b2-46bc-814b-0f17339ad092",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 182,
+          "createdAt": "2026-10-29T20:45:22.242Z",
+          "completedAt": "2026-10-29T20:45:29.818Z",
+          "attempts": 1
+        },
+        {
+          "id": "59cbea67-57fe-49b8-86b2-d79540def0ae",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 192,
+          "createdAt": "2026-10-29T21:17:45.081Z",
+          "completedAt": "2026-10-29T21:18:34.466Z",
+          "attempts": 1
+        },
+        {
+          "id": "4ed7730e-7b9e-4ec1-9691-ef45e9d889cd",
+          "status": "failed",
+          "code": "lookup_account_login_required",
+          "number": 118,
+          "createdAt": "2026-10-29T21:42:51.078Z",
+          "completedAt": "2026-10-29T21:43:39.265Z",
+          "attempts": 1
+        },
+        {
+          "id": "88b53105-003e-47a2-839f-5766393fe1be",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 162,
+          "createdAt": "2026-10-29T21:43:43.874Z",
+          "completedAt": "2026-10-29T21:49:16.799Z",
+          "attempts": 1
+        },
+        {
+          "id": "ac151b67-37c5-4af0-bb7d-ad0ea6a905b3",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 74,
+          "createdAt": "2026-10-29T23:27:44.377Z",
+          "completedAt": "2026-10-29T23:30:16.118Z",
+          "attempts": 1
+        },
+        {
+          "id": "938fea6e-2429-4df3-8d8a-5c91c82be23e",
+          "status": "failed",
+          "code": "lookup_accounts_cooling",
+          "number": 6,
+          "createdAt": "2026-10-29T23:30:17.504Z",
+          "completedAt": "2026-10-29T23:32:58.939Z",
+          "attempts": 1
+        },
+        {
+          "id": "ff1fe527-06ef-4861-a406-157705b50717",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 116,
+          "createdAt": "2026-10-29T23:52:30.587Z",
+          "completedAt": "2026-10-29T23:53:00.499Z",
+          "attempts": 1
+        },
+        {
+          "id": "26f06167-b6e5-47de-8a84-976473dbf4f9",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 154,
+          "createdAt": "2026-10-30T00:11:12.607Z",
+          "completedAt": "2026-10-30T00:17:00.818Z",
+          "attempts": 1
+        },
+        {
+          "id": "cee53da0-7bf4-4388-8652-a2cb34eacf62",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 53,
+          "createdAt": "2026-10-30T00:22:02.497Z",
+          "completedAt": "2026-10-30T00:25:05.778Z",
+          "attempts": 1
+        },
+        {
+          "id": "fbfb12f6-4d13-4f76-b01c-db1c40c24b80",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 116,
+          "createdAt": "2026-10-30T00:27:01.093Z",
+          "completedAt": "2026-10-30T00:27:28.041Z",
+          "attempts": 1
+        },
+        {
+          "id": "30ebbd6c-f696-48e9-94b6-bcd229f6a477",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 156,
+          "createdAt": "2026-10-30T00:46:13.753Z",
+          "completedAt": "2026-10-30T00:46:35.200Z",
+          "attempts": 1
+        },
+        {
+          "id": "7ae697ca-78ca-46d5-bb7c-144369271b01",
+          "status": "failed",
+          "code": "lookup_execution_failed",
+          "number": 154,
+          "createdAt": "2026-10-30T00:46:36.631Z",
+          "completedAt": "2026-10-30T00:48:50.868Z",
+          "attempts": 1
+        },
+        {
+          "id": "46d7e93c-a332-47d7-bc8a-13acb00e9513",
+          "status": "failed",
+          "code": "lookup_probe_failed",
+          "number": 156,
+          "createdAt": "2026-10-30T00:51:30.931Z",
+          "completedAt": "2026-10-30T00:51:52.632Z",
+          "attempts": 1
+        }
+      ],
+      "slowest": [
+        {
+          "id": "027cfd74-4684-4f78-bf7c-ea9bf7971b50",
+          "number": 116,
+          "seconds": 779.7,
+          "attempts": 1
+        },
+        {
+          "id": "7af95699-6eba-4c98-ad56-228881097592",
+          "number": 172,
+          "seconds": 571.1,
+          "attempts": 1
+        },
+        {
+          "id": "c717818f-045c-4d78-96e6-33ceed9a6a4d",
+          "number": 172,
+          "seconds": 521.9,
+          "attempts": 1
+        },
+        {
+          "id": "0c68effa-6290-400b-9344-e6dff8f90f9f",
+          "number": 154,
+          "seconds": 493.8,
+          "attempts": 1
+        },
+        {
+          "id": "7f27e36f-5ca3-4f46-a513-a15f66758db7",
+          "number": 156,
+          "seconds": 406.3,
+          "attempts": 1
+        },
+        {
+          "id": "06f937e0-935b-48c2-a422-0b6bef6168b4",
+          "number": 161,
+          "seconds": 384.3,
+          "attempts": 1
+        },
+        {
+          "id": "3d41e854-4812-4ab2-922c-ee1045b91bc7",
+          "number": 87,
+          "seconds": 358.3,
+          "attempts": 1
+        },
+        {
+          "id": "98a304e6-a061-4f58-be30-2d069ab75de4",
+          "number": 159,
+          "seconds": 353.2,
+          "attempts": 1
+        }
+      ]
+    },
+    "metadataConsistency": [],
+    "notFoundAccuracyNotProven": true
+  },
+  "httpLogWindow": {
+    "sampledAt": "2026-10-30T01:06:46Z",
+    "firstAt": "2026-10-29T21:42:47.04648548Z",
+    "lastAt": "2026-10-30T01:06:42.981880655Z",
+    "bytesScanned": 89619438,
+    "records": 475229,
+    "boundedComplete": true,
+    "routes": {
+      "other": {
+        "status": {
+          "401": 71974,
+          "200": 38810,
+          "201": 9715,
+          "202": 3,
+          "409": 1,
+          "404": 14,
+          "500": 3
+        },
+        "count": 120520,
+        "p50ms": 1,
+        "p95ms": 19,
+        "maxMs": 13466
+      },
+      "agent_task_poll": {
+        "status": {
+          "200": 25743
+        },
+        "count": 25743,
+        "p50ms": 5,
+        "p95ms": 8,
+        "maxMs": 2957
+      },
+      "lookup_admin": {
+        "status": {
+          "200": 855
+        },
+        "count": 855,
+        "p50ms": 89,
+        "p95ms": 413,
+        "maxMs": 2920
+      },
+      "agent_status_POST": {
+        "status": {
+          "200": 1118
+        },
+        "count": 1118,
+        "p50ms": 6,
+        "p95ms": 38,
+        "maxMs": 2677
+      },
+      "agent_ack_POST": {
+        "status": {
+          "200": 1120,
+          "500": 1
+        },
+        "count": 1121,
+        "p50ms": 4,
+        "p95ms": 36,
+        "maxMs": 2603
+      },
+      "lookup_result_GET": {
+        "status": {
+          "200": 7122
+        },
+        "count": 7122,
+        "p50ms": 7,
+        "p95ms": 11,
+        "maxMs": 33
+      },
+      "lookup_submit_POST": {
+        "status": {
+          "202": 897,
+          "429": 1334,
+          "503": 6,
+          "200": 1
+        },
+        "count": 2238,
+        "p50ms": 51,
+        "p95ms": 134,
+        "maxMs": 1252
+      },
+      "readyz": {
+        "status": {
+          "200": 363,
+          "503": 1
+        },
+        "count": 364,
+        "p50ms": 3,
+        "p95ms": 122,
+        "maxMs": 3969
+      },
+      "agent_heartbeat": {
+        "status": {
+          "200": 408
+        },
+        "count": 408,
+        "p50ms": 5,
+        "p95ms": 17,
+        "maxMs": 132
+      }
+    },
+    "errors": {
+      "managed lookup storage/dispatch unavailable": 2
+    },
+    "capacityStats": [
+      {
+        "limit": 8,
+        "pinned": 0,
+        "count": 3092
+      },
+      {
+        "limit": 8,
+        "pinned": 1,
+        "count": 5382
+      },
+      {
+        "limit": 8,
+        "pinned": 2,
+        "count": 5672
+      },
+      {
+        "limit": 8,
+        "pinned": 3,
+        "count": 6268
+      },
+      {
+        "limit": 8,
+        "pinned": 4,
+        "count": 2670
+      },
+      {
+        "limit": 8,
+        "pinned": 5,
+        "count": 457
+      },
+      {
+        "limit": 8,
+        "pinned": 6,
+        "count": 784
+      },
+      {
+        "limit": 8,
+        "pinned": 7,
+        "count": 987
+      },
+      {
+        "limit": 8,
+        "pinned": 8,
+        "count": 431
+      }
+    ]
+  },
+  "agentLogWindow": {
+    "sampledAt": "2026-10-30T00:57:41.835108+00:00",
+    "firstScannedAt": "2026-10-29T08:52:20.175Z",
+    "lastScannedAt": "2026-10-30T00:57:41.816Z",
+    "scannedBytes": 66073302,
+    "scannedLogRecords": 239837,
+    "boundedCompleteToCapturedEnd": true,
+    "eventCounts": {
+      "Airtest/Poco worker admitted": 1429,
+      "lookup reader admission waiting": 17,
+      "airtest worker exit diagnostic": 1424,
+      "airtest worker stop completed": 1418,
+      "forcing stuck airtest worker to stop": 73,
+      "lookup reader admission recovered": 17,
+      "Airtest/Poco worker probe failed; rebuilding before task": 296,
+      "lookup exited reader cleanup completed": 200,
+      "forced airtest cleanup failed": 39
+    }
+  },
+  "aiBoundedCohort": [
+    {
+      "kind": "unconfirmed",
+      "count": 2,
+      "status": "failed",
+      "purpose": "business",
+      "rejectioncode": "model_unconfirmed"
+    },
+    {
+      "kind": "unconfirmed",
+      "count": 2,
+      "status": "failed",
+      "purpose": "business",
+      "rejectioncode": "name_verification_mismatch"
+    },
+    {
+      "kind": "unconfirmed",
+      "count": 5,
+      "status": "failed",
+      "purpose": "business",
+      "rejectioncode": "result_contract_rejected"
+    },
+    {
+      "kind": "no_name",
+      "count": 14,
+      "status": "not_found",
+      "purpose": "business",
+      "rejectioncode": ""
+    },
+    {
+      "kind": "unverified",
+      "count": 16,
+      "status": "not_found",
+      "purpose": "business",
+      "rejectioncode": ""
+    },
+    {
+      "kind": "name",
+      "count": 325,
+      "status": "succeeded",
+      "purpose": "business",
+      "rejectioncode": ""
+    },
+    {
+      "kind": "name",
+      "count": 57,
+      "status": "succeeded",
+      "purpose": "readiness_probe",
+      "rejectioncode": ""
+    }
+  ],
+  "xmlFallbackEvents": [
+    {
+      "phase": "alipay_name",
+      "reason": "lookup_reader_cleanup_unconfirmed",
+      "taskId": "345fd736-59a5-461f-b974-790e69f5db44",
+      "message": "xml_fallback_or_stage",
+      "createdAt": "2026-10-29T13:42:12.592+00:00",
+      "operation": "query",
+      "fallbackDriver": "xml_uiautomator"
+    },
+    {
+      "phase": "alipay_name",
+      "reason": "lookup_reader_cleanup_unconfirmed",
+      "taskId": "bfdcf4bf-60f4-4180-8ec9-bfd19d7e560f",
+      "message": "xml_fallback_or_stage",
+      "createdAt": "2026-10-29T12:56:12.151+00:00",
+      "operation": "query",
+      "fallbackDriver": "xml_uiautomator"
+    },
+    {
+      "phase": "alipay_name",
+      "reason": "lookup_reader_cleanup_unconfirmed",
+      "taskId": "9854563b-cb4a-4baf-8640-53dbcafcd78f",
+      "message": "xml_fallback_or_stage",
+      "createdAt": "2026-10-29T14:30:12.254+00:00",
+      "operation": "query",
+      "fallbackDriver": "xml_uiautomator"
+    },
+    {
+      "phase": "alipay_name",
+      "reason": "lookup_reader_cleanup_unconfirmed",
+      "taskId": "d16fb51c-7147-4fcb-93fd-022286275a0b",
+      "message": "xml_fallback_or_stage",
+      "createdAt": "2026-10-29T14:58:42.147+00:00",
+      "operation": "query",
+      "fallbackDriver": "xml_uiautomator"
+    },
+    {
+      "phase": "alipay_name",
+      "reason": "lookup_reader_cleanup_unconfirmed",
+      "taskId": "c07bf061-da9b-4eed-98dd-379f3e2042c9",
+      "message": "xml_fallback_or_stage",
+      "createdAt": "2026-10-29T15:52:42.44+00:00",
+      "operation": "query",
+      "fallbackDriver": "xml_uiautomator"
+    },
+    {
+      "phase": "alipay_name",
+      "reason": "lookup_reader_cleanup_unconfirmed",
+      "taskId": "b2165a6d-5999-4e2e-8ca6-37a69ad59c16",
+      "message": "xml_fallback_or_stage",
+      "createdAt": "2026-10-29T16:12:43.795+00:00",
+      "operation": "query",
+      "fallbackDriver": "xml_uiautomator"
+    },
+    {
+      "phase": "alipay_name",
+      "reason": "lookup_reader_cleanup_unconfirmed",
+      "taskId": "0ab2621e-a42a-4a1d-8c09-a3bd623c68bd",
+      "message": "xml_fallback_or_stage",
+      "createdAt": "2026-10-29T16:41:12.12+00:00",
+      "operation": "query",
+      "fallbackDriver": "xml_uiautomator"
+    },
+    {
+      "phase": "alipay_name",
+      "reason": "lookup_reader_cleanup_unconfirmed",
+      "taskId": "c605b9ff-3816-4fab-a520-af322ee44bd3",
+      "message": "xml_fallback_or_stage",
+      "createdAt": "2026-10-29T17:05:42.357+00:00",
+      "operation": "query",
+      "fallbackDriver": "xml_uiautomator"
+    },
+    {
+      "phase": "alipay_name",
+      "reason": "lookup_reader_cleanup_unconfirmed",
+      "taskId": "45438a7f-e891-4495-a473-e340f7739285",
+      "message": "xml_fallback_or_stage",
+      "createdAt": "2026-10-29T18:36:12.333+00:00",
+      "operation": "query",
+      "fallbackDriver": "xml_uiautomator"
+    },
+    {
+      "phase": "alipay_name",
+      "reason": "lookup_reader_cleanup_unconfirmed",
+      "taskId": "9b2225e0-2813-4267-8987-d5cb47079a26",
+      "message": "xml_fallback_or_stage",
+      "createdAt": "2026-10-29T20:13:12.556+00:00",
+      "operation": "query",
+      "fallbackDriver": "xml_uiautomator"
+    }
+  ],
+  "stopJobEvidence": [
+    {
+      "code": "lookup_reader_cleanup_unconfirmed",
+      "jobId": "263b4040-8b62-40a0-a886-801b3b17369d",
+      "status": "failed",
+      "createdAt": "2026-10-29T09:42:02.682+00:00",
+      "stopProof": null,
+      "updatedAt": "2026-10-29T09:42:07.432+00:00",
+      "cleanupConfirmed": false
+    },
+    {
+      "code": "lookup_reader_cleanup_unconfirmed",
+      "jobId": "1ce2f8a2-77c1-402d-9e87-c5a059f6cd1f",
+      "status": "failed",
+      "createdAt": "2026-10-29T21:21:40.718+00:00",
+      "stopProof": null,
+      "updatedAt": "2026-10-29T21:21:45.152+00:00",
+      "cleanupConfirmed": false
+    },
+    {
+      "code": "lookup_reader_cleanup_unconfirmed",
+      "jobId": "917b12cf-c92b-484b-9602-4865bb6f6968",
+      "status": "failed",
+      "createdAt": "2026-10-29T21:21:31.222+00:00",
+      "stopProof": null,
+      "updatedAt": "2026-10-29T21:21:35.596+00:00",
+      "cleanupConfirmed": false
+    }
+  ],
+  "stoppingSessions": [
+    {
+      "number": 51,
+      "status": "stopping",
+      "failure": {
+        "at": "2026-10-29T09:42:07.432Z",
+        "code": "lookup_reader_cleanup_unconfirmed",
+        "jobId": "263b4040-8b62-40a0-a886-801b3b17369d",
+        "taskId": "15bfb0d9-9eaa-4964-98d6-c5fc4e054879",
+        "taskStatus": "failed"
+      },
+      "jobCode": null,
+      "jobKind": null,
+      "createdAt": "2026-10-29T09:36:51.953+00:00",
+      "jobReason": null,
+      "jobStatus": null,
+      "sessionId": "5505a06a-4238-47ab-8a6e-8c86cc9afe33",
+      "updatedAt": "2026-10-29T09:42:07.432+00:00",
+      "confirmation": null,
+      "jobCreatedAt": null,
+      "jobStopProof": null,
+      "jobUpdatedAt": null,
+      "pendingJobId": ""
+    },
+    {
+      "number": 54,
+      "status": "stopping",
+      "failure": {
+        "at": "2026-10-29T21:21:35.596Z",
+        "code": "lookup_reader_cleanup_unconfirmed",
+        "jobId": "917b12cf-c92b-484b-9602-4865bb6f6968",
+        "taskId": "3b0ee530-0507-493c-9572-030a7387aec2",
+        "taskStatus": "failed"
+      },
+      "jobCode": null,
+      "jobKind": null,
+      "createdAt": "2026-10-29T21:16:03.484+00:00",
+      "jobReason": null,
+      "jobStatus": null,
+      "sessionId": "900c6144-82df-43db-bbcf-dfb210994464",
+      "updatedAt": "2026-10-29T21:21:35.596+00:00",
+      "confirmation": null,
+      "jobCreatedAt": null,
+      "jobStopProof": null,
+      "jobUpdatedAt": null,
+      "pendingJobId": ""
+    },
+    {
+      "number": 52,
+      "status": "stopping",
+      "failure": {
+        "at": "2026-10-29T21:21:45.152Z",
+        "code": "lookup_reader_cleanup_unconfirmed",
+        "jobId": "1ce2f8a2-77c1-402d-9e87-c5a059f6cd1f",
+        "taskId": "b0334524-9950-4332-be6a-bd3f60a2e7d1",
+        "taskStatus": "failed"
+      },
+      "jobCode": null,
+      "jobKind": null,
+      "createdAt": "2026-10-29T21:16:34.823+00:00",
+      "jobReason": null,
+      "jobStatus": null,
+      "sessionId": "f753b7b8-0785-43d6-90a8-61412daee68e",
+      "updatedAt": "2026-10-29T21:21:45.152+00:00",
+      "confirmation": null,
+      "jobCreatedAt": null,
+      "jobStopProof": null,
+      "jobUpdatedAt": null,
+      "pendingJobId": ""
+    }
+  ],
+  "hourlyBusinessAndProbe": [
+    {
+      "hourBeijing": "10-29 16:00",
+      "business": 59,
+      "probes": 10,
+      "failedBusiness": 0,
+      "queueP95Seconds": 139.2,
+      "endToEndP95Seconds": 169.3
+    },
+    {
+      "hourBeijing": "10-29 17:00",
+      "business": 316,
+      "probes": 32,
+      "failedBusiness": 4,
+      "queueP95Seconds": 226.5,
+      "endToEndP95Seconds": 267.2
+    },
+    {
+      "hourBeijing": "10-29 18:00",
+      "business": 315,
+      "probes": 18,
+      "failedBusiness": 1,
+      "queueP95Seconds": 30.9,
+      "endToEndP95Seconds": 85.1
+    },
+    {
+      "hourBeijing": "10-29 19:00",
+      "business": 386,
+      "probes": 18,
+      "failedBusiness": 1,
+      "queueP95Seconds": 187.5,
+      "endToEndP95Seconds": 224.6
+    },
+    {
+      "hourBeijing": "10-29 20:00",
+      "business": 368,
+      "probes": 40,
+      "failedBusiness": 5,
+      "queueP95Seconds": 286.1,
+      "endToEndP95Seconds": 332.8
+    },
+    {
+      "hourBeijing": "10-29 21:00",
+      "business": 267,
+      "probes": 27,
+      "failedBusiness": 2,
+      "queueP95Seconds": 37.5,
+      "endToEndP95Seconds": 99.2
+    },
+    {
+      "hourBeijing": "10-29 22:00",
+      "business": 188,
+      "probes": 18,
+      "failedBusiness": 3,
+      "queueP95Seconds": 3.5,
+      "endToEndP95Seconds": 87.0
+    },
+    {
+      "hourBeijing": "10-29 23:00",
+      "business": 100,
+      "probes": 26,
+      "failedBusiness": 1,
+      "queueP95Seconds": 0.4,
+      "endToEndP95Seconds": 99.1
+    },
+    {
+      "hourBeijing": "10-30 00:00",
+      "business": 164,
+      "probes": 29,
+      "failedBusiness": 3,
+      "queueP95Seconds": 14.1,
+      "endToEndP95Seconds": 134.1
+    },
+    {
+      "hourBeijing": "10-30 01:00",
+      "business": 132,
+      "probes": 30,
+      "failedBusiness": 1,
+      "queueP95Seconds": 22.1,
+      "endToEndP95Seconds": 148.2
+    },
+    {
+      "hourBeijing": "10-30 02:00",
+      "business": 86,
+      "probes": 40,
+      "failedBusiness": 1,
+      "queueP95Seconds": 201.8,
+      "endToEndP95Seconds": 283.9
+    },
+    {
+      "hourBeijing": "10-30 03:00",
+      "business": 63,
+      "probes": 36,
+      "failedBusiness": 0,
+      "queueP95Seconds": 16.2,
+      "endToEndP95Seconds": 88.9
+    },
+    {
+      "hourBeijing": "10-30 04:00",
+      "business": 75,
+      "probes": 38,
+      "failedBusiness": 2,
+      "queueP95Seconds": 1.5,
+      "endToEndP95Seconds": 95.9
+    },
+    {
+      "hourBeijing": "10-30 05:00",
+      "business": 89,
+      "probes": 25,
+      "failedBusiness": 0,
+      "queueP95Seconds": 273.6,
+      "endToEndP95Seconds": 324.2
+    },
+    {
+      "hourBeijing": "10-30 06:00",
+      "business": 163,
+      "probes": 10,
+      "failedBusiness": 0,
+      "queueP95Seconds": 33.0,
+      "endToEndP95Seconds": 70.8
+    },
+    {
+      "hourBeijing": "10-30 07:00",
+      "business": 302,
+      "probes": 10,
+      "failedBusiness": 0,
+      "queueP95Seconds": 80.8,
+      "endToEndP95Seconds": 120.3
+    },
+    {
+      "hourBeijing": "10-30 08:00",
+      "business": 262,
+      "probes": 37,
+      "failedBusiness": 0,
+      "queueP95Seconds": 905.6,
+      "endToEndP95Seconds": 943.1
+    }
+  ],
+  "crossWorkflow": {
+    "newXhsCollectJobsIncludingPreviousAcceptance": 98,
+    "nightlyRun": [
+      {
+        "key": "run/a37f282db87784f8f2b9d0a7fa1b1a48b4b419869bba5a806ca892df65c1d391",
+        "status": "completed",
+        "createdAt": "2026-10-29T18:00:03.271Z",
+        "itemCount": 100,
+        "completedAt": "2026-10-29T19:19:24.327Z"
+      }
+    ],
+    "overlapNotCausalProof": true
+  },
+  "fleetMatrix": [
+    {
+      "number": 6,
+      "businessLastAssignedCount": 10,
+      "businessStatus": {
+        "not_found": 5,
+        "succeeded": 5
+      },
+      "probeLastAssignedCount": 8,
+      "probeStatus": {
+        "succeeded": 4,
+        "failed": 4
+      },
+      "businessAttemptedCount": 14,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 6,
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 1,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "938fea6e-2429-4df3-8d8a-5c91c82be23e",
+        "createdAt": "2026-10-29T23:30:17.504Z",
+        "completedAt": "2026-10-29T23:32:58.939Z",
+        "status": "failed",
+        "code": "lookup_accounts_cooling"
+      }
+    },
+    {
+      "number": 10,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 1,
+      "probeStatus": {
+        "failed": 1
+      },
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": true,
+        "reason": ""
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {
+        "phase": "querying"
+      },
+      "baseHealthAt010824": {
+        "deviceNumber": 10,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "beedce01-8e8e-48b1-95b8-50a21f25c269",
+        "createdAt": "2026-10-29T16:08:19.186Z",
+        "completedAt": "2026-10-29T16:11:15.192Z",
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      },
+      "afterPriorResetProbeStatus": {
+        "failed": 1
+      }
+    },
+    {
+      "number": 51,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 1,
+      "probeStatus": {
+        "cancelled": 1
+      },
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": true,
+        "reason": ""
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {
+        "phase": "stopping",
+        "stopRetryCount": 2,
+        "stopRetryAt": 1793266952694
+      },
+      "baseHealthAt010824": {
+        "deviceNumber": 51,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 2,
+      "forcedCleanupFailures": 1,
+      "latestProbe": {
+        "lookupId": "5ed12014-fe41-4f50-9d15-d63b1a0918fc",
+        "createdAt": "2026-10-29T09:36:51.947Z",
+        "completedAt": "2026-10-29T09:40:52.627Z",
+        "status": "cancelled",
+        "code": "lookup_probe_human_replaced"
+      },
+      "afterPriorResetProbeStatus": {
+        "cancelled": 1
+      }
+    },
+    {
+      "number": 52,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 1,
+      "probeStatus": {
+        "cancelled": 1
+      },
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": true,
+        "reason": ""
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {
+        "phase": "stopping",
+        "stopRetryCount": 2,
+        "stopRetryAt": 1793308930736
+      },
+      "baseHealthAt010824": {
+        "deviceNumber": 52,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 1,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "1e3f02c0-cb31-4eeb-970e-749f857ab36d",
+        "createdAt": "2026-10-29T21:16:34.819Z",
+        "completedAt": "2026-10-29T21:20:34.529Z",
+        "status": "cancelled",
+        "code": "lookup_probe_human_replaced"
+      },
+      "afterPriorResetProbeStatus": {
+        "cancelled": 1
+      }
+    },
+    {
+      "number": 53,
+      "businessLastAssignedCount": 126,
+      "businessStatus": {
+        "succeeded": 106,
+        "not_found": 19,
+        "running": 1
+      },
+      "probeLastAssignedCount": 19,
+      "probeStatus": {
+        "failed": 3,
+        "succeeded": 14,
+        "cancelled": 2
+      },
+      "businessAttemptedCount": 133,
+      "poolHealthAt005105": {
+        "ready": true,
+        "reason": ""
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 53,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 7,
+      "forcedStops": 2,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "1b66b2d8-d008-42b7-b87d-f92795f890dd",
+        "createdAt": "2026-10-30T00:41:54.136Z",
+        "completedAt": "2026-10-30T00:43:19.878Z",
+        "status": "succeeded",
+        "code": ""
+      }
+    },
+    {
+      "number": 54,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 1,
+      "probeStatus": {
+        "cancelled": 1
+      },
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": true,
+        "reason": ""
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {
+        "phase": "stopping",
+        "stopRetryCount": 2,
+        "stopRetryAt": 1793308921245
+      },
+      "baseHealthAt010824": {
+        "deviceNumber": 54,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 1,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "b5156c3f-6e10-411d-a481-ee56bc5b9566",
+        "createdAt": "2026-10-29T21:16:03.480Z",
+        "completedAt": "2026-10-29T21:20:24.407Z",
+        "status": "cancelled",
+        "code": "lookup_probe_human_replaced"
+      },
+      "afterPriorResetProbeStatus": {
+        "cancelled": 1
+      }
+    },
+    {
+      "number": 57,
+      "businessLastAssignedCount": 327,
+      "businessStatus": {
+        "succeeded": 266,
+        "not_found": 59,
+        "failed": 1,
+        "running": 1
+      },
+      "probeLastAssignedCount": 38,
+      "probeStatus": {
+        "succeeded": 33,
+        "cancelled": 3,
+        "failed": 2
+      },
+      "businessAttemptedCount": 343,
+      "poolHealthAt005105": {
+        "ready": true,
+        "reason": ""
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {
+        "phase": "human"
+      },
+      "baseHealthAt010824": {
+        "deviceNumber": 57,
+        "ready": false,
+        "reason": "screen_control_active"
+      },
+      "workerProbeRebuilds": 19,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "a3b6de9a-8a80-4172-95c2-a6018097b15a",
+        "createdAt": "2026-10-30T00:38:13.207Z",
+        "completedAt": "2026-10-30T00:39:37.703Z",
+        "status": "succeeded",
+        "code": ""
+      }
+    },
+    {
+      "number": 58,
+      "businessLastAssignedCount": 11,
+      "businessStatus": {
+        "succeeded": 10,
+        "not_found": 1
+      },
+      "probeLastAssignedCount": 12,
+      "probeStatus": {
+        "succeeded": 7,
+        "failed": 3,
+        "cancelled": 2
+      },
+      "businessAttemptedCount": 18,
+      "poolHealthAt005105": {
+        "ready": true,
+        "reason": ""
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 58,
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 1,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "edfd2cfa-9f0c-4035-b168-645b40d4506c",
+        "createdAt": "2026-10-30T00:49:27.776Z",
+        "completedAt": "2026-10-30T00:51:13.763Z",
+        "status": "succeeded",
+        "code": ""
+      }
+    },
+    {
+      "number": 60,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 0,
+      "probeStatus": {},
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "page_preparation_backoff",
+        "until": 1793208075644,
+        "code": "alipay_page_element_changed"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 60,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": null
+    },
+    {
+      "number": 67,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 1,
+      "probeStatus": {
+        "cancelled": 1
+      },
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": true,
+        "reason": ""
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {
+        "phase": "starting"
+      },
+      "baseHealthAt010824": {
+        "deviceNumber": 67,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "25433e01-d458-4a67-a2b6-e8ff7983c104",
+        "createdAt": "2026-10-29T18:22:10.628Z",
+        "completedAt": "2026-10-29T18:25:35.558Z",
+        "status": "cancelled",
+        "code": "lookup_probe_human_replaced"
+      }
+    },
+    {
+      "number": 74,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 8,
+      "probeStatus": {
+        "failed": 8
+      },
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 74,
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "ac151b67-37c5-4af0-bb7d-ad0ea6a905b3",
+        "createdAt": "2026-10-29T23:27:44.377Z",
+        "completedAt": "2026-10-29T23:30:16.118Z",
+        "status": "failed",
+        "code": "lookup_accounts_cooling"
+      }
+    },
+    {
+      "number": 79,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 1,
+      "probeStatus": {
+        "failed": 1
+      },
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "account_login_required"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 79,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "9fae1017-f4e6-4ced-bf99-7b3bb3f9fa37",
+        "createdAt": "2026-10-29T09:36:30.916Z",
+        "completedAt": "2026-10-29T09:36:50.786Z",
+        "status": "failed",
+        "code": "lookup_account_login_required"
+      },
+      "afterPriorResetProbeStatus": {
+        "failed": 1
+      }
+    },
+    {
+      "number": 86,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 1,
+      "probeStatus": {
+        "failed": 1
+      },
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "account_login_required"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 86,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "a07248b3-c8a7-4159-ab6a-7d92d20b1b2b",
+        "createdAt": "2026-10-29T13:51:12.233Z",
+        "completedAt": "2026-10-29T13:51:30.566Z",
+        "status": "failed",
+        "code": "lookup_account_login_required"
+      },
+      "afterPriorResetProbeStatus": {
+        "failed": 1
+      }
+    },
+    {
+      "number": 87,
+      "businessLastAssignedCount": 9,
+      "businessStatus": {
+        "succeeded": 9
+      },
+      "probeLastAssignedCount": 12,
+      "probeStatus": {
+        "cancelled": 3,
+        "failed": 6,
+        "succeeded": 3
+      },
+      "businessAttemptedCount": 12,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 87,
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "df1e1508-ca11-48ab-b438-0d4f34d5fe9e",
+        "createdAt": "2026-10-29T22:24:04.696Z",
+        "completedAt": "2026-10-29T22:28:07.056Z",
+        "status": "succeeded",
+        "code": ""
+      }
+    },
+    {
+      "number": 101,
+      "businessLastAssignedCount": 86,
+      "businessStatus": {
+        "succeeded": 75,
+        "not_found": 10,
+        "running": 1
+      },
+      "probeLastAssignedCount": 19,
+      "probeStatus": {
+        "succeeded": 14,
+        "failed": 3,
+        "cancelled": 2
+      },
+      "businessAttemptedCount": 91,
+      "poolHealthAt005105": {
+        "ready": true,
+        "reason": ""
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 101,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 8,
+      "forcedStops": 1,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "82ee7378-3131-4752-bb53-9a24fe304c7b",
+        "createdAt": "2026-10-30T00:39:20.495Z",
+        "completedAt": "2026-10-30T00:40:55.269Z",
+        "status": "succeeded",
+        "code": ""
+      }
+    },
+    {
+      "number": 107,
+      "businessLastAssignedCount": 5,
+      "businessStatus": {
+        "succeeded": 4,
+        "not_found": 1
+      },
+      "probeLastAssignedCount": 1,
+      "probeStatus": {
+        "succeeded": 1
+      },
+      "businessAttemptedCount": 6,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 107,
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "b54a067e-ddb5-4547-b23b-f8a53395052c",
+        "createdAt": "2026-10-29T21:17:04.120Z",
+        "completedAt": "2026-10-29T21:20:30.843Z",
+        "status": "succeeded",
+        "code": ""
+      }
+    },
+    {
+      "number": 112,
+      "businessLastAssignedCount": 78,
+      "businessStatus": {
+        "not_found": 15,
+        "succeeded": 62,
+        "running": 1
+      },
+      "probeLastAssignedCount": 12,
+      "probeStatus": {
+        "failed": 3,
+        "succeeded": 6,
+        "cancelled": 3
+      },
+      "businessAttemptedCount": 81,
+      "poolHealthAt005105": {
+        "ready": true,
+        "reason": ""
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {
+        "phase": "human"
+      },
+      "baseHealthAt010824": {
+        "deviceNumber": 112,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 5,
+      "forcedStops": 1,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "b9cf02c1-5bcc-4a07-9c0d-d817fa420a75",
+        "createdAt": "2026-10-30T00:46:13.918Z",
+        "completedAt": "2026-10-30T00:48:04.585Z",
+        "status": "succeeded",
+        "code": ""
+      }
+    },
+    {
+      "number": 115,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 1,
+      "probeStatus": {
+        "failed": 1
+      },
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "account_login_required"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 115,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "1bb0d1c1-9506-4a2e-9768-dee9a3d2ab42",
+        "createdAt": "2026-10-29T18:22:05.812Z",
+        "completedAt": "2026-10-29T18:22:26.550Z",
+        "status": "failed",
+        "code": "lookup_account_login_required"
+      },
+      "afterPriorResetProbeStatus": {
+        "failed": 1
+      }
+    },
+    {
+      "number": 116,
+      "businessLastAssignedCount": 291,
+      "businessStatus": {
+        "succeeded": 233,
+        "not_found": 55,
+        "failed": 3
+      },
+      "probeLastAssignedCount": 34,
+      "probeStatus": {
+        "succeeded": 23,
+        "cancelled": 7,
+        "failed": 4
+      },
+      "businessAttemptedCount": 301,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "page_preparation_backoff",
+        "until": 1793320348041,
+        "code": "alipay_ui_hierarchy_unavailable"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 116,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 15,
+      "forcedStops": 4,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "fbfb12f6-4d13-4f76-b01c-db1c40c24b80",
+        "createdAt": "2026-10-30T00:27:01.093Z",
+        "completedAt": "2026-10-30T00:27:28.041Z",
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      }
+    },
+    {
+      "number": 118,
+      "businessLastAssignedCount": 150,
+      "businessStatus": {
+        "succeeded": 127,
+        "not_found": 22,
+        "failed": 1
+      },
+      "probeLastAssignedCount": 23,
+      "probeStatus": {
+        "succeeded": 20,
+        "cancelled": 2,
+        "failed": 1
+      },
+      "businessAttemptedCount": 156,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "account_login_required"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 118,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 18,
+      "forcedStops": 1,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "4ed7730e-7b9e-4ec1-9691-ef45e9d889cd",
+        "createdAt": "2026-10-29T21:42:51.078Z",
+        "completedAt": "2026-10-29T21:43:39.265Z",
+        "status": "failed",
+        "code": "lookup_account_login_required"
+      },
+      "afterPriorResetProbeStatus": {
+        "succeeded": 20,
+        "cancelled": 2,
+        "failed": 1
+      }
+    },
+    {
+      "number": 128,
+      "businessLastAssignedCount": 20,
+      "businessStatus": {
+        "succeeded": 16,
+        "not_found": 4
+      },
+      "probeLastAssignedCount": 9,
+      "probeStatus": {
+        "succeeded": 8,
+        "cancelled": 1
+      },
+      "businessAttemptedCount": 24,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 128,
+        "ready": false,
+        "reason": "accounts_cooling"
+      },
+      "workerProbeRebuilds": 2,
+      "forcedStops": 1,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "18cb57fb-8490-4218-bac3-06ee9ce6a269",
+        "createdAt": "2026-10-29T19:54:15.611Z",
+        "completedAt": "2026-10-29T19:58:04.636Z",
+        "status": "succeeded",
+        "code": ""
+      }
+    },
+    {
+      "number": 130,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 0,
+      "probeStatus": {},
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "page_preparation_backoff",
+        "until": 1793243997009,
+        "code": "alipay_account_identity_unverified"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 130,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": null
+    },
+    {
+      "number": 138,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 0,
+      "probeStatus": {},
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "page_preparation_backoff",
+        "until": 1793263058128,
+        "code": "alipay_lookup_failed"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 138,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": null
+    },
+    {
+      "number": 142,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 0,
+      "probeStatus": {},
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "page_preparation_backoff",
+        "until": 1793260437862,
+        "code": "alipay_lookup_failed"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 142,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": null
+    },
+    {
+      "number": 146,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 5,
+      "probeStatus": {
+        "failed": 5
+      },
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "lookup_device_unavailable"
+      },
+      "lookupUnavailable": true,
+      "prepareFailureCount": 3,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 146,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 5,
+      "forcedCleanupFailures": 5,
+      "latestProbe": {
+        "lookupId": "2c2cc9e2-b283-4817-9185-42e5b6a7384a",
+        "createdAt": "2026-10-29T12:30:01.742Z",
+        "completedAt": "2026-10-29T12:31:36.279Z",
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      },
+      "afterPriorResetProbeStatus": {
+        "failed": 5
+      }
+    },
+    {
+      "number": 147,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 1,
+      "probeStatus": {
+        "cancelled": 1
+      },
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": true,
+        "reason": ""
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 147,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 1,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "e281e8ec-6f43-4e49-8c64-9a06dd70453a",
+        "createdAt": "2026-10-30T00:34:06.644Z",
+        "completedAt": "2026-10-30T00:37:43.959Z",
+        "status": "cancelled",
+        "code": "lookup_probe_human_replaced"
+      },
+      "afterPriorResetProbeStatus": {
+        "cancelled": 1
+      }
+    },
+    {
+      "number": 149,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 0,
+      "probeStatus": {},
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": true,
+        "reason": ""
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 149,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": null,
+      "afterPriorResetProbeStatus": {}
+    },
+    {
+      "number": 152,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 0,
+      "probeStatus": {},
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "lookup_device_unavailable"
+      },
+      "lookupUnavailable": true,
+      "prepareFailureCount": 3,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 152,
+        "ready": false,
+        "reason": "device_or_agent_offline"
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": null
+    },
+    {
+      "number": 153,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 0,
+      "probeStatus": {},
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "preparation_failed_round",
+        "code": "task_failed"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 153,
+        "ready": false,
+        "reason": "device_or_agent_offline"
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": null
+    },
+    {
+      "number": 154,
+      "businessLastAssignedCount": 12,
+      "businessStatus": {
+        "not_found": 1,
+        "failed": 11
+      },
+      "probeLastAssignedCount": 42,
+      "probeStatus": {
+        "succeeded": 17,
+        "failed": 17,
+        "cancelled": 7,
+        "preparing": 1
+      },
+      "businessAttemptedCount": 18,
+      "poolHealthAt005105": {
+        "ready": true,
+        "reason": ""
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 2,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 154,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 10,
+      "forcedStops": 35,
+      "forcedCleanupFailures": 33,
+      "latestProbe": {
+        "lookupId": "5c49cdca-b54b-4ba1-b831-e6dc0e3058bc",
+        "createdAt": "2026-10-30T00:51:56.807Z",
+        "completedAt": null,
+        "status": "preparing",
+        "code": null
+      },
+      "afterPriorResetProbeStatus": {
+        "succeeded": 17,
+        "failed": 17,
+        "cancelled": 7,
+        "preparing": 1
+      }
+    },
+    {
+      "number": 155,
+      "businessLastAssignedCount": 11,
+      "businessStatus": {
+        "not_found": 1,
+        "succeeded": 9,
+        "failed": 1
+      },
+      "probeLastAssignedCount": 7,
+      "probeStatus": {
+        "failed": 6,
+        "succeeded": 1
+      },
+      "businessAttemptedCount": 11,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "page_preparation_backoff",
+        "until": 1793278542985,
+        "code": "lookup_probe_page_unsupported"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 2,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 155,
+        "ready": false,
+        "reason": "screen_control_active"
+      },
+      "workerProbeRebuilds": 2,
+      "forcedStops": 2,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "1e828d80-a867-4f2a-a3e9-f186aebb8576",
+        "createdAt": "2026-10-29T12:47:38.187Z",
+        "completedAt": "2026-10-29T12:50:42.985Z",
+        "status": "failed",
+        "code": "lookup_probe_page_unsupported"
+      },
+      "afterPriorResetProbeStatus": {
+        "failed": 5,
+        "succeeded": 1
+      }
+    },
+    {
+      "number": 156,
+      "businessLastAssignedCount": 475,
+      "businessStatus": {
+        "succeeded": 376,
+        "not_found": 99
+      },
+      "probeLastAssignedCount": 27,
+      "probeStatus": {
+        "succeeded": 21,
+        "cancelled": 3,
+        "failed": 3
+      },
+      "businessAttemptedCount": 484,
+      "poolHealthAt005105": {
+        "ready": true,
+        "reason": ""
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 156,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 101,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "46d7e93c-a332-47d7-bc8a-13acb00e9513",
+        "createdAt": "2026-10-30T00:51:30.931Z",
+        "completedAt": "2026-10-30T00:51:52.632Z",
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      }
+    },
+    {
+      "number": 157,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 1,
+      "probeStatus": {
+        "failed": 1
+      },
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "page_preparation_backoff",
+        "until": 1793264940278,
+        "code": "alipay_lookup_failed"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 1,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 157,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "541247c1-133e-42f9-8b32-c85052c004cb",
+        "createdAt": "2026-10-29T08:53:29.718Z",
+        "completedAt": "2026-10-29T08:54:00.278Z",
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      }
+    },
+    {
+      "number": 158,
+      "businessLastAssignedCount": 52,
+      "businessStatus": {
+        "succeeded": 45,
+        "not_found": 7
+      },
+      "probeLastAssignedCount": 5,
+      "probeStatus": {
+        "succeeded": 2,
+        "failed": 3
+      },
+      "businessAttemptedCount": 54,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "lookup_device_unavailable"
+      },
+      "lookupUnavailable": true,
+      "prepareFailureCount": 3,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 158,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 5,
+      "forcedStops": 1,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "d4ca1e4a-bbd3-4cf7-8275-d0047b73dc8c",
+        "createdAt": "2026-10-29T12:33:53.329Z",
+        "completedAt": "2026-10-29T12:35:20.996Z",
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      },
+      "afterPriorResetProbeStatus": {
+        "succeeded": 2,
+        "failed": 3
+      }
+    },
+    {
+      "number": 159,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 3,
+      "probeStatus": {
+        "failed": 3
+      },
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "page_preparation_backoff",
+        "until": 1793277938393,
+        "code": "lookup_probe_page_unsupported"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 159,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "98a304e6-a061-4f58-be30-2d069ab75de4",
+        "createdAt": "2026-10-29T12:24:45.145Z",
+        "completedAt": "2026-10-29T12:30:38.393Z",
+        "status": "failed",
+        "code": "lookup_probe_page_unsupported"
+      }
+    },
+    {
+      "number": 161,
+      "businessLastAssignedCount": 359,
+      "businessStatus": {
+        "succeeded": 305,
+        "not_found": 53,
+        "running": 1
+      },
+      "probeLastAssignedCount": 32,
+      "probeStatus": {
+        "succeeded": 28,
+        "cancelled": 3,
+        "failed": 1
+      },
+      "businessAttemptedCount": 378,
+      "poolHealthAt005105": {
+        "ready": true,
+        "reason": ""
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {
+        "phase": "recovery"
+      },
+      "baseHealthAt010824": {
+        "deviceNumber": 161,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 56,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "29bce32d-689b-4a85-bda3-898c961dd127",
+        "createdAt": "2026-10-30T00:46:13.999Z",
+        "completedAt": "2026-10-30T00:48:09.623Z",
+        "status": "succeeded",
+        "code": ""
+      }
+    },
+    {
+      "number": 162,
+      "businessLastAssignedCount": 302,
+      "businessStatus": {
+        "succeeded": 265,
+        "not_found": 36,
+        "failed": 1
+      },
+      "probeLastAssignedCount": 13,
+      "probeStatus": {
+        "succeeded": 9,
+        "failed": 3,
+        "waiting_human": 1
+      },
+      "businessAttemptedCount": 310,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "screen_control_active"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {
+        "phase": "starting"
+      },
+      "baseHealthAt010824": {
+        "deviceNumber": 162,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 6,
+      "forcedStops": 3,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "f808208d-7e7d-498d-b31f-11a58ca71994",
+        "createdAt": "2026-10-30T00:38:43.698Z",
+        "completedAt": null,
+        "status": "waiting_human",
+        "code": null
+      }
+    },
+    {
+      "number": 163,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 0,
+      "probeStatus": {},
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "page_preparation_backoff",
+        "until": 1793236795524,
+        "code": "alipay_page_element_changed"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 163,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": null
+    },
+    {
+      "number": 164,
+      "businessLastAssignedCount": 261,
+      "businessStatus": {
+        "succeeded": 224,
+        "not_found": 36,
+        "running": 1
+      },
+      "probeLastAssignedCount": 28,
+      "probeStatus": {
+        "succeeded": 23,
+        "cancelled": 3,
+        "failed": 2
+      },
+      "businessAttemptedCount": 280,
+      "poolHealthAt005105": {
+        "ready": true,
+        "reason": ""
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {
+        "phase": "human"
+      },
+      "baseHealthAt010824": {
+        "deviceNumber": 164,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 34,
+      "forcedStops": 2,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "6da21038-7203-44d8-b4f9-d4437730fbda",
+        "createdAt": "2026-10-30T00:46:13.833Z",
+        "completedAt": "2026-10-30T00:48:13.153Z",
+        "status": "succeeded",
+        "code": ""
+      }
+    },
+    {
+      "number": 165,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 0,
+      "probeStatus": {},
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "page_preparation_backoff",
+        "until": 1793227717070,
+        "code": "alipay_lookup_failed"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 165,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": null
+    },
+    {
+      "number": 172,
+      "businessLastAssignedCount": 318,
+      "businessStatus": {
+        "succeeded": 261,
+        "not_found": 51,
+        "failed": 5,
+        "running": 1
+      },
+      "probeLastAssignedCount": 30,
+      "probeStatus": {
+        "succeeded": 21,
+        "failed": 4,
+        "cancelled": 5
+      },
+      "businessAttemptedCount": 330,
+      "poolHealthAt005105": {
+        "ready": true,
+        "reason": ""
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {
+        "phase": "querying"
+      },
+      "baseHealthAt010824": {
+        "deviceNumber": 172,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 7,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "80559072-ceef-43ca-b2cd-7a784645eab7",
+        "createdAt": "2026-10-30T00:46:14.084Z",
+        "completedAt": "2026-10-30T00:49:17.821Z",
+        "status": "succeeded",
+        "code": ""
+      }
+    },
+    {
+      "number": 176,
+      "businessLastAssignedCount": 245,
+      "businessStatus": {
+        "succeeded": 208,
+        "not_found": 37
+      },
+      "probeLastAssignedCount": 19,
+      "probeStatus": {
+        "cancelled": 1,
+        "succeeded": 12,
+        "failed": 6
+      },
+      "businessAttemptedCount": 257,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "lookup_device_unavailable"
+      },
+      "lookupUnavailable": true,
+      "prepareFailureCount": 3,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 176,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 7,
+      "forcedStops": 1,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "4699b30a-b498-4371-9520-2e4096c03f31",
+        "createdAt": "2026-10-29T18:25:37.738Z",
+        "completedAt": "2026-10-29T18:27:07.231Z",
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      }
+    },
+    {
+      "number": 181,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 8,
+      "probeStatus": {
+        "failed": 2,
+        "cancelled": 6
+      },
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": true,
+        "reason": ""
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {
+        "phase": "querying"
+      },
+      "baseHealthAt010824": {
+        "deviceNumber": 181,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "1a321b9d-ca4f-4809-bc34-6302820beb1a",
+        "createdAt": "2026-10-29T13:23:12.707Z",
+        "completedAt": "2026-10-29T13:25:49.248Z",
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      }
+    },
+    {
+      "number": 182,
+      "businessLastAssignedCount": 156,
+      "businessStatus": {
+        "succeeded": 134,
+        "not_found": 21,
+        "failed": 1
+      },
+      "probeLastAssignedCount": 9,
+      "probeStatus": {
+        "succeeded": 5,
+        "failed": 4
+      },
+      "businessAttemptedCount": 160,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "page_preparation_backoff",
+        "until": 1793307029817,
+        "code": "alipay_ui_hierarchy_unavailable"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 182,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 1,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "af771ed5-b1b2-46bc-814b-0f17339ad092",
+        "createdAt": "2026-10-29T20:45:22.242Z",
+        "completedAt": "2026-10-29T20:45:29.818Z",
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      }
+    },
+    {
+      "number": 183,
+      "businessLastAssignedCount": 9,
+      "businessStatus": {
+        "succeeded": 9
+      },
+      "probeLastAssignedCount": 7,
+      "probeStatus": {
+        "cancelled": 2,
+        "failed": 3,
+        "succeeded": 2
+      },
+      "businessAttemptedCount": 11,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "page_preparation_backoff",
+        "until": 1793300808092,
+        "code": "alipay_lookup_failed"
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 183,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "d914d097-e72e-4785-848f-a2f9ac14466d",
+        "createdAt": "2026-10-29T18:58:36.182Z",
+        "completedAt": "2026-10-29T19:01:48.092Z",
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      }
+    },
+    {
+      "number": 188,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 3,
+      "probeStatus": {
+        "failed": 3
+      },
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": false,
+        "reason": "lookup_device_unavailable"
+      },
+      "lookupUnavailable": true,
+      "prepareFailureCount": 3,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 188,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "003ec64e-ce20-4c23-b19b-0ad446f799cc",
+        "createdAt": "2026-10-29T12:32:12.164Z",
+        "completedAt": "2026-10-29T12:33:34.423Z",
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      }
+    },
+    {
+      "number": 191,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 0,
+      "probeStatus": {},
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": true,
+        "reason": ""
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 0,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 191,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": null,
+      "afterPriorResetProbeStatus": {}
+    },
+    {
+      "number": 192,
+      "businessLastAssignedCount": 0,
+      "businessStatus": {},
+      "probeLastAssignedCount": 1,
+      "probeStatus": {
+        "failed": 1
+      },
+      "businessAttemptedCount": 0,
+      "poolHealthAt005105": {
+        "ready": true,
+        "reason": ""
+      },
+      "lookupUnavailable": false,
+      "prepareFailureCount": 1,
+      "channelAt010824": {},
+      "baseHealthAt010824": {
+        "deviceNumber": 192,
+        "ready": true,
+        "reason": ""
+      },
+      "workerProbeRebuilds": 0,
+      "forcedStops": 0,
+      "forcedCleanupFailures": 0,
+      "latestProbe": {
+        "lookupId": "59cbea67-57fe-49b8-86b2-d79540def0ae",
+        "createdAt": "2026-10-29T21:17:45.081Z",
+        "completedAt": "2026-10-29T21:18:34.466Z",
+        "status": "failed",
+        "code": "lookup_probe_failed"
+      }
+    }
+  ],
+  "fleetMatrixScope": "48 configured phones; final attempt owns per-phone status counters; attempted count separately dedupes requests per phone; base health is not cleanup or named readiness proof; worker events span shared workflows",
+  "findings": [
+    {
+      "id": "F1",
+      "priority": "P0",
+      "state": "confirmed_unfixed",
+      "title": "cleanup_unconfirmed incorrectly enters XML fallback",
+      "matchedProductionTasks": 10,
+      "deviceNumbers": [
+        154
+      ],
+      "chain": [
+        "Poco probe/rebuild fails",
+        "lookup_reader_cleanup_unconfirmed",
+        "app restart denied",
+        "XML fallback allowed",
+        "ensureXmlUiAutomatorReady force-stop fails",
+        "generic task_failed",
+        "lookup_execution_failed"
+      ],
+      "unknown": "Original ADB/Poco failure mechanism; no physical replay performed"
+    },
+    {
+      "id": "F2",
+      "priority": "P0",
+      "state": "confirmed_unfixed",
+      "title": "three unresolved stops retain reservations and logical concurrency",
+      "deviceNumbers": [
+        51,
+        52,
+        54
+      ],
+      "retryCountEach": 2,
+      "stopConfirmationPresent": false,
+      "mustNotDo": "Clear locks or infer Android cleanup from host process exit"
+    },
+    {
+      "id": "F3",
+      "priority": "P1",
+      "state": "confirmed_gap_unfixed",
+      "title": "generic cleanup errors lose diagnostics and business failures bypass preparation counter",
+      "facts": [
+        "lookupFailureDomain returns empty for generic cleanup message",
+        "console reason excludes result.message",
+        "matched generic business-failure branch does not record preparation failure"
+      ],
+      "154Business": {
+        "succeeded": 0,
+        "not_found": 1,
+        "failed": 11
+      },
+      "154Probes": {
+        "succeeded": 17,
+        "failed": 17,
+        "cancelled": 7,
+        "preparing": 1
+      }
+    },
+    {
+      "id": "F4",
+      "priority": "P1",
+      "state": "symptoms_confirmed_partial_root_cause",
+      "title": "ingress rejection and queue delays exceed internal failed-request counts",
+      "submitHttpCalls": {
+        "status": {
+          "202": 897,
+          "429": 1334,
+          "503": 6,
+          "200": 1
+        },
+        "count": 2238,
+        "p50ms": 51,
+        "p95ms": 134,
+        "maxMs": 1252
+      },
+      "429Subcode": "not logged; inflight, alias or queue limits remain possible",
+      "uniqueRequestCountNotDerivableFromHttpLogs": true,
+      "notProven": "All queue delay caused by reader limit"
+    },
+    {
+      "id": "F5",
+      "priority": "P1",
+      "state": "confirmed_current_configuration_mismatch",
+      "title": "cloud concurrency and warm target 12 versus Agent reader limit 8",
+      "configChangedAt": "2026-10-30T00:46:13.666Z",
+      "configRevision": 140,
+      "readerLimit": 8,
+      "priorRevision139Value": "not reconstructed",
+      "warning": "Cannot explain the preceding night solely by a setting changed at 08:46 Beijing",
+      "currentProtocol": "Agent reports actual capacity; no cloud target application/acknowledgment path; runtime worker config loaded at startup"
+    },
+    {
+      "id": "F6",
+      "priority": "P1",
+      "state": "validation_failures_confirmed_exact_branch_unknown",
+      "title": "AI responded but nine business results were rejected",
+      "upstreamHttp200": 9,
+      "contractRejected": 5,
+      "nameVerificationMismatch": 2,
+      "modelUnconfirmed": 2,
+      "allFiveContractRejectionsHaveTwoMaskedNameCandidates": true,
+      "originalModelJsonUnavailable": true,
+      "localOcrNotHumanVerification": true
+    },
+    {
+      "id": "F7",
+      "priority": "P2",
+      "state": "observed_root_unconfirmed",
+      "title": "intermittent 503 and noisy unauthenticated device traffic",
+      "lookupSubmit503": 6,
+      "ready503": 1,
+      "storageDispatchMarkers": 2,
+      "other401": 71974,
+      "notProven": "One database lock explains all incidents, or device authentication failures cause lookup failures"
+    }
+  ],
+  "localVerification": {
+    "scope": "local pure functions with synthetic values; no network, ADB, phone or model calls",
+    "checks": [
+      {
+        "name": "generic-cleanup-domain-gap",
+        "observed": "empty domain",
+        "pass": true
+      },
+      {
+        "name": "admin-cleanup-reason-gap",
+        "observed": "empty reason despite result.message",
+        "pass": true
+      },
+      {
+        "name": "structured-cleanup-marker",
+        "observed": "device domain",
+        "pass": true
+      },
+      {
+        "name": "ninth-new-reader-at-eight-limit",
+        "observed": {
+          "allowed": false,
+          "reason": "lookup_reader_capacity_full",
+          "used": 8,
+          "limit": 8
+        },
+        "pass": true
+      },
+      {
+        "name": "cleanup-stop-bypasses-reader-limit",
+        "observed": "allowed",
+        "pass": true
+      },
+      {
+        "name": "cleanup-unconfirmed-app-restart-guard",
+        "observed": "restart denied",
+        "pass": true
+      },
+      {
+        "name": "cleanup-unconfirmed-xml-fallback-guard-gap",
+        "observed": "XML fallback allowed",
+        "pass": true
+      }
+    ],
+    "productionFixed": false
+  },
+  "privateEvidence": {
+    "directory": "/private/tmp/pc-lookup-postrelease-20261030-3t61pd9p",
+    "manifest": [
+      {
+        "file": "BASELINE.json",
+        "bytes": 523,
+        "sha256": "074b5fc091fbacded7814b4d6344674b4a91050a918505e4aa4efbb491b789e2",
+        "location": "private_local_evidence_not_committed"
+      },
+      {
+        "file": "LIVE_SNAPSHOT.json",
+        "bytes": 250480,
+        "sha256": "4381a21a80d11acce00d7c20e68b6984243700f5d8713b5695ecad91d0861032",
+        "location": "private_local_evidence_not_committed"
+      },
+      {
+        "file": "WINDOWS_SNAPSHOT.json",
+        "bytes": 5247,
+        "sha256": "f0d05e3fc363ebcd5337473dc3a13578eb084e741f7e5646c898e4b86e0aa273",
+        "location": "private_local_evidence_not_committed"
+      },
+      {
+        "file": "REQUESTS_SINCE_RELEASE.json",
+        "bytes": 2516809,
+        "sha256": "7575996a9ceff2cc57072b3b0dd1fb2f2f698d623fedaa242a1907fd65bf0a0b",
+        "location": "private_local_evidence_not_committed"
+      },
+      {
+        "file": "REQUEST_ANALYSIS.json",
+        "bytes": 59060,
+        "sha256": "a656f039e6275946e62f4cfe76e7d7c406ca281e0bb83c53daafff30b393cb69",
+        "location": "private_local_evidence_not_committed"
+      },
+      {
+        "file": "DETAIL_TRACES.json",
+        "bytes": 187208,
+        "sha256": "7f87b4ef09becc753ec377d5b6fa756d2866d3ee009f19cf9076f6b4e49f102c",
+        "location": "private_local_evidence_not_committed"
+      },
+      {
+        "file": "EXACT_JOBS.json",
+        "bytes": 117446,
+        "sha256": "14be8982ca8418076048b9dc7cae067805105fec34fb8feb4877d3b85cbcddcb",
+        "location": "private_local_evidence_not_committed"
+      },
+      {
+        "file": "AGENT_LOG_ANALYSIS.json",
+        "bytes": 80580,
+        "sha256": "b52ac2e474851d32eaf33122b1a980129fdb018f5dcd3f378d786a14817bc6ad",
+        "location": "private_local_evidence_not_committed"
+      },
+      {
+        "file": "CLOUD_LOG_ANALYSIS_REFINED.json",
+        "bytes": 12177,
+        "sha256": "f64986268b34f66f644fdf1759bb6ba9f482638c9ce16c02e7eeb24d218e826e",
+        "location": "private_local_evidence_not_committed"
+      },
+      {
+        "file": "FOCUSED_READ_BOUNDED.json",
+        "bytes": 21501,
+        "sha256": "01f505eb1d1bdbedb9d0858db3f94568b578d42649ebdc7b603ef14e1b0729d0",
+        "location": "private_local_evidence_not_committed"
+      },
+      {
+        "file": "CROSS_WORKFLOW_HOURS.json",
+        "bytes": 15586,
+        "sha256": "cf6016821765ba293c382ee74f11e042546fa1e7d6a989a31df6f597a36a67dc",
+        "location": "private_local_evidence_not_committed"
+      },
+      {
+        "file": "FALLBACK_AND_STOP_EVIDENCE.json",
+        "bytes": 4094,
+        "sha256": "6b9d5d005264f428cdde687c16647b66bffe9c55ed976a7d502558d71892702d",
+        "location": "private_local_evidence_not_committed"
+      },
+      {
+        "file": "EVIDENCE_INDEX.json",
+        "bytes": 4375,
+        "sha256": "4e54303399cef5ff321ec4baf9ccaca11fb0745bf53bc46ed7208d81cee84e11",
+        "location": "private_local_evidence_not_committed"
+      },
+      {
+        "file": "LOCAL_EVIDENCE_OCR_COMPARISON.json",
+        "bytes": 5065,
+        "sha256": "51b617a1277060a4aca58a166031db93bd28b6bbd9e9e7b0fbb2dde662b63a2d",
+        "location": "private_local_evidence_not_committed"
+      },
+      {
+        "file": "HOURLY_ANALYSIS.json",
+        "bytes": 2850,
+        "sha256": "3ed368b739dd99887ecbda6bcd3d17e8297ce57694410ca76946dde4ca938501",
+        "location": "private_local_evidence_not_committed"
+      },
+      {
+        "file": "FLEET_MATRIX.json",
+        "bytes": 41242,
+        "sha256": "212db8c515043470d63e5bf395acafaca5af5caf43b53a11879f452b9b38d9e2",
+        "location": "private_local_evidence_not_committed"
+      },
+      {
+        "file": "PREVIEW_AND_CHANNELS.json",
+        "bytes": 5930,
+        "sha256": "d9ebd30624279a31d4e13db1218222f4ba77b2d9ea4988daabb16384c4a53886",
+        "location": "private_local_evidence_not_committed"
+      },
+      {
+        "file": "PURE_CODE_VERIFICATION.json",
+        "bytes": 1088,
+        "sha256": "f2a7184208a325cbaf5f5193f3350b1d7991c181871869b0536104f1e86a74c5",
+        "location": "private_local_evidence_not_committed"
+      },
+      {
+        "file": "SOURCE_VERIFICATION.json",
+        "bytes": 5410,
+        "sha256": "f5c1ee57a35059bfb661aab05ab6ad16cfc2c51688784b927fb940527bbce652",
+        "location": "private_local_evidence_not_committed"
+      }
+    ],
+    "screenshotsAndPersonalTextNotCommitted": true
+  },
+  "limitations": [
+    "No new business/probe jobs, model calls, screenshots, ADB clients or phone actions initiated",
+    "533 not_found outcomes not visually audited; metadata consistency is insufficient",
+    "HTTP calls are not distinct requests and rotated cloud logs do not cover the whole cohort",
+    "No original model JSON or complete phase ledger for all failures",
+    "22 devices served business and 38 served probes; 48-state coverage is not 48-device physical acceptance",
+    "One bounded session JSON scan hit 4s timeout; replaced with three primary-key reads",
+    "No runtime fix, configuration mutation, deployment, rollback or production restart; D-075 live verification not rerun or claimed",
+    "Local pure-function observations do not prove full recovery or real-device acceptance"
+  ],
+  "rollback": "Documentation-only local commit; no production rollback required or performed",
+  "peerStaticReview": {
+    "threadId": "01a1629d-affe-7c60-b7d7-26ca2aba9863",
+    "scope": "existing evidence and source only; no edits or production actions",
+    "confirmed": [
+      "10 independent cleanup_unconfirmed XML fallback events",
+      "restart versus XML guard mismatch",
+      "XML preparation outside execution catch loses original cause",
+      "non-lookup XML shutdown may return true when worker absent without Android absence proof",
+      "stopUnconfirmed/unchanged priority can retain exhausted stops"
+    ],
+    "limits": [
+      "underlying original transport cause remains unknown",
+      "7 pure checks are not full execution-chain acceptance",
+      "future guard must cover code-only, wrapped reason, worker-exit and forward cleanup variants",
+      "keep original-ID, late-execution and generation fences; never fake stop proof"
+    ]
+  }
+}

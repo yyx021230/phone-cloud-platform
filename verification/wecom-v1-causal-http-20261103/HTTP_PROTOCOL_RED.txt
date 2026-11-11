@@ -1,0 +1,159 @@
+✖ external client: discover -> four-field submit -> actual synthetic remark/send -> result; dual slots, timeout and restart never replay (220.679708ms)
+✔ external client: mapping, ownership, malformed fields and authentication fail before any worker (264.586625ms)
+ℹ WECOM_EXTERNAL_NEGATIVE_EVIDENCE {"parameterOrMappingRejections":5,"invalidTokenRejections":3,"ordinaryUserRejections":3,"crossAdminResultRejections":1,"workersRun":0}
+✖ actual HTTP: unknown cleanup blocks same phone, survives restart/archive, proof commits before release (168.830792ms)
+✖ preview HTTP covers authentication, eight phones, leases, original-id reuse and restart (267.473208ms)
+▶ real Agent runTask -> taskStatus -> compactor -> HTTP persistence -> public result retains WeCom states
+  ✖ native click attempt remains unknown (4.20225ms)
+  ✖ definite prewrite block remains failed/not_attempted (1.477167ms)
+  ✖ unknown remark save remains held without a send claim (0.811125ms)
+  ✖ actual Python identity guard -> child wrapper -> Agent -> HTTP diagnostics (0.704833ms)
+  ✖ actual parent timeout catch stays unknown and exposes its code (1.171583ms)
+✖ real Agent runTask -> taskStatus -> compactor -> HTTP persistence -> public result retains WeCom states (187.718791ms)
+✔ WeCom status whitelist rejects arbitrary delivery claims and does not change unrelated transport (1.583792ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 2
+ℹ fail 9
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1387.1545
+
+✖ failing tests:
+
+test at server/wecom-integration.e2e.test.mjs:119:1
+✖ external client: discover -> four-field submit -> actual synthetic remark/send -> result; dual slots, timeout and restart never replay (220.679708ms)
+  TypeError: Cannot read properties of null (reading 'payload')
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-integration.e2e.test.mjs:134:60)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+
+test at server/wecom-physical-cleanup.http.test.mjs:16:1
+✖ actual HTTP: unknown cleanup blocks same phone, survives restart/archive, proof commits before release (168.830792ms)
+  TypeError: Cannot read properties of null (reading 'payload')
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-physical-cleanup.http.test.mjs:65:72)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+
+test at server/wecom-preview.http.test.mjs:13:1
+✖ preview HTTP covers authentication, eight phones, leases, original-id reuse and restart (267.473208ms)
+  TypeError: Cannot read properties of null (reading 'type')
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-preview.http.test.mjs:108:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+
+test at server/wecom-status-transport.http.test.mjs:105:62
+✖ native click attempt remains unknown (4.20225ms)
+  TypeError: Cannot read properties of null (reading 'payload')
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-status-transport.http.test.mjs:109:25)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-status-transport.http.test.mjs:105:54)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+
+test at server/wecom-status-transport.http.test.mjs:105:62
+✖ definite prewrite block remains failed/not_attempted (1.477167ms)
+  AssertionError [ERR_ASSERTION]: POST /api/v1/wecom/customer-invitations
+  
+  409 !== 202
+  
+      at Object.request (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-status-transport.http.test.mjs:67:43)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-status-transport.http.test.mjs:107:25)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-status-transport.http.test.mjs:105:54)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 409,
+    expected: 202,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server/wecom-status-transport.http.test.mjs:105:62
+✖ unknown remark save remains held without a send claim (0.811125ms)
+  AssertionError [ERR_ASSERTION]: POST /api/v1/wecom/customer-invitations
+  
+  409 !== 202
+  
+      at Object.request (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-status-transport.http.test.mjs:67:43)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-status-transport.http.test.mjs:107:25)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-status-transport.http.test.mjs:105:54)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 409,
+    expected: 202,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server/wecom-status-transport.http.test.mjs:105:62
+✖ actual Python identity guard -> child wrapper -> Agent -> HTTP diagnostics (0.704833ms)
+  AssertionError [ERR_ASSERTION]: POST /api/v1/wecom/customer-invitations
+  
+  409 !== 202
+  
+      at Object.request (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-status-transport.http.test.mjs:67:43)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-status-transport.http.test.mjs:107:25)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-status-transport.http.test.mjs:105:54)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 409,
+    expected: 202,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server/wecom-status-transport.http.test.mjs:105:62
+✖ actual parent timeout catch stays unknown and exposes its code (1.171583ms)
+  AssertionError [ERR_ASSERTION]: POST /api/v1/wecom/customer-invitations
+  
+  409 !== 202
+  
+      at Object.request (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-status-transport.http.test.mjs:67:43)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-status-transport.http.test.mjs:107:25)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-status-transport.http.test.mjs:105:54)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 409,
+    expected: 202,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server/wecom-status-transport.http.test.mjs:83:1
+✖ real Agent runTask -> taskStatus -> compactor -> HTTP persistence -> public result retains WeCom states (187.718791ms)
+  AssertionError [ERR_ASSERTION]: all transport scenarios must pass before restart evidence
+  
+  0 !== 5
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-status-transport.http.test.mjs:150:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 5,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

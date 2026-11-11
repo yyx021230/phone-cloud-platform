@@ -1,0 +1,24 @@
+{
+  "version": "wecom-recover-four-20261104-deployed.2",
+  "status": "four_devices_recovered_pending_observation",
+  "activeSha256": "789d33cb8166f353569a0d184084c213cfe460c729a3f31ad0aaa9a573ca10bc",
+  "sourceCommit": "a73318151cc0872f6012bc2d4cf3222afc5b2901",
+  "nativeSourceCommit": "f6b8ebd",
+  "nativeSha256": "b8b15ee5d2c79598c39ccc1c5131bbac8338f5ff3c1c18c7ae1ee302164b7241",
+  "runningImage": "sha256:50a1fafcf13f739a0a4173048ed9065e470484eef95f2381ca2ed94cf29a86b6",
+  "nextStartImage": "sha256:afb66834c491c35864fb24230a29ca567dd644b9aed63ba3eb21f9258aa0c88b",
+  "composePreflight": {
+    "status": "validated_not_activated",
+    "composeOnlyImageChanged": true,
+    "runtimeEnvironmentMatchesCurrent": true,
+    "existingXhsReferencesReused": true,
+    "credentialValuesPersisted": false,
+    "serviceReloaded": false
+  },
+  "additionalCloudRestart": false,
+  "agentReloaded": false,
+  "adbRestarted": false,
+  "mainPid": 3613382,
+  "mainStartedAt": "2026-11-04T06:24:48.578192202Z",
+  "receiptBindingStatus": "awaiting_local_receipt_commit"
+}

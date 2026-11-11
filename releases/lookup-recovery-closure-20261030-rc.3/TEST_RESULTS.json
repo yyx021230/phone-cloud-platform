@@ -1,0 +1,32 @@
+{
+  "nodeFull": {
+    "passed": 1793,
+    "failed": 0,
+    "execution": "1660 server/Agent +132 screen/scripts; one additional regression afterward, runtime unchanged; final targeted129 passed"
+  },
+  "pythonLookup": 525,
+  "pythonAutomationRunners": 166,
+  "windowsIsolatedUnit": 85,
+  "syntaxCheck": "passed",
+  "diffCheck": "passed",
+  "fullNativeApiRecoveryPassed": false,
+  "nativeBusinessSubmissions": 0,
+  "knownTestHarnessFailures": [
+    "missing local dependencies before lock-matched runtime links restored",
+    "expired SSH lease check",
+    "netstat-only identity guard returned no listener; full CIM confirmed unchanged SYSTEM processes",
+    "test cancellation sequencing corrected; does not cover shared production cancellation/outbox",
+    "AI disabled in initial native fixture; real unparsed-page handoff therefore could not produce readiness",
+    "early abort after a failed probe stopped remaining readiness; production result accuracy cannot be inferred",
+    "staging fixture CAS rejected stale local test hash; readback matched known same-task earlier edits; reviewed then staged, no production file changed"
+  ],
+  "notCovered": [
+    "permanent cleanup failure through complete native business chain",
+    "shared Agent runtime restart and outbox",
+    "production external API acceptance"
+  ],
+  "targetedNestedRecovery": 129,
+  "finalNativeAttempt": 11,
+  "finalNativeBlocker": "manual verification after both probes reached actual input/result observation",
+  "finalPostDeadlineGuard": "local + Windows isolated only; added after native attempt11"
+}

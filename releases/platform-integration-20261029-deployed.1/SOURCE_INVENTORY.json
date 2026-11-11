@@ -1,0 +1,1067 @@
+{
+  "sourceCommit": "3a266d71ba861f8e81d6ec3a173d7efc12d5b245",
+  "scope": [
+    "server",
+    "public",
+    "windows-agent/src",
+    "windows-agent/scripts"
+  ],
+  "pathEncoding": "Git NUL-delimited UTF-8",
+  "files": {
+    "public/api-docs.css": {
+      "sha256": "45fb3127c805089a9227cc96d9b44a71c00d82f27638623289b3d850a6a349cd",
+      "bytes": 16443,
+      "role": "runtime"
+    },
+    "public/api-docs.html": {
+      "sha256": "322cb59f3281babe976d60ee041fbb78f228758711fe16bc76d7c2297e220c32",
+      "bytes": 2872,
+      "role": "runtime"
+    },
+    "public/api-docs.js": {
+      "sha256": "f61a477d104bec3062a921109203585616ccb5273642a78a17c07f9182d326f6",
+      "bytes": 34155,
+      "role": "runtime"
+    },
+    "public/api-reference.json": {
+      "sha256": "c56453958307af38fd52742217e3aadc99fc514757a3cc1a04a6a2af3b1606fc",
+      "bytes": 154753,
+      "role": "runtime"
+    },
+    "public/app.js": {
+      "sha256": "946d396cd2846d3a5e7d18e80d8bdfa685c2bb53fbdf95bef0182435cdba66f9",
+      "bytes": 305400,
+      "role": "runtime"
+    },
+    "public/downloads/lookup.mjs": {
+      "sha256": "c6c04722cd2ecd76ca7a81b72b82b1ee95ec0b8a26ab75795dc75632a4fde246",
+      "bytes": 9542,
+      "role": "runtime"
+    },
+    "public/downloads/lookup.py": {
+      "sha256": "4d25a7b23c11df237ff58f2a791f006c3aeb6a7f05c01a7f53feda7c3227bd59",
+      "bytes": 11239,
+      "role": "runtime"
+    },
+    "public/downloads/name-lookup-http-guide.md": {
+      "sha256": "531ed0824f18f13606c2b9605557dc2e3f8d25c3c2bd63ce637d2af1543bedf5",
+      "bytes": 14561,
+      "role": "runtime"
+    },
+    "public/downloads/name-lookup-openapi.json": {
+      "sha256": "2cf855866e5f30f05b6f7610f61235f15dbc15135a8d529b7e8f31dfcac4e438",
+      "bytes": 94027,
+      "role": "runtime"
+    },
+    "public/downloads/name-lookup-sha256.json": {
+      "sha256": "133e59e60c859baa052bc29664bf51f55f100060a746573ae6b9e283e183901c",
+      "bytes": 586,
+      "role": "runtime"
+    },
+    "public/downloads/sign.mjs": {
+      "sha256": "8aac5bdf144c8dd6c93da3aa34c63c21952270fba139e5b117730b6730c51946",
+      "bytes": 605,
+      "role": "runtime"
+    },
+    "public/downloads/stop_lookup.py": {
+      "sha256": "e0d7f72ff6fae836973432804ae42083ee99c136f307483a7e9eb5a198d862ed",
+      "bytes": 3240,
+      "role": "runtime"
+    },
+    "public/index.html": {
+      "sha256": "63bd54b052795277a8725d60934753c721daa4db93dc5f5c460338889fcd7b71",
+      "bytes": 58991,
+      "role": "runtime"
+    },
+    "public/lookup-admin.css": {
+      "sha256": "94000299289d4be0a354fd4fb1095df6229d0412b1bf1057c2c2486de02b84d8",
+      "bytes": 9990,
+      "role": "runtime"
+    },
+    "public/lookup-admin.html": {
+      "sha256": "0504f8c50efa14d7c47c89073da56df35eb67f95936d7f52234e09edc426a9b8",
+      "bytes": 3708,
+      "role": "runtime"
+    },
+    "public/lookup-admin.js": {
+      "sha256": "5fd23f75f5c945362ab09c984886a79cef56ad9261e0c3c9384d9fc520ffd4ee",
+      "bytes": 15651,
+      "role": "runtime"
+    },
+    "public/lookup-card-status.js": {
+      "sha256": "419c865557401c9b431bef2a30c48b332f39d266f2addfa462fd21beb9c7a780",
+      "bytes": 1095,
+      "role": "runtime"
+    },
+    "public/lookup-pool.css": {
+      "sha256": "1b4781315f76a2526f92aa6231d90a5849f8c4020cd8509c83a8b03e2e4a7ca0",
+      "bytes": 5001,
+      "role": "runtime"
+    },
+    "public/lookup-pool.html": {
+      "sha256": "fcd0b8af95e38ee1ccdc9306bb7017396ef1d2eac68180b1954aa630e19999a8",
+      "bytes": 4039,
+      "role": "runtime"
+    },
+    "public/lookup-pool.js": {
+      "sha256": "d87e587c9466cc71e87caf08d95f8f5da315996ce4d7a993ed18b90ce58a5e45",
+      "bytes": 12779,
+      "role": "runtime"
+    },
+    "public/openapi.json": {
+      "sha256": "61548643a7468a223620465df85e38d5a75f33449fed0770156310219d742b25",
+      "bytes": 169120,
+      "role": "runtime"
+    },
+    "public/screen-control.js": {
+      "sha256": "9618ae22993d0b1fc5bbffbedf2e9ced52ad5b8ccf46fded85513f39a4bda3ba",
+      "bytes": 70317,
+      "role": "runtime"
+    },
+    "public/screen-inactivity-guard.js": {
+      "sha256": "433578679963fc37b6eb2412c641cbaaa81f424f8611b109b28d2ba3b49ec182",
+      "bytes": 4564,
+      "role": "runtime"
+    },
+    "public/styles.css": {
+      "sha256": "6e744015f24a18a2ebcb178d1a56d2fa07fd4b370abb150f5a181d07a4fc0159",
+      "bytes": 174331,
+      "role": "runtime"
+    },
+    "public/user-device-inventory.js": {
+      "sha256": "bda1d9e9ac5ebfeebc092dc4dd7da0e9fedac85922a94045964b147af769107b",
+      "bytes": 1379,
+      "role": "runtime"
+    },
+    "public/user-sms-refresh-policy.mjs": {
+      "sha256": "82239510997859f2ccab5dc793caf0e14c00260e9fb94bd6d1169a3b33ef5061",
+      "bytes": 146,
+      "role": "runtime"
+    },
+    "public/vendor/screen-control.js": {
+      "sha256": "ef4e36d5934050ad85075fb877257e4ec63b30af94becefc69e29bf76b2f44c5",
+      "bytes": 79430,
+      "role": "runtime"
+    },
+    "public/vendor/worker-Dm9DNeDt.js": {
+      "sha256": "1d2f4e9d5377fe41356be079ad925ddb38b10b5035914f2b883ec1696f831687",
+      "bytes": 173627,
+      "role": "runtime"
+    },
+    "public/wecom-automation-ui.js": {
+      "sha256": "8e5c7a7e8979d5550d56aac47eeec6cbd553ca6fad15ec66db5622473ecf02c0",
+      "bytes": 10967,
+      "role": "runtime"
+    },
+    "public/wecom-integration-api.md": {
+      "sha256": "585a2bdaa7db82d308b792d9b4f091afda6e30299e91f3e0e64a3445086a379a",
+      "bytes": 11098,
+      "role": "runtime"
+    },
+    "public/wecom-preview-api.md": {
+      "sha256": "10196d0097be52bee2797dca324253ce1ee5b465adbc615010b68f3349e414b4",
+      "bytes": 7910,
+      "role": "runtime"
+    },
+    "public/wecom-preview.css": {
+      "sha256": "1238557a85819a9fe7c160e62bc9ec38fac7e1afbe99226a79b81c07c381e4c8",
+      "bytes": 1271,
+      "role": "runtime"
+    },
+    "public/wecom-preview.html": {
+      "sha256": "82811274b5702ddbe1ad1e5e444a44a659c749c1d9645baddbe9e5e36b0363ae",
+      "bytes": 2090,
+      "role": "runtime"
+    },
+    "public/wecom-preview.js": {
+      "sha256": "405e45ba702f2b5d99bf966329a63f54b55f07b258ad523c08c0ae0374f0acd9",
+      "bytes": 4967,
+      "role": "runtime"
+    },
+    "public/xhs-data-collection-ui.js": {
+      "sha256": "7be06e984b25ec61fa4e7004433f92c076c1acbb5a821e6cd979e539d955201f",
+      "bytes": 4654,
+      "role": "runtime"
+    },
+    "server/agent-runtime-release.mjs": {
+      "sha256": "3720982d360bfe424c1d1740c03d9f42a03a866617319ca8c99f8d74d46b6c8e",
+      "bytes": 1074,
+      "role": "runtime"
+    },
+    "server/automation-center.mjs": {
+      "sha256": "9abf864ead077e0f706b04319f28e137ad3f7693318c951127c1762e2f22caf5",
+      "bytes": 11692,
+      "role": "runtime"
+    },
+    "server/device-lock-compatibility.mjs": {
+      "sha256": "48ea2fa99c4bea2d7bbc865d65f0e7572d6e914e0e86a1806022abb81700b9c3",
+      "bytes": 2658,
+      "role": "runtime"
+    },
+    "server/device-naming.mjs": {
+      "sha256": "d7b74e874f557b77514d9db7460f86fd2f7d58b05c96b327b99a522dc46bccad",
+      "bytes": 2904,
+      "role": "runtime"
+    },
+    "server/device-occupancy.mjs": {
+      "sha256": "ac2bc7c45599bf0dbad046e5dfa12bb10d5fda291552c5ef10cf3fda99cedea5",
+      "bytes": 8418,
+      "role": "runtime"
+    },
+    "server/device-sim-authority.mjs": {
+      "sha256": "21651ac3da6a3fff4febe5c718fca8f68ae8635d643289014adc6631bd89aa21",
+      "bytes": 2368,
+      "role": "runtime"
+    },
+    "server/evidence-signing.mjs": {
+      "sha256": "9d344fe3e44bf9a46caf1a7eff3eaf9017bb3f8cb02f521b6e7640b3c096ef6a",
+      "bytes": 1393,
+      "role": "runtime"
+    },
+    "server/evidence-storage.mjs": {
+      "sha256": "0bbcbe14f57000af513275e1d055705aa6639929464c2a9bf30171852b906bf8",
+      "bytes": 2154,
+      "role": "runtime"
+    },
+    "server/index.mjs": {
+      "sha256": "53fc2b55dcb330762a437a1be3e248dd7dccafc9a041606020eb5ae85cf351cf",
+      "bytes": 440953,
+      "role": "runtime"
+    },
+    "server/inventory-sync-response.mjs": {
+      "sha256": "dc9f8969785d89f6cc0e000d1229056229ccdfca3852f8e3ee29146fe729960a",
+      "bytes": 2545,
+      "role": "runtime"
+    },
+    "server/lookup-account-cooldown.mjs": {
+      "sha256": "26276439d52a15512221b1f9a0aec20e7b25a0e2ccbe64475a01e4bdeeb80d97",
+      "bytes": 4929,
+      "role": "runtime"
+    },
+    "server/lookup-account-offline.mjs": {
+      "sha256": "c351c5e69e00a4c795204a927dffb323cf1f56ed67d583e963ea346dcb52841d",
+      "bytes": 4046,
+      "role": "runtime"
+    },
+    "server/lookup-admin-console.mjs": {
+      "sha256": "2c3505f19e464e862dd0615c59d22b7ce1dbc7b81b6117a068df3385189b1c94",
+      "bytes": 10489,
+      "role": "runtime"
+    },
+    "server/lookup-admin-statistics.mjs": {
+      "sha256": "89360238846308959a70edf770b555fc5d99a80495affb2b66b31bd002d70008",
+      "bytes": 4225,
+      "role": "runtime"
+    },
+    "server/lookup-ai-headerless.fixture.json": {
+      "sha256": "6dbe58532b32faf6096069df4fdf0ba2c38f73d4813284a305b31aead98ec45a",
+      "bytes": 2826,
+      "role": "fixture"
+    },
+    "server/lookup-ai-recovery.mjs": {
+      "sha256": "5d5acf90a7fbf70f22940372bb9d8e62db896b1813b37c4a1ea150fbea60962e",
+      "bytes": 2529,
+      "role": "runtime"
+    },
+    "server/lookup-ai-vision.mjs": {
+      "sha256": "27179e050b12abdca392534962cfbe4dbda1b8bbd15eaf81193cee6009878269",
+      "bytes": 17732,
+      "role": "runtime"
+    },
+    "server/lookup-api-key.mjs": {
+      "sha256": "11f8f2b9fdecc219f1e172a3c311dd31d9868f8f65a2f69641ef9e77ab53e31d",
+      "bytes": 1712,
+      "role": "runtime"
+    },
+    "server/lookup-device-availability.mjs": {
+      "sha256": "86d917c11eb93651e4a5ee2bcae0da777ae5031655da5cc36749c4d0e0644310",
+      "bytes": 5757,
+      "role": "runtime"
+    },
+    "server/lookup-double-card.fixture.json": {
+      "sha256": "5cf3081eff4bbd873c018b33cd86f5c0fabbe5f93f7db8bee3a44b23fd3af796",
+      "bytes": 3699,
+      "role": "fixture"
+    },
+    "server/lookup-execution-metrics.mjs": {
+      "sha256": "537f1b57b491508ed537985168c9c3f52cd85c362c0bb933b5103711153939dc",
+      "bytes": 2213,
+      "role": "runtime"
+    },
+    "server/lookup-failure-domain.mjs": {
+      "sha256": "d256d831f639c19e7c111fc6541f0c215370d9b20fb3f47dc53bd005bea5a29a",
+      "bytes": 5235,
+      "role": "runtime"
+    },
+    "server/lookup-human-handover.mjs": {
+      "sha256": "feb3da78d297ff4d4a97d0d6265fed0ff213d6fe8d0f8024dd6e62bf9eb9cbcf",
+      "bytes": 5624,
+      "role": "runtime"
+    },
+    "server/lookup-human-notifications.mjs": {
+      "sha256": "c075ecf48ccc590264a5c93d08f416160d110605f1933d3b8e779e022d89c78f",
+      "bytes": 5370,
+      "role": "runtime"
+    },
+    "server/lookup-reader-admission.mjs": {
+      "sha256": "6143dc1f18d25eb0e3e0d82c0075b80d5a069360d1ed9d70a818e7122954d3ec",
+      "bytes": 4940,
+      "role": "runtime"
+    },
+    "server/lookup-reader-capabilities.mjs": {
+      "sha256": "a47d4fff7bf18714bb83e125f129c83a621ec2ab051c0f4d869d2947abf70f3f",
+      "bytes": 2173,
+      "role": "runtime"
+    },
+    "server/lookup-reader-capacity.mjs": {
+      "sha256": "cd27eb166caf02eddf54322685e475fae3edb7f375cb923cf7e78a487b0455d7",
+      "bytes": 1207,
+      "role": "runtime"
+    },
+    "server/lookup-readiness.mjs": {
+      "sha256": "139a3d44cd2130d8f9f7c1c1c05f1e254995c7b71057346468846f0518d3de6c",
+      "bytes": 15909,
+      "role": "runtime"
+    },
+    "server/lookup-round-idle.mjs": {
+      "sha256": "3b04fcd724fe7d6c6bcbd291d4b9b06626cadbe96cf2249755f549a6469ce402",
+      "bytes": 1821,
+      "role": "runtime"
+    },
+    "server/lookup-round-stop.mjs": {
+      "sha256": "f13558828d2050529513d27e7085e8633cea56628982a5a63711bd3f7dcc21aa",
+      "bytes": 4307,
+      "role": "runtime"
+    },
+    "server/lookup-session-lifecycle.mjs": {
+      "sha256": "6d4a3a70adbe668d16bd74bd33032dc1201ad335737678fdb94e0d94c2559e62",
+      "bytes": 1023,
+      "role": "runtime"
+    },
+    "server/lookup-stop-proof.mjs": {
+      "sha256": "f36587d11613679ff013b2aa071d552a8719851ee80890b45e685b5884ae6a18",
+      "bytes": 1085,
+      "role": "runtime"
+    },
+    "server/managed-lookup-async.mjs": {
+      "sha256": "bcbb78728f6312d2535d3bd70e71c68f3ffc42c75886f782283ddd756346c3b7",
+      "bytes": 7232,
+      "role": "runtime"
+    },
+    "server/managed-lookup-delivery.mjs": {
+      "sha256": "bf919f335fef57eb09c11fdee73d52fdd5b44372c60ad4f70e6651f4ef5e5c3d",
+      "bytes": 2821,
+      "role": "runtime"
+    },
+    "server/managed-lookup-platform.mjs": {
+      "sha256": "2340aac9014ed006ab39a29dcbe0259d53b47fb68c3227d398f5979122439ec7",
+      "bytes": 21368,
+      "role": "runtime"
+    },
+    "server/managed-lookup-store.mjs": {
+      "sha256": "78e79206181fd3e4fb3529175b08fa67c5c1431f9600f35de8e5c1e4087f75c6",
+      "bytes": 9279,
+      "role": "runtime"
+    },
+    "server/managed-lookup.mjs": {
+      "sha256": "c58747a82c750aa7ab643e84ca7028475ed4b9d797dc1542b96cb495f37ad3c0",
+      "bytes": 61064,
+      "role": "runtime"
+    },
+    "server/open-name-lookup-api.mjs": {
+      "sha256": "866055162aa6a127cdb7b71734ad94ba0bc4ece85ca10aad02f6e702a72f0d99",
+      "bytes": 5582,
+      "role": "runtime"
+    },
+    "server/persistence-policy.mjs": {
+      "sha256": "a25cbbbb296c23a4f8876c13a97c8235824881ebc28daa3998762fcf2c0658ca",
+      "bytes": 1537,
+      "role": "runtime"
+    },
+    "server/postgres-json.mjs": {
+      "sha256": "23f39df35269e1ff560bed4624c96fbd7a1d6958fc04764e7945948d212c2fe2",
+      "bytes": 404,
+      "role": "runtime"
+    },
+    "server/postgres-repositories.mjs": {
+      "sha256": "cc8e9dc791635004c62acf1f6e69bc1f381d84b3963e63f1b36537ab48f35d90",
+      "bytes": 19269,
+      "role": "runtime"
+    },
+    "server/realtime-metrics.mjs": {
+      "sha256": "f3fbe51272fa2cf17a54d2bf90ec717ea591a413f27bf2703ae51d3eb6b47459",
+      "bytes": 12736,
+      "role": "runtime"
+    },
+    "server/recovery-controls.mjs": {
+      "sha256": "0147f3f3c122e9d444bf48666cb6bbaab64a64c585860ca0664afdec44890af8",
+      "bytes": 5357,
+      "role": "runtime"
+    },
+    "server/runtime-save-scheduler.mjs": {
+      "sha256": "53a25966429c65891fe543df20df852a2dfcf3e26acfc47d73c0163ec74a39ec",
+      "bytes": 1248,
+      "role": "runtime"
+    },
+    "server/save-queue.mjs": {
+      "sha256": "e1dc8fd7a71aaa5b33a5dbd13989b2f0b8c2ce274b8d3ade375d0d0ba065e4b7",
+      "bytes": 209,
+      "role": "runtime"
+    },
+    "server/screen-backpressure.mjs": {
+      "sha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4",
+      "bytes": 850,
+      "role": "runtime"
+    },
+    "server/screen-gallery-import.mjs": {
+      "sha256": "39f7727860372f25959a5ca78145be07dfaf92c3747954afc99c8cd02cd8e697",
+      "bytes": 7165,
+      "role": "runtime"
+    },
+    "server/screen-media-auth.mjs": {
+      "sha256": "c569931fdbad95338ebc50dee5d04b0f62550733bc627324171ab3590d3668b1",
+      "bytes": 4514,
+      "role": "runtime"
+    },
+    "server/screen-quality.mjs": {
+      "sha256": "bfadf379b03fadcf73bedc911649680ac6e3ace77907afee3524b335d4406451",
+      "bytes": 1918,
+      "role": "runtime"
+    },
+    "server/screen-relay.mjs": {
+      "sha256": "91b706a0cd00ea573997fdea338cad8f37e2c88e62fdbeee24b86ec4a6036c02",
+      "bytes": 40595,
+      "role": "runtime"
+    },
+    "server/screen-sessions.mjs": {
+      "sha256": "811a15aa7ecb87a934ef5f92826ed9031278d87df2387cc20a85098ce91cde09",
+      "bytes": 6674,
+      "role": "runtime"
+    },
+    "server/screen-transport-policy.mjs": {
+      "sha256": "331b212c564bc992628712eef81bff6dafe3b0df3f480f64fb808dfe7c41c721",
+      "bytes": 5690,
+      "role": "runtime"
+    },
+    "server/sms-message-dedupe.mjs": {
+      "sha256": "b39dc3ee2d51e1ada870255c65fd5fabd44c170b567526eabf208391f933623c",
+      "bytes": 7825,
+      "role": "runtime"
+    },
+    "server/sms-message-index.mjs": {
+      "sha256": "bf7190694f42de6e1695cb577d513b74d7cde07ed21af2e467568e38e067d68b",
+      "bytes": 2920,
+      "role": "runtime"
+    },
+    "server/sms-order-matcher.mjs": {
+      "sha256": "ac8977d0f923774cdc83ee494c47c5ea1a09c685baf2a04f572d6db5ae67a4e6",
+      "bytes": 4583,
+      "role": "runtime"
+    },
+    "server/sms-order-probe.mjs": {
+      "sha256": "8161e01ec5b5c373471bfa23a85c8929f947ebaaa06e9258ef8d13d3c71ba3f6",
+      "bytes": 1625,
+      "role": "runtime"
+    },
+    "server/sms-refresh-rate.mjs": {
+      "sha256": "9995876862c4ba0f36ca7a6caaa8876370b269ecfdabdffd46fad6b42ca34d3e",
+      "bytes": 318,
+      "role": "runtime"
+    },
+    "server/snapshot-copy.mjs": {
+      "sha256": "568f9de4c607e835a6547d1f81815e5c43faa20ed98b37b006182a21c8a6f2f6",
+      "bytes": 2116,
+      "role": "runtime"
+    },
+    "server/snapshot-stream.mjs": {
+      "sha256": "6a28e2a09ec78a3b8f5cc3203bc054db732dcc503ee198f25a94d8f09af47f73",
+      "bytes": 6422,
+      "role": "runtime"
+    },
+    "server/state-repositories.mjs": {
+      "sha256": "dff0a6e289b9d29c63f3f8056394b143cd163db197e487bb632f81d796981e43",
+      "bytes": 926,
+      "role": "runtime"
+    },
+    "server/task-history-maintenance.mjs": {
+      "sha256": "fbb8bad420c3e8423f1b0bf9abc37819b83d59a33e5b1e788ba42737d89fab0d",
+      "bytes": 2890,
+      "role": "runtime"
+    },
+    "server/task-status-persistence.mjs": {
+      "sha256": "26f8e48a3a6a77de4d4f47aa8b9b54b45d1ee1a37a2ad4c787a8653845c4cab8",
+      "bytes": 720,
+      "role": "runtime"
+    },
+    "server/vendor/pg-copy-streams/package.json": {
+      "sha256": "742c921f6ebcf2f293960a54c58c6b53843d31ca6bc87534e18161fcf1529035",
+      "bytes": 1285,
+      "role": "runtime"
+    },
+    "server/vendor/stream-json/package.json": {
+      "sha256": "d83a7ff5f26b3cad3b3fe4a6858a55e7065209674fd4ffc6c7a2524a013e0f33",
+      "bytes": 1241,
+      "role": "runtime"
+    },
+    "server/wecom-preview-devices.json": {
+      "sha256": "2eab0e0415e7db2f7c00c8ccf8e55f36cb3987a22c03bdc5aee4b05f6167bc88",
+      "bytes": 1152,
+      "role": "runtime"
+    },
+    "server/wecom-preview.mjs": {
+      "sha256": "0e2bcf8bbcb9fc34e0fbfd917bfcd66aff1ab82a3a652cfd6e2a1bbf111caa50",
+      "bytes": 11605,
+      "role": "runtime"
+    },
+    "server/windows-task-dispatch.mjs": {
+      "sha256": "bcf1f67baee52972d59df3f12134548db21489e9b9b4e07b600202bf3de0d8cd",
+      "bytes": 768,
+      "role": "runtime"
+    },
+    "server/xhs-account-identity.mjs": {
+      "sha256": "7bdb004ecccc13f799aaec28bca24e7a93394b747cd64d14a7b7509b271aac64",
+      "bytes": 2041,
+      "role": "runtime"
+    },
+    "server/xhs-batch/engine.mjs": {
+      "sha256": "52fc62dd5acec4ea2a3bea7493f7774310033c8a39dd1943c67d666af74151c1",
+      "bytes": 16706,
+      "role": "runtime"
+    },
+    "server/xhs-batch/fixtures.mjs": {
+      "sha256": "824c88687dfda881da866340902051a009b626284d3a929f75d25a661f2b3a32",
+      "bytes": 882,
+      "role": "runtime"
+    },
+    "server/xhs-batch/http.mjs": {
+      "sha256": "2b8da8b5fe4387a5391c65dd4a2db65c4c27fa19984ed7e0ff889e67d6a3376b",
+      "bytes": 4528,
+      "role": "runtime"
+    },
+    "server/xhs-batch/main.mjs": {
+      "sha256": "2b9be84b80102c15ffc30d9e2f24103f4929b08867c697b3411f790830c301fa",
+      "bytes": 2183,
+      "role": "runtime"
+    },
+    "server/xhs-batch/platform.mjs": {
+      "sha256": "1b5aaad146b538196601e03111a76cec542b7681cf60807887aaf3141f78e3ed",
+      "bytes": 3004,
+      "role": "runtime"
+    },
+    "server/xhs-batch/store.mjs": {
+      "sha256": "5d6ea6424748dd57bb46d3a7bfd5a2b99ad95005ed4284763fab6f5b75ec31a3",
+      "bytes": 2489,
+      "role": "runtime"
+    },
+    "server/xhs-data-collection.mjs": {
+      "sha256": "ec966c4f55e937960af29b620c78f4717b6f702af43b33b1cf8c427286510bc0",
+      "bytes": 3296,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/alipay_name_lookup.py": {
+      "sha256": "8c60bb140a4e2bcf07ee29ccd85591b210f20365dc6638cd3f62451444fd4a63",
+      "bytes": 327197,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/alipay_post_human_state.py": {
+      "sha256": "8e0290dfa7c0ac2b28efbcebd1e056259a5e311243cebdce121015562e224efc",
+      "bytes": 1762,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/alipay_visual_result.py": {
+      "sha256": "e5159fe17b3509fdd7accd997b3af03fc35071d5ae557181ed22f32fa140bd81",
+      "bytes": 25069,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/feishu-kuaishou-lead.mjs": {
+      "sha256": "2ac1f28489ac6a130d4a06da29a41cc0e69543fbdd9ad5606f6a4d55506adcc4",
+      "bytes": 25639,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/install_lookup_ocr.py": {
+      "sha256": "14f389ad55b0d976f50a2524d7888c1fd19b4a31ebeee7d3670f52216b83934c",
+      "bytes": 2999,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/kuaishou_vehicle_lead.py": {
+      "sha256": "d12ec654560d3115254fb2025132c8f32e60544b9523772ee951b891bb3ea3e3",
+      "bytes": 33127,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/lookup-native-double-card.fixture.json": {
+      "sha256": "f78e67a7375b9e0a1efeecc2625ad65b9a8e64e1ff8ab83b0596494790687228",
+      "bytes": 3516,
+      "role": "fixture"
+    },
+    "windows-agent/scripts/lookup_home_modal.py": {
+      "sha256": "17955787340edbc8558269199812ffa93b8fda5ec61ecee65e90b0dc3a8bce84",
+      "bytes": 2119,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/lookup_ocr_runtime.py": {
+      "sha256": "786aa196b75fc9401c7d7b721f4c21a67cd527a429fe757605bc7bbcebb171ae",
+      "bytes": 4775,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/lookup_ocr_worker.py": {
+      "sha256": "4243c4da4582c1259198842fa3c577ba9ddce8a47e687611b2dec824d9304ccd",
+      "bytes": 2914,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/lookup_page_actions.py": {
+      "sha256": "e281eaf4d7396a8f4ba4a6f18bee47131005ddfa8db90cc94c46cb2f3c4811cc",
+      "bytes": 2679,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/native/xhs-native-navigation.jar": {
+      "sha256": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754",
+      "bytes": 6194,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/native/xhs-native-pair.jar": {
+      "sha256": "9e696792b37dd269803d230ef1e97754bf895b1d2b852e8d23ae838c757cbed3",
+      "bytes": 10238,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/native/xhs-native-window.jar": {
+      "sha256": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7",
+      "bytes": 9338,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/probe-douyin-qr-flow.mjs": {
+      "sha256": "3f78b4148d3331e7127c776a311af4bdfc0159c38bfb125da3294ec301e4630d",
+      "bytes": 11985,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/probes/build-native-pair.py": {
+      "sha256": "2b79e551f76a86cbf9d1c7697e234990f06cca585111a2c73701256bcad92b1e",
+      "bytes": 1798,
+      "role": "diagnostic"
+    },
+    "windows-agent/scripts/scrcpy-source-probe.mjs": {
+      "sha256": "e38a77ecf12a839fca97aab31af10acdeef8a21455fb2c76aa82ad97001725aa",
+      "bytes": 2347,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/set-runtime-config.mjs": {
+      "sha256": "2e2b183daeb36d69d3216ba8ad64a447d92e848444ee4a145dae2fe17839bf7f",
+      "bytes": 1041,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/smsrelay_fleet_preflight.mjs": {
+      "sha256": "a5f8d93fa863b19dfb0302a538b5409d042bf885eb45122e4f04288c4f456c98",
+      "bytes": 8770,
+      "role": "diagnostic"
+    },
+    "windows-agent/scripts/wecom_customer_invitation.py": {
+      "sha256": "5c8a4438318cb10dba2b3ddc0017aff9294aead36e3c99ad5878d0f3465cbd24",
+      "bytes": 3872,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/wecom_invite_preview.py": {
+      "sha256": "f7329cf01b0d9c7f750b730d570826099abba4df6581931eb395f74527ae8692",
+      "bytes": 20233,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/wecom_platform_preview.py": {
+      "sha256": "2211bc1afb3f3019cec5f5e0020bf7bbf64e287cb80f3633db10ee0ffff87cc6",
+      "bytes": 25340,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/wecom_preview_devices.json": {
+      "sha256": "2eab0e0415e7db2f7c00c8ccf8e55f36cb3987a22c03bdc5aee4b05f6167bc88",
+      "bytes": 1152,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/wecom_remark_preview.py": {
+      "sha256": "cffc8c9a60ace1a4cbf2d000965db79af9919f2966733fd4c070e7d27b307860",
+      "bytes": 13352,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/wecom_rpc_budget.py": {
+      "sha256": "60aab705ab8b1a5282da225ac5e7f3ac27c90c01749e4637e0dfe732e906bff6",
+      "bytes": 1227,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/wecom_startup_guards.py": {
+      "sha256": "82fcf0d5ccc3d8aceab9901ac663725fcc9bf6b5f072715d18892036652f6d25",
+      "bytes": 5669,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/xhs_airtest_poco.py": {
+      "sha256": "8abb00385d12ce99dc5995ae1424f226a5e9f887461c920594e68d27f44fd4e1",
+      "bytes": 114496,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/xhs_list_ocr.py": {
+      "sha256": "4cc3d8ae042c6951b65ec93cc755e57cbed0440393b4c841bda20f76def3a516",
+      "bytes": 77567,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/xhs_native_elements.py": {
+      "sha256": "e94f3066cb9e99c50ed3f7f18ae6c56a32c543774fefa863d125df08f173d46e",
+      "bytes": 9565,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/xhs_native_navigation.py": {
+      "sha256": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c",
+      "bytes": 2417,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/xhs_native_window.py": {
+      "sha256": "1b15e62ccad9e1d3fc4b81bbe8b5a1adb57f7f913b57472ba54283415e0ba772",
+      "bytes": 3918,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/xhs_publish_poco.py": {
+      "sha256": "8411a66b4b7dd8adab0cee528c66ec775842bfc7d854d4ecd44e7319732ca4d9",
+      "bytes": 35327,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/xhs_xml_uiautomator.py": {
+      "sha256": "3b27f4c309df6ab095d676ea43316091477792ec11e7634ccb52b70afe117dfb",
+      "bytes": 26159,
+      "role": "runtime"
+    },
+    "windows-agent/scripts/小红书数据同步.py": {
+      "sha256": "9a95226108c70ed8830dd322bdbd32c9d932f163ebbc509ff371703888b1fddf",
+      "bytes": 171339,
+      "role": "runtime"
+    },
+    "windows-agent/src/adb-priority-queue.mjs": {
+      "sha256": "0bb8cfd86baaddc8a32d040e5835452f06e1ae5e3b78cbe2aeb0a67a24e5495d",
+      "bytes": 3096,
+      "role": "runtime"
+    },
+    "windows-agent/src/adb-serial-identity.mjs": {
+      "sha256": "9474bf4c3db8d144eda0eaa6c40a1ba912a0c0c53460747b8e638d79d79ba09f",
+      "bytes": 1920,
+      "role": "runtime"
+    },
+    "windows-agent/src/adb-server-recovery.mjs": {
+      "sha256": "693535b4379089e33b7badeaac2e2665c1b2efb797adba1264e8c431d356fb2f",
+      "bytes": 1713,
+      "role": "runtime"
+    },
+    "windows-agent/src/agent-instance-lock.mjs": {
+      "sha256": "c18e716c1295931d8aad73c3e2df6c4cd10562c52938b1749eff2f47f3e9d0ac",
+      "bytes": 2709,
+      "role": "runtime"
+    },
+    "windows-agent/src/airtest-worker-lifecycle.mjs": {
+      "sha256": "af10fa43a5d7982b590b44f432ab206d15adf285fe3b617f8b286e13b3d2b374",
+      "bytes": 3660,
+      "role": "runtime"
+    },
+    "windows-agent/src/alipay-poco-fallback-policy.mjs": {
+      "sha256": "d9cca5a6ce0e97f0d6145306f4322d5a8873aaa5e71c2a5441707a46d349f917",
+      "bytes": 1254,
+      "role": "runtime"
+    },
+    "windows-agent/src/atomic-json-writer.mjs": {
+      "sha256": "c7aeda35d9fffed03eca35cfb290456e54d0f96e7078fbda858a4906d22f2294",
+      "bytes": 1211,
+      "role": "runtime"
+    },
+    "windows-agent/src/config.mjs": {
+      "sha256": "b233775c589ab22e6662a23bb82e507c9a3f635f1112709bfdae24d854a5d254",
+      "bytes": 21371,
+      "role": "runtime"
+    },
+    "windows-agent/src/config.pre-20260722-pacing-default.mjs": {
+      "sha256": "ade70095493249dfcb9047d950fad7fc258f2fadddd214036ef5318aebdaf7d1",
+      "bytes": 6148,
+      "role": "runtime"
+    },
+    "windows-agent/src/device-actor.mjs": {
+      "sha256": "b1d97b76ce1d71d0fa3fd70757311e78f76255661288e9cd5199b6c3cba2a2cf",
+      "bytes": 1505,
+      "role": "runtime"
+    },
+    "windows-agent/src/device-recovery-state.mjs": {
+      "sha256": "6315883802f283291f4eab489c6c2975e9dfaee2d035143732a2214f4e723293",
+      "bytes": 4636,
+      "role": "runtime"
+    },
+    "windows-agent/src/device-scan-cache.mjs": {
+      "sha256": "1526782cd19841841535a790d78c350103aa50f12ae4e0ac5557828afd09e1a5",
+      "bytes": 1220,
+      "role": "runtime"
+    },
+    "windows-agent/src/device-scan-pipeline.mjs": {
+      "sha256": "8ef31ead50d4b1bec3bc648d72d6cbe64fe4cc102c04a5c0d269240295a5a6c4",
+      "bytes": 1824,
+      "role": "runtime"
+    },
+    "windows-agent/src/gallery-import.mjs": {
+      "sha256": "d0e64f21c1c3e85ca89929f08c7739c6e5ba21600a70b74e2318ba388a425d74",
+      "bytes": 986,
+      "role": "runtime"
+    },
+    "windows-agent/src/gallery-task-delivery.mjs": {
+      "sha256": "382c1e5b1519600e60405dae813687d4499c3770356969c0878c5dd934656a71",
+      "bytes": 4826,
+      "role": "runtime"
+    },
+    "windows-agent/src/guarded-task-runner.mjs": {
+      "sha256": "150e14ea6fcdd6b0bb117d771bce084347cb26442a7674b0963cf9887df1d25f",
+      "bytes": 1496,
+      "role": "runtime"
+    },
+    "windows-agent/src/index.mjs": {
+      "sha256": "c309d1f6dd0bda9530ec6ff8dccc874509aa7cd57e8ef6bdea77a64b7a1c5a67",
+      "bytes": 289178,
+      "role": "runtime"
+    },
+    "windows-agent/src/lookup-account-policy.mjs": {
+      "sha256": "51f9a5a3368554efbd8d07e2e420f70da7086e1b592c5959cada4752c9301c98",
+      "bytes": 10569,
+      "role": "runtime"
+    },
+    "windows-agent/src/lookup-execution-metrics.mjs": {
+      "sha256": "880adc6afe1c2ae60a973bab7ed6aa375b77167966256df19737cb1c1cafae31",
+      "bytes": 965,
+      "role": "runtime"
+    },
+    "windows-agent/src/lookup-human-observer.mjs": {
+      "sha256": "dbd77ffb69215d26610a814d1c4013e89a3d1a7b81ea509c9570d7035808a8a5",
+      "bytes": 7370,
+      "role": "runtime"
+    },
+    "windows-agent/src/lookup-page-recovery.mjs": {
+      "sha256": "6ac3f752e52db13667b9f0d6a42380c4e3807bbe33c95777e823ef107d8f48b0",
+      "bytes": 5308,
+      "role": "runtime"
+    },
+    "windows-agent/src/lookup-post-human-state.mjs": {
+      "sha256": "11be7e62af4193387a0ebeef09f8130abb9577d94d1ddef8c816513c7e3a0580",
+      "bytes": 1666,
+      "role": "runtime"
+    },
+    "windows-agent/src/lookup-reader-admission-log.mjs": {
+      "sha256": "4ebddfa2371e85841745d8a8c1bab9e9fffcfb2622d44c32465adce319c6dd7d",
+      "bytes": 1064,
+      "role": "runtime"
+    },
+    "windows-agent/src/lookup-reader-capacity-report.mjs": {
+      "sha256": "feb2f97e05ad631f4ece7a6e49491d8204d3118b7bfaa6322094afcc10b33900",
+      "bytes": 749,
+      "role": "runtime"
+    },
+    "windows-agent/src/lookup-reader-lifecycle.mjs": {
+      "sha256": "d957d51ff0cba4bb1c504e979fb61eadf1fd4b7113c804882e62456210d70168",
+      "bytes": 3196,
+      "role": "runtime"
+    },
+    "windows-agent/src/lookup-recovery-trace.mjs": {
+      "sha256": "7d9a1e353564327df4129a4f600a265e5e86dc26a0970d6b96f3b47d9d8b49c7",
+      "bytes": 1788,
+      "role": "runtime"
+    },
+    "windows-agent/src/lookup-status-outbox.mjs": {
+      "sha256": "43c10101e982b3a6881a2a1d5b7ae691553833d4548bf5f11f5ea51fc49b4dc1",
+      "bytes": 3347,
+      "role": "runtime"
+    },
+    "windows-agent/src/lookup-xml-failure.mjs": {
+      "sha256": "2e6097bbe3aa23c433e68d8bdb414137a1a12fa349447364de90dbb13a852539",
+      "bytes": 1254,
+      "role": "runtime"
+    },
+    "windows-agent/src/managed-lookup-delivery.mjs": {
+      "sha256": "cfdc56ea307bf82fac3965a75b3d0a2115826e3ebeb1f3c2bfc48e2a74a8bce6",
+      "bytes": 1205,
+      "role": "runtime"
+    },
+    "windows-agent/src/pnp-exact-actions.mjs": {
+      "sha256": "2e67e3fb1612ac79499055878caa042fd91c4e42caa28df4621d4cabf7172cab",
+      "bytes": 830,
+      "role": "runtime"
+    },
+    "windows-agent/src/pnp-missing-device-recovery.mjs": {
+      "sha256": "eddfcf36dd904bf2ca834fb8958d21c55fa62c45139d880399d565b1006825f6",
+      "bytes": 3686,
+      "role": "runtime"
+    },
+    "windows-agent/src/pnp-recovery-admission.mjs": {
+      "sha256": "dede33101b9765342ffa50121a8edadf066d519c047646fcca82635ab6cc236f",
+      "bytes": 927,
+      "role": "runtime"
+    },
+    "windows-agent/src/pnp-recovery-control.mjs": {
+      "sha256": "92e2bcc37d7bc8b9d3e61d4385116db7181530d5fe125c6c2a3210c5142fde0f",
+      "bytes": 3351,
+      "role": "runtime"
+    },
+    "windows-agent/src/pnp-recovery-policy.mjs": {
+      "sha256": "5a66a8ccb4defbf837c58cb473fd884ffe1763c17256ed6642d91dfe1be4e850",
+      "bytes": 17220,
+      "role": "runtime"
+    },
+    "windows-agent/src/pnp-recovery-safety.mjs": {
+      "sha256": "ad7de7d0575476cb807201e88b1c12842d12af0d9864e54809f4b98913c6d355",
+      "bytes": 17834,
+      "role": "runtime"
+    },
+    "windows-agent/src/pnp-recovery-verification.mjs": {
+      "sha256": "0658e51af5e109fa3d78588860f64face9f15c7062b97e575e0201b7c1f2915a",
+      "bytes": 2159,
+      "role": "runtime"
+    },
+    "windows-agent/src/pnp-recovery-wake-scheduler.mjs": {
+      "sha256": "c0f98f5dac1454eba52317dda13f991cc1d765387b5256c67e892b599be678af",
+      "bytes": 1773,
+      "role": "runtime"
+    },
+    "windows-agent/src/pnp-recovery-wave.mjs": {
+      "sha256": "cc9a01d0f80cf72f1de0b09288fee61d9c91919b8d59b60ec66aa6fde4b7d83c",
+      "bytes": 3417,
+      "role": "runtime"
+    },
+    "windows-agent/src/pnp-screen-coordinator.mjs": {
+      "sha256": "5eb1551e7dedbef4eed8d941733fa20b4780a362196338c51db4651b78ab9003",
+      "bytes": 1923,
+      "role": "runtime"
+    },
+    "windows-agent/src/pnp-windows-inventory.mjs": {
+      "sha256": "7fef1564a5159238064d207905326f1d8cd9b5f39274fe85ddcd951fdc3cef5d",
+      "bytes": 8299,
+      "role": "runtime"
+    },
+    "windows-agent/src/post-task-scan-policy.mjs": {
+      "sha256": "a5bd899c70a9d1707fdaddc70b1adf1965260a7ce9d8bb10cccdc2de45842ec1",
+      "bytes": 347,
+      "role": "runtime"
+    },
+    "windows-agent/src/recovery-isolation.mjs": {
+      "sha256": "2fe4305e6ca9afabb72b0406a224786659d88f2d8f3a1351e4a8b2aa475e312f",
+      "bytes": 3427,
+      "role": "runtime"
+    },
+    "windows-agent/src/recovery-observability.mjs": {
+      "sha256": "72ff0b2a548d78b323cf10d75184d69f51326b6343eb40b49c4d793b514675eb",
+      "bytes": 7717,
+      "role": "runtime"
+    },
+    "windows-agent/src/runtime-metrics.mjs": {
+      "sha256": "78eab1cba502ade21ee3de1e686b207c3124562e2b67b7d85121c1918255b4d8",
+      "bytes": 1541,
+      "role": "runtime"
+    },
+    "windows-agent/src/screen-backpressure.mjs": {
+      "sha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4",
+      "bytes": 850,
+      "role": "runtime"
+    },
+    "windows-agent/src/screen-control-queue.mjs": {
+      "sha256": "27e6e5e39364817b2ee6a8ced3ecae8cee522904a7d4d3b0321bacd697212879",
+      "bytes": 3300,
+      "role": "runtime"
+    },
+    "windows-agent/src/screen-stream.mjs": {
+      "sha256": "2a2dc815a6b9068b4ca9f234102fdb97eb8785474f587bb31eaf4b2707dbb569",
+      "bytes": 94352,
+      "role": "runtime"
+    },
+    "windows-agent/src/screen-stream.pre-20260722-pacing-default.mjs": {
+      "sha256": "9b28020b8f97e79068d944fd484596cae4e4ab4ae5a53ecf165fc016030b95e0",
+      "bytes": 53592,
+      "role": "runtime"
+    },
+    "windows-agent/src/screen-stream.pre-20260722-wire-pacing.mjs": {
+      "sha256": "c374bfd2e01376d07bfecb209388c3a1b6a2a34b71218852ad58aa3a9fca8538",
+      "bytes": 53422,
+      "role": "runtime"
+    },
+    "windows-agent/src/screen-stream.pre-pli-loop-20260722.mjs": {
+      "sha256": "a7d113722291c2be02e3298d4364dc929c0ed3ca567e388272dfd2cea5efcb8b",
+      "bytes": 54526,
+      "role": "runtime"
+    },
+    "windows-agent/src/screen-stream.verify.mjs": {
+      "sha256": "cc2678e743981d65d16d54eac928bce407275f5244921e67d56fb4808251beb1",
+      "bytes": 46897,
+      "role": "runtime"
+    },
+    "windows-agent/src/screen-video-channel.mjs": {
+      "sha256": "9e8c1ccd1439568beca2e99595764aa598893cee576109c514ae503486c1ca25",
+      "bytes": 2088,
+      "role": "runtime"
+    },
+    "windows-agent/src/screen-webrtc-publisher.mjs": {
+      "sha256": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04",
+      "bytes": 19015,
+      "role": "runtime"
+    },
+    "windows-agent/src/screen-webrtc-publisher.pre-20260722-wire-pacing.mjs": {
+      "sha256": "d78b425dfdca9e3079cb9505a7b57d5d4d2bc7de3ce5174f52ab9e2c133d820c",
+      "bytes": 14344,
+      "role": "runtime"
+    },
+    "windows-agent/src/serial-adb-activity.mjs": {
+      "sha256": "4668e7a416feac9860289d1d903849970645f45544eec77c77f26859b67132d9",
+      "bytes": 1694,
+      "role": "runtime"
+    },
+    "windows-agent/src/serial-adb-health.mjs": {
+      "sha256": "ea6066d526ce12c6a1fd7d4e15b19f012ace259dbf7461549d951c40afb46334",
+      "bytes": 1600,
+      "role": "runtime"
+    },
+    "windows-agent/src/serial-delay-scheduler.mjs": {
+      "sha256": "ee71bc11573cb0880f6017a4ef1c3ca186bf2441c6e7e167be4c2d3f14ab7ea1",
+      "bytes": 853,
+      "role": "runtime"
+    },
+    "windows-agent/src/serial-reservation.mjs": {
+      "sha256": "97fe332bc4877dc4ac70d613fc8c27f8c86a84072e90b95a277ca108e7895802",
+      "bytes": 627,
+      "role": "runtime"
+    },
+    "windows-agent/src/single-flight.mjs": {
+      "sha256": "59f57777a082c0b8ec10786788151eadfec78d99445dd80f5297b2f974b1f6fe",
+      "bytes": 270,
+      "role": "runtime"
+    },
+    "windows-agent/src/sms-content-query.mjs": {
+      "sha256": "2ec02795c765aea39edb18f4b4210c765a43297386973c38eb2dfba97958980f",
+      "bytes": 697,
+      "role": "runtime"
+    },
+    "windows-agent/src/sms-notification-source.mjs": {
+      "sha256": "c1a9af263945e376ed94e92163794e7f2349e40de2c27371e59d34336df972d2",
+      "bytes": 9531,
+      "role": "runtime"
+    },
+    "windows-agent/src/sms-relay-health.mjs": {
+      "sha256": "5f6128ff30906093fceb294fdb25839d0f36e69bbd7c091d80d743af4e6a98c2",
+      "bytes": 3204,
+      "role": "runtime"
+    },
+    "windows-agent/src/sms-subscription-map.mjs": {
+      "sha256": "f7581e9170a22d0a662a448172db8f46d39c15a2ca55c517bd9ed0a84fabd040",
+      "bytes": 1524,
+      "role": "runtime"
+    },
+    "windows-agent/src/wecom-preview-task.mjs": {
+      "sha256": "f9f45f5b346f52c48b4f3c2c5bff7e19fd9dc0682adc55583cdf9a44138b8dde",
+      "bytes": 4470,
+      "role": "runtime"
+    },
+    "windows-agent/src/windows-device-install-probe.mjs": {
+      "sha256": "c360457e2bcf820fb697a514627fc1c7c1761afe51935d464eb8240719f9401c",
+      "bytes": 2541,
+      "role": "runtime"
+    },
+    "windows-agent/src/worker-shutdown.mjs": {
+      "sha256": "a685d487bbaff8f110bcef00629bdb830ede0fcc70807429b45ea4a4e6829b56",
+      "bytes": 1491,
+      "role": "runtime"
+    },
+    "windows-agent/src/xhs-data-collection.mjs": {
+      "sha256": "e1c6812a079ff078492797fb5d928b731675cf68ef20f87e93ad768733c79ffe",
+      "bytes": 9730,
+      "role": "runtime"
+    }
+  }
+}

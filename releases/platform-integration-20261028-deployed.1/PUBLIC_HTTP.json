@@ -1,0 +1,15 @@
+{
+  "status": 200,
+  "body": {
+    "schedule": {
+      "enabled": false,
+      "time": "02:00",
+      "timezone": "Asia/Shanghai",
+      "windowMinutes": 240,
+      "concurrency": 5
+    },
+    "targetCount": 100
+  },
+  "durationMs": 58,
+  "caller": "local_desktop_over_public_HTTP"
+}

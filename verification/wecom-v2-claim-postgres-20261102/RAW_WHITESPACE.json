@@ -1,0 +1,22 @@
+{
+  "notTrimmed": true,
+  "fullDiffExpectedToWarn": true,
+  "onlyExceptions": {
+    "verification/wecom-v2-claim-postgres-20261102/initial/FIRST_OUTPUT.txt": [
+      72,
+      74,
+      90,
+      93,
+      109,
+      112
+    ],
+    "verification/wecom-v2-claim-postgres-20261102/initial/REPRODUCED_OUTPUT.txt": [
+      72,
+      74,
+      90,
+      93,
+      109,
+      112
+    ]
+  }
+}

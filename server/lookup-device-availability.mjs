@@ -15,6 +15,10 @@ export function devicePreparationRetryAt(d){
 }
 export const currentDeviceReprobe=(d,c,r)=>Boolean(lookupDeviceUnavailable(d)&&r?.deviceReprobe&&r.purpose==='readiness_probe'&&d.lookupRecoveryId===r.lookupId&&c.requestId===r.lookupId&&r.attempts?.some(a=>a.generation===c.generation&&a.sessionId===c.sessionId));
 export function preparationBlocked(s,d,clientId){
+  // Older versions counted an exhausted saved-account list as an unknown
+  // preparation error, leaving the phone blocked even after cooldown expiry.
+  // Eligibility still checks live account cooldowns and requires a new probe.
+  if(d?.preparationIssue?.code==='alipay_no_available_account')return false;
   const p=s.preparations?.find(p=>p.clientId===clientId);
   return Boolean(p&&p.stopRequestedAt===undefined&&d?.preparationIssue?.rounds?.some(x=>x.clientId===clientId&&x.preparationId===p.preparationId&&x.count>=2));
 }
@@ -31,6 +35,7 @@ export function pagePreparationRetryAt(s,d,clientId){
 export function preparationFailureEvidence(job){
   if(!job||job.status!=='failed'||!['alipay_name_start','alipay_name_query'].includes(job.kind))return null;
   const code=String(job.result?.errorCode||'');
+  if(code==='alipay_no_available_account')return {jobId:job.jobId,domain:'cooldown',code};
   const domain=lookupFailureDomain(job)||(['alipay_account_identity_unverified','alipay_page_element_changed','alipay_ui_hierarchy_unavailable'].includes(code)?'page':'unknown');
   return {jobId:job.jobId,domain,code};
 }
@@ -41,6 +46,13 @@ export function recordLookupPreparationFailure(s,c,r,now,evidence){
   const domain=evidence?.domain||'unknown';
   if(r.deviceReprobe&&d.lookupRecoveryId===r.lookupId)d.lookupUnavailableAt=now;
   d.lastPreparationFailure={domain,code:evidence?.code||'lookup_probe_failed',jobId:evidence?.jobId||'',at:now};
+  if(domain==='cooldown'){
+    // Do not invent timestamps or clear transport isolation. Existing actual
+    // account deadlines own admission; this only prevents a tight retry loop.
+    if(d.preparationIssue?.code==='alipay_no_available_account')delete d.preparationIssue;
+    d.quarantineUntil=Math.max(d.quarantineUntil||0,now+30000);
+    return;
+  }
   if(domain!=='device'){
     const rounds=(d.preparationIssue?.rounds||[]).filter(x=>s.preparations?.some(p=>p.clientId===x.clientId&&p.preparationId===x.preparationId));
     const p=s.preparations?.find(p=>p.clientId===c.clientId);

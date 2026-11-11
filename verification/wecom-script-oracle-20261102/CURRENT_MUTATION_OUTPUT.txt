@@ -1,0 +1,173 @@
+test_layout_0_description_retained (test_wecom_script_acceptance.ScriptAcceptanceTests) ... FAIL
+test_layout_0_empty (test_wecom_script_acceptance.ScriptAcceptanceTests) ... FAIL
+test_layout_0_name_retained (test_wecom_script_acceptance.ScriptAcceptanceTests) ... FAIL
+test_layout_0_retained (test_wecom_script_acceptance.ScriptAcceptanceTests) ... ok
+test_layout_1_description_retained (test_wecom_script_acceptance.ScriptAcceptanceTests) ... FAIL
+test_layout_1_empty (test_wecom_script_acceptance.ScriptAcceptanceTests) ... FAIL
+test_layout_1_name_retained (test_wecom_script_acceptance.ScriptAcceptanceTests) ... FAIL
+test_layout_1_retained (test_wecom_script_acceptance.ScriptAcceptanceTests) ... ok
+test_layout_2_description_retained (test_wecom_script_acceptance.ScriptAcceptanceTests) ... FAIL
+test_layout_2_empty (test_wecom_script_acceptance.ScriptAcceptanceTests) ... FAIL
+test_layout_2_name_retained (test_wecom_script_acceptance.ScriptAcceptanceTests) ... FAIL
+test_layout_2_retained (test_wecom_script_acceptance.ScriptAcceptanceTests) ... ok
+test_layout_3_description_retained (test_wecom_script_acceptance.ScriptAcceptanceTests) ... FAIL
+test_layout_3_empty (test_wecom_script_acceptance.ScriptAcceptanceTests) ... FAIL
+test_layout_3_name_retained (test_wecom_script_acceptance.ScriptAcceptanceTests) ... FAIL
+test_layout_3_retained (test_wecom_script_acceptance.ScriptAcceptanceTests) ... ok
+test_layout_4_description_retained (test_wecom_script_acceptance.ScriptAcceptanceTests) ... FAIL
+test_layout_4_empty (test_wecom_script_acceptance.ScriptAcceptanceTests) ... FAIL
+test_layout_4_name_retained (test_wecom_script_acceptance.ScriptAcceptanceTests) ... FAIL
+test_layout_4_retained (test_wecom_script_acceptance.ScriptAcceptanceTests) ... ok
+test_layout_5_description_retained (test_wecom_script_acceptance.ScriptAcceptanceTests) ... FAIL
+test_layout_5_empty (test_wecom_script_acceptance.ScriptAcceptanceTests) ... FAIL
+test_layout_5_name_retained (test_wecom_script_acceptance.ScriptAcceptanceTests) ... FAIL
+test_layout_5_retained (test_wecom_script_acceptance.ScriptAcceptanceTests) ... ok
+
+======================================================================
+FAIL: test_layout_0_description_retained (test_wecom_script_acceptance.ScriptAcceptanceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_script_acceptance.py", line 187, in test
+    self.assertTrue(result['readyToSend'], result)
+AssertionError: False is not true : {'workflowVersion': 'wecom-customer-preview-v2', 'status': 'stopped', 'code': 'remark_readback_mismatch', 'readyToSend': False, 'invitationSent': False, 'remarkSaved': False, 'stage': 'profile', 'events': [{'step': 'open_menu'}, {'step': 'open_add'}, {'step': 'open_search'}, {'step': 'enter_phone'}, {'step': 'search'}], 'remarkSaveStatus': 'not_attempted', 'remarkPrepared': False, 'remarkEvents': [{'step': 'open_remark'}, {'step': 'fill_remark'}]}
+
+======================================================================
+FAIL: test_layout_0_empty (test_wecom_script_acceptance.ScriptAcceptanceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_script_acceptance.py", line 187, in test
+    self.assertTrue(result['readyToSend'], result)
+AssertionError: False is not true : {'workflowVersion': 'wecom-customer-preview-v2', 'status': 'stopped', 'code': 'remark_readback_mismatch', 'readyToSend': False, 'invitationSent': False, 'remarkSaved': False, 'stage': 'profile', 'events': [{'step': 'open_menu'}, {'step': 'open_add'}, {'step': 'open_search'}, {'step': 'enter_phone'}, {'step': 'search'}], 'remarkSaveStatus': 'not_attempted', 'remarkPrepared': False, 'remarkEvents': [{'step': 'open_remark'}, {'step': 'fill_remark'}]}
+
+======================================================================
+FAIL: test_layout_0_name_retained (test_wecom_script_acceptance.ScriptAcceptanceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_script_acceptance.py", line 187, in test
+    self.assertTrue(result['readyToSend'], result)
+AssertionError: False is not true : {'workflowVersion': 'wecom-customer-preview-v2', 'status': 'stopped', 'code': 'remark_readback_mismatch', 'readyToSend': False, 'invitationSent': False, 'remarkSaved': False, 'stage': 'profile', 'events': [{'step': 'open_menu'}, {'step': 'open_add'}, {'step': 'open_search'}, {'step': 'enter_phone'}, {'step': 'search'}], 'remarkSaveStatus': 'not_attempted', 'remarkPrepared': False, 'remarkEvents': [{'step': 'open_remark'}, {'step': 'fill_description'}]}
+
+======================================================================
+FAIL: test_layout_1_description_retained (test_wecom_script_acceptance.ScriptAcceptanceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_script_acceptance.py", line 187, in test
+    self.assertTrue(result['readyToSend'], result)
+AssertionError: False is not true : {'workflowVersion': 'wecom-customer-preview-v2', 'status': 'stopped', 'code': 'remark_readback_mismatch', 'readyToSend': False, 'invitationSent': False, 'remarkSaved': False, 'stage': 'profile', 'events': [{'step': 'open_menu'}, {'step': 'open_add'}, {'step': 'open_search'}, {'step': 'enter_phone'}, {'step': 'search'}], 'remarkSaveStatus': 'not_attempted', 'remarkPrepared': False, 'remarkEvents': [{'step': 'open_remark'}, {'step': 'fill_remark'}]}
+
+======================================================================
+FAIL: test_layout_1_empty (test_wecom_script_acceptance.ScriptAcceptanceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_script_acceptance.py", line 187, in test
+    self.assertTrue(result['readyToSend'], result)
+AssertionError: False is not true : {'workflowVersion': 'wecom-customer-preview-v2', 'status': 'stopped', 'code': 'remark_readback_mismatch', 'readyToSend': False, 'invitationSent': False, 'remarkSaved': False, 'stage': 'profile', 'events': [{'step': 'open_menu'}, {'step': 'open_add'}, {'step': 'open_search'}, {'step': 'enter_phone'}, {'step': 'search'}], 'remarkSaveStatus': 'not_attempted', 'remarkPrepared': False, 'remarkEvents': [{'step': 'open_remark'}, {'step': 'fill_remark'}]}
+
+======================================================================
+FAIL: test_layout_1_name_retained (test_wecom_script_acceptance.ScriptAcceptanceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_script_acceptance.py", line 187, in test
+    self.assertTrue(result['readyToSend'], result)
+AssertionError: False is not true : {'workflowVersion': 'wecom-customer-preview-v2', 'status': 'stopped', 'code': 'remark_readback_mismatch', 'readyToSend': False, 'invitationSent': False, 'remarkSaved': False, 'stage': 'profile', 'events': [{'step': 'open_menu'}, {'step': 'open_add'}, {'step': 'open_search'}, {'step': 'enter_phone'}, {'step': 'search'}], 'remarkSaveStatus': 'not_attempted', 'remarkPrepared': False, 'remarkEvents': [{'step': 'open_remark'}, {'step': 'fill_description'}]}
+
+======================================================================
+FAIL: test_layout_2_description_retained (test_wecom_script_acceptance.ScriptAcceptanceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_script_acceptance.py", line 187, in test
+    self.assertTrue(result['readyToSend'], result)
+AssertionError: False is not true : {'workflowVersion': 'wecom-customer-preview-v2', 'status': 'stopped', 'code': 'remark_readback_mismatch', 'readyToSend': False, 'invitationSent': False, 'remarkSaved': False, 'stage': 'profile', 'events': [{'step': 'open_menu'}, {'step': 'open_add'}, {'step': 'open_search'}, {'step': 'enter_phone'}, {'step': 'search'}], 'remarkSaveStatus': 'not_attempted', 'remarkPrepared': False, 'remarkEvents': [{'step': 'open_remark'}, {'step': 'fill_remark'}]}
+
+======================================================================
+FAIL: test_layout_2_empty (test_wecom_script_acceptance.ScriptAcceptanceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_script_acceptance.py", line 187, in test
+    self.assertTrue(result['readyToSend'], result)
+AssertionError: False is not true : {'workflowVersion': 'wecom-customer-preview-v2', 'status': 'stopped', 'code': 'remark_readback_mismatch', 'readyToSend': False, 'invitationSent': False, 'remarkSaved': False, 'stage': 'profile', 'events': [{'step': 'open_menu'}, {'step': 'open_add'}, {'step': 'open_search'}, {'step': 'enter_phone'}, {'step': 'search'}], 'remarkSaveStatus': 'not_attempted', 'remarkPrepared': False, 'remarkEvents': [{'step': 'open_remark'}, {'step': 'fill_remark'}]}
+
+======================================================================
+FAIL: test_layout_2_name_retained (test_wecom_script_acceptance.ScriptAcceptanceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_script_acceptance.py", line 187, in test
+    self.assertTrue(result['readyToSend'], result)
+AssertionError: False is not true : {'workflowVersion': 'wecom-customer-preview-v2', 'status': 'stopped', 'code': 'remark_readback_mismatch', 'readyToSend': False, 'invitationSent': False, 'remarkSaved': False, 'stage': 'profile', 'events': [{'step': 'open_menu'}, {'step': 'open_add'}, {'step': 'open_search'}, {'step': 'enter_phone'}, {'step': 'search'}], 'remarkSaveStatus': 'not_attempted', 'remarkPrepared': False, 'remarkEvents': [{'step': 'open_remark'}, {'step': 'fill_description'}]}
+
+======================================================================
+FAIL: test_layout_3_description_retained (test_wecom_script_acceptance.ScriptAcceptanceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_script_acceptance.py", line 187, in test
+    self.assertTrue(result['readyToSend'], result)
+AssertionError: False is not true : {'workflowVersion': 'wecom-customer-preview-v2', 'status': 'stopped', 'code': 'remark_readback_mismatch', 'readyToSend': False, 'invitationSent': False, 'remarkSaved': False, 'stage': 'profile', 'events': [{'step': 'open_menu'}, {'step': 'open_add'}, {'step': 'open_search'}, {'step': 'enter_phone'}, {'step': 'search'}], 'remarkSaveStatus': 'not_attempted', 'remarkPrepared': False, 'remarkEvents': [{'step': 'open_remark'}, {'step': 'fill_remark'}]}
+
+======================================================================
+FAIL: test_layout_3_empty (test_wecom_script_acceptance.ScriptAcceptanceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_script_acceptance.py", line 187, in test
+    self.assertTrue(result['readyToSend'], result)
+AssertionError: False is not true : {'workflowVersion': 'wecom-customer-preview-v2', 'status': 'stopped', 'code': 'remark_readback_mismatch', 'readyToSend': False, 'invitationSent': False, 'remarkSaved': False, 'stage': 'profile', 'events': [{'step': 'open_menu'}, {'step': 'open_add'}, {'step': 'open_search'}, {'step': 'enter_phone'}, {'step': 'search'}], 'remarkSaveStatus': 'not_attempted', 'remarkPrepared': False, 'remarkEvents': [{'step': 'open_remark'}, {'step': 'fill_remark'}]}
+
+======================================================================
+FAIL: test_layout_3_name_retained (test_wecom_script_acceptance.ScriptAcceptanceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_script_acceptance.py", line 187, in test
+    self.assertTrue(result['readyToSend'], result)
+AssertionError: False is not true : {'workflowVersion': 'wecom-customer-preview-v2', 'status': 'stopped', 'code': 'remark_readback_mismatch', 'readyToSend': False, 'invitationSent': False, 'remarkSaved': False, 'stage': 'profile', 'events': [{'step': 'open_menu'}, {'step': 'open_add'}, {'step': 'open_search'}, {'step': 'enter_phone'}, {'step': 'search'}], 'remarkSaveStatus': 'not_attempted', 'remarkPrepared': False, 'remarkEvents': [{'step': 'open_remark'}, {'step': 'fill_description'}]}
+
+======================================================================
+FAIL: test_layout_4_description_retained (test_wecom_script_acceptance.ScriptAcceptanceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_script_acceptance.py", line 187, in test
+    self.assertTrue(result['readyToSend'], result)
+AssertionError: False is not true : {'workflowVersion': 'wecom-customer-preview-v2', 'status': 'stopped', 'code': 'remark_readback_mismatch', 'readyToSend': False, 'invitationSent': False, 'remarkSaved': False, 'stage': 'profile', 'events': [{'step': 'open_menu'}, {'step': 'open_add'}, {'step': 'open_search'}, {'step': 'enter_phone'}, {'step': 'search'}], 'remarkSaveStatus': 'not_attempted', 'remarkPrepared': False, 'remarkEvents': [{'step': 'open_remark'}, {'step': 'fill_remark'}]}
+
+======================================================================
+FAIL: test_layout_4_empty (test_wecom_script_acceptance.ScriptAcceptanceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_script_acceptance.py", line 187, in test
+    self.assertTrue(result['readyToSend'], result)
+AssertionError: False is not true : {'workflowVersion': 'wecom-customer-preview-v2', 'status': 'stopped', 'code': 'remark_readback_mismatch', 'readyToSend': False, 'invitationSent': False, 'remarkSaved': False, 'stage': 'profile', 'events': [{'step': 'open_menu'}, {'step': 'open_add'}, {'step': 'open_search'}, {'step': 'enter_phone'}, {'step': 'search'}], 'remarkSaveStatus': 'not_attempted', 'remarkPrepared': False, 'remarkEvents': [{'step': 'open_remark'}, {'step': 'fill_remark'}]}
+
+======================================================================
+FAIL: test_layout_4_name_retained (test_wecom_script_acceptance.ScriptAcceptanceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_script_acceptance.py", line 187, in test
+    self.assertTrue(result['readyToSend'], result)
+AssertionError: False is not true : {'workflowVersion': 'wecom-customer-preview-v2', 'status': 'stopped', 'code': 'remark_readback_mismatch', 'readyToSend': False, 'invitationSent': False, 'remarkSaved': False, 'stage': 'profile', 'events': [{'step': 'open_menu'}, {'step': 'open_add'}, {'step': 'open_search'}, {'step': 'enter_phone'}, {'step': 'search'}], 'remarkSaveStatus': 'not_attempted', 'remarkPrepared': False, 'remarkEvents': [{'step': 'open_remark'}, {'step': 'fill_description'}]}
+
+======================================================================
+FAIL: test_layout_5_description_retained (test_wecom_script_acceptance.ScriptAcceptanceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_script_acceptance.py", line 187, in test
+    self.assertTrue(result['readyToSend'], result)
+AssertionError: False is not true : {'workflowVersion': 'wecom-customer-preview-v2', 'status': 'stopped', 'code': 'remark_readback_mismatch', 'readyToSend': False, 'invitationSent': False, 'remarkSaved': False, 'stage': 'profile', 'events': [{'step': 'open_menu'}, {'step': 'open_add'}, {'step': 'open_search'}, {'step': 'enter_phone'}, {'step': 'search'}], 'remarkSaveStatus': 'not_attempted', 'remarkPrepared': False, 'remarkEvents': [{'step': 'open_remark'}, {'step': 'fill_remark'}]}
+
+======================================================================
+FAIL: test_layout_5_empty (test_wecom_script_acceptance.ScriptAcceptanceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_script_acceptance.py", line 187, in test
+    self.assertTrue(result['readyToSend'], result)
+AssertionError: False is not true : {'workflowVersion': 'wecom-customer-preview-v2', 'status': 'stopped', 'code': 'remark_readback_mismatch', 'readyToSend': False, 'invitationSent': False, 'remarkSaved': False, 'stage': 'profile', 'events': [{'step': 'open_menu'}, {'step': 'open_add'}, {'step': 'open_search'}, {'step': 'enter_phone'}, {'step': 'search'}], 'remarkSaveStatus': 'not_attempted', 'remarkPrepared': False, 'remarkEvents': [{'step': 'open_remark'}, {'step': 'fill_remark'}]}
+
+======================================================================
+FAIL: test_layout_5_name_retained (test_wecom_script_acceptance.ScriptAcceptanceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_script_acceptance.py", line 187, in test
+    self.assertTrue(result['readyToSend'], result)
+AssertionError: False is not true : {'workflowVersion': 'wecom-customer-preview-v2', 'status': 'stopped', 'code': 'remark_readback_mismatch', 'readyToSend': False, 'invitationSent': False, 'remarkSaved': False, 'stage': 'profile', 'events': [{'step': 'open_menu'}, {'step': 'open_add'}, {'step': 'open_search'}, {'step': 'enter_phone'}, {'step': 'search'}], 'remarkSaveStatus': 'not_attempted', 'remarkPrepared': False, 'remarkEvents': [{'step': 'open_remark'}, {'step': 'fill_description'}]}
+
+----------------------------------------------------------------------
+Ran 24 tests in 0.034s
+
+FAILED (failures=18)

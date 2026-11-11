@@ -1,0 +1,20 @@
+{
+  "sourceSha256": "5e7c70ef85e2f2c3c88d43ef665d368a1d2c3c071cd1ebde05a5810db7b5ad1f",
+  "localSshExit": 0,
+  "localFailure": null,
+  "stdinBytesSent": 12218,
+  "truncated": [],
+  "localChildExitConfirmed": true,
+  "remoteCompletionConfirmed": true,
+  "noFallback": true,
+  "files": {
+    "stdout": {
+      "bytes": 165979,
+      "sha256": "6294ec8cd0fd2d417345a5d37593acd35159e3fcd4121a84f293b00251ba62ca"
+    },
+    "stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

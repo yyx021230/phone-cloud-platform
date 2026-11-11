@@ -1,0 +1,25 @@
+{
+  "status": "local_candidate_not_executed_on_phone",
+  "base": "690a241f7965fa8f7d3d4c2616f0634ef3f4a80c",
+  "changes": [
+    "scripts/qa/test_wecom_single_candidate.py",
+    "scripts/qa/wecom_single_candidate.py"
+  ],
+  "actualValidation": {
+    "runnerMethods": 8,
+    "resourceWarnings": "treated as errors",
+    "unchangedPriorResults": "WeComPython496/socket10/Node9 retained from rc1, not rerun or added to8",
+    "windowsAdbOrPhoneActions": 0,
+    "productionListingChanges": 0
+  },
+  "fixes": [
+    "Read only existing Agent scan cache for at most20s before native start; exact physical identity/own screen session/fresh age required. Timeout is known not started and may restore only original maintenance ownership.",
+    "Capacity inspects Python cmdline explicitly: NoSuchProcess can disappear; AccessDenied/unknown identity rejects rather than reporting room."
+  ],
+  "observedTestCorrection": "Mock inventory matcher originally mistook any native envelope containing inventory path for a cache read. Narrowed to actual cache stat statement; no product relaxation.",
+  "limits": [
+    "The cache wait and revised capacity source have only local mocked execution; actual Windows execution pending root narrow review.",
+    "No change to sharedAgent,ADB identity/keys,production source or old23/43duties."
+  ],
+  "sourceScope": "Only2 new QA files changed since690; staged Windows dependency closure22 identical."
+}

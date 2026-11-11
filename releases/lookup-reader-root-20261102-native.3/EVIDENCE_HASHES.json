@@ -1,0 +1,34 @@
+{
+  "runtimeSource": "6b32257284b91d8f69a6319cca555150e0be24b4",
+  "privateEvidence": {
+    "INCIDENT_HTTP_RECEIPT.json": "c6a55c9aff651d53903039e7325378178135e993a22494ff4dbbdf0e1c1accb1",
+    "NATIVE_PRIVATE.jsonl": "888a71c31424c137bfd16162e6199125ec7dd644fd65e659f9663b668d05d3ab",
+    "BASELINE_BEFORE.json": "4bc7e12a945ae610146f2180e846af1c738a123f816f5856f7f407995e9447a5",
+    "BASELINE_AFTER.json": "4bc7e12a945ae610146f2180e846af1c738a123f816f5856f7f407995e9447a5",
+    "PREFLIGHT_PRIVATE.json": "23a8510ae819cd6ab0c828dfdc602a1fd62a93526e80a250ccc3fc0e132faf91",
+    "ISOLATION_PRIVATE.json": "9af32be126760bed7685e775203d6078b67e7cc866a870f20114bb1e1376b0ec",
+    "RESTORATION_RECEIPT.json": "8b10c0a479a6a333d30763328071b6134aef45c462e5acd92023335e0c9426fa",
+    "NATIVE_SOURCE_VERIFIED.json": "70662fea8908b61e13c0826f0d96238bc888ed788e126705a351d5b8da5e7445",
+    "STAGE_RECEIPT.json": "13949a2f2612002870d8cdf9cd29a73a827c1aadd4a827e14dd1d4ecae95370f",
+    "LOCAL_TESTS.log": "d62e419978d26ce82adad7cf3f6427b168201db61449b8de6f9a94d328efc7a6",
+    "HTTP_RUN.log": "a8c239cea7fdef0e40304ae34934d256f07e6cd3980b8c90b4336d8c6f9929a9",
+    "HARNESS_HASHES.json": "2a9bee9ba7e3bb5819fd4452a792a377bf943d90768866b8acd5ed94d88cb644"
+  },
+  "harnessHashes": {
+    "access.py": "ec40ea87e8cc927e14ed9834965598697a9203256903ce06f960e34e199d55ef",
+    "single-policy.mjs": "125cdbc2fc7ccb0529326156958679199775eded7c95501058497990bab84d77",
+    "single-policy.test.mjs": "2367189bed853a9152af1b4c9aaa83a6106a588f7b4a08cc2f84838146bd42d6",
+    "remote-client.mjs": "cca0b1f117d697f3b679b9e82accdc952f8061ef7370e97e7f43aa70c3feaadd",
+    "native-worker-188-control.mjs": "6c424c7c7db486dba16d9e5190f7ceb942463f3cda2ca9e5866d6611e47f250b",
+    "preflight.py": "90bee8cb3a1a11ed85f5b6a409e01bd4d1f9fc94a786681b4f91cabe3b1b27e7",
+    "isolate.py": "eb13ae18b0d84517ec768c7771a7a4ac54f4d5ad1dd279e412666db8e492334e",
+    "hold.py": "f92644d261be10a267cce85cfd8f586374f5d6dc51fa7665548c52c8455ecc68",
+    "lease-check.py": "67272bbff6725ec57e4776026111b633d8c2b77f8d0e004c88cf370f625a4588",
+    "restore.py": "d0ce182abd860e0d17ea0e987d0edeebca78a8a775677b02c2ecaf446a5d7608",
+    "runtime/verification/reader-188-http.mjs": "b5172ad198c7423de2faa3543b24db1491f48e9c63b8276507b9ad627969fa68"
+  },
+  "phoneScreenshotReviewed": {
+    "sha256": "eb7bd17975eb66e042377a133f76416d796f08c5e261810cbfa075d202a2e3fe",
+    "observation": "actual jigsaw verification, no result name"
+  }
+}

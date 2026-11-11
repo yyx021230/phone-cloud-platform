@@ -1,0 +1,304 @@
+TAP version 13
+# Subtest: actual cap1 Agent entry rejects missing obligation before API or spawn
+ok 1 - actual cap1 Agent entry rejects missing obligation before API or spawn
+  ---
+  duration_ms: 1.251625
+  type: 'test'
+  ...
+# Subtest: actual bound entry goes through the product readiness wrapper
+ok 2 - actual bound entry goes through the product readiness wrapper
+  ---
+  duration_ms: 0.443667
+  type: 'test'
+  ...
+# Subtest: actual runTask verification bypasses generic success, evidence and scan
+ok 3 - actual runTask verification bypasses generic success, evidence and scan
+  ---
+  duration_ms: 0.495792
+  type: 'test'
+  ...
+# Subtest: actual verification failure reports fixed failure without generic capture path
+ok 4 - actual verification failure reports fixed failure without generic capture path
+  ---
+  duration_ms: 0.734625
+  type: 'test'
+  ...
+# Subtest: actual polling advertises protocol and does not start verification after unknown ACK
+ok 5 - actual polling advertises protocol and does not start verification after unknown ACK
+  ---
+  duration_ms: 0.75875
+  type: 'test'
+  ...
+# Subtest: fixed fixture binding is exact and cannot inherit another task or Agent
+ok 6 - fixed fixture binding is exact and cannot inherit another task or Agent
+  ---
+  duration_ms: 1.351833
+  type: 'test'
+  ...
+# Subtest: exact creation precision, machine and only actual task host roles are required
+ok 7 - exact creation precision, machine and only actual task host roles are required
+  ---
+  duration_ms: 1.04625
+  type: 'test'
+  ...
+# Subtest: historical ID case is retained while the corrected actual selector stays exact
+ok 8 - historical ID case is retained while the corrected actual selector stays exact
+  ---
+  duration_ms: 0.078209
+  type: 'test'
+  ...
+# Subtest: ready must bind the actual OS child and cannot invent a wrapper exit requirement
+ok 9 - ready must bind the actual OS child and cannot invent a wrapper exit requirement
+  ---
+  duration_ms: 0.200334
+  type: 'test'
+  ...
+# Subtest: host registration ACK precedes release; close cannot be fabricated by final JSON
+ok 10 - host registration ACK precedes release; close cannot be fabricated by final JSON
+  ---
+  duration_ms: 0.191542
+  type: 'test'
+  ...
+# Subtest: duplicate ready and mismatched precision are rejected without another grant
+ok 11 - duplicate ready and mismatched precision are rejected without another grant
+  ---
+  duration_ms: 0.068666
+  type: 'test'
+  ...
+# Subtest: host and close each retry the exact body once for lost ACK only
+ok 12 - host and close each retry the exact body once for lost ACK only
+  ---
+  duration_ms: 0.48875
+  type: 'test'
+  ...
+# Subtest: permanent close uncertainty and exhausted original budget stay pending
+ok 13 - permanent close uncertainty and exhausted original budget stay pending
+  ---
+  duration_ms: 0.159125
+  type: 'test'
+  ...
+# Subtest: lost proof response retries the same original bytes without restamping or rereading
+ok 14 - lost proof response retries the same original bytes without restamping or rereading
+  ---
+  duration_ms: 0.1585
+  type: 'test'
+  ...
+# Subtest: two unknown proof ACKs retain unknown; known rejection does not trigger a new proof
+ok 15 - two unknown proof ACKs retain unknown; known rejection does not trigger a new proof
+  ---
+  duration_ms: 0.129041
+  type: 'test'
+  ...
+# Subtest: proof stays behind child close and pickedAt comes from the actual claimed task
+ok 16 - proof stays behind child close and pickedAt comes from the actual claimed task
+  ---
+  duration_ms: 3.705208
+  type: 'test'
+  ...
+# Subtest: lease denial and business payload in verification cannot start a child
+ok 17 - lease denial and business payload in verification cannot start a child
+  ---
+  duration_ms: 0.421542
+  type: 'test'
+  ...
+# Subtest: lost proof ACK retries exact original proof once and never sends generic success
+ok 18 - lost proof ACK retries exact original proof once and never sends generic success
+  ---
+  duration_ms: 0.906917
+  type: 'test'
+  ...
+# Subtest: permanent proof uncertainty never downgrades a possibly committed task or resamples
+ok 19 - permanent proof uncertainty never downgrades a possibly committed task or resamples
+  ---
+  duration_ms: 0.481125
+  type: 'test'
+  ...
+# Subtest: native read failure reports only fixed failure, without evidence or scan callbacks
+ok 20 - native read failure reports only fixed failure, without evidence or scan callbacks
+  ---
+  duration_ms: 0.346
+  type: 'test'
+  ...
+# Subtest: verify hard kill false is not child close
+ok 21 - verify hard kill false is not child close
+  ---
+  duration_ms: 0.556084
+  type: 'test'
+  ...
+# Subtest: verify hard kill throw is not child close
+ok 22 - verify hard kill throw is not child close
+  ---
+  duration_ms: 0.12575
+  type: 'test'
+  ...
+# Subtest: real OS pipe returns fixture facts before exit, but HTTP proof waits for exit
+ok 23 - real OS pipe returns fixture facts before exit, but HTTP proof waits for exit
+  ---
+  duration_ms: 235.087042
+  type: 'test'
+  ...
+# Subtest: diagnostics accept only bounded fixed phase records, never request or UI fields
+ok 24 - diagnostics accept only bounded fixed phase records, never request or UI fields
+  ---
+  duration_ms: 1.580584
+  type: 'test'
+  ...
+# Subtest: summary keeps explicit failure and cleanup identity without promoting delivery
+ok 25 - summary keeps explicit failure and cleanup identity without promoting delivery
+  ---
+  duration_ms: 0.311083
+  type: 'test'
+  ...
+# Subtest: real OS pipe keeps config behind durable host ACK and result behind actual close (fixture machine)
+ok 26 - real OS pipe keeps config behind durable host ACK and result behind actual close (fixture machine)
+  ---
+  duration_ms: 282.711291
+  type: 'test'
+  ...
+# Subtest: cancel during host ACK cannot release config after a late ACK (real pipe)
+ok 27 - cancel during host ACK cannot release config after a late ACK (real pipe)
+  ---
+  duration_ms: 81.842708
+  type: 'test'
+  ...
+# Subtest: mismatched ready PID stops before registration and config (real pipe)
+ok 28 - mismatched ready PID stops before registration and config (real pipe)
+  ---
+  duration_ms: 67.04125
+  type: 'test'
+  ...
+# Subtest: two unknown registration ACKs never allow config, even if close is acknowledged
+ok 29 - two unknown registration ACKs never allow config, even if close is acknowledged
+  ---
+  duration_ms: 67.733792
+  type: 'test'
+  ...
+# Subtest: fixture exit before ready wakes the waiter instead of hanging
+ok 30 - fixture exit before ready wakes the waiter instead of hanging
+  ---
+  duration_ms: 50.444833
+  type: 'test'
+  ...
+# Subtest: hard kill false cannot release a started child before close
+ok 31 - hard kill false cannot release a started child before close
+  ---
+  duration_ms: 2.316834
+  type: 'test'
+  ...
+# Subtest: hard kill throw cannot release a started child before close
+ok 32 - hard kill throw cannot release a started child before close
+  ---
+  duration_ms: 0.22225
+  type: 'test'
+  ...
+# Subtest: hard kill error cannot release a started child before close
+ok 33 - hard kill error cannot release a started child before close
+  ---
+  duration_ms: 0.4775
+  type: 'test'
+  ...
+# Subtest: error after spawn waits for close and preserves unknown outcome
+ok 34 - error after spawn waits for close and preserves unknown outcome
+  ---
+  duration_ms: 0.201041
+  type: 'test'
+  ...
+# Subtest: true spawn failure without OS child ends with fixed start error
+ok 35 - true spawn failure without OS child ends with fixed start error
+  ---
+  duration_ms: 0.290667
+  type: 'test'
+  ...
+# Subtest: synchronous spawn failure has the same fixed start error
+ok 36 - synchronous spawn failure has the same fixed start error
+  ---
+  duration_ms: 0.184708
+  type: 'test'
+  ...
+# Subtest: final JSON and exit still wait for close
+ok 37 - final JSON and exit still wait for close
+  ---
+  duration_ms: 0.1665
+  type: 'test'
+  ...
+# Subtest: preview child receives secrets only on stdin and exposes only bounded public fields
+ok 38 - preview child receives secrets only on stdin and exposes only bounded public fields
+  ---
+  duration_ms: 2.138834
+  type: 'test'
+  ...
+# Subtest: uncertain remark state remains blocked without replay
+ok 39 - uncertain remark state remains blocked without replay
+  ---
+  duration_ms: 0.224042
+  type: 'test'
+  ...
+# Subtest: custom remark and multiline description travel only on stdin
+ok 40 - custom remark and multiline description travel only on stdin
+  ---
+  duration_ms: 0.180333
+  type: 'test'
+  ...
+# Subtest: explicit main and clone choice is carried on stdin without an Android-user fallback
+ok 41 - explicit main and clone choice is carried on stdin without an Android-user fallback
+  ---
+  duration_ms: 0.229791
+  type: 'test'
+  ...
+# Subtest: claimed send success, invalid statuses and nonzero exits fail closed
+ok 42 - claimed send success, invalid statuses and nonzero exits fail closed
+  ---
+  duration_ms: 0.372542
+  type: 'test'
+  ...
+# Subtest: cancelled and non-preview tasks cannot start a child
+ok 43 - cancelled and non-preview tasks cannot start a child
+  ---
+  duration_ms: 0.089458
+  type: 'test'
+  ...
+# Subtest: active cancellation keeps ownership until the child acknowledges cleanup and exits
+ok 44 - active cancellation keeps ownership until the child acknowledges cleanup and exits
+  ---
+  duration_ms: 1.899375
+  type: 'test'
+  ...
+# Subtest: sending uses an explicit mode and private fixed claim directory; unknown delivery stays unknown
+ok 45 - sending uses an explicit mode and private fixed claim directory; unknown delivery stays unknown
+  ---
+  duration_ms: 0.160917
+  type: 'test'
+  ...
+# Subtest: a send worker may never turn a click into confirmed delivery or silently preview instead
+ok 46 - a send worker may never turn a click into confirmed delivery or silently preview instead
+  ---
+  duration_ms: 0.171834
+  type: 'test'
+  ...
+# Subtest: split progress records survive; arbitrary stderr, oversized and regressing frames are discarded
+ok 47 - split progress records survive; arbitrary stderr, oversized and regressing frames are discarded
+  ---
+  duration_ms: 0.797042
+  type: 'test'
+  ...
+# Subtest: parent watchdog retains last stage and waits for child cleanup without replay
+ok 48 - parent watchdog retains last stage and waits for child cleanup without replay
+  ---
+  duration_ms: 0.381125
+  type: 'test'
+  ...
+# Subtest: real Python adapter configuration rejection crosses the child pipe with a fixed stage and no ADB
+ok 49 - real Python adapter configuration rejection crosses the child pipe with a fixed stage and no ADB
+  ---
+  duration_ms: 51.354583
+  type: 'test'
+  ...
+1..49
+# tests 49
+# suites 0
+# pass 49
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1438.731042

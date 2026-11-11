@@ -1,0 +1,20 @@
+{
+  "sourceSha256": "4f9202e1dd14cab5775d5d22143844b85a854c61ab16ff0e2ee8dffb6d036a7a",
+  "samples": {
+    "exact": {
+      "count": 12,
+      "medianMs": 10.455,
+      "maxMs": 12.13
+    },
+    "psutil": {
+      "count": 12,
+      "medianMs": 69.426,
+      "maxMs": 101.307
+    }
+  },
+  "allOriginalListenerAndOwnedV4V6Matched": true,
+  "closedSocketDisappearanceObserved": true,
+  "phoneActions": 0,
+  "adbRequests": 0,
+  "usedForPhoneExecution": false
+}

@@ -9,7 +9,7 @@ export function collectLookupTrace(trace,events){
   if(reasons.has(e.sampleReason))row.sampleReason=e.sampleReason;
   if(typeof e.networkBusy==='boolean')row.networkBusy=e.networkBusy;
   if(['poco','local_ocr'].includes(e.driver))row.driver=e.driver;
-  for(const k of ['resubmitsInput','tapConfirmed'])if(typeof e[k]==='boolean')row[k]=e[k];
+  for(const k of ['resubmitsInput','tapConfirmed','cacheHit'])if(typeof e[k]==='boolean')row[k]=e[k];
   if(Number.isInteger(e.refreshCount)&&e.refreshCount>=0&&e.refreshCount<=1)row.refreshCount=e.refreshCount;
   trace.push(row);if(trace.length>40)trace.shift();
  }return trace;

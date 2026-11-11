@@ -1,0 +1,11 @@
+{
+  "rawBytesUnchanged": true,
+  "onlyExceptions": {
+    "verification/wecom-v2-delivery-observed-20261103/INITDB.txt": {
+      "trailing": [],
+      "newBlankEof": [
+        24
+      ]
+    }
+  }
+}

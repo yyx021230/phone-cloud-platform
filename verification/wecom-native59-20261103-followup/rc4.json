@@ -1,0 +1,181 @@
+{
+  "candidate": "rc4",
+  "sourceRef": "7e03499f09b981a74119276c98008e6be80de687",
+  "deviceNumber": "59",
+  "phase": "unknown_keep_unlisted",
+  "productionApiAccepted": false,
+  "sentInvitations": 0,
+  "sourceFiles": {
+    "native-answer.json": "3ce37f4962bedfcb7723c5e192a50ab9340c1e0bd2c4c5bfcbb9471534b740a1",
+    "maintenance-result.json": "68ec6fcf528ba38d19f0de90a2cb6525a3480b25ce9dc08567034a0ddb8d4101",
+    "listing-restored.json": "a97414c5839f263c317676224e5e615279ccece5687f2824db85481bb4a5b819",
+    "final-state.json": "56af15786dcdd3417e85b37c3769e86b28609084055e73021efacd86351c3e4e"
+  },
+  "native": {
+    "previewStatus": "blocked",
+    "previewCode": "device_lease_lost",
+    "invitationSent": false,
+    "sendStatus": "not_attempted",
+    "remarkSaveStatus": "unknown",
+    "diagnostic": {
+      "wecomExecution": {
+        "version": 1,
+        "phase": "cleanup",
+        "failurePhase": "poco_health",
+        "elapsedMs": 23514,
+        "cleanupConfirmed": false,
+        "events": [
+          {
+            "version": 1,
+            "step": 1,
+            "phase": "configuration",
+            "state": "begin",
+            "elapsedMs": 0
+          },
+          {
+            "version": 1,
+            "step": 2,
+            "phase": "configuration",
+            "state": "end",
+            "elapsedMs": 0
+          },
+          {
+            "version": 1,
+            "step": 3,
+            "phase": "adb_identity",
+            "state": "begin",
+            "elapsedMs": 0
+          },
+          {
+            "version": 1,
+            "step": 4,
+            "phase": "adb_identity",
+            "state": "end",
+            "elapsedMs": 61
+          },
+          {
+            "version": 1,
+            "step": 5,
+            "phase": "device_preflight",
+            "state": "begin",
+            "elapsedMs": 61
+          },
+          {
+            "version": 1,
+            "step": 6,
+            "phase": "device_preflight",
+            "state": "end",
+            "elapsedMs": 3421
+          },
+          {
+            "version": 1,
+            "step": 7,
+            "phase": "screen_prepare",
+            "state": "begin",
+            "elapsedMs": 3421
+          },
+          {
+            "version": 1,
+            "step": 8,
+            "phase": "screen_prepare",
+            "state": "end",
+            "elapsedMs": 6733
+          },
+          {
+            "version": 1,
+            "step": 9,
+            "phase": "poco_launch",
+            "state": "begin",
+            "elapsedMs": 6733
+          },
+          {
+            "version": 1,
+            "step": 10,
+            "phase": "poco_launch",
+            "state": "end",
+            "elapsedMs": 11108
+          },
+          {
+            "version": 1,
+            "step": 11,
+            "phase": "poco_health",
+            "state": "begin",
+            "elapsedMs": 11108
+          },
+          {
+            "version": 1,
+            "step": 12,
+            "phase": "poco_health",
+            "state": "error",
+            "elapsedMs": 23500
+          },
+          {
+            "version": 1,
+            "step": 13,
+            "phase": "cleanup",
+            "state": "begin",
+            "elapsedMs": 23514
+          },
+          {
+            "version": 1,
+            "step": 14,
+            "phase": "cleanup",
+            "state": "end",
+            "elapsedMs": 23514,
+            "cleanupConfirmed": false
+          }
+        ]
+      }
+    },
+    "isolation": {
+      "mode": "real_screen_reservation",
+      "resources": {
+        "readerStarted": true,
+        "pid": "1885",
+        "startToken": "34080400",
+        "forwards": [
+          [
+            65168,
+            10080
+          ],
+          [
+            65244,
+            10081
+          ]
+        ],
+        "cleanupConfirmed": false
+      },
+      "productionWindowsTask": false,
+      "primaryFailure": "device_lease_lost",
+      "authorityFailure": "qa_authority_unknown",
+      "authorityFailureStage": "proof_request",
+      "socketPeer": {
+        "executionConnections": 14,
+        "peerChecks": 95,
+        "revoked": true,
+        "firstDenial": {
+          "reason": "connection_owner",
+          "operation": "connect",
+          "portClass": "forward",
+          "ownerCount": 0,
+          "expectedOwnerPresent": false
+        }
+      }
+    }
+  },
+  "hostExitCode": 0,
+  "pipeDrainComplete": true,
+  "manualCleanupConfirmed": null,
+  "listingRestored": true,
+  "final": {
+    "available": true,
+    "online": true,
+    "listingStatus": "listed",
+    "activeResources": {
+      "locks": 0,
+      "tasks": 0,
+      "jobs": 0,
+      "sessions": 0
+    }
+  }
+}

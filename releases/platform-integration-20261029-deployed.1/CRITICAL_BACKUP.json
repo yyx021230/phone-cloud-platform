@@ -1,0 +1,19 @@
+{
+  "status": "critical_configuration_snapshot_only",
+  "bytes": 1447797,
+  "sha256": "f21ff9f3d5779d4f4566ceb4a097b925fdacf95f6bdc1482dcf82c4d37d49fc0",
+  "tables": [
+    "phone_cloud_managed_lookup",
+    "phone_cloud_managed_lookup_aliases",
+    "phone_cloud_xhs_batch_records",
+    "phone_cloud_xhs_batch_nonces",
+    "phone_cloud_users",
+    "phone_cloud_devices",
+    "phone_cloud_device_locks"
+  ],
+  "path": "/opt/phone-cloud-platform/staging/platform-integration-20261029-rc.1/rollback/critical-config.dump",
+  "fullDatabaseBackup": false,
+  "databaseMigrations": false,
+  "rollbackPolicy": "restore application files/images only; preserve current database; never restore old database over subsequent customer work",
+  "fullDecode": true
+}

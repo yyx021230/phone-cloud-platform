@@ -1,0 +1,14 @@
+{
+  "docs/PROJECT_DEVELOPMENT.md": "b455bed833a020194d7164039634f646a89882e292e540d00d0c6e103a6ec1cc",
+  "verification/wecom-v2-mutation-encoder-20261103/FINAL_LOCAL_OUTPUT.txt": "76e902d4ea3fc6084ffcccd8144cb0d84f3f7e5b2c8124a0e8c1a44b2704f925",
+  "verification/wecom-v2-mutation-encoder-20261103/LOCAL_OUTPUT.txt": "88aefb122637bfaaa3ba208b753c8adfdec25bb8d38c4efdee49bd62e689f8dc",
+  "verification/wecom-v2-mutation-encoder-20261103/LOCAL_RECEIPT.json": "dfbd7743849757f87a4ef5d933cd2dc0807493394c0709e3c849faa17a7dfffe",
+  "verification/wecom-v2-mutation-encoder-20261103/REVIEW.md": "d943b07fb63e92b144f816d852a18d36c05f6efa8bcd75c3c7e6a348fe4b125f",
+  "verification/wecom-v2-mutation-encoder-20261103/SOURCE_BASELINE.json": "9d65877240c0b650cc3b38018b688db4407f23e630b856224bae6d0330e0370b",
+  "verification/wecom-v2-mutation-encoder-20261103/encoder.mjs": "900af50074526be5acbb4b8b6f84559c54fe94ec76948f9ec874ba7b40dababb",
+  "verification/wecom-v2-mutation-encoder-20261103/encoder.test.mjs": "f0b28e1fba0c322a4a1f2708650003237a86442cff673cd3837846caf8b49694",
+  "verification/wecom-v2-mutation-encoder-20261103/initial61/LOCAL_OUTPUT.txt": "88aefb122637bfaaa3ba208b753c8adfdec25bb8d38c4efdee49bd62e689f8dc",
+  "verification/wecom-v2-mutation-encoder-20261103/initial61/RECEIPT.json": "f2ec3a6df17be152fd5c12b7883c222bc25237416b69b2de484affb4a3487279",
+  "verification/wecom-v2-mutation-encoder-20261103/initial61/encoder.mjs.txt": "900af50074526be5acbb4b8b6f84559c54fe94ec76948f9ec874ba7b40dababb",
+  "verification/wecom-v2-mutation-encoder-20261103/initial61/encoder.test.mjs.txt": "fee1d7899b9640fba7165b80dcec24c1e690fb6f372b9f186b385e175c0c5a76"
+}

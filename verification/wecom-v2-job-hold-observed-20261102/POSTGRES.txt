@@ -1,0 +1,12 @@
+2026-11-02 23:19:31.193 CST [56245] LOG:  starting PostgreSQL 16.15 (Homebrew) on aarch64-apple-darwin25.6.0, compiled by Apple clang version 21.0.0 (clang-2100.1.1.101), 64-bit
+2026-11-02 23:19:31.193 CST [56245] LOG:  listening on IPv4 address "127.0.0.1", port 52938
+2026-11-02 23:19:31.193 CST [56245] LOG:  listening on Unix socket "/private/tmp/pc-wecom-v2-projection-pg-z7kfy78i/.s.PGSQL.52938"
+2026-11-02 23:19:31.195 CST [56249] LOG:  database system was shut down at 2026-11-02 23:19:31 CST
+2026-11-02 23:19:31.196 CST [56245] LOG:  database system is ready to accept connections
+2026-11-02 23:19:31.580 CST [56245] LOG:  received fast shutdown request
+2026-11-02 23:19:31.580 CST [56245] LOG:  aborting any active transactions
+2026-11-02 23:19:31.581 CST [56245] LOG:  background worker "logical replication launcher" (PID 56252) exited with exit code 1
+2026-11-02 23:19:31.581 CST [56247] LOG:  shutting down
+2026-11-02 23:19:31.581 CST [56247] LOG:  checkpoint starting: shutdown immediate
+2026-11-02 23:19:31.619 CST [56247] LOG:  checkpoint complete: wrote 987 buffers (6.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.032 s, sync=0.006 s, total=0.039 s; sync files=332, longest=0.001 s, average=0.001 s; distance=4569 kB, estimate=4569 kB; lsn=0/1993EE8, redo lsn=0/1993EE8
+2026-11-02 23:19:31.621 CST [56245] LOG:  database system is shut down

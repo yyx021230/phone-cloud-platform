@@ -1,0 +1,18 @@
+{
+  "at": "2026-11-03T04:34:02.124Z",
+  "transactionReadOnly": "on",
+  "concurrency": "12",
+  "config_revision": "180",
+  "channels_type": "array",
+  "requests_type": "array",
+  "channel_phases": {
+    "human": 1,
+    "querying": 10,
+    "quarantined": 1
+  },
+  "business_queued": 12,
+  "business_running": 10,
+  "productionWrites": 0,
+  "phoneActions": 0,
+  "httpControlViews": 0
+}

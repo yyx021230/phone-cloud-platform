@@ -1,0 +1,12 @@
+✔ all original14 expanded M2 test bodies byte equal; only new DDL setup (1.7095ms)
+✔ body assertion weakening rejected (0.153208ms)
+✔ missing new DDL setup rejected (0.045083ms)
+✔ duplicate new DDL setup rejected (0.043083ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 66.158542

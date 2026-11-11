@@ -1,0 +1,702 @@
+{
+  "atUtc": "2026-11-02T08:46:09.606Z",
+  "origin": "http://47.98.127.132",
+  "scope": "external GET inventory/results only; auth login is the sole POST",
+  "inventoryUpdatedAt": "2026-11-02T08:46:07.797Z",
+  "total": 141,
+  "onlineTotal": 126,
+  "capacity": {
+    "limit": 2,
+    "active": 0,
+    "remaining": 2
+  },
+  "invalidFilterRejected": true,
+  "onlineFilterAllRowsOnline": true,
+  "lookupCounts": {
+    "registered": 51,
+    "executing": 5,
+    "waitingHuman": 2,
+    "queued": 0
+  },
+  "configuredPhones": [
+    {
+      "number": "23",
+      "mappingCount": 1,
+      "brand": "Redmi",
+      "model": "220233L2C",
+      "androidVersion": "11",
+      "online": true,
+      "adbOnline": true,
+      "agentOnline": true,
+      "listed": true,
+      "busy": false,
+      "busyReason": "",
+      "occupancy": null,
+      "wecomAllowed": true,
+      "appSlots": [
+        "main"
+      ],
+      "available": true,
+      "unavailableReason": "",
+      "adbLastSeenAt": "2026-11-02T08:45:46.100Z",
+      "internalCatalogMappingCount": 1,
+      "inEnabledLookupPool": false,
+      "nativeAttemptedThisRound": false,
+      "sendAttemptedThisRound": false
+    },
+    {
+      "number": "25",
+      "mappingCount": 1,
+      "brand": "Redmi",
+      "model": "220233L2C",
+      "androidVersion": "11",
+      "online": true,
+      "adbOnline": true,
+      "agentOnline": true,
+      "listed": true,
+      "busy": false,
+      "busyReason": "",
+      "occupancy": null,
+      "wecomAllowed": true,
+      "appSlots": [
+        "main"
+      ],
+      "available": true,
+      "unavailableReason": "",
+      "adbLastSeenAt": "2026-11-02T08:45:46.101Z",
+      "internalCatalogMappingCount": 1,
+      "inEnabledLookupPool": false,
+      "nativeAttemptedThisRound": false,
+      "sendAttemptedThisRound": false
+    },
+    {
+      "number": "43",
+      "mappingCount": 1,
+      "brand": "vivo",
+      "model": "V2442A",
+      "androidVersion": "14",
+      "online": true,
+      "adbOnline": true,
+      "agentOnline": true,
+      "listed": true,
+      "busy": true,
+      "busyReason": "企微清理待确认 · 需单机维护",
+      "occupancy": {
+        "type": "wecom_physical_cleanup",
+        "label": "企微清理待确认 · 需单机维护"
+      },
+      "wecomAllowed": true,
+      "appSlots": [
+        "main"
+      ],
+      "available": false,
+      "unavailableReason": "device_busy",
+      "adbLastSeenAt": "2026-11-02T08:45:46.097Z",
+      "internalCatalogMappingCount": 1,
+      "inEnabledLookupPool": false,
+      "nativeAttemptedThisRound": false,
+      "sendAttemptedThisRound": false
+    },
+    {
+      "number": "59",
+      "mappingCount": 1,
+      "brand": "vivo",
+      "model": "V2357A",
+      "androidVersion": "14",
+      "online": true,
+      "adbOnline": true,
+      "agentOnline": true,
+      "listed": true,
+      "busy": false,
+      "busyReason": "",
+      "occupancy": null,
+      "wecomAllowed": true,
+      "appSlots": [
+        "main"
+      ],
+      "available": true,
+      "unavailableReason": "",
+      "adbLastSeenAt": "2026-11-02T08:45:46.092Z",
+      "internalCatalogMappingCount": 1,
+      "inEnabledLookupPool": false,
+      "nativeAttemptedThisRound": false,
+      "sendAttemptedThisRound": false
+    },
+    {
+      "number": "93",
+      "mappingCount": 1,
+      "brand": "vivo",
+      "model": "V2357A",
+      "androidVersion": "14",
+      "online": true,
+      "adbOnline": true,
+      "agentOnline": true,
+      "listed": true,
+      "busy": true,
+      "busyReason": "实时控制",
+      "occupancy": {
+        "type": "screen_control",
+        "label": "实时控制"
+      },
+      "wecomAllowed": true,
+      "appSlots": [
+        "main"
+      ],
+      "available": false,
+      "unavailableReason": "device_busy",
+      "adbLastSeenAt": "2026-11-02T08:45:46.093Z",
+      "internalCatalogMappingCount": 1,
+      "inEnabledLookupPool": false,
+      "nativeAttemptedThisRound": false,
+      "sendAttemptedThisRound": false
+    },
+    {
+      "number": "145",
+      "mappingCount": 1,
+      "brand": "HUAWEI",
+      "model": "TAS_AN00",
+      "androidVersion": "12",
+      "online": true,
+      "adbOnline": true,
+      "agentOnline": true,
+      "listed": true,
+      "busy": false,
+      "busyReason": "",
+      "occupancy": null,
+      "wecomAllowed": true,
+      "appSlots": [
+        "main"
+      ],
+      "available": true,
+      "unavailableReason": "",
+      "adbLastSeenAt": "2026-11-02T08:45:46.101Z",
+      "internalCatalogMappingCount": 1,
+      "inEnabledLookupPool": false,
+      "nativeAttemptedThisRound": false,
+      "sendAttemptedThisRound": false
+    },
+    {
+      "number": "155",
+      "mappingCount": 1,
+      "brand": "vivo",
+      "model": "V2442A",
+      "androidVersion": "14",
+      "online": true,
+      "adbOnline": true,
+      "agentOnline": true,
+      "listed": true,
+      "busy": false,
+      "busyReason": "",
+      "occupancy": null,
+      "wecomAllowed": true,
+      "appSlots": [
+        "main",
+        "clone"
+      ],
+      "available": true,
+      "unavailableReason": "",
+      "adbLastSeenAt": "2026-11-02T08:45:46.096Z",
+      "internalCatalogMappingCount": 1,
+      "inEnabledLookupPool": true,
+      "nativeAttemptedThisRound": false,
+      "sendAttemptedThisRound": false
+    },
+    {
+      "number": "157",
+      "mappingCount": 1,
+      "brand": "vivo",
+      "model": "V2442A",
+      "androidVersion": "14",
+      "online": true,
+      "adbOnline": true,
+      "agentOnline": true,
+      "listed": true,
+      "busy": false,
+      "busyReason": "",
+      "occupancy": null,
+      "wecomAllowed": true,
+      "appSlots": [
+        "main"
+      ],
+      "available": true,
+      "unavailableReason": "",
+      "adbLastSeenAt": "2026-11-02T08:45:46.096Z",
+      "internalCatalogMappingCount": 1,
+      "inEnabledLookupPool": true,
+      "nativeAttemptedThisRound": false,
+      "sendAttemptedThisRound": false
+    }
+  ],
+  "allPlatformModelGroups": [
+    {
+      "brand": "vivo",
+      "model": "V2442A",
+      "androidVersion": "14",
+      "total": 17,
+      "online": 16,
+      "wecomConfigured": 3
+    },
+    {
+      "brand": "Tianyi",
+      "model": "TYH651M_02",
+      "androidVersion": "14",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "vivo",
+      "model": "V2357A",
+      "androidVersion": "14",
+      "total": 61,
+      "online": 55,
+      "wecomConfigured": 2
+    },
+    {
+      "brand": "vivo",
+      "model": "V2020A",
+      "androidVersion": "10",
+      "total": 3,
+      "online": 3,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "vivo",
+      "model": "V2443A",
+      "androidVersion": "15",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "vivo",
+      "model": "V2230A",
+      "androidVersion": "13",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "vivo",
+      "model": "V2272A",
+      "androidVersion": "13",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "OPPO",
+      "model": "PHJ110",
+      "androidVersion": "13",
+      "total": 3,
+      "online": 3,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "OPPO",
+      "model": "PFJM10",
+      "androidVersion": "13",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "",
+      "model": "PKA110",
+      "androidVersion": "",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "Redmi",
+      "model": "25082RNC1C",
+      "androidVersion": "15",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "vivo",
+      "model": "V2034A",
+      "androidVersion": "10",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "HONOR",
+      "model": "KKG_AN00",
+      "androidVersion": "10",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "Redmi",
+      "model": "220233L2C",
+      "androidVersion": "11",
+      "total": 10,
+      "online": 10,
+      "wecomConfigured": 2
+    },
+    {
+      "brand": "HUAWEI",
+      "model": "TAS_AN00",
+      "androidVersion": "12",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 1
+    },
+    {
+      "brand": "HUAWEI",
+      "model": "STG_AL00",
+      "androidVersion": "12",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "HUAWEI",
+      "model": "ANA_AN00",
+      "androidVersion": "12",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "OPPO",
+      "model": "PKL110",
+      "androidVersion": "15",
+      "total": 2,
+      "online": 2,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "HUAWEI",
+      "model": "DVC_AN20",
+      "androidVersion": "10",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "",
+      "model": "PJY110",
+      "androidVersion": "",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "",
+      "model": "M2006C3LC",
+      "androidVersion": "",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "Redmi",
+      "model": "M2006C3LC",
+      "androidVersion": "10",
+      "total": 2,
+      "online": 2,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "",
+      "model": "FNE_AN00",
+      "androidVersion": "",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "HONOR",
+      "model": "TNNH_AN00",
+      "androidVersion": "10",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "HONOR",
+      "model": "LLY_AN00",
+      "androidVersion": "14",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "",
+      "model": "ANN_AN00",
+      "androidVersion": "",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "HONOR",
+      "model": "NIC_AN00",
+      "androidVersion": "15",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "HONOR",
+      "model": "KOZ_AL00",
+      "androidVersion": "10",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "Redmi",
+      "model": "M2010J19SC",
+      "androidVersion": "10",
+      "total": 3,
+      "online": 3,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "",
+      "model": "M2012K11AC",
+      "androidVersion": "",
+      "total": 2,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "Xiaomi",
+      "model": "MI_8",
+      "androidVersion": "10",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "Redmi",
+      "model": "M2010J19SC",
+      "androidVersion": "12",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "OPPO",
+      "model": "PMC110",
+      "androidVersion": "16",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "",
+      "model": "24115RA8EC",
+      "androidVersion": "",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "OPPO",
+      "model": "PDYM20",
+      "androidVersion": "12",
+      "total": 2,
+      "online": 2,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "OPPO",
+      "model": "PECM20",
+      "androidVersion": "12",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "OPPO",
+      "model": "PECM30",
+      "androidVersion": "12",
+      "total": 2,
+      "online": 2,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "HONOR",
+      "model": "ANN_AN00",
+      "androidVersion": "15",
+      "total": 1,
+      "online": 1,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "",
+      "model": "CRT_AN00",
+      "androidVersion": "",
+      "total": 1,
+      "online": 0,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "Redmi",
+      "model": "22041219C",
+      "androidVersion": "14",
+      "total": 1,
+      "online": 0,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "vivo",
+      "model": "V2020CA",
+      "androidVersion": "10",
+      "total": 2,
+      "online": 0,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "",
+      "model": "",
+      "androidVersion": "",
+      "total": 1,
+      "online": 0,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "vivo",
+      "model": "V2531A",
+      "androidVersion": "16",
+      "total": 1,
+      "online": 0,
+      "wecomConfigured": 0
+    },
+    {
+      "brand": "OPPO",
+      "model": "PKJ110",
+      "androidVersion": "16",
+      "total": 1,
+      "online": 0,
+      "wecomConfigured": 0
+    }
+  ],
+  "boundedHistoryJobs": [
+    {
+      "taskId": "7b993763-6364-40fb-9599-2af3bb8d9da3",
+      "deviceNumber": "43",
+      "appSlot": "main",
+      "mode": "preview",
+      "status": "failed",
+      "createdAt": "2026-11-02T07:04:07.882Z",
+      "completedAt": "2026-11-02T07:04:08.762Z",
+      "code": "wecom_cleanup_host_unconfirmed",
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "sendClaimed": false,
+      "remarkSaveStatus": "unknown"
+    }
+  ],
+  "historyPageLimit": 100,
+  "historicalExternalResults": [],
+  "original43Preview": {
+    "taskId": "7b993763-6364-40fb-9599-2af3bb8d9da3",
+    "deviceNumber": "43",
+    "appSlot": "main",
+    "mode": "preview",
+    "status": "failed",
+    "createdAt": "2026-11-02T07:04:07.882Z",
+    "completedAt": "2026-11-02T07:04:08.762Z",
+    "code": "wecom_cleanup_host_unconfirmed",
+    "invitationSent": false,
+    "sendStatus": "not_attempted",
+    "sendClaimed": false,
+    "remarkSaveStatus": "unknown"
+  },
+  "originalPreviewRejectedByExternalSendResult": true,
+  "requests": [
+    {
+      "method": "POST",
+      "route": "/api/v1/auth/login",
+      "httpStatus": 200,
+      "elapsedMs": 181,
+      "sha256": "026e94b76c6b45ff8c3f17f1bff7d2646654c77cc9e266cdaf61e58314917833"
+    },
+    {
+      "method": "GET",
+      "route": "/api/v1/wecom/devices",
+      "httpStatus": 200,
+      "elapsedMs": 483,
+      "sha256": "4f1fa704851926c59ed9cdfdc8da8c9ce1353a3cf45c1f71ba70ea213ef9d45c"
+    },
+    {
+      "method": "GET",
+      "route": "/api/v1/wecom/devices?onlineOnly=true",
+      "httpStatus": 200,
+      "elapsedMs": 360,
+      "sha256": "6e26cda7fb7cdab47f5808dbf8578ab187d92c420b531ce419398a19ad639332"
+    },
+    {
+      "method": "GET",
+      "route": "/api/v1/wecom/devices?onlineOnly=invalid",
+      "httpStatus": 400,
+      "elapsedMs": 15,
+      "sha256": "33ca52e6627971e767de92811ac0cb353fd9d1985a51f5259a24d5af848f034a",
+      "error": "invalid_online_only"
+    },
+    {
+      "method": "GET",
+      "route": "/api/v1/admin/lookup-pool",
+      "httpStatus": 200,
+      "elapsedMs": 989,
+      "sha256": "8e2c549d1660d098bb27bd46418c186a4b4aa25c813cd48249153d14d2319856"
+    },
+    {
+      "method": "GET",
+      "route": "/api/v1/user/automation/wecom-preview-devices",
+      "httpStatus": 200,
+      "elapsedMs": 80,
+      "sha256": "79dfe3c423fc11c3aadebee37e7105c6d4f30731f94a8f87bbcc766e1401bce7"
+    },
+    {
+      "method": "GET",
+      "route": "/api/v1/user/automation/wecom-preview-tasks",
+      "httpStatus": 200,
+      "elapsedMs": 18,
+      "sha256": "566dbd138068db869ee68976ca3c15ba742fd1be78a7b11a913976ef6dcfbb9e"
+    },
+    {
+      "method": "GET",
+      "route": "/api/v1/wecom/customer-invitations/00000000-0000-4000-8000-000000000000",
+      "httpStatus": 404,
+      "elapsedMs": 7,
+      "sha256": "98b81103a45809e118fd5beb1f1afbde9a5ea6824c6be6157d36d1cae6e91a88",
+      "error": "wecom_task_not_found"
+    },
+    {
+      "method": "GET",
+      "route": "/api/v1/user/automation/wecom-preview-tasks/7b993763-6364-40fb-9599-2af3bb8d9da3",
+      "httpStatus": 200,
+      "elapsedMs": 47,
+      "sha256": "0526e3f92fc0bfc04b0fccd37fb2f0630927c345661756a9eee6fc6d48c4d67e"
+    },
+    {
+      "method": "GET",
+      "route": "/api/v1/wecom/customer-invitations/7b993763-6364-40fb-9599-2af3bb8d9da3",
+      "httpStatus": 404,
+      "elapsedMs": 19,
+      "sha256": "98b81103a45809e118fd5beb1f1afbde9a5ea6824c6be6157d36d1cae6e91a88",
+      "error": "wecom_task_not_found"
+    }
+  ],
+  "phoneJobsCreated": 0,
+  "phoneActions": 0,
+  "invitationSendCalls": 0,
+  "limitations": [
+    "Cached platform metadata, not fresh device OS reads.",
+    "Platform available does not override native freeze, independent obligations or lookup-pool exclusion.",
+    "Historical results do not prove current-version native acceptance.",
+    "No external POST preview capability exists in source32c; no native jobs were submitted.",
+    "History is bounded to the latest 100 WeCom jobs of the authenticated account."
+  ]
+}

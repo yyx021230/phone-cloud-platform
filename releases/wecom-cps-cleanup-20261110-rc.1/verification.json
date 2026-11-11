@@ -1,0 +1,57 @@
+{
+  "status": "candidate_only",
+  "base": "ed5496ee29eda6d4d0993b5b6a6761117a4ef3a5",
+  "productionRelease": "wecom-cps-20261110-platform-deployed.1",
+  "cloud": {
+    "server/wecom-preinput-recovery.mjs": {
+      "before": "c6ce123dc7e4e647e84f2101bc359221216b4f1b7ef25f5a2528214dceae6a71",
+      "after": "de5de848afa9e9e04ec13d6efc2614e019ec33345b4339b82c9a48130c0fbb2c"
+    }
+  },
+  "windows": {
+    "scripts/wecom_system_runtime.py": {
+      "before": "95e87ed27257eaea55f0be8e9c774cdaa020b2770777586719b782b80118316e",
+      "after": "1c609927302bc8bca9b82404665ab7679682b9f609d5ddd11baba7c7bb4b623c"
+    },
+    "scripts/wecom_qa_tcp_runtime.py": {
+      "requiredUnchanged": "4f9202e1dd14cab5775d5d22143844b85a854c61ab16ff0e2ee8dffb6d036a7a"
+    }
+  },
+  "evidence": {
+    "200": {
+      "listed": true,
+      "previewCode": "poco_already_running",
+      "failedPhase": "device_preflight",
+      "sendStatus": "not_attempted",
+      "physicalProof": "timeout"
+    },
+    "202": {
+      "listed": true,
+      "previewCode": "profile_phone_mismatch",
+      "failedPhase": "recipient_search",
+      "sendStatus": "not_attempted",
+      "physicalProof": "timeout"
+    },
+    "existingRecovery": {
+      "httpStatus": 409,
+      "code": "wecom_cleanup_recovery_ineligible"
+    },
+    "windowsReadOnlyListenerSampleMs": {
+      "psutil": 68,
+      "native": 14,
+      "sameListenerCount": 1
+    }
+  },
+  "tests": {
+    "recoveryAndPhysicalCleanup": 77,
+    "pythonRuntime": 20,
+    "rootSyntax": true
+  },
+  "pending": [
+    "production two-snapshot recovery for 200 and 202",
+    "202 profile evidence on a supported customer",
+    "200 preflight with no residual Poco",
+    "formal CPS test lead and callback"
+  ],
+  "rollback": "Revert cloud recovery module and Windows proof observer to original hashes. Preserve both original jobs and cleanup proofs."
+}

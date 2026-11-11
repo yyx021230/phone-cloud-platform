@@ -1,0 +1,13 @@
+{
+  "scope": "readonly-clock-observation",
+  "authoritySupported": false,
+  "nativeExecutionPermitted": false,
+  "physicalCleanupVerified": false,
+  "pid": 17840,
+  "sampleLimit": 16,
+  "executionContext": "inherited-SSH-user; not a SYSTEM worker test",
+  "status": "unsupported_api_or_read_failure",
+  "failedStage": "bind_readonly_apis",
+  "errorType": "AttributeError",
+  "windowsError": 0
+}

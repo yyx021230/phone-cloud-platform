@@ -1,0 +1,33 @@
+{
+  "version": "platform-wecom-invitation-20261029-rc.2",
+  "runtimeSourceCommit": "e06bc0181eeaa02bbbf062fdd6290ec6dc128b84",
+  "command": "node --test --test-concurrency=1 server/wecom-preview.test.mjs server/wecom-preview.http.test.mjs server/wecom-automation-ui.test.mjs windows-agent/src/wecom-preview-task.test.mjs server/lookup-chain-reliability.test.mjs server/auth-write-persistence.test.mjs",
+  "passed": 39,
+  "failed": 0,
+  "skipped": 0,
+  "testLogSha256": "6f5510c68d36b7fbe894465a610a9d46f26385c95ea5b42e1238979d594deab7",
+  "syntax": "npm run check passed",
+  "diffCheck": "passed",
+  "checks": [
+    "two API document pairs identical",
+    "33 frozen files unchanged",
+    "five UI runtime files unchanged",
+    "all Windows Agent/Python unchanged",
+    "candidate archive exported only from commit",
+    "simultaneous three POSTs create one task",
+    "unknown send survives duplicate submit and server restart",
+    "explicit clone dispatch binds user999",
+    "definitive pre-write failure can create safe retry"
+  ],
+  "review": "self-review only",
+  "notRun": [
+    "new full combined suite (rc.1 historical result not reused as this run)",
+    "PostgreSQL fixture",
+    "native Windows",
+    "real devices",
+    "production checks"
+  ],
+  "realInvitations": 0,
+  "productionConnections": 0,
+  "recordedAtUtc": "2026-10-29T06:19:53.782007+00:00"
+}

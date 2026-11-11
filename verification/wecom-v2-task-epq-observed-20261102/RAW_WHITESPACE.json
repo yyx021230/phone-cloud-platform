@@ -1,0 +1,11 @@
+{
+  "rawBytesUnchanged": true,
+  "onlyExceptions": {
+    "verification/wecom-v2-task-epq-observed-20261102/INITDB.txt": {
+      "trailing": [],
+      "newBlankEof": [
+        24
+      ]
+    }
+  }
+}

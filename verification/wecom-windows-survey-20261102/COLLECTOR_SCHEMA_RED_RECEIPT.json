@@ -1,0 +1,11 @@
+{
+  "tests": 12,
+  "failures": 26,
+  "errors": 0,
+  "scope": "offline weak schema counterexamples; no SSH",
+  "sha256": {
+    "collect_clock_supplement.py": "a9742a8426bb76470a99d91e8fbe7619c7c523c3d5645fc35222040ee360822e",
+    "test_collect_classification.py": "c77c089a9f3f957d65154a6d1981217591b0430f22f9789e01a687eec0eee787",
+    "COLLECTOR_SCHEMA_RED_OUTPUT.txt": "0257bb088f86ca5a81be7df1ec860f6298ccc733e55b32270e93d42de29395af"
+  }
+}

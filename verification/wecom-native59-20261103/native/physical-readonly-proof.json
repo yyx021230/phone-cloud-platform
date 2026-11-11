@@ -1,0 +1,33 @@
+{
+  "snapshots": [
+    {
+      "at": 1793671796.2855487,
+      "mainPids": "8061",
+      "testPids": "",
+      "readerForwards": []
+    },
+    {
+      "at": 1793671797.0412889,
+      "mainPids": "8061",
+      "testPids": "",
+      "readerForwards": []
+    }
+  ],
+  "originalHosts": [
+    {
+      "pid": 20436,
+      "absent": true
+    },
+    {
+      "pid": 22728,
+      "absent": true
+    }
+  ],
+  "socketPeer": {
+    "executionConnections": 6,
+    "peerChecks": 16,
+    "revoked": false
+  },
+  "readOnlyAdb": true,
+  "mutatingCommands": 0
+}

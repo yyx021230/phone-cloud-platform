@@ -1,0 +1,38 @@
+{
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "-I",
+        "-B",
+        "verification/wecom-v2-job-hold-epq-20261102/test_owned_runner.py"
+      ],
+      "exitCode": 0,
+      "output": "LOCAL_0.txt",
+      "sha256": "6f027b328a3c3abaea3e64367737820a61b4d2eee0ceeffa88054797643c845d"
+    },
+    {
+      "command": [
+        "node",
+        "--test",
+        "verification/wecom-v2-job-hold-epq-20261102/fixture-names.test.mjs"
+      ],
+      "exitCode": 0,
+      "output": "LOCAL_1.txt",
+      "sha256": "1cc7f0cd690213d75931eb2cba067224e07f3727dc1774c903eec49aad4bda08"
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "verification/wecom-v2-job-hold-epq-20261102/postgres.integration.mjs"
+      ],
+      "exitCode": 0,
+      "output": "LOCAL_2.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "readOnlySourceGuardMatched": 13,
+  "readOnlyDependencyGuardMatched": 6,
+  "noPgBinaryOrSQLOrServiceActions": true
+}

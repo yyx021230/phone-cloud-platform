@@ -1,0 +1,15 @@
+{
+  "sourceBranch": "codex/wecom-cps-send-20261111",
+  "sourceCommit": "95c54db4d6c9b49ffa2481c28033f75b3ab6a439",
+  "excludedFromActivation": [
+    "windows-agent/src/screen-stream.mjs",
+    "windows-agent/src/serial-adb-health.mjs",
+    "windows-agent/src/serial-adb-health.test.mjs",
+    "windows-agent/src/screen-serial-identity.test.mjs"
+  ],
+  "reason": "Unactivated serial-case/control candidate; retain production-identical main under D-001. Candidate is preserved in the existing feature branch and immutable history.",
+  "productionIdenticalFiles": [
+    "windows-agent/src/screen-stream.mjs",
+    "windows-agent/src/serial-adb-health.mjs"
+  ]
+}

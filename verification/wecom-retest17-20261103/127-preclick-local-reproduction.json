@@ -1,0 +1,12 @@
+{
+  "realObservedHomeNodes": [
+    119,
+    129
+  ],
+  "localSyntheticBeforeNodes": 4,
+  "localSyntheticAfterNodes": 5,
+  "code": "page_changed_before_action",
+  "menuClicks": 0,
+  "deviceOrNetworkCalls": 0,
+  "sourceRef": "9b815e96e22952c1923c08ea0e0f0b50691a3c7d"
+}

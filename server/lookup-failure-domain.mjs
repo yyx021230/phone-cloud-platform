@@ -1,3 +1,9 @@
+// Legacy XML exhaustion is a technical result-reading failure, never proof
+// of no name. Require the runner-owned code and exact recovery prefix.
+export function lookupLegacyResultMissing(job={}) {
+  return job.kind==='alipay_name_query' && job.result?.errorCode==='alipay_person_result_not_found'
+    && /^alipay_lookup_failed_after_recovery:alipay_person_result_not_found(?::|$)/.test(String(job.result?.diagnostic?.runnerReason||''));
+}
 // Unwrap only executor-owned recovery prefixes; never substring-match an
 // unrelated error into a terminal result or erase input/foreground guards.
 export function lookupFailureReason(job={}) {
@@ -8,7 +14,14 @@ export function lookupFailureReason(job={}) {
   }
   return reason;
 }
+export function lookupCleanupUnconfirmed(job={}) {
+  if(!['alipay_lookup_failed','alipay_lookup_result_unconfirmed'].includes(job.result?.errorCode))return false;
+  const reason=lookupFailureReason(job);
+  return /^lookup_(?:old|restart|prepare)_worker_exit_unconfirmed$/.test(reason)
+    || reason==='lookup_reader_cleanup_unconfirmed'||reason==='lookup_reader_forward_cleanup_unconfirmed';
+}
 export function lookupTerminalResultReason(job={}) {
+  if(lookupLegacyResultMissing(job))return 'legacy_person_result_missing';
   if(!['alipay_lookup_failed','alipay_lookup_result_unconfirmed'].includes(job.result?.errorCode))return '';
   const reason=lookupFailureReason(job);
   return /^local_lookup_result_unconfirmed:(?:observation_budget_exhausted|visual_card_not_proven|visual_card_changed|ocr_reader_timeout|ocr_reader_unavailable)$/.test(reason)?reason:'';
@@ -17,13 +30,28 @@ export function lookupTerminalResultReason(job={}) {
 // A missing page/result is not evidence that a physical phone is broken.
 // Only a bounded, explicit transport/executor failure permits that inference.
 export function lookupFailureDomain(job = {}) {
+  if(lookupLegacyResultMissing(job))return 'page';
   const code = job.result?.errorCode;
   const reason = lookupFailureReason(job);
+  if (code === 'alipay_lookup_failed' && (reason === 'lookup_worker_capacity_reached'
+    || /^Airtest\/Poco 常驻 worker 已达到上限 (?:\d+|#+)，当前均在执行任务$/.test(reason))) return 'capacity';
+  // A timed-out package-manager command is transport/preflight evidence,
+  // not a missing screen selector and not proof of an account restriction.
+  if (code === 'task_failed' && /^package_manager_unresponsive:/.test(String(job.result?.message||''))) return 'device';
   // Agent preflight can fail before a Python diagnostic exists (191). Match
   // explicit ADB evidence only; a generic task_failed remains unknown.
-  if (code === 'task_failed' && /(?:^|\n)ADB 设备未连接：[^\r\n]+/.test(String(job.result?.message||''))
-    && /\berror: device ['"][^'"\r\n]+['"] (?:not found|offline|unauthorized)\b/.test(String(job.result?.message||''))) return 'device';
+  // ADB also emits "error: device unauthorized." without a serial. Require
+  // the executor-owned prefix and a whole stderr line, not quoted advice or
+  // embedded command text (including ADB's own kill-server suggestion).
+  if (code === 'task_failed' && /^ADB 设备未连接：[^\r\n]+/.test(String(job.result?.message||''))
+    && /^error: device (?:(?:'[^'\r\n]+'|"[^"\r\n]+") )?(?:not found|offline|unauthorized)\.?[ \t]*\r?$/m.test(String(job.result?.message||''))) return 'device';
   if (!['alipay_lookup_failed', 'alipay_lookup_result_unconfirmed'].includes(code)) return '';
+  if (lookupCleanupUnconfirmed(job)) return 'device';
+  if (reason === 'poco_worker_bootstrap_failed:instrumentation:dependency_missing') return 'device';
+  if (/^poco_worker_bootstrap_failed:adb_probe:(?:timeout|device_unavailable|command_failed)$/.test(reason)) return 'device';
+  // Runner-owned dumpsys-window timeout: no reliable foreground observation,
+  // not a missing selector or a result screenshot for the name reader.
+  if (reason === 'poco_android_window_service_timeout') return 'device';
   // A local result reader failure can use the exact terminal screenshot; it
   // does not prove the device or its ADB transport is unavailable.
   if (lookupTerminalResultReason(job)) return 'page';

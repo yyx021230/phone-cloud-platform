@@ -1,0 +1,20 @@
+{
+  "version": "platform-integration-20261029-deployed.1",
+  "status": "deployed_pending_acceptance",
+  "mainImage": "sha256:a4db69c8a61befac7591924e354227146cb97fc6574556da35a2b86b7ddd6b4d",
+  "batchImage": "sha256:be21335b016bf17e24cd0e0580f9e536944401c89f64506536d980edd7c75608",
+  "agentPid": 20232,
+  "adbPid": 17764,
+  "activeSha256": "f362144183c841f71f40a60d3bcef4b8fd6b9f87f3a0f6fa9b5b75e6f8ae1020",
+  "recordedAtUtc": "2026-10-29T09:01:34Z",
+  "mediaLive": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "mainPid": 3184375,
+  "batchPid": 3195875
+}

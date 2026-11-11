@@ -1,0 +1,8 @@
+{
+  "samples": 200,
+  "passed": 200,
+  "failures": [],
+  "elapsedMs": 4343,
+  "phoneActions": 0,
+  "adbRequests": 0
+}

@@ -1,0 +1,118 @@
+TAP version 13
+# Subtest: actual PG: main complete tuple only
+ok 1 - actual PG: main complete tuple only
+  ---
+  duration_ms: 27.425167
+  type: 'test'
+  ...
+# Subtest: actual PG: clone complete tuple only
+ok 2 - actual PG: clone complete tuple only
+  ---
+  duration_ms: 4.211417
+  type: 'test'
+  ...
+# Subtest: actual PG: different task/main+clone one physical anchor
+ok 3 - actual PG: different task/main+clone one physical anchor
+  ---
+  duration_ms: 7.954334
+  type: 'test'
+  ...
+# Subtest: actual PG: different serial commits while first anchor held
+ok 4 - actual PG: different serial commits while first anchor held
+  ---
+  duration_ms: 9.596959
+  type: 'test'
+  ...
+# Subtest: actual PG: missing anchor/device and case alias do not create mapping
+ok 5 - actual PG: missing anchor/device and case alias do not create mapping
+  ---
+  duration_ms: 6.679459
+  type: 'test'
+  ...
+# Subtest: actual PG: default disabled and mismatch gates refuse
+ok 6 - actual PG: default disabled and mismatch gates refuse
+  ---
+  duration_ms: 6.825833
+  type: 'test'
+  ...
+# Subtest: actual PG: synthetic mapping barrier disables first, active rebind rejected
+ok 7 - actual PG: synthetic mapping barrier disables first, active rebind rejected
+  ---
+  duration_ms: 10.978666
+  type: 'test'
+  ...
+# Subtest: actual PG: same claim duplicate no new writes, changed original snapshot rejected
+ok 8 - actual PG: same claim duplicate no new writes, changed original snapshot rejected
+  ---
+  duration_ms: 8.689167
+  type: 'test'
+  ...
+# Subtest: actual PG: legacy NULL and unique claims cannot be promoted
+ok 9 - actual PG: legacy NULL and unique claims cannot be promoted
+  ---
+  duration_ms: 14.099375
+  type: 'test'
+  ...
+# Subtest: actual PG: each write failure/RETURNING corruption rolls full tuple back
+ok 10 - actual PG: each write failure/RETURNING corruption rolls full tuple back
+  ---
+  duration_ms: 56.818833
+  type: 'test'
+  ...
+# Subtest: actual PG: commit confirmed backend response dropped
+ok 11 - actual PG: commit confirmed backend response dropped
+  ---
+  duration_ms: 24.11025
+  type: 'test'
+  ...
+# Subtest: actual PG: cut before COMMIT no replay even if all absent
+ok 12 - actual PG: cut before COMMIT no replay even if all absent
+  ---
+  duration_ms: 15.615333
+  type: 'test'
+  ...
+# Subtest: actual PG: known claim legitimate progress/lock release/M1 revisions
+ok 13 - actual PG: known claim legitimate progress/lock release/M1 revisions
+  ---
+  duration_ms: 14.351083
+  type: 'test'
+  ...
+# Subtest: actual PG: old projection regressions never reopen canonical duty
+ok 14 - actual PG: old projection regressions never reopen canonical duty
+  ---
+  duration_ms: 17.327084
+  type: 'test'
+  ...
+# Subtest: actual PG: legacy task/job lock orders reject promptly, other device works
+ok 15 - actual PG: legacy task/job lock orders reject promptly, other device works
+  ---
+  duration_ms: 23.569167
+  type: 'test'
+  ...
+# Subtest: actual PG: reconcile same six locks, all absent no write
+ok 16 - actual PG: reconcile same six locks, all absent no write
+  ---
+  duration_ms: 27.006583
+  type: 'test'
+  ...
+# Subtest: actual PG: complete claim SQL type/field/date/constraint negatives
+ok 17 - actual PG: complete claim SQL type/field/date/constraint negatives
+  ---
+  duration_ms: 165.771625
+  type: 'test'
+  ...
+# Subtest: actual PG: COMMIT unknown plus changed context no extra checkout
+ok 18 - actual PG: COMMIT unknown plus changed context no extra checkout
+  ---
+  duration_ms: 10.016958
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 535.479

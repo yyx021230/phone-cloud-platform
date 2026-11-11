@@ -1,0 +1,44 @@
+[
+  {
+    "path": "/Users/yyx/ztqc/phone-cloud-platform/node_modules/pg/lib/client.js",
+    "sha256": "86cda0e1fda47e03d27dde65f10c7b9d597f7411f77ed853c8d27d5f150978a2",
+    "segments": [
+      {
+        "start": 131,
+        "end": 145,
+        "text": "  _errorAllQueries(err) {\n    const enqueueError = (query) => {\n      process.nextTick(() => {\n        query.handleError(err, this.connection)\n      })\n    }\n\n    const activeQuery = this._getActiveQuery()\n    if (activeQuery) {\n      enqueueError(activeQuery)\n      this._activeQuery = null\n    }\n\n    this._queryQueue.forEach(enqueueError)\n    this._queryQueue.length = 0\n"
+      },
+      {
+        "start": 198,
+        "end": 224,
+        "text": "    con.once('end', () => {\n      const error = this._ending ? new Error('Connection terminated') : new Error('Connection terminated unexpectedly')\n\n      clearTimeout(this.connectionTimeoutHandle)\n      this._errorAllQueries(error)\n      this._ended = true\n\n      if (!this._ending) {\n        // if the connection is ended without us calling .end()\n        // on this client then we have an unexpected disconnection\n        // treat this as an error unless we've already emitted an error\n        // during connection.\n        if (this._connecting && !this._connectionError) {\n          if (this._connectionCallback) {\n            this._connectionCallback(error)\n          } else {\n            this._handleErrorEvent(error)\n          }\n        } else if (!this._connectionError) {\n          this._handleErrorEvent(error)\n        }\n      }\n\n      process.nextTick(() => {\n        this.emit('end')\n      })\n    })\n"
+      },
+      {
+        "start": 411,
+        "end": 419,
+        "text": "  _handleErrorEvent(err) {\n    if (this._connecting) {\n      return this._handleErrorWhileConnecting(err)\n    }\n    this._queryable = false\n    this._errorAllQueries(err)\n    this.emit('error', err)\n  }\n\n"
+      }
+    ]
+  },
+  {
+    "path": "/Users/yyx/ztqc/phone-cloud-platform/node_modules/pg-pool/index.js",
+    "sha256": "6f304776edaabde2954cbf8c4366fa6d9512bfba0e408e78cc56b3c46c69d058",
+    "segments": [
+      {
+        "start": 51,
+        "end": 64,
+        "text": "function makeIdleListener(pool, client) {\n  return function idleListener(err) {\n    err.client = client\n\n    client.removeListener('error', idleListener)\n    client.on('error', () => {\n      pool.log('additional client error after disconnection due to error', err)\n    })\n    pool._remove(client)\n    // TODO - document that once the pool emits an error\n    // the client has already been closed & purged and is unusable\n    pool.emit('error', err, client)\n  }\n}\n"
+      },
+      {
+        "start": 335,
+        "end": 346,
+        "text": "  _acquireClient(client, pendingItem, idleListener, isNew) {\n    if (isNew) {\n      this.emit('connect', client)\n    }\n\n    this.emit('acquire', client)\n\n    client.release = this._releaseOnce(client, idleListener)\n\n    client.removeListener('error', idleListener)\n\n    if (!pendingItem.timedOut) {\n"
+      },
+      {
+        "start": 370,
+        "end": 389,
+        "text": "    let released = false\n\n    return (err) => {\n      if (released) {\n        throwOnDoubleRelease()\n      }\n\n      released = true\n      this._release(client, idleListener, err)\n    }\n  }\n\n  // release a client back to the poll, include an error\n  // to remove it from the pool\n  _release(client, idleListener, err) {\n    client.on('error', idleListener)\n\n    client._poolUseCount = (client._poolUseCount || 0) + 1\n\n    this.emit('release', err, client)\n"
+      }
+    ]
+  }
+]

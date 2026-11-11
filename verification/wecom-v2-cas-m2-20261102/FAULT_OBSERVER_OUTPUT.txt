@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: observes only matching fault with an additional owned transaction listener
+ok 1 - observes only matching fault with an additional owned transaction listener
+  ---
+  duration_ms: 1.165792
+  type: 'test'
+  ...
+# Subtest: fixture observer alone cannot make missing M2 owned listener green
+ok 2 - fixture observer alone cannot make missing M2 owned listener green
+  ---
+  duration_ms: 0.148625
+  type: 'test'
+  ...
+# Subtest: other client error must fail even when original wire fault exists
+ok 3 - other client error must fail even when original wire fault exists
+  ---
+  duration_ms: 0.076
+  type: 'test'
+  ...
+# Subtest: different error and absent wire proof both fail
+ok 4 - different error and absent wire proof both fail
+  ---
+  duration_ms: 0.081084
+  type: 'test'
+  ...
+# Subtest: bad COMMIT tuples cannot justify a client error
+ok 5 - bad COMMIT tuples cannot justify a client error
+  ---
+  duration_ms: 0.107583
+  type: 'test'
+  ...
+# Subtest: idle pool events always fail and duplicate attachment is refused
+ok 6 - idle pool events always fail and duplicate attachment is refused
+  ---
+  duration_ms: 0.063208
+  type: 'test'
+  ...
+# Subtest: expected observation count is bounded
+ok 7 - expected observation count is bounded
+  ---
+  duration_ms: 0.095458
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 68.204375

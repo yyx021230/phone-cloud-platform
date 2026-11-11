@@ -1,0 +1,71 @@
+{
+  "scope": "loopback_HTTP_and_synthetic_UI_only",
+  "runtimeSourceCommit": "7f2eaa9172eb2e07d8e4c078ce5205bdf89fbd7b",
+  "positive": {
+    "simulatedTasks": 4,
+    "syntheticSearchCalls": 4,
+    "syntheticSaveCalls": 4,
+    "syntheticSendCalls": 3,
+    "recipientsDeliveryConfirmed": 0,
+    "realPhoneOperations": 0,
+    "realInvitations": 0,
+    "simultaneousDuplicatePosts": 6,
+    "duplicateTaskCount": 1,
+    "pausedPhoneDidNotBlockOtherPhone": true,
+    "acceptanceReplyLostAndRecoveredOriginal": true,
+    "unknownClaimReplyPreventedSend": true,
+    "restartEnqueuedExtraWorkers": 0,
+    "publicEndpointKinds": 3,
+    "clientTimeoutMs": 100,
+    "perTask": [
+      {
+        "deviceNumber": "59",
+        "appSlot": "main",
+        "androidUser": 0,
+        "searchCalls": 1,
+        "saveCalls": 1,
+        "sendCalls": 0,
+        "claimCalls": 1,
+        "remarkVerified": true
+      },
+      {
+        "deviceNumber": "155",
+        "appSlot": "main",
+        "androidUser": 0,
+        "searchCalls": 1,
+        "saveCalls": 1,
+        "sendCalls": 1,
+        "claimCalls": 1,
+        "remarkVerified": true
+      },
+      {
+        "deviceNumber": "155",
+        "appSlot": "clone",
+        "androidUser": 999,
+        "searchCalls": 1,
+        "saveCalls": 1,
+        "sendCalls": 1,
+        "claimCalls": 1,
+        "remarkVerified": true
+      },
+      {
+        "deviceNumber": "59",
+        "appSlot": "main",
+        "androidUser": 0,
+        "searchCalls": 1,
+        "saveCalls": 1,
+        "sendCalls": 1,
+        "claimCalls": 1,
+        "remarkVerified": true
+      }
+    ]
+  },
+  "negative": {
+    "parameterOrMappingRejections": 5,
+    "invalidTokenRejections": 3,
+    "ordinaryUserRejections": 3,
+    "crossAdminResultRejections": 1,
+    "workersRun": 0
+  },
+  "sourceLogSha256": "79ad60fad5c8f24d97469daf46db1da196a524c568ea6cfc1085b4868ec8b7bf"
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "deviceNumber": "200",
+    "adbIdentity": [
+      5057,
+      1793843355.335422,
+      "/opt/homebrew/Caskroom/android-platform-tools/37.0.0/platform-tools/adb"
+    ],
+    "readerPids": {
+      "com.netease.open.pocoservice": [],
+      "com.netease.open.pocoservice.test": []
+    },
+    "forwardCount": 0,
+    "clean": true
+  },
+  {
+    "deviceNumber": "202",
+    "adbIdentity": [
+      5057,
+      1793843355.335422,
+      "/opt/homebrew/Caskroom/android-platform-tools/37.0.0/platform-tools/adb"
+    ],
+    "readerPids": {
+      "com.netease.open.pocoservice": [],
+      "com.netease.open.pocoservice.test": []
+    },
+    "forwardCount": 0,
+    "clean": true
+  }
+]

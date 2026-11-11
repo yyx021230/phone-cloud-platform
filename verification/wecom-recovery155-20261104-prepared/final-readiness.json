@@ -1,0 +1,32 @@
+{
+  "cloud": {
+    "at": "2026-11-04T01:33:50.118Z",
+    "agentReportedRunning": 5,
+    "activeScreens": 3,
+    "sourcesMatch32c": true
+  },
+  "windows": {
+    "agentPid": true,
+    "agentCreatedAt": true,
+    "adbPid": true,
+    "adbCreatedAt": true,
+    "files": true
+  },
+  "155": {
+    "online": true,
+    "cleanupFenceStillPresent": true,
+    "nonterminalTasks": 0
+  },
+  "runtime": {
+    "activeSha256": "a5390dcc93b5f1393e7b95732ca4df679dc5065200f80cf509d96e0f759e2a2f",
+    "imageId": "sha256:4468f5ce0f2107b8df7c4ab6cb90bb0dc584e41d0a3a55a8a9dee3c1e20440e0",
+    "media": {
+      "decision": "D-075",
+      "verified": "live",
+      "pid": 2503525,
+      "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+      "bitsPerSecond": 8000000,
+      "packetsPerGroup": 2
+    }
+  }
+}

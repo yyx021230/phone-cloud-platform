@@ -1,12 +1,12 @@
 {
-  "version": "platform-integration-20261028-rc.2",
-  "status": "candidate-not-deployed",
-  "baseCommit": "ac109ce288e0bc6be34104370309f1bb9465c9d2",
-  "lookupCandidate": "lookup-technical-recovery-20261027-rc.8",
-  "xhsCollectionCandidate": "xhs-completeness-20261027-rc.4",
-  "xhsBatchSource": "b912b6d7b70b8ff2f21e8a25ef45d97fc6311fa7",
-  "productionUnchanged": true,
-  "readinessBaseCommit": "b85ed14b9e93e8a4ac65916b744e31c02a4e8775",
-  "httpPreparationCommit": "2b47cf4250e5cb25f3a116782208ab20613bc32e",
-  "inventoryResponseSource": "b18857d95d4cbf24069bfeac60b5674f3e4b45a3"
+  "version": "platform-integration-20261102-rc.1",
+  "status": "candidate-authorized-not-activated",
+  "priorProductionReceipt": "platform-integration-20261029-deployed.1",
+  "integrationBaseCommit": "ba85a3f073cfee92c5782bb07d6f8082dd0e2677",
+  "lookupSourceCommit": "6b32257284b91d8f69a6319cca555150e0be24b4",
+  "cleanupServerSourceCommit": "6d2b2717c7fca4bcb2843d8c1838b8bfd349f766",
+  "wecomSourceCommit": "99dac921b4ac464a0a718def9fa41edc9261b584",
+  "xhsSourceCommit": "986d5db8977dd45aeaf7315891eb8476d95dd80a",
+  "authorization": "2026-11-02 human explicitly authorized integration, production switch and termination of in-flight tasks; ADB/SYSTEM/keys/media freezes retained",
+  "runtimeExceptions": "Retain actual production screen-stream.mjs and serial-adb-health.mjs bytes; bind overlay hashes in deployment receipt"
 }

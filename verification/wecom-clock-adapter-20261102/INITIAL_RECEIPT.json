@@ -1,0 +1,13 @@
+{
+  "scope": "initial local adapter regression, not native",
+  "tests": 21,
+  "pass": 20,
+  "fail": 1,
+  "sha256": {
+    "verification/wecom-clock-adapter-20261102/fixture-child.mjs": "252f91dde5b1957c668a7d6bf3b05bfe1daf5fbbd52db55840931939bd658e15",
+    "verification/wecom-clock-adapter-20261102/authority.test.mjs": "62b48b670ee06db905651a02e9af99c60189732616af2c12bb2987b126ffda89",
+    "verification/wecom-clock-adapter-20261102/authority.mjs": "5c94b2b23bbc06f1e1a9cb70382fc779cc045be086165f2ce4cf357526872045",
+    "verification/wecom-clock-adapter-20261102/clock_probe.py": "534e6eb9bdd31c93777c6c7c1958697a12ed3f32b4442fcdef286b47a4088b31"
+  },
+  "outputSha256": "0e642a73fb0d20446d1bdcddf12caf70f0853b9d1f395e57b32ea4807d8eafb8"
+}

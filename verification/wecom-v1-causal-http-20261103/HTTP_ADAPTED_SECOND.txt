@@ -1,0 +1,122 @@
+✔ external client: discover -> four-field submit -> actual synthetic remark/send -> result; dual slots, timeout and restart never replay (1718.989708ms)
+ℹ WECOM_EXTERNAL_EVIDENCE {"simulatedTasks":4,"syntheticSearchCalls":4,"syntheticSaveCalls":4,"syntheticSendCalls":3,"recipientsDeliveryConfirmed":0,"realPhoneOperations":0,"realInvitations":0,"simultaneousDuplicatePosts":6,"duplicateTaskCount":1,"pausedPhoneDidNotBlockOtherPhone":true,"acceptanceReplyLostAndRecoveredOriginal":true,"unknownClaimReplyPreventedSend":true,"restartEnqueuedExtraWorkers":0,"publicEndpointKinds":3,"clientTimeoutMs":100,"perTask":[{"deviceNumber":"59","appSlot":"main","androidUser":0,"searchCalls":1,"saveCalls":1,"sendCalls":0,"claimCalls":1,"remarkVerified":true},{"deviceNumber":"155","appSlot":"main","androidUser":0,"searchCalls":1,"saveCalls":1,"sendCalls":1,"claimCalls":1,"remarkVerified":true},{"deviceNumber":"59","appSlot":"main","androidUser":0,"searchCalls":1,"saveCalls":1,"sendCalls":1,"claimCalls":1,"remarkVerified":true},{"deviceNumber":"155","appSlot":"clone","androidUser":999,"searchCalls":1,"saveCalls":1,"sendCalls":1,"claimCalls":1,"remarkVerified":true}]}
+✔ external client: mapping, ownership, malformed fields and authentication fail before any worker (285.967625ms)
+ℹ WECOM_EXTERNAL_NEGATIVE_EVIDENCE {"parameterOrMappingRejections":5,"invalidTokenRejections":3,"ordinaryUserRejections":3,"crossAdminResultRejections":1,"workersRun":0}
+✔ authenticated JSON: new capability, main/clone, wrong scope and lost ACK retain original identity (316.104541ms)
+✖ authenticated JSON: real write failure rolls back proof and keeps physical duty until same original proof commits (199.847584ms)
+✖ authenticated JSON: restart keeps original duty and rejects old epoch instead of issuing new verification (259.5655ms)
+✖ authenticated JSON: repeated challenge cannot renew expired3s and another phone still dispatches (3310.203875ms)
+✖ preview HTTP covers authentication, eight phones, leases, original-id reuse and restart (561.6545ms)
+▶ real Agent runTask -> taskStatus -> compactor -> HTTP persistence -> public result retains WeCom states
+  ✔ native click attempt remains unknown (21.649666ms)
+  ✔ definite prewrite block remains failed/not_attempted (16.16825ms)
+  ✔ unknown remark save remains held without a send claim (15.133542ms)
+  ✔ actual Python identity guard -> child wrapper -> Agent -> HTTP diagnostics (73.602709ms)
+  ✔ actual parent timeout catch stays unknown and exposes its code (14.463625ms)
+✔ real Agent runTask -> taskStatus -> compactor -> HTTP persistence -> public result retains WeCom states (444.553875ms)
+ℹ WECOM_STATUS_TRANSPORT_EVIDENCE {"scenarios":[{"scenario":"native click attempt remains unknown","status":"unknown","code":"invitation_click_issued_delivery_unknown","statusWrites":1},{"scenario":"definite prewrite block remains failed/not_attempted","status":"failed","code":"not_found","statusWrites":1},{"scenario":"unknown remark save remains held without a send claim","status":"unknown","code":"remark_persistence_unconfirmed","statusWrites":1},{"scenario":"actual Python identity guard -> child wrapper -> Agent -> HTTP diagnostics","status":"unknown","code":"adb_identity_unconfirmed","statusWrites":1},{"scenario":"actual parent timeout catch stays unknown and exposes its code","status":"unknown","code":"wecom_preview_worker_timeout_no_replay","statusWrites":1}],"persistedAfterRestart":5,"heldRepostsReuseOriginal":4,"extraWorkers":0,"actualAgentCompactor":true,"actualAgentTimeoutCatch":true,"realPhoneOperations":0,"realInvitations":0,"backend":"isolated JSON"}
+✔ WeCom status whitelist rejects arbitrary delivery claims and does not change unrelated transport (1.020625ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 10
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7412.582375
+
+✖ failing tests:
+
+test at server/wecom-physical-cleanup.http.test.mjs:93:1
+✖ authenticated JSON: real write failure rolls back proof and keeps physical duty until same original proof commits (199.847584ms)
+  AssertionError [ERR_ASSERTION]: POST /api/v1/windows-agents/fixture-agent/wecom-cleanup/923b6288-2f0e-41e8-b05d-a2218cad9db8/lease?verificationId=5eee5336-992a-41f3-82f3-5feeaeadff8e&verificationNonce=fcae4303-1d3b-4246-b17c-b636a2dbd542&verificationTaskId=13e96779-1c20-4e3f-918b-d84542100ba8: method_not_allowed
+  
+  405 !== 200
+  
+      at Object.req (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-physical-cleanup.http.test.mjs:38:349)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-physical-cleanup.http.test.mjs:97:17)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 405,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server/wecom-physical-cleanup.http.test.mjs:103:1
+✖ authenticated JSON: restart keeps original duty and rejects old epoch instead of issuing new verification (259.5655ms)
+  AssertionError [ERR_ASSERTION]: isolated service failed 3:44.510Z request_id=b1e7d2a1-cabe-483e-b295-328089c8859b method=POST path="/api/v1/windows-agent-tasks/a56f5bda-99c1-45ef-9905-3000f378be9c/status" status=200 duration_ms=1 actor=auth ip=127.0.0.1
+  2026-11-02T17:53:44.511Z request_id=1130728f-e2b6-4576-8d8e-0db8cccd0a6a method=POST path="/api/v1/windows-agents/fixture-agent/wecom-cleanup/d0f5e6c9-6fe5-4138-8577-ca59d13f0bcb/host-closed" status=200 duration_ms=1 actor=auth ip=127.0.0.1
+  2026-11-02T17:53:44.512Z request_id=ed2dc8fc-3cdd-45f3-bd6d-32ee06135b03 method=POST path="/api/v1/windows-agents/fixture-agent/wecom-cleanup/d0f5e6c9-6fe5-4138-8577-ca59d13f0bcb/verify" status=200 duration_ms=1 actor=auth ip=127.0.0.1
+  2026-11-02T17:53:44.513Z request_id=2aa10304-c4db-4190-99fe-1b9a2c5400c0 method=GET path="/api/v1/windows-agents/fixture-agent/tasks/next?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1&wecomCausalProtocol=wecom-causal-v1" status=200 duration_ms=1 actor=auth ip=127.0.0.1
+  2026-11-02T17:53:44.514Z request_id=84b50988-7ae1-4707-b96b-a79dfd7ce954 method=POST path="/api/v1/windows-agents/fixture-agent/wecom-cleanup/d0f5e6c9-6fe5-4138-8577-ca59d13f0bcb/challenge" status=200 duration_ms=1 actor=auth ip=127.0.0.1
+  2026-11-02T17:53:44.514Z received SIGTERM, shutting down
+  file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/index.mjs:7252
+      if (wecomCleanup.causalTask(task)) {
+                       ^
+  
+  TypeError: Cannot read properties of null (reading 'causalTask')
+      at expireWindowsTasks (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/index.mjs:7252:22)
+      at buildDiagnostics (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/index.mjs:7718:62)
+      at logStartupDiagnostics (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/index.mjs:8067:29)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/index.mjs:306:7
+  
+  Node.js v25.9.0
+  
+      at start (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-physical-cleanup.http.test.mjs:34:119)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Object.restart (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-physical-cleanup.http.test.mjs:75:164)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-physical-cleanup.http.test.mjs:105:3)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'fail',
+    diff: 'simple'
+  }
+
+test at server/wecom-physical-cleanup.http.test.mjs:112:1
+✖ authenticated JSON: repeated challenge cannot renew expired3s and another phone still dispatches (3310.203875ms)
+  AssertionError [ERR_ASSERTION]: POST /api/v1/windows-agents/fixture-agent/wecom-cleanup/65f7459d-1a52-4fb2-86b5-b614761b8e69/proof: server_error
+  
+  500 !== 409
+  
+      at Object.req (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-physical-cleanup.http.test.mjs:38:349)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-physical-cleanup.http.test.mjs:115:3)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 500,
+    expected: 409,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server/wecom-preview.http.test.mjs:13:1
+✖ preview HTTP covers authentication, eight phones, leases, original-id reuse and restart (561.6545ms)
+  Error: fixture server failed: 48-800c-19d588b0ea92 method=POST path="/api/v1/windows-agents/fixture-agent/wecom-preview-tasks/e0eabb9f-0295-4e52-947b-9fc9d89205d2/send-claim" status=201 duration_ms=1 actor=auth ip=127.0.0.1
+  2026-11-02T17:53:48.464Z received SIGTERM, shutting down
+  file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/index.mjs:7252
+      if (wecomCleanup.causalTask(task)) {
+                       ^
+  
+  TypeError: Cannot read properties of null (reading 'causalTask')
+      at expireWindowsTasks (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/index.mjs:7252:22)
+      at buildDiagnostics (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/index.mjs:7718:62)
+      at logStartupDiagnostics (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/index.mjs:8067:29)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/index.mjs:306:7
+  
+  Node.js v25.9.0
+  
+      at start (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-preview.http.test.mjs:39:43)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-preview.http.test.mjs:188:16)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)

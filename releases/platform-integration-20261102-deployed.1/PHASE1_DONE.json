@@ -1,0 +1,28 @@
+{
+  "startedAt": "2026-11-02T06:11:13.747748+00:00",
+  "finishedAt": "2026-11-02T06:11:39.055172+00:00",
+  "state": {
+    "phone-cloud-platform": {
+      "status": "exited",
+      "exitCode": 1,
+      "finishedAt": "2026-11-02T06:11:38.191835364Z",
+      "image": "sha256:a4db69c8a61befac7591924e354227146cb97fc6574556da35a2b86b7ddd6b4d"
+    },
+    "phone-cloud-platform-xhs-batch-1": {
+      "status": "exited",
+      "exitCode": 0,
+      "finishedAt": "2026-11-02T06:11:15.886161785Z",
+      "image": "sha256:be21335b016bf17e24cd0e0580f9e536944401c89f64506536d980edd7c75608"
+    }
+  },
+  "poolEnabled": false,
+  "unfinishedRequests": 7,
+  "physicalReservationsRetained": 13,
+  "blockers": [],
+  "cutoffBackup": {
+    "path": "/opt/phone-cloud-platform/staging/platform-integration-20261102-rc.1/rollback/cutoff-records.json",
+    "sha256": "1ddebe4a3bf7433906efd546bf0d40a88e7d8a060a22dcd1cd9d0ba9abc3194c",
+    "bytes": 1027584
+  },
+  "next": "root must review cutoff and authorize Windows/main start; no implicit activation"
+}

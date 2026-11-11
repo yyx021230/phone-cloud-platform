@@ -1,0 +1,101 @@
+{
+  "patchFiles": [
+    {
+      "path": "package-lock.json",
+      "candidateSha256": "e9ed7d7a248b0114cbbdf00117a3ca13fd64a5c75a6c31e6ca8dbcd1cbe0f7d1",
+      "beforeSha256": "26340b426015063767d8ef1c2a31be05912e8004c4809f98d3b80b9b81cfeb3a"
+    },
+    {
+      "path": "package.json",
+      "candidateSha256": "1112d5bbc5703eb8de987472ef5602edc62255125c6ff419be9d8efd4e898bf2",
+      "beforeSha256": "753bc70ad3116f3fcf3d18d99ff79b8b9b04efd1af477264101a7d77d7cfa438"
+    },
+    {
+      "path": "scripts/alipay_name_lookup.py",
+      "candidateSha256": "07bc870698663b4c63c071a8743b182972658db1d37b015eb79417c01cec87b2",
+      "beforeSha256": "30e0c828d981f1e9fd9c62d6b6e48141c7c13ae25c5e899d68992ce04d2df024"
+    },
+    {
+      "path": "scripts/lookup_page_actions.py",
+      "candidateSha256": "e281eaf4d7396a8f4ba4a6f18bee47131005ddfa8db90cc94c46cb2f3c4811cc",
+      "beforeSha256": "5ba57a26a64b21c0989de4fee19ec60561cdef5a41203b066d40ee54ff429267"
+    },
+    {
+      "path": "scripts/native/xhs-native-pair.jar",
+      "candidateSha256": "9e696792b37dd269803d230ef1e97754bf895b1d2b852e8d23ae838c757cbed3",
+      "beforeSha256": null
+    },
+    {
+      "path": "scripts/wecom_invite_preview.py",
+      "candidateSha256": "11bd468f1ca57ae193ea3e41f7911aebe404d1e7ad8f63898ccab8f5eb8d2f67",
+      "beforeSha256": null
+    },
+    {
+      "path": "scripts/wecom_remark_preview.py",
+      "candidateSha256": "bcfadd95c6ad69b5b957d49e37f450ff1f1b0911411047dc7393dedf746d8207",
+      "beforeSha256": null
+    },
+    {
+      "path": "scripts/xhs_airtest_poco.py",
+      "candidateSha256": "8abb00385d12ce99dc5995ae1424f226a5e9f887461c920594e68d27f44fd4e1",
+      "beforeSha256": "e6bdc2d96adf9a7b5e130eac72a0479d7790732831cfda71bf0230923ceccdaa"
+    },
+    {
+      "path": "scripts/xhs_list_ocr.py",
+      "candidateSha256": "4cc3d8ae042c6951b65ec93cc755e57cbed0440393b4c841bda20f76def3a516",
+      "beforeSha256": "b4c3ca931b060e049b3b5216a2a0ea4d408feec431e347b452f52bcb710408e7"
+    },
+    {
+      "path": "scripts/xhs_native_elements.py",
+      "candidateSha256": "e94f3066cb9e99c50ed3f7f18ae6c56a32c543774fefa863d125df08f173d46e",
+      "beforeSha256": null
+    },
+    {
+      "path": "scripts/xhs_native_window.py",
+      "candidateSha256": "1b15e62ccad9e1d3fc4b81bbe8b5a1adb57f7f913b57472ba54283415e0ba772",
+      "beforeSha256": "b06c715c4e31d8d37190a5a5111c808c29ddb1cab5cf7470f9d18fbb1c27ad87"
+    },
+    {
+      "path": "scripts/xhs_ocr_digits.png",
+      "candidateSha256": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f",
+      "beforeSha256": "cda54de06b60eef1a33cfbd218fb7b2eda0982bc0e3724afd8cf0392a4ca4164"
+    },
+    {
+      "path": "scripts/小红书数据同步.py",
+      "candidateSha256": "cbf038e297f3b67c8b4b681bf93b22e6026c7683d263d1c4fc62b56897de63e0",
+      "beforeSha256": "0f17e54d9ec84949f987682d44ba4886c1bc8a3b1a8bcb5a4bc3ec42595bc83e"
+    },
+    {
+      "path": "src/index.mjs",
+      "candidateSha256": "884bc370558e6b0b3f2d0d46dee309da4467757b613c0da03576de8f9b34df74",
+      "beforeSha256": "eafc722b93788d82bc788ed79f963b17224b2d8c30528bfbfbcedb83fe9a9dd2"
+    },
+    {
+      "path": "src/lookup-page-recovery.mjs",
+      "candidateSha256": "c15f74dad44d9199f0113fed9583fc331af7fc23e89242d20ab45357afacd499",
+      "beforeSha256": "c3ae74f3dbcf699a329f249b40f8c7c6218c0ddf092c7bdbacb30c9564157be1"
+    },
+    {
+      "path": "src/lookup-reader-lifecycle.mjs",
+      "candidateSha256": "9ea791d3db7c185c889c142393c3255c69fe581291fa7d6b81a880c6fbd62860",
+      "beforeSha256": null
+    },
+    {
+      "path": "src/lookup-recovery-trace.mjs",
+      "candidateSha256": "7e26269618903b610784dca34331672d3e6d2d7fd0962039b3ed8c36231edd9d",
+      "beforeSha256": "78c1986687a288f200c6a32b8705ebe4ae25bc3191316d20b7aec13201cda2ef"
+    }
+  ],
+  "archiveSha256": "f977f6e850cf23cc3de1dd761305c26dc9259d90cc368b07b6ea5dd33330b436",
+  "stage": "D:\\PhoneCloud\\staging\\platform-integration-20261028-rc.2",
+  "syntaxChecksPassed": true,
+  "npmDependenciesUnchanged": true,
+  "frozenHashes": {
+    "adb-auth-env.cjs": "9c3aa5affb9243f255f2bf74376ee7bb01c9f9171989f5477146263ee7e2bb4d",
+    "src/screen-stream.mjs": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+    "src/screen-webrtc-publisher.mjs": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04",
+    "src/config.mjs": "b233775c589ab22e6662a23bb82e507c9a3f635f1112709bfdae24d854a5d254",
+    "vendor/phone-cloud-whip-publisher.exe": "7431037b0a9826a252cc1f1fd6edf4af7bc70cd25cad887412eb5ed3d4630e32"
+  },
+  "installed": false
+}

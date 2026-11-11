@@ -1,0 +1,14 @@
+{
+  "at": "2026-11-02T01:58:52.458359+00:00",
+  "restored": [
+    149,
+    152
+  ],
+  "beforeRevision": 164,
+  "afterRevision": 165,
+  "originalEnabledRestored": true,
+  "otherConfigUnchanged": true,
+  "cleanupConfirmed": true,
+  "ownedSessionsReleased": true,
+  "externalControlPreserved": []
+}

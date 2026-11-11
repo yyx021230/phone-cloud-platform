@@ -1,0 +1,14 @@
+{
+  "at": "2026-11-02T06:14:37.206390+00:00",
+  "sourceCommit": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "mainImage": "sha256:4468f5ce0f2107b8df7c4ab6cb90bb0dc584e41d0a3a55a8a9dee3c1e20440e0",
+  "mainStartedAt": "2026-11-02T06:13:30.979830333Z",
+  "mainHealthy": true,
+  "batchImage": "sha256:be21335b016bf17e24cd0e0580f9e536944401c89f64506536d980edd7c75608",
+  "batchRunning": true,
+  "poolGate": "still_disabled_until_separate_root_clearance",
+  "activeManifest": "not_yet_updated",
+  "physicalReservations": "retained",
+  "initialHealthWindowTooShort": true,
+  "mainNotRestarted": true
+}

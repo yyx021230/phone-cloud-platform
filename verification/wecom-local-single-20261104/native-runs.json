@@ -1,0 +1,617 @@
+[
+  {
+    "evidenceFile": "200-flow-1793788732804043000.private.json",
+    "number": "200",
+    "elapsedMs": 43506,
+    "lateReadMs": null,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "stopped",
+      "code": "remark_observation_budget_exhausted",
+      "readyToSend": false,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "profile",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        }
+      ],
+      "remarkSaveStatus": "unknown",
+      "remarkPrepared": false,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "fill_description"
+        },
+        {
+          "step": "save_remark"
+        }
+      ],
+      "remarkPhoneSet": false
+    },
+    "cleanupConfirmed": true,
+    "screenshotSha256": "afee80536e8905d7293dbd6b3c91e3e3340ac07933b42eb481d4a9d0b8cfe7e3"
+  },
+  {
+    "evidenceFile": "200-flow-1793790089983418000.private.json",
+    "number": "200",
+    "elapsedMs": 107125,
+    "lateReadMs": null,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "stopped",
+      "code": "observation_budget_exhausted",
+      "readyToSend": false,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "profile",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        }
+      ],
+      "remarkSaveStatus": "not_attempted",
+      "remarkPrepared": false,
+      "remarkEvents": [],
+      "remarkPhoneSet": false
+    },
+    "cleanupConfirmed": true,
+    "screenshotSha256": "abad4449608f57eccf36b23d5e1daf1ff79e467aa775a411b27dcd50a1209ce8"
+  },
+  {
+    "evidenceFile": "200-flow-1793790269651117000.private.json",
+    "number": "200",
+    "elapsedMs": 44115,
+    "lateReadMs": null,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": true,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "confirmed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "fill_description"
+        },
+        {
+          "step": "save_remark"
+        },
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "cleanupConfirmed": true,
+    "screenshotSha256": "ce93880246ba350bba8dd21bc845eb079726fb870e5c74a198ac7ae4577b8eef"
+  },
+  {
+    "evidenceFile": "200-flow-1793790389622364000.private.json",
+    "number": "200",
+    "elapsedMs": 88821,
+    "lateReadMs": 508,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "stopped",
+      "code": "page_changed_before_action",
+      "readyToSend": false,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "profile",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        }
+      ],
+      "remarkSaveStatus": "not_needed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "cleanupConfirmed": true,
+    "screenshotSha256": "9ce85d7335f7f4c3c42c02cfc24ed09ad18d9c1665a4c85ef8f4cd9f41aa8e1e"
+  },
+  {
+    "evidenceFile": "200-flow-1793790669030915000.private.json",
+    "number": "200",
+    "elapsedMs": 171804,
+    "lateReadMs": 327,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "stopped",
+      "code": "timeout",
+      "readyToSend": false,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "profile",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        }
+      ],
+      "remarkSaveStatus": "not_attempted",
+      "remarkPrepared": false,
+      "remarkEvents": [],
+      "remarkPhoneSet": false
+    },
+    "cleanupConfirmed": true,
+    "screenshotSha256": "fec9bed3bfa591324e2e83e6d6aa82dd1e975cced49cdc180e327fb42aec0d28"
+  },
+  {
+    "evidenceFile": "200-flow-1793790840696499000.private.json",
+    "number": "200",
+    "elapsedMs": 122394,
+    "lateReadMs": null,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "stopped",
+      "code": "observation_budget_exhausted",
+      "readyToSend": false,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "profile",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        }
+      ],
+      "remarkSaveStatus": "not_attempted",
+      "remarkPrepared": false,
+      "remarkEvents": [],
+      "remarkPhoneSet": false
+    },
+    "cleanupConfirmed": true,
+    "screenshotSha256": "78662dd18449f30d7e724d32b03ab153986d84d99d3f8ba900c5055e207c33d2"
+  },
+  {
+    "evidenceFile": "200-flow-1793791072610721000.private.json",
+    "number": "200",
+    "elapsedMs": 114918,
+    "lateReadMs": null,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "stopped",
+      "code": "observation_budget_exhausted",
+      "readyToSend": false,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "profile",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        }
+      ],
+      "remarkSaveStatus": "not_attempted",
+      "remarkPrepared": false,
+      "remarkEvents": [],
+      "remarkPhoneSet": false
+    },
+    "cleanupConfirmed": true,
+    "screenshotSha256": "1638252be9a45ca68c77adc4af9936cf363ffb3534344aa2f6c96de4ba7b93dd"
+  },
+  {
+    "evidenceFile": "202-flow-1793788816272859000.private.json",
+    "number": "202",
+    "elapsedMs": 70758,
+    "lateReadMs": null,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "stopped",
+      "code": "observation_budget_exhausted",
+      "readyToSend": false,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "profile",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        }
+      ],
+      "remarkSaveStatus": "not_attempted",
+      "remarkPrepared": false,
+      "remarkEvents": [],
+      "remarkPhoneSet": false
+    },
+    "cleanupConfirmed": true,
+    "screenshotSha256": "bc545b4015d1727b936efbc0773c193f428df8fe005cc05d8b661da4593bda12"
+  },
+  {
+    "evidenceFile": "202-flow-1793789265263416000.private.json",
+    "number": "202",
+    "elapsedMs": 40087,
+    "lateReadMs": null,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "stopped",
+      "code": "page_changed_before_action",
+      "readyToSend": false,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "profile",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        }
+      ],
+      "remarkSaveStatus": "not_attempted",
+      "remarkPrepared": false,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        }
+      ],
+      "remarkPhoneSet": false
+    },
+    "cleanupConfirmed": true,
+    "screenshotSha256": "f173f3fd3fa595e9b95c533c210790b42c80938006d6b68c8f191af401883cfc"
+  },
+  {
+    "evidenceFile": "202-flow-1793789441219162000.private.json",
+    "number": "202",
+    "elapsedMs": 53116,
+    "lateReadMs": null,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": true,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "confirmed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "fill_remark"
+        },
+        {
+          "step": "fill_description"
+        },
+        {
+          "step": "save_remark"
+        },
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "cleanupConfirmed": true,
+    "screenshotSha256": "45c5bba1d633f4da19bd293500b251d99e9b64d72ceb28be2c5494c0e3be6ff0"
+  },
+  {
+    "evidenceFile": "202-flow-1793790105663859000.private.json",
+    "number": "202",
+    "elapsedMs": 14003,
+    "lateReadMs": null,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "stopped",
+      "code": "page_changed_before_action",
+      "readyToSend": false,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "add",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        }
+      ],
+      "remarkSaveStatus": "not_attempted",
+      "remarkPrepared": false,
+      "remarkEvents": [],
+      "remarkPhoneSet": false
+    },
+    "cleanupConfirmed": true,
+    "screenshotSha256": "76a5c77cfefe749b9386bfac8606730d27f6d2f2ff7cfe72f256266646cd67ab"
+  },
+  {
+    "evidenceFile": "202-flow-1793790253330714000.private.json",
+    "number": "202",
+    "elapsedMs": 27795,
+    "lateReadMs": null,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "not_needed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "cleanupConfirmed": true,
+    "screenshotSha256": "6c4f0bc31a5e766d4e2cf0bfed180601028772896b79d8e7101ecefe9dfaa618"
+  },
+  {
+    "evidenceFile": "202-flow-1793790370322773000.private.json",
+    "number": "202",
+    "elapsedMs": 69522,
+    "lateReadMs": 837,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "stopped",
+      "code": "page_changed_before_action",
+      "readyToSend": false,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "profile",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        }
+      ],
+      "remarkSaveStatus": "not_needed",
+      "remarkPrepared": false,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "cleanupConfirmed": true,
+    "screenshotSha256": "5a51b7aa84c9618869e9df69557ff7b11e3c2da2238bbdbf8a0ee7796ae7df28"
+  },
+  {
+    "evidenceFile": "202-flow-1793790571310239000.private.json",
+    "number": "202",
+    "elapsedMs": 74083,
+    "lateReadMs": 749,
+    "result": {
+      "workflowVersion": "wecom-customer-preview-v2",
+      "status": "ready_before_send",
+      "code": "stopped_before_send",
+      "readyToSend": true,
+      "invitationSent": false,
+      "remarkSaved": false,
+      "stage": "preview",
+      "events": [
+        {
+          "step": "open_menu"
+        },
+        {
+          "step": "open_add"
+        },
+        {
+          "step": "open_search"
+        },
+        {
+          "step": "enter_phone"
+        },
+        {
+          "step": "search"
+        },
+        {
+          "step": "open_preview"
+        }
+      ],
+      "remarkSaveStatus": "not_needed",
+      "remarkPrepared": true,
+      "remarkEvents": [
+        {
+          "step": "open_remark"
+        },
+        {
+          "step": "close_remark"
+        }
+      ],
+      "remarkPhoneSet": true
+    },
+    "cleanupConfirmed": true,
+    "screenshotSha256": "d6b69f1341afc7697c1357c22b22830e8e86445acff573db4babd5a9ae0ab30a"
+  }
+]

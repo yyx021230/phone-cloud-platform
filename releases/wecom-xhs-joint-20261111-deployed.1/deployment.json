@@ -1,0 +1,98 @@
+{
+  "version": "wecom-xhs-joint-20261111-deployed.1",
+  "atUtc": "2026-11-11T01:20:31Z",
+  "status": "deployed_pending_native_acceptance",
+  "candidateTag": "wecom-xhs-joint-20261111-rc.1",
+  "candidateCommit": "e50452d4d01a03c46c0e14ba9d34e79b0bf7f85e",
+  "productionBaseActiveSha256": "6290918bcc8029695916be11a076ffa824f0b27dabe8e5e756b5f8b1e08b0dd9",
+  "image": "sha256:fc0bb8c3458470ad21397fa16aed8b5207882a0fe112f4107d7b89ef094c52ce",
+  "imageTag": "phone-cloud-platform:wecom-xhs-joint-20261111-rc.1",
+  "containerId": "55de67a8cf46fc71094d8759a0d44bca8fb4d1f410002eca9747027f4b661308",
+  "mainPid": 1730700,
+  "startedAtUtc": "2026-11-11T01:13:54.196513707Z",
+  "stage": "/opt/phone-cloud-staging/wecom-xhs-joint-20261111-rc.1",
+  "composeOverlay": "/opt/phone-cloud-staging/wecom-xhs-joint-20261111-rc.1/compose.pending.json",
+  "composeOverlaySha256": "6e28869c5c0e0d87dabd2391918edf34b149a3048c6956e72fbe51797794d8d4",
+  "cloudFiles": {
+    "public/app.js": {
+      "before": "946d396cd2846d3a5e7d18e80d8bdfa685c2bb53fbdf95bef0182435cdba66f9",
+      "after": "33f930c2661395e90e9f5fa08f465b4f6415b57647e8ae5a14ca87cea7f98ea4"
+    },
+    "public/index.html": {
+      "before": "63bd54b052795277a8725d60934753c721daa4db93dc5f5c460338889fcd7b71",
+      "after": "d53d78e4e7900a656186848e4dcbd9769e95e42f4e77c1a3e8b49782c2ed1ca1"
+    },
+    "public/xhs-daily-admin.css": {
+      "before": null,
+      "after": "190f0afd65026fef45d6a42e323747879f0cea7807ba68fd22248a4ca72d493e"
+    },
+    "public/xhs-daily-admin.js": {
+      "before": null,
+      "after": "00eb4e016bfcc3986d4721081b88e16c159db57717e2299fc14fcd2c16beb0c7"
+    },
+    "server/index.mjs": {
+      "before": "e65c591b962056b5a03460c9b41fc127add40b5e42ba88355f9f6c6db3303754",
+      "after": "8ef05e6ab142fea4aef4137c3550243d0fb00b7a839d1bbc3ba63efd4f1ace60"
+    },
+    "server/xhs-batch/admin-history.mjs": {
+      "before": null,
+      "after": "2e7616650e2a66193b830c6f00a2d09c8f10563630dd1edf1e156003884621d8"
+    },
+    "server/wecom-preinput-recovery.mjs": {
+      "before": "c6ce123dc7e4e647e84f2101bc359221216b4f1b7ef25f5a2528214dceae6a71",
+      "after": "de5de848afa9e9e04ec13d6efc2614e019ec33345b4339b82c9a48130c0fbb2c"
+    }
+  },
+  "windows": {
+    "scripts/wecom_system_runtime.py": {
+      "before": "95e87ed27257eaea55f0be8e9c774cdaa020b2770777586719b782b80118316e",
+      "after": "1c609927302bc8bca9b82404665ab7679682b9f609d5ddd11baba7c7bb4b623c"
+    },
+    "scripts/wecom_qa_tcp_runtime.py": {
+      "requiredUnchanged": "4f9202e1dd14cab5775d5d22143844b85a854c61ab16ff0e2ee8dffb6d036a7a"
+    }
+  },
+  "d075": "live_verified_before_and_after",
+  "dockerHealth": "healthy",
+  "admissionGateRemoved": true,
+  "rollbackPerformed": false,
+  "xhs": {
+    "peerThread": "云手机小红书数据同步",
+    "peerAcceptedAt": "2026-11-11T09:19:00+08:00",
+    "adminListAndDetail200": true,
+    "anonymous401": true,
+    "dailyBatch": {
+      "day": "2026-11-11",
+      "total": 137,
+      "succeeded": 99,
+      "failed": 26,
+      "skipped": 12,
+      "confirmedLoggedOut": 14
+    },
+    "batchContainerId": "4ca5d738c36e4a9d622901e1eff2accc38ab420b47ba5d4a2ce00cb3eb865e5a",
+    "notifierContainerId": "714874e75fbd1f4b9d578e8a0140a3679723b02b3aadf1e1ffead20428ff1727",
+    "sidecarIdsAndStartTimesPreserved": true,
+    "ordinaryUser": "isolated_http_verified_production_session_unavailable",
+    "browserRenderVerified": false,
+    "actualFeishuDeliveryVerified": false
+  },
+  "wecom": {
+    "cleanup202": "released_after_physical_recovery_proof",
+    "cleanup200": "released_after_physical_recovery_proof",
+    "200MaintenanceRecoveryAttempts": 3,
+    "200TransientBlockers": [
+      "parallel_202_recovery",
+      "short_lived_python_command"
+    ],
+    "preview202": "submitted",
+    "preview200": "pending",
+    "formalCpsDispatchEnabled": false,
+    "productionCallbackVerified": false
+  },
+  "validation": {
+    "jointXhsSuiteIsolatedPostgresPassed": 47,
+    "jointWecomCleanupPassed": 77,
+    "rootSyntaxPassed": true,
+    "d075RepositoryCheckPassed": true
+  }
+}

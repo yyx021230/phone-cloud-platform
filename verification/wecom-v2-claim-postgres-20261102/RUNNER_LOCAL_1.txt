@@ -1,0 +1,23 @@
+✔ fragmented frames preserve bytes; oversized/SSL startup is rejected (1.111ms)
+✔ only one exact COMMIT/I/no-ErrorResponse tuple confirms backend completion (5.105833ms)
+✔ gate refuses success when ROLLBACK tag (0.157333ms)
+✔ gate refuses success when error present (0.052583ms)
+✔ gate refuses success when transaction still open (0.049ms)
+✔ gate refuses success when no command completion (0.039583ms)
+✔ gate refuses success when two command completions (0.046666ms)
+✔ before-COMMIT drop sends no COMMIT; consumed fault is not applied again (0.087375ms)
+✔ observes only matching fault with an additional owned transaction listener (1.218875ms)
+✔ fixture observer alone cannot make missing M2 owned listener green (0.155542ms)
+✔ other client error must fail even when original wire fault exists (0.086333ms)
+✔ different error and absent wire proof both fail (0.076625ms)
+✔ bad COMMIT tuples cannot justify a client error (0.102375ms)
+✔ idle pool events always fail and duplicate attachment is refused (0.063708ms)
+✔ expected observation count is bounded (0.103125ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 65.367667

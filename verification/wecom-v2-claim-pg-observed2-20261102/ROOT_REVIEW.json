@@ -1,0 +1,131 @@
+{
+  "runnerCommit": "bab3b9d49f33a68a033e74fa3acb753ed8d7aba7",
+  "artifactRoot": "/private/tmp/pc-wecom-v2-claim-pg-o4fitmi8",
+  "startedAtUtc": "2026-11-02T14:09:59.356164+00:00",
+  "actualTests": 18,
+  "tapPass": 18,
+  "tapFail": 0,
+  "caseNames": [
+    "basic-main",
+    "basic-clone",
+    "same-physical",
+    "different-physical",
+    "mapping-missing",
+    "mapping-disabled",
+    "mapping-rebind",
+    "duplicate",
+    "legacy-and-uniques",
+    "write-rollback",
+    "commit-after",
+    "commit-before",
+    "progress",
+    "regression",
+    "old-lock-orders",
+    "read-only-reconcile",
+    "ddl-negatives",
+    "client-context"
+  ],
+  "sourceAfterMatched": true,
+  "fullMissingRowMatrix": {
+    "name": "read-only-reconcile",
+    "allAbsentNoRewrite": true,
+    "missing": [
+      {
+        "kind": "anchor",
+        "refused": true
+      },
+      {
+        "kind": "task",
+        "refused": true
+      },
+      {
+        "kind": "job",
+        "refused": true
+      },
+      {
+        "kind": "hold",
+        "refused": true
+      },
+      {
+        "kind": "business",
+        "refused": true
+      },
+      {
+        "kind": "ledger",
+        "fkPreventedDelete": true
+      }
+    ]
+  },
+  "actualServerLockProof": {
+    "oldBackendPid": 44319,
+    "leafBackendPid": 44325,
+    "controlBackendPid": 44326,
+    "oldState": "active",
+    "waitEventType": "Lock",
+    "blockingPids": [
+      44325
+    ],
+    "reads": 1,
+    "elapsedMs": 0.9965000000000259
+  },
+  "samePhysical": {
+    "name": "same-physical",
+    "results": [
+      "recorded",
+      "unavailable"
+    ],
+    "backendPids": [
+      44308,
+      44309
+    ],
+    "narrowAnchorOnly": true,
+    "oldBusinessAdmissionNotExercised": true
+  },
+  "faults": [
+    {
+      "case": "commit-after",
+      "stored": "recorded",
+      "backendPids": [
+        44320,
+        44321
+      ],
+      "originalDml": 5
+    },
+    {
+      "case": "commit-before",
+      "stored": "unknown",
+      "backendPids": [
+        44322,
+        44323
+      ],
+      "originalDml": 5
+    },
+    {
+      "case": "client-context",
+      "stored": "unknown",
+      "backendPids": [
+        44379
+      ],
+      "originalDml": 5
+    }
+  ],
+  "ownedNodePid": 44305,
+  "nodeExit": 0,
+  "nodeGroupAbsent": true,
+  "ownedPgPid": 44293,
+  "pgExit": 0,
+  "successDbRemoved": true,
+  "oldFailedDbRetained": true,
+  "noActiveOwnedCluster": true,
+  "originalArtifacts": {
+    "fixture.json": "029561b1c0535d3cc1eb3d20ab52b35ce8ca6c8cfedfb0615c685a478e3310e3",
+    "POSTGRES.txt": "b09ab26189333dff474d99356338c188ee301d75d22a9356094ec0a39dbd693c",
+    "PG_EVIDENCE.json": "8f11c3690bb6e659ec60b198940627b502607d8f6c1b8d9b523817800c876d76",
+    "CREATEDB.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "INITDB.txt": "d805ac25ef45806532ceefa1158e2c2d8e410a5c8b38cb0931c8f341d8ca0cb7",
+    "NODE_TEST_OUTPUT.txt": "5388de2639b5b46d6dd73dbd971094118c7e6969abc21d2e42e79be156f4b7b9",
+    "RUN_RECEIPT.json": "17ef3ff26913ea0c9cbe28f10a34535fe3b5b82d7b305986e21d76ebdd5def92"
+  },
+  "phoneAcceptance": false,
+  "productionChanged": false
+}

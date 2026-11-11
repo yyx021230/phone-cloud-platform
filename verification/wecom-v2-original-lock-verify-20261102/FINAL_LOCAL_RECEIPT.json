@@ -1,0 +1,49 @@
+{
+  "commands": [
+    {
+      "command": [
+        "node",
+        "--test",
+        "verification/wecom-v2-original-lock-verify-20261102/owner-fixture.test.mjs"
+      ],
+      "exitCode": 0,
+      "output": "FINAL_LOCAL_0.txt",
+      "sha256": "7d9113e5aafba55198093aa222058dc3b24128fee5b534537cb5a4570ec47721"
+    },
+    {
+      "command": [
+        "python3",
+        "-I",
+        "-B",
+        "verification/wecom-v2-original-lock-verify-20261102/test_owned_runner.py"
+      ],
+      "exitCode": 0,
+      "output": "FINAL_LOCAL_1.txt",
+      "sha256": "f7f7e061dc82cf6e892998b691075b9c32dc963103dda742e1a4191a9adedf7d"
+    },
+    {
+      "command": [
+        "node",
+        "--test",
+        "verification/wecom-v2-original-lock-verify-20261102/fixture-names.test.mjs"
+      ],
+      "exitCode": 0,
+      "output": "FINAL_LOCAL_2.txt",
+      "sha256": "2305dcb2cd5425ff8ded16600004163e11f2e9884aa540b9a476fffed0e9850f"
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "verification/wecom-v2-original-lock-verify-20261102/postgres.integration.mjs"
+      ],
+      "exitCode": 0,
+      "output": "FINAL_LOCAL_3.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "sourceManifestSha256": "d8d817e74eb327d0615e613d9672644f498d63849f6fab0d67e37bc3e364770c",
+  "sourceGuardOnlyMatched": 17,
+  "dependencyGuardOnlyMatched": 6,
+  "noPgSqlWindowsDeviceOrServiceActions": true
+}

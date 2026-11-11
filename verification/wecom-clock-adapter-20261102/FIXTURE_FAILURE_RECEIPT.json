@@ -1,0 +1,12 @@
+{
+  "tests": 34,
+  "pass": 32,
+  "fail": 2,
+  "cause": "nonce/foreign-child fixture responses lacked required sample payload; strict schema correctly rejected earlier than intended branch",
+  "sha256": {
+    "authority.mjs": "74353302bd9b0c15b17856800ee02a1b955e83bb374922f6e6d37a26906d48dd",
+    "authority.test.mjs": "6e9f0cbfefc71fafb785cd08daf50e2dae0da62a4ebac8d94321b95593ae340a",
+    "fixture-child.mjs": "61693e772552ea999e7244a2a5a07da1d064b6c69b7841259347fcfcd5096dd8"
+  },
+  "outputSha256": "af40155fb600972118aa02b0078b40d664e775e0cd8095ea9a7d08ac4028e2ad"
+}

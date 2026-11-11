@@ -1,0 +1,26 @@
+{
+  "baseCommit": "2bae48b706b4d2742c74a6c1624605e2c9908fab",
+  "importAllowlist": [
+    "server/wecom-cleanup-v2-host.mjs",
+    "server/wecom-cleanup-v2-host.test.mjs"
+  ],
+  "existing14ProductSourcesUnchanged": true,
+  "rootFixedSourceMatchesGitRc1": true,
+  "files": {
+    "server/wecom-cleanup-v2-host.mjs": "c409a9e660e6098e9ef72ba70c659d23047a0b93f7c7007bedc8a79539102f70",
+    "server/wecom-cleanup-v2-host.test.mjs": "f356448724d42dd721b27d4b11638372ae6ca215ce35ac559b729e02decfcb74",
+    "docs/PROJECT_DEVELOPMENT.md": "6ed6d88fe6f9b44efc7b8b4b3a2bee225d84ce9b7b94504998a4c324b8dd0750",
+    "verification/wecom-v2-host-identity-20261102/M1_OUTPUT.txt": "6f8f408a544a14f464a3578fde2b0ecdc55ff0f02a8e4e20c09f9bd6714e1f8f",
+    "verification/wecom-v2-host-identity-20261102/RED_OUTPUT.txt": "e1ba5f361cd7be23f94f1b8f6eab5a88fcb14b3ebf556d0751a83e8957f07fdb",
+    "verification/wecom-v2-host-identity-20261102/RED_RECEIPT.json": "a1d9981b9bd20466385196f2f8a35eca7b685cf7ecd33e49907be353610e60bf",
+    "verification/wecom-v2-host-identity-20261102/ROOT_EXTRA_ORIGINAL.mjs.txt": "84331299a5631e54543d3846a06844e8432fcedbdbdbfff9fc731660f6d2bd66",
+    "verification/wecom-v2-host-identity-20261102/ROOT_FIXED_RC1/OUTPUT.txt": "852d922392e2ef2937373c28c64758a961941784d216c2c0510f67eee10073b1",
+    "verification/wecom-v2-host-identity-20261102/ROOT_FIXED_RC1/counterexamples.mjs.txt": "01d946445ea0894eaa6eb39a5a39296b679fa8c283788d504790b45c35827819",
+    "verification/wecom-v2-host-identity-20261102/ROOT_FIXED_RC1/wecom-cleanup-v2-host.mjs.txt": "66ba8759717805e248d40cd45ffd79b289a850e3fd337670e8501cb56afbe446",
+    "verification/wecom-v2-host-identity-20261102/TASK.md": "d4168ae82141415ffe1f8b2cd3eb1bda901088dfa7acc46d40cc7f635f14ccdd",
+    "verification/wecom-v2-host-identity-20261102/TEST_RECEIPT.json": "e03c0285254e41635ad53ce11244fdb1f1202ea739bc2a3ae30f43d1fb038306",
+    "verification/wecom-v2-host-identity-20261102/V1_REGRESSION_OUTPUT.txt": "d7b93d8399bbce1face1797df0e07dc9afe42d3edd1b7f40498f45c4b64625eb",
+    "verification/wecom-v2-host-identity-20261102/wecom-cleanup-v2-host.mjs.red.txt": "66ba8759717805e248d40cd45ffd79b289a850e3fd337670e8501cb56afbe446",
+    "verification/wecom-v2-host-identity-20261102/wecom-cleanup-v2-host.test.mjs.red.txt": "42e7efea19a1289d7249519c79456cec818487cc399c9600062c82326d5164d0"
+  }
+}

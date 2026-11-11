@@ -1,0 +1,1016 @@
+{
+  "at": "2026-11-03T04:35:40.174624+00:00",
+  "scope": "isolated_native_main_slot_preview_not_production_task_API",
+  "customerTail": "6441",
+  "invitesSent": 0,
+  "onlineAtStartAndFinish": 49,
+  "onlineModels": 12,
+  "eligibleAndActuallyExercised": 17,
+  "exercisedModels": 7,
+  "completeReadyBeforeSendPasses": 0,
+  "mixedCandidateVersions": true,
+  "clonesCovered": false,
+  "qaCandidate": "3029d6108973a9ae65764f7fffbc2ab89762e560",
+  "qaTag": "wecom-fleet-preview-20261103-rc.6",
+  "preflight": {
+    "eligible": [
+      "25",
+      "59",
+      "69",
+      "71",
+      "78",
+      "82",
+      "91",
+      "98",
+      "106",
+      "123",
+      "125",
+      "127",
+      "143",
+      "144",
+      "145",
+      "173",
+      "185"
+    ],
+    "lookupReserved": [
+      "10",
+      "79",
+      "86",
+      "87",
+      "101",
+      "112",
+      "116",
+      "138",
+      "142",
+      "155",
+      "157",
+      "159",
+      "162",
+      "163",
+      "183"
+    ],
+    "otherOutstandingWork": [
+      "23",
+      "43",
+      "75",
+      "80",
+      "81",
+      "92",
+      "93",
+      "95",
+      "97",
+      "102",
+      "113",
+      "114",
+      "124",
+      "126",
+      "184",
+      "186"
+    ],
+    "unconfirmed": [
+      "191"
+    ],
+    "preflightAt": "2026-11-03T03:13:59.061383+00:00",
+    "notCurrentOccupancyGuarantee": true
+  },
+  "trials": [
+    {
+      "number": "59",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "01745010a066d312a1787c48bce4420d9fa55f94",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "remark_edit",
+      "elapsedMs": 187655,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "00608f14f24adff0bb22d18b9264303ba93bc029ff18ebcd8f6f36e9bff15edc",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "145",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "07369085a5fb4c626706f0a4d5e0acaf43ea8417",
+      "previewStatus": "blocked",
+      "previewCode": "device_lease_lost",
+      "primaryFailure": "device_lease_lost",
+      "authorityFailure": "qa_authority_os_error",
+      "failurePhase": "wecom_launch",
+      "elapsedMs": 12780,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": false,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-original-result.json",
+          "sha256": "9cba98ecb5f4913441414c28b4b33ad29c4289ffcc4c32bec4790b93f829eae0"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "9feebae89c560f0a8daa1b5c464e32388c3878da0ff9bd6f9cf9c5ce236d5cc4",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "25",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "f27ba1e3b358ce9992739c1d8d80c7a03aebe79f",
+      "previewStatus": "blocked",
+      "previewCode": "preview_cleanup_unconfirmed",
+      "primaryFailure": "device_lease_lost",
+      "authorityFailure": "qa_authority_os_error",
+      "failurePhase": "recipient_search",
+      "elapsedMs": 112077,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": false,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "4cc987d05c5ccc9c17d9c1cacac19f3c653b146ec5f801e8b36f0580541bf26a",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "69",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "92c51d4f760faed93a83d1a674bc568ff47ae5ac",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "recipient_search",
+      "elapsedMs": 172593,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "65ebb440801e0dbc6eb38ecd2af7073703224867955634931cfd9f662d18a9ec",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "71",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "92c51d4f760faed93a83d1a674bc568ff47ae5ac",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "recipient_search",
+      "elapsedMs": 169656,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "16b5a14be1a9feab9b115349398953f39b0e655ace6a3de4278760d652f965e9",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "78",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "92c51d4f760faed93a83d1a674bc568ff47ae5ac",
+      "previewStatus": "blocked",
+      "previewCode": "login_required",
+      "primaryFailure": "login_required",
+      "authorityFailure": null,
+      "failurePhase": "home_navigation",
+      "elapsedMs": 35250,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "2de219842bb29965bab2904efc5efdd1f2bc07d4a1366dbe19e3609c23cfc0d3",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "82",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "92c51d4f760faed93a83d1a674bc568ff47ae5ac",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "remark_edit",
+      "elapsedMs": 172938,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "bf539d30bc6f2725edb1b6ba397d2498e450ec37ec217041d86b653945111bdf",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "173",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "5018c76132b12dabe6cc73718c2f7879a345ba87",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "remark_edit",
+      "elapsedMs": 156359,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-original-result.json",
+          "sha256": "b6ce9e11a0bf43b8f070e5e27a77c38849b3fd74b9931f4de6bc815a6b117be4"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "9f9d7747f2bfa451b163c2ac0c4663a157e7932d3ef065c879e7bfb11fc060bc",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "143",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "04f71ab6dbadd69fa56ef928234c5a3cfceb31c7",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "remark_edit",
+      "elapsedMs": 160125,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "7444b47d9314d7d27ddf802f49e39c7babad1d1a23c042ece244a2501476f27c",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "91",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "04f71ab6dbadd69fa56ef928234c5a3cfceb31c7",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "recipient_search",
+      "elapsedMs": 174172,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "bafd926d8d4b7bd53723b87905a2f3d6c217863453c1451ddc932d8009570621",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "144",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "40f20b9c977922bf0af5ceeee1226108154e4cee",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "recipient_search",
+      "elapsedMs": 154031,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-original-result.json",
+          "sha256": "310fa568010e12f65e30cc46d5e84c581910304cd9b888d919aec79fc5f70899"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "1dd7e2bc1c28695c9cad97b0bf678af63da7d91a5fd4e31a3306f089ed2fbb08",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "185",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "40f20b9c977922bf0af5ceeee1226108154e4cee",
+      "previewStatus": "blocked",
+      "previewCode": "preview_cleanup_unconfirmed",
+      "primaryFailure": "wecom_rpc_delivery_unknown_no_replay",
+      "authorityFailure": null,
+      "failurePhase": "recipient_search",
+      "elapsedMs": 59656,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": false,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "maintenance-owned-reader-result.json",
+          "sha256": "8673a5e623f1f41c606f4e1b1a941483bf7160fb88c5541fbe74b7a5b6b54c88"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "2476d0a52e2e7d7e31c6cfc4c4cee56b667d9719f98c9995dfff7a2fc7d53f75",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "98",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "40f20b9c977922bf0af5ceeee1226108154e4cee",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "recipient_search",
+      "elapsedMs": 174312,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "a2962b10c73bd073c072b5a84909462192b0a8c2dc66da79ad7ee2c504db2380",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "106",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "40f20b9c977922bf0af5ceeee1226108154e4cee",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "recipient_search",
+      "elapsedMs": 167202,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "018efd8462f44dcdc177f0950dc357f42dd3b1f5355813c6c1fd8394bfb56619",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "123",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "40f20b9c977922bf0af5ceeee1226108154e4cee",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "recipient_search",
+      "elapsedMs": 167984,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "78e68dbe4bbecccc70b6a74c21d96c87285c67daff74c3fc8cd6f115092ef268",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "144",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "3029d6108973a9ae65764f7fffbc2ab89762e560",
+      "previewStatus": "blocked",
+      "previewCode": "home_not_confirmed",
+      "primaryFailure": "home_not_confirmed",
+      "authorityFailure": null,
+      "failurePhase": "home_navigation",
+      "elapsedMs": 57921,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "0b830bf3188ace4953a1c577968ee0f5aa8e2f389ba22376f52505b1ae38e495",
+      "tcpOwnerBackend": "win_iphelper_fresh_v1"
+    },
+    {
+      "number": "185",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "3029d6108973a9ae65764f7fffbc2ab89762e560",
+      "previewStatus": "blocked",
+      "previewCode": "preview_cleanup_unconfirmed",
+      "primaryFailure": "wecom_rpc_delivery_unknown_no_replay",
+      "authorityFailure": null,
+      "failurePhase": "recipient_search",
+      "elapsedMs": 36468,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": false,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "maintenance-owned-reader-result.json",
+          "sha256": "e80dfe09483eac93937896af0971c76265799598790386c1f598190264d24dd9"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "e4ab9c9f190399c55737e84d1b0dbd00ab5d79b5159804ee50371f4fbdee8935",
+      "tcpOwnerBackend": "win_iphelper_fresh_v1"
+    },
+    {
+      "number": "125",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "3029d6108973a9ae65764f7fffbc2ab89762e560",
+      "previewStatus": "blocked",
+      "previewCode": "home_not_confirmed",
+      "primaryFailure": "home_not_confirmed",
+      "authorityFailure": null,
+      "failurePhase": "home_navigation",
+      "elapsedMs": 80531,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "2be8355b06c80c7ff92607f86d236029a0763bd13169a303f666dc34e2bebea8",
+      "tcpOwnerBackend": "win_iphelper_fresh_v1"
+    },
+    {
+      "number": "127",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "3029d6108973a9ae65764f7fffbc2ab89762e560",
+      "previewStatus": "blocked",
+      "previewCode": "home_not_confirmed",
+      "primaryFailure": "home_not_confirmed",
+      "authorityFailure": null,
+      "failurePhase": "home_navigation",
+      "elapsedMs": 77827,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "d7dab50f9922bc0bc62d797aa121e0c53dc39e557c3044aea8e6033135381990",
+      "tcpOwnerBackend": "win_iphelper_fresh_v1"
+    }
+  ],
+  "latestByPhone": [
+    {
+      "number": "25",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "f27ba1e3b358ce9992739c1d8d80c7a03aebe79f",
+      "previewStatus": "blocked",
+      "previewCode": "preview_cleanup_unconfirmed",
+      "primaryFailure": "device_lease_lost",
+      "authorityFailure": "qa_authority_os_error",
+      "failurePhase": "recipient_search",
+      "elapsedMs": 112077,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": false,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "4cc987d05c5ccc9c17d9c1cacac19f3c653b146ec5f801e8b36f0580541bf26a",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "59",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "01745010a066d312a1787c48bce4420d9fa55f94",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "remark_edit",
+      "elapsedMs": 187655,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "00608f14f24adff0bb22d18b9264303ba93bc029ff18ebcd8f6f36e9bff15edc",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "69",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "92c51d4f760faed93a83d1a674bc568ff47ae5ac",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "recipient_search",
+      "elapsedMs": 172593,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "65ebb440801e0dbc6eb38ecd2af7073703224867955634931cfd9f662d18a9ec",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "71",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "92c51d4f760faed93a83d1a674bc568ff47ae5ac",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "recipient_search",
+      "elapsedMs": 169656,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "16b5a14be1a9feab9b115349398953f39b0e655ace6a3de4278760d652f965e9",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "78",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "92c51d4f760faed93a83d1a674bc568ff47ae5ac",
+      "previewStatus": "blocked",
+      "previewCode": "login_required",
+      "primaryFailure": "login_required",
+      "authorityFailure": null,
+      "failurePhase": "home_navigation",
+      "elapsedMs": 35250,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "2de219842bb29965bab2904efc5efdd1f2bc07d4a1366dbe19e3609c23cfc0d3",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "82",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "92c51d4f760faed93a83d1a674bc568ff47ae5ac",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "remark_edit",
+      "elapsedMs": 172938,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "bf539d30bc6f2725edb1b6ba397d2498e450ec37ec217041d86b653945111bdf",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "91",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "04f71ab6dbadd69fa56ef928234c5a3cfceb31c7",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "recipient_search",
+      "elapsedMs": 174172,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "bafd926d8d4b7bd53723b87905a2f3d6c217863453c1451ddc932d8009570621",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "98",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "40f20b9c977922bf0af5ceeee1226108154e4cee",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "recipient_search",
+      "elapsedMs": 174312,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "a2962b10c73bd073c072b5a84909462192b0a8c2dc66da79ad7ee2c504db2380",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "106",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "40f20b9c977922bf0af5ceeee1226108154e4cee",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "recipient_search",
+      "elapsedMs": 167202,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "018efd8462f44dcdc177f0950dc357f42dd3b1f5355813c6c1fd8394bfb56619",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "123",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "40f20b9c977922bf0af5ceeee1226108154e4cee",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "recipient_search",
+      "elapsedMs": 167984,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "78e68dbe4bbecccc70b6a74c21d96c87285c67daff74c3fc8cd6f115092ef268",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "125",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "3029d6108973a9ae65764f7fffbc2ab89762e560",
+      "previewStatus": "blocked",
+      "previewCode": "home_not_confirmed",
+      "primaryFailure": "home_not_confirmed",
+      "authorityFailure": null,
+      "failurePhase": "home_navigation",
+      "elapsedMs": 80531,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "2be8355b06c80c7ff92607f86d236029a0763bd13169a303f666dc34e2bebea8",
+      "tcpOwnerBackend": "win_iphelper_fresh_v1"
+    },
+    {
+      "number": "127",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "3029d6108973a9ae65764f7fffbc2ab89762e560",
+      "previewStatus": "blocked",
+      "previewCode": "home_not_confirmed",
+      "primaryFailure": "home_not_confirmed",
+      "authorityFailure": null,
+      "failurePhase": "home_navigation",
+      "elapsedMs": 77827,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "d7dab50f9922bc0bc62d797aa121e0c53dc39e557c3044aea8e6033135381990",
+      "tcpOwnerBackend": "win_iphelper_fresh_v1"
+    },
+    {
+      "number": "143",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "04f71ab6dbadd69fa56ef928234c5a3cfceb31c7",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "remark_edit",
+      "elapsedMs": 160125,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "7444b47d9314d7d27ddf802f49e39c7babad1d1a23c042ece244a2501476f27c",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "144",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "3029d6108973a9ae65764f7fffbc2ab89762e560",
+      "previewStatus": "blocked",
+      "previewCode": "home_not_confirmed",
+      "primaryFailure": "home_not_confirmed",
+      "authorityFailure": null,
+      "failurePhase": "home_navigation",
+      "elapsedMs": 57921,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-proofs.json",
+          "sha256": "22c0b5572b7f153c28763ca0d9e695cf371d6165502ef5fe10f56a734b31b53a"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "0b830bf3188ace4953a1c577968ee0f5aa8e2f389ba22376f52505b1ae38e495",
+      "tcpOwnerBackend": "win_iphelper_fresh_v1"
+    },
+    {
+      "number": "145",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "07369085a5fb4c626706f0a4d5e0acaf43ea8417",
+      "previewStatus": "blocked",
+      "previewCode": "device_lease_lost",
+      "primaryFailure": "device_lease_lost",
+      "authorityFailure": "qa_authority_os_error",
+      "failurePhase": "wecom_launch",
+      "elapsedMs": 12780,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": false,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-original-result.json",
+          "sha256": "9cba98ecb5f4913441414c28b4b33ad29c4289ffcc4c32bec4790b93f829eae0"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "9feebae89c560f0a8daa1b5c464e32388c3878da0ff9bd6f9cf9c5ce236d5cc4",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "173",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "5018c76132b12dabe6cc73718c2f7879a345ba87",
+      "previewStatus": "blocked",
+      "previewCode": "timeout",
+      "primaryFailure": "timeout",
+      "authorityFailure": null,
+      "failurePhase": "remark_edit",
+      "elapsedMs": 156359,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": true,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "cleanup-original-result.json",
+          "sha256": "b6ce9e11a0bf43b8f070e5e27a77c38849b3fd74b9931f4de6bc815a6b117be4"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "9f9d7747f2bfa451b163c2ac0c4663a157e7932d3ef065c879e7bfb11fc060bc",
+      "tcpOwnerBackend": "psutil_original"
+    },
+    {
+      "number": "185",
+      "appSlot": "main",
+      "androidUser": 0,
+      "sourceRef": "3029d6108973a9ae65764f7fffbc2ab89762e560",
+      "previewStatus": "blocked",
+      "previewCode": "preview_cleanup_unconfirmed",
+      "primaryFailure": "wecom_rpc_delivery_unknown_no_replay",
+      "authorityFailure": null,
+      "failurePhase": "recipient_search",
+      "elapsedMs": 36468,
+      "invitationSent": false,
+      "sendStatus": "not_attempted",
+      "originalNativeExitConfirmed": true,
+      "nativeCleanupConfirmed": false,
+      "physicalCleanupReceiptHashes": [
+        {
+          "file": "maintenance-owned-reader-result.json",
+          "sha256": "e80dfe09483eac93937896af0971c76265799598790386c1f598190264d24dd9"
+        }
+      ],
+      "finalOwnScopeClear": true,
+      "listingRestored": true,
+      "nativeReceiptSha256": "e4ab9c9f190399c55737e84d1b0dbd00ab5d79b5159804ee50371f4fbdee8935",
+      "tcpOwnerBackend": "win_iphelper_fresh_v1"
+    }
+  ]
+}

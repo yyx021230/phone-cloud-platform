@@ -1,0 +1,74 @@
+{
+  "at": "2026-10-28T05:58:12.513700+00:00",
+  "method": "production signed HTTP batch API through nginx; real production Agent and real devices",
+  "runId": "c988c31fb3d9dd243b8568b25a1c5950b627ad2684f14933822df9751194ede0",
+  "counts": {
+    "total": 100,
+    "succeeded": 5,
+    "skippedAfterStop": 94,
+    "skippedOffline": 1
+  },
+  "totalNotes": 116,
+  "devices": [
+    {
+      "device": "20",
+      "appSlot": "app1",
+      "notes": 61,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "platformResultHashMatches": true,
+      "collectionSha256": "3a7a46bb5d171d2c897ad943a0e20d7ac67651e81d0c317e5226d58323ba1e07",
+      "pickedAt": "2026-10-28T05:47:12.911Z",
+      "completedAt": "2026-10-28T05:56:33.215Z"
+    },
+    {
+      "device": "173",
+      "appSlot": "app1",
+      "notes": 0,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "platformResultHashMatches": true,
+      "collectionSha256": "c94f7a917808cd31edd2943776ff308891ae780f3e4e6e9b69b874106c2f8313",
+      "pickedAt": "2026-10-28T05:47:12.882Z",
+      "completedAt": "2026-10-28T05:49:01.272Z"
+    },
+    {
+      "device": "13",
+      "appSlot": "app2",
+      "notes": 26,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "platformResultHashMatches": true,
+      "collectionSha256": "aa85e0b9f1618a2224e49387b3cfa0c07064c90952d339ceceaffb7633ce84c6",
+      "pickedAt": "2026-10-28T05:47:12.808Z",
+      "completedAt": "2026-10-28T05:54:45.452Z"
+    },
+    {
+      "device": "181",
+      "appSlot": "app1",
+      "notes": 19,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "platformResultHashMatches": true,
+      "collectionSha256": "9e71a13bd80c119a2fbfd4671842a7b20d10f23de77edc3d90dbceeb6c1b3bd2",
+      "pickedAt": "2026-10-28T05:47:12.778Z",
+      "completedAt": "2026-10-28T05:50:54.898Z"
+    },
+    {
+      "device": "180",
+      "appSlot": "app1",
+      "notes": 10,
+      "complete": true,
+      "stopReason": "older_than_window_visible",
+      "platformResultHashMatches": true,
+      "collectionSha256": "3996a23ab3a921030f29a3abe313b0102cff928e7453e8c5541ef6c6da3a9a34",
+      "pickedAt": "2026-10-28T05:47:12.720Z",
+      "completedAt": "2026-10-28T05:50:12.099Z"
+    }
+  ],
+  "all100ItemsPaginated": true,
+  "sameRequestIdReusesCompletedRun": true,
+  "pendingSettingsLedgers": 0,
+  "naturalDailyRunVerified": false,
+  "all100SlotsLiveVerified": false
+}

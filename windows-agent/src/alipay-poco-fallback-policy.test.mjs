@@ -44,3 +44,5 @@ test("retries only bounded Poco transport failures while establishing a session"
   assert.equal(isRetryableAlipayPocoStartFailure(new Error("poco_selector_missing:search input")), false);
   assert.equal(isRetryableAlipayPocoStartFailure(new Error("alipay_account_restriction_before_search:device_risk")), false);
 });
+
+test('shared capacity does not start an independent XML stack',()=>{assert.equal(shouldFallbackAlipayPocoFailure(Object.assign(new Error('busy'),{code:'airtest_worker_capacity_reached'})),false);assert.equal(shouldFallbackAlipayPocoFailure(new Error('Airtest/Poco 常驻 worker 已达到上限 8，当前均在执行任务')),false);});

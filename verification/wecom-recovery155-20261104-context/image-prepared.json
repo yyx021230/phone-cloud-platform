@@ -1,0 +1,17 @@
+{
+  "version": "wecom-recovery155-20261104-rc.2",
+  "sourceCommit": "70290283ba74e4fd58cbce20382376ad05c74f5d",
+  "imageId": "sha256:8f145ef6fcf630f1afa636fd95708c51025c91ff1b9703ae970377ec7bf02e03",
+  "imageTag": "phone-cloud-platform:wecom-recovery155-20261104-rc.2",
+  "previousImage": "sha256:aba0ddc3f61015a797ac6437fe6f1ec5c801af8cbc300036197c39ffb7c71893",
+  "activeSha256Unchanged": "9afc29aee37eec07c4049cea3c9c776926d7b01c830b314deca0e3e25c705648",
+  "composeOnlyImageChanged": true,
+  "runtimeEnvironmentMatchesCurrent": true,
+  "validation": {
+    "filesVerified": 3,
+    "imported": true
+  },
+  "serviceReloaded": false,
+  "agentReloadRequired": false,
+  "status": "prepared_not_activated"
+}

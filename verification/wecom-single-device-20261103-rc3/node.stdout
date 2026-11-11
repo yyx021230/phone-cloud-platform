@@ -1,0 +1,20 @@
+✔ private diagnostics still reject UI, parameters and arbitrary labels (1.377667ms)
+✔ safe stack is metadata only and does not preserve thread names or locals (0.163708ms)
+✔ resource proof cannot name arbitrary ports or publish UI output (0.256583ms)
+✔ tail records retain only one bounded sanitized layer (0.076291ms)
+✔ target snapshot stays read-only and uses pure runtime inventory (6.609625ms)
+✔ unknown stop array shape rejects rather than treating it as empty (4.18ms)
+✔ failed matching stop and disabled device channel are still exclusion evidence (6.454708ms)
+✔ another phones historical stop does not block this target (2.089625ms)
+✔ multiple physical aliases deny admission (1.4775ms)
+✔ real Redis projection supplies own lock absent from structured PG (1.930833ms)
+✔ physical pending remains alongside Redis own lock (2.338792ms)
+✔ Redis changed value or unknown/expired TTL denies read (5.773709ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 105.987666

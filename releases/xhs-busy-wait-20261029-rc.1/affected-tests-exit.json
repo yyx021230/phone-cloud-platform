@@ -1,0 +1,1 @@
+{"exitCode": 0, "seconds": 22.0, "command": ["node", "--test", "--test-concurrency=1", "server/managed-lookup.http.test.mjs", "windows-agent/src/device-scan-agent.test.mjs", "windows-agent/src/xhs-data-reservation.test.mjs"]}

@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-30",
+  "codeCommit": "5b5a29d9bd17338460b783a6f61ee9231758242d",
+  "productionDeployed": false,
+  "installedDevice": 191,
+  "packageVersion": "1.0.0.68",
+  "apkSha256": "ed96af302a803ed8f7696fa5c1267c7b1c7a3a5d4b1ddd457eeb76e0d19b70d9",
+  "probeReadMs": [
+    106,
+    78
+  ],
+  "accountPreparationSucceeded": [
+    191,
+    188
+  ],
+  "probeBlocked": {
+    "191": "human_verification_required",
+    "188": "poco_http_read_timeout"
+  },
+  "businessSubmitted": 0,
+  "apiStopConfirmed": true,
+  "physicalCleanupConfirmed": [
+    191,
+    188
+  ],
+  "testReservationsReleased": true,
+  "whitelistRestoredRevisions": [
+    150,
+    151
+  ],
+  "completeBusinessRecoveryVerified": false
+}

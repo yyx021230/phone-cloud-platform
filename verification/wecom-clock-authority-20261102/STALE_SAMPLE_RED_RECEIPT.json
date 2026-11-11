@@ -1,0 +1,8 @@
+{
+  "baseline": "af00bac0302d125221e876c9a3a01b0f7fd0b74a",
+  "modelSha256": "d9437cedee4797f6f4e95a961193341c86178d4283eb46d91498bb9c9f20a18b",
+  "testSha256": "e3db589767a28053798f8d45567fc905e66a51ee1dd81e48d2e1fc6dda48dda5",
+  "exitCode": 1,
+  "outputSha256": "ace9a4b440a0f406f2c16fe9c08f58827553d8d0239dd0bb3907ea8ba38cec97",
+  "scope": "offline regression against unchanged old last-snapshot gates"
+}

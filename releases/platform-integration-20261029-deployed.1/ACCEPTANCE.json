@@ -1,0 +1,127 @@
+{
+  "state": "deployed_with_failed_and_unverified_acceptance_items",
+  "lookup": {
+    "originalPrepareAndConfigRetained": true,
+    "original19ResultsUnchanged": true,
+    "original19TerminalCounts": {
+      "succeeded": 16,
+      "not_found": 3
+    },
+    "queuedCustomerRequestsSucceededOriginalIds": 3,
+    "queuedProbeSucceededOriginalId": 1,
+    "secondsAfterGateOpened": [
+      41,
+      55,
+      57,
+      56
+    ],
+    "newTestLookupsSubmitted": 0,
+    "stopProofAndFailureBranchesRealDeviceAccepted": false,
+    "fullFleetPhysicalCoverage": false
+  },
+  "xhsBatch": {
+    "signedGet": 200,
+    "unsigned": 401,
+    "badSignature": 401,
+    "replayedNonce": 401,
+    "originalBatchCount": 2,
+    "newBatchCount": 0,
+    "originalDailyResultsCompared": 100,
+    "originalJobResultsCompared": 100,
+    "dailyPages": 5,
+    "dailyOldSuccessCount": 59,
+    "dailyOldFailureCount": 41,
+    "dailyOldPostCount": 970,
+    "scheduleAndTargetsUnchanged": true,
+    "targetCount": 100
+  },
+  "xhsRealSingleSlot": {
+    "physicalDevice": 131,
+    "slot": "app1",
+    "postCount": 1,
+    "jobId": "77633295-002c-4d99-8592-45eb1a9e4586",
+    "windowsTaskId": "de3e946a-902c-42b7-b8be-5d5bfe19aacf",
+    "status": "succeeded",
+    "durationMs": 305150,
+    "posts": 28,
+    "window": [
+      "2026-09-30",
+      "2026-10-29"
+    ],
+    "sameTitleAndDateGroup": true,
+    "primaryAndReversePassCount": 28,
+    "identityDigestsUniqueAndEqual": true,
+    "dateOrderAndWindow": true,
+    "stopReason": "older_than_window_visible",
+    "apiAndPersistedCollectionEqual": true,
+    "ownLockTerminal": true,
+    "inventoryUnoccupied": true,
+    "restorationLedgerCleared": true,
+    "agentAndAdbUnchanged": true,
+    "receiptSha256": "1e2837fe4adadfa8d578463b38ff0eb58a85d121be0a237d45cf93562b966f54",
+    "privateReceipt": "/Users/yyx/ztqc/phone-cloud-platform/windows-agent/data/xhs-production-131-app1-20261029/REPORT.json",
+    "notCovered": [
+      "busy-wait production branch",
+      "dual-slot production branch",
+      "independent logged-in identity confirmation",
+      "server-hidden posts completeness"
+    ]
+  },
+  "wecomReadOnly": {
+    "devicesHttp": 200,
+    "inventoryCount": 141,
+    "allowedDevices": 8,
+    "dualSlots155": [
+      "main",
+      "clone"
+    ],
+    "capacity": 2,
+    "sourceHashesMatch": true,
+    "preexistingPlatformSendJobs": 0,
+    "preexistingAgentClaims": 0
+  },
+  "wecomSingleSend": {
+    "physicalDevice": 43,
+    "slot": "main",
+    "recipientTail": "6441",
+    "maxPostCount": 1,
+    "maxSendClicks": 1,
+    "status": "failed",
+    "deliveryToRecipient": "unverified",
+    "noRetryOnUnknown": true,
+    "postCount": 1,
+    "sendAttempted": false,
+    "sendStatus": "not_attempted",
+    "invitationSent": false,
+    "taskId": "fd84ce2b-3981-47f8-8a97-1c0b9b2421e3",
+    "windowsTaskId": "e9d99e49-b375-43e1-8b9e-3e9f16bc36e9",
+    "message": "wecom_preview_worker_timeout_no_replay",
+    "errorCode": "task_failed",
+    "publicCodeMissing": true,
+    "durationSecondsApprox": 233.5,
+    "cloudClaimPresent": false,
+    "localClaimPresent": false,
+    "nativeChildExited": true,
+    "ownLockReleased": true,
+    "inventoryUnoccupied": true,
+    "receiptSha256": "34ea52a2bea8e2efad7725015676d8baefd8f742a1b20375a1e5ef4ef0180103",
+    "privateReceipt": "/private/tmp/pc-wecom-send-20261029-i43vlmbb/FINAL_RECEIPT.json",
+    "actualNativePhaseKnown": false,
+    "resultFieldCompactionDefectConfirmed": true,
+    "resultFieldCompactionDefectDeployedFix": false
+  },
+  "readiness": {
+    "historical503TimesUtc": [
+      "2026-10-29T08:54:35Z",
+      "2026-10-29T08:55:59Z"
+    ],
+    "failedSubcomponentCaptured": false,
+    "recovered200AtUtc": "2026-10-29T08:56:49.642Z",
+    "slow200Ms": 6748,
+    "clientTimeoutMs": 8003,
+    "concurrentObservation": "COPY active and phone_cloud_state AccessExclusiveLock granted; no complete waiter chain captured",
+    "rootCauseConfirmed": false,
+    "fixed": false
+  },
+  "fullProductionAcceptance": false
+}

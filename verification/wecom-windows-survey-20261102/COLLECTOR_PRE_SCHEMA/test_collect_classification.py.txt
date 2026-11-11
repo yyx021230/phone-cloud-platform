@@ -1,0 +1,67 @@
+"""Offline regression for the collector's lost-failure-body defect. No SSH."""
+import json
+import unittest
+from unittest.mock import patch
+from collect_clock_supplement import classify
+
+
+def response(**changes):
+    value = dict(scope='readonly-clock-observation', authoritySupported=False,
+                 nativeExecutionPermitted=False, physicalCleanupVerified=False,
+                 status='observed_not_authority')
+    value.update(changes)
+    return value
+
+
+class ClassificationTests(unittest.TestCase):
+    def setUp(self):
+        for name in ('subprocess.Popen', 'subprocess.run', 'socket.create_connection'):
+            guard = patch(name, side_effect=AssertionError('offline_no_transport'))
+            guard.start()
+            self.addCleanup(guard.stop)
+
+    def test_valid_failure_retains_body_and_exact_phase_before_stopping(self):
+        value = response(status='unsupported_api_or_read_failure', failedStage='bind_readonly_apis',
+                         errorType='AttributeError', windowsError=127)
+        result, retained = classify(json.dumps(value).encode())
+        self.assertEqual(retained, value)
+        self.assertEqual(result, dict(classification='observed_unsupported_or_api_failure',
+                                     failedStage='bind_readonly_apis', errorType='AttributeError', windowsError=127))
+
+    def test_success_is_still_observation_without_a_native_permit(self):
+        value = response()
+        result, retained = classify(json.dumps(value).encode())
+        self.assertEqual(result['classification'], 'observed_not_authority')
+        self.assertFalse(retained['nativeExecutionPermitted'])
+
+    def test_non_json_has_distinct_classification_not_api_unsupported(self):
+        result, retained = classify(b'fixture shell banner\n')
+        self.assertEqual(result['classification'], 'not_json')
+        self.assertIn('errorLine', result)
+        self.assertIsNone(retained)
+
+    def test_invalid_encoding_has_its_own_reason(self):
+        self.assertEqual(classify(b'\xff')[0]['classification'], 'invalid_utf8')
+
+    def test_json_null_array_and_primitives_are_rejected_without_exceptions(self):
+        for value in (None, [], True, 3, 'fixture'):
+            result, retained = classify(json.dumps(value).encode())
+            self.assertEqual(result['classification'], 'non_whitelisted_shape')
+            self.assertIsNone(retained)
+
+    def test_unknown_fields_cannot_enter_saved_body(self):
+        value = response(unexpected='fixture')
+        self.assertEqual(classify(json.dumps(value).encode())[0]['classification'], 'non_whitelisted_shape')
+
+    def test_permission_or_scope_change_cannot_enter_saved_body(self):
+        for change in ({'nativeExecutionPermitted':True}, {'authoritySupported':True}, {'scope':'other'}):
+            result, retained = classify(json.dumps(response(**change)).encode())
+            self.assertEqual(result['classification'], 'unexpected_scope_or_permission')
+            self.assertIsNone(retained)
+
+    def test_unknown_status_stays_unconfirmed(self):
+        self.assertEqual(classify(json.dumps(response(status='fixture')).encode())[0]['classification'], 'unknown_status')
+
+
+if __name__ == '__main__':
+    unittest.main()

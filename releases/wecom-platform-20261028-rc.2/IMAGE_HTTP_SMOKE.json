@@ -1,0 +1,23 @@
+{
+  "imageId": "sha256:8abefc2f1d6217704ebf3ea43e621000d5fc5e554fbed9e87f249fb1726e62ee",
+  "sourceCommit": "f2e8bf7689d044dd088af6359eb03439507e01d8",
+  "passed": true,
+  "network": "fixture loopback only; no published ports",
+  "productionDataUsed": false,
+  "checks": {
+    "jsonHttp": {
+      "exitCode": 0,
+      "fakeAgentOnly": true,
+      "phoneConnections": 0
+    },
+    "postgresHttp": {
+      "exitCode": 0,
+      "postgres": 16,
+      "fakeAgentOnly": true,
+      "restartAndOriginalIdReused": true,
+      "phoneConnections": 0
+    }
+  },
+  "fixturesRemoved": true,
+  "productionAcceptanceComplete": false
+}

@@ -1,0 +1,30 @@
+{
+  "sourceCommit": "20882a65c5787948dc0eb9a30837c5f3a0d32d43",
+  "scope": "first metadata observed; original clock body lost; typed supplement not executed",
+  "sha256": {
+    "docs/PROJECT_DEVELOPMENT.md": "c734cf334b9e8985821c43aa0ab4122f1f02d5777305e0ced49680673763703e",
+    "verification/wecom-windows-survey-20261102/COLLECTOR_PRE_SCHEMA/COLLECTOR_TEST_OUTPUT.txt.txt": "c75bd368578051c139d4f7b1bfb89e6e8cbf2aefd30d253da57e7f088728470d",
+    "verification/wecom-windows-survey-20261102/COLLECTOR_PRE_SCHEMA/COLLECTOR_TEST_RECEIPT.json.txt": "667b0d859b478e0d67163bca433b780c00643dc8b3d77f430d8629c80aed831f",
+    "verification/wecom-windows-survey-20261102/COLLECTOR_PRE_SCHEMA/HASHES.json": "c05b858865b19e47344f47d3200116c9512ca6e88d824b1170987be2222fcfe6",
+    "verification/wecom-windows-survey-20261102/COLLECTOR_PRE_SCHEMA/collect_clock_supplement.py.txt": "a9742a8426bb76470a99d91e8fbe7619c7c523c3d5645fc35222040ee360822e",
+    "verification/wecom-windows-survey-20261102/COLLECTOR_PRE_SCHEMA/test_collect_classification.py.txt": "6a725b81651d6c5734c281ad40ccdaac64326d41356e05b19495a0013c5e504a",
+    "verification/wecom-windows-survey-20261102/COLLECTOR_SCHEMA_RED_OUTPUT.txt": "0257bb088f86ca5a81be7df1ec860f6298ccc733e55b32270e93d42de29395af",
+    "verification/wecom-windows-survey-20261102/COLLECTOR_SCHEMA_RED_RECEIPT.json": "c6dbe4220c89206681a87a4c3f1776f13cdd8d04a0dc2038a8afb8ea8747abb4",
+    "verification/wecom-windows-survey-20261102/COLLECTOR_SCHEMA_RED_SOURCE.py.txt": "a9742a8426bb76470a99d91e8fbe7619c7c523c3d5645fc35222040ee360822e",
+    "verification/wecom-windows-survey-20261102/COLLECTOR_SCHEMA_RED_TEST.py.txt": "c77c089a9f3f957d65154a6d1981217591b0430f22f9789e01a687eec0eee787",
+    "verification/wecom-windows-survey-20261102/COLLECTOR_TEST_OUTPUT.txt": "f55315cd2e120a8cd9c2116b28e2cd2b23bd44dbd3a21086bb38d61226c20a80",
+    "verification/wecom-windows-survey-20261102/COLLECTOR_TEST_RECEIPT.json": "647ee531df864d2fe76f2bdf70f71e9c0ed5a93a6042c4dcc3167507ffbbe3bb",
+    "verification/wecom-windows-survey-20261102/EXECUTION_RECEIPT.json": "44c78fcc1bd60728d31c7a8363f385a76f534ef146ecbc041259b7705e1d6f9d",
+    "verification/wecom-windows-survey-20261102/FILE_HASHES.json": "be05f2e857f2bc1b1e6d54e68c4fd5fb6f959d7260bc242a4ab11f56643fb6f8",
+    "verification/wecom-windows-survey-20261102/LOCAL_CHECK_INITIAL_FAILURE.json": "1f823ccc0178fa3cc3e7241849481854749a3de3055e17f0e9e850779b54586d",
+    "verification/wecom-windows-survey-20261102/LOCAL_SCOPE_CHECK.json": "3c909caba78e1adb0976095d811c6b6dc9d9a2eda8cfb3e4365d0497acd7adce",
+    "verification/wecom-windows-survey-20261102/OBSERVATION.md": "105cd90d7ee26b15261db4cb3a1a7039ad1a0c6434aaf732071c48c3de5034bb",
+    "verification/wecom-windows-survey-20261102/PLAN.md": "af6f9662a0068c5feca626f6aafc0f7bcf7cf7fa75eacf982beb7d5ca25ade9e",
+    "verification/wecom-windows-survey-20261102/WINDOWS_METADATA_OBSERVED.json": "b350d8eee0746bd58eb3bf7b89dcc8edb7350fe43ed60bee73e7a56298eba7c1",
+    "verification/wecom-windows-survey-20261102/collect_clock_supplement.py": "34636da46680ae150f153cfa57003a1bada53c577c2c06279f8445ad2f1d8813",
+    "verification/wecom-windows-survey-20261102/collect_reviewed.py": "22cfe2028b99147f6fbf99bc0198bc7dcc71ece6be7faa16dad55d7d21009778",
+    "verification/wecom-windows-survey-20261102/test_collect_classification.py": "c77c089a9f3f957d65154a6d1981217591b0430f22f9789e01a687eec0eee787",
+    "verification/wecom-windows-survey-20261102/windows_clock_survey.py": "153c7a6ed6fda7eb1b8a0c910826e14618ad5a495dd6ca78c1047251c317bae7",
+    "verification/wecom-windows-survey-20261102/windows_metadata.ps1": "080d110be479cb1ce62577416480960cd57e566f13fbddceec31274e67081eb0"
+  }
+}

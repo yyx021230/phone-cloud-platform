@@ -231,3 +231,25 @@ test('network failure during probe never makes phone ready or cools its account'
  assert.ok(!f.store.snapshot().channels.find(x=>x.deviceId===c.deviceId)?.readinessProof);
  assert.equal(f.events.filter(e=>e.id===r.lookupId&&e.kind==='query').length,1);
 });
+
+for(const reason of ['lookup_reader_cleanup_unconfirmed','lookup_reader_forward_cleanup_unconfirmed','lookup_old_worker_exit_unconfirmed'])test('cleanup not confirmed cannot auto-resume before real stop: '+reason,async()=>{
+ const f=fixture(),{r,c}=await running(f);
+ const job={jobId:'cleanup-job',resultId:c.queryId,sessionId:c.sessionId,deviceId:c.deviceId,
+  kind:'alipay_name_query',status:'failed',windowsTaskId:'cleanup-task',createdAt:new Date().toISOString(),
+  result:{errorCode:'alipay_lookup_failed',diagnostic:{runnerReason:reason}}};
+ const session={sessionId:c.sessionId,deviceId:c.deviceId,status:'ready',currentAccount:'synthetic-account',
+  accountIdentityVerified:true,results:[{resultId:c.queryId,status:'needs_recovery'}]};
+ const state={automationJobs:[job],automationSessions:[session],windowsTasks:[{taskId:'cleanup-task',status:'failed'}],
+  devices:[{deviceId:c.deviceId,adb:{agentId:'synthetic-agent'}}],windowsAgents:[{agentId:'synthetic-agent',lookupRuntimeId:'synthetic-runtime'}]};
+ const actual=createManagedLookupAdapter({state,online:()=>true}).observe(c);
+ assert.equal(actual.recoveryFailure.domain,'device');
+ assert.equal(actual.recoveryFailure.canResume,false);
+ f.adapter.stop=async channel=>{f.events.push({kind:'stop',device:channel.deviceId});f.obs.set(channel.deviceId,{stopUnconfirmed:true});};
+ f.obs.set(c.deviceId,actual);await f.service.tick();await f.service.tick();
+ assert.equal(f.events.filter(e=>e.kind==='query'&&e.id===r.lookupId).length,1);
+ assert.equal(f.store.snapshot().channels.find(x=>x.deviceId===c.deviceId).phase,'stopping');
+ assert.ok(f.service.reserved(c.deviceId));
+ f.obs.set(c.deviceId,{stopped:true});await f.service.tick();
+ const next=f.store.snapshot().channels.find(x=>x.requestId===r.lookupId);
+ assert.ok(next);assert.notEqual(next.deviceId,c.deviceId);
+});

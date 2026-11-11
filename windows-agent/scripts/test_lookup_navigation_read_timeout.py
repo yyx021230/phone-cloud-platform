@@ -9,11 +9,22 @@ class NavigationReadTimeoutTests(unittest.TestCase):
                            "phoneNumber": "13800000000"})
         r.emit = mock.Mock()
         r.adb = mock.Mock(side_effect=lambda args, **kw:
-                          "device" if args == ["get-state"] else "package:fixture")
+                          "device" if args == ["get-state"] else
+                          "mWakefulness=Awake" if args == ["shell", "dumpsys", "power"] else "package:fixture")
         r.assert_known_account = mock.Mock()
         r.poco_try_reuse_search_page = mock.Mock(return_value=True)
+        r.poco_prepare_full_path = mock.Mock()
         r.query_once_poco = mock.Mock(return_value={"realNameTailCharacter": "甲"})
         return r
+
+    def test_invalid_query_cannot_wake_or_navigate_phone(self):
+        r=self.runner()
+        r.payload["phoneNumber"]="invalid"
+        r.wake_before_query_if_asleep=mock.Mock()
+        with self.assertRaisesRegex(RuntimeError,"invalid_phone_number"):
+            r.run_poco(mock.Mock())
+        r.wake_before_query_if_asleep.assert_not_called()
+        r.poco_try_reuse_search_page.assert_not_called()
 
     def test_real_navigation_rpc_read_timeout_is_proven_before_input(self):
         r = self.runner()
@@ -43,9 +54,11 @@ class NavigationReadTimeoutTests(unittest.TestCase):
     def test_missing_foreground_is_not_transport_proof(self):
         r = self.runner()
         r.poco_try_reuse_search_page.return_value = False
-        with self.assertRaisesRegex(RuntimeError, "^poco_query_search_page_unavailable_before_input$"):
-            r.run_poco(mock.Mock())
-        r.query_once_poco.assert_not_called()
+        r.run_poco(mock.Mock())
+        r.poco_prepare_full_path.assert_called_once()
+        r.query_once_poco.assert_called_once()
+        self.assertFalse(any(c.args[0][:3] == ["shell", "am", "force-stop"]
+                             for c in r.adb.call_args_list))
 
     def test_resume_never_repeats_navigation_or_receives_preinput_marker(self):
         r = self.runner("query_resume")

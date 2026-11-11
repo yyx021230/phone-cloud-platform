@@ -1,0 +1,110 @@
+{
+  "status": "production_readonly_api_recovery_verified_natural_daily_pending",
+  "queryAt": "2026-11-02T06:15:36.603Z",
+  "health": {
+    "status": 200
+  },
+  "schedule": {
+    "schedule": {
+      "time": "02:00",
+      "enabled": true,
+      "timezone": "Asia/Shanghai",
+      "concurrency": 5,
+      "windowMinutes": 240
+    },
+    "targetCount": 100
+  },
+  "scheduleChecks": {
+    "enabled": true,
+    "time": true,
+    "timezone": true,
+    "concurrency": true,
+    "windowMinutes": true,
+    "targetCount": true
+  },
+  "singleGrantedLease": true,
+  "batchPagesRetrieved": 27,
+  "batches": [
+    {
+      "requestId": "daily:2026-11-01",
+      "runId": "2496ff72c6fdb2d7b7f164bc1b130100a293b6c512ad9b09289c25346cd44566",
+      "counts": {
+        "succeeded": 77,
+        "failed": 17,
+        "skipped": 6
+      },
+      "successPosts": 1214,
+      "partialPosts": 0,
+      "fullyRecomputableCompleteAccounts": 76,
+      "successWithUnverifiedProof": [
+        "88/app1"
+      ]
+    },
+    {
+      "requestId": "daily:2026-10-31",
+      "runId": "bf1cfdd29f20a1011448d5a1bb56a8daa64ce1a662220dc1cc294a2bab6619b8",
+      "counts": {
+        "succeeded": 85,
+        "failed": 10,
+        "skipped": 5
+      },
+      "successPosts": 1386,
+      "partialPosts": 37,
+      "fullyRecomputableCompleteAccounts": 83,
+      "successWithUnverifiedProof": [
+        "88/app1",
+        "75/app2"
+      ]
+    },
+    {
+      "requestId": "daily:2026-10-30",
+      "runId": "a37f282db87784f8f2b9d0a7fa1b1a48b4b419869bba5a806ca892df65c1d391",
+      "counts": {
+        "succeeded": 90,
+        "failed": 7,
+        "skipped": 3
+      },
+      "successPosts": 1428,
+      "partialPosts": 0,
+      "fullyRecomputableCompleteAccounts": 89,
+      "successWithUnverifiedProof": [
+        "75/app2"
+      ]
+    },
+    {
+      "requestId": "daily:2026-10-29",
+      "runId": "664ccaf91b160561dc5540cbaf61809889972032fb087e8451ce6ba4e052f33f",
+      "counts": {
+        "succeeded": 59,
+        "failed": 41
+      },
+      "successPosts": 970,
+      "partialPosts": 0,
+      "fullyRecomputableCompleteAccounts": 59,
+      "successWithUnverifiedProof": []
+    },
+    {
+      "requestId": "production-acceptance-20261028-rc3-01",
+      "runId": "c988c31fb3d9dd243b8568b25a1c5950b627ad2684f14933822df9751194ede0",
+      "counts": {
+        "succeeded": 5,
+        "skipped": 95
+      },
+      "successPosts": 116,
+      "partialPosts": 0,
+      "fullyRecomputableCompleteAccounts": 5,
+      "successWithUnverifiedProof": []
+    }
+  ],
+  "allFiveBatchCoverageAndBindingsPass": true,
+  "todayNaturalBatchExists": false,
+  "noNewBatchOrPhoneActions": true,
+  "limits": [
+    "No Nov2 natural batch; no backfill was created. Next natural02:00 is not yet verified.",
+    "Four historical successes across88/app1 and75/app2 lack roundtrip digest proof; each has one title at API UTF16 length180. Server slice180 is confirmed; original untruncated title not read, truncation cause inferred.",
+    "Internal both-pass hashes/counts agree for those4; this does not prove no missing posts.",
+    "Original task raw collection/hash not read in this API-only acceptance.",
+    "New collector real production Agent tasks not exercised by this read-only verification.",
+    "PG SIGABRT initial cause unknown."
+  ]
+}

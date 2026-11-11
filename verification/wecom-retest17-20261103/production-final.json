@@ -1,0 +1,201 @@
+{
+  "at": "2026-11-03T06:46:48.220Z",
+  "health": {
+    "/healthz": 200,
+    "/readyz": 200
+  },
+  "sourceHashes": {
+    "server/index.mjs": "4bcecc8702ea577a77e5f17664b7833ced33b681f88e5beedcdc6875b6f047cc",
+    "server/wecom-preview.mjs": "ec9126e6c85d787f80355df8b5c84fb5c525f8ba746847573c9d5b589779cbaf",
+    "server/screen-sessions.mjs": "811a15aa7ecb87a934ef5f92826ed9031278d87df2387cc20a85098ce91cde09",
+    "server/managed-lookup.mjs": "74fc9138a8ffc571b4504964762432386d6995426131e4a8b861032161dc7f44",
+    "server/managed-lookup-platform.mjs": "c641ee8e32a30262fe93ae96a6317c24a89b9813c7e1ff16ad19cbe52b96a2f2",
+    "server/postgres-repositories.mjs": "22f7e458bf28e8252639c5bcc5957d56abe8361307baa79432bb869fa34c65ad",
+    "server/wecom-physical-cleanup.mjs": "7fea00c14fcd6df20a30b5492c4c52c244b6dec26bbc5169212d0fcd2e15a07b",
+    "server/wecom-cleanup-service.mjs": "fb594dd7a191bb37f7a2abdf508298059ca4730814f394c491965f0c46c366a0",
+    "server/device-occupancy.mjs": "4f33caecf089118a2b7e4241f21a763dd83f1b37f42c9d378a6a748a6e49d81a",
+    "server/recovery-controls.mjs": "0147f3f3c122e9d444bf48666cb6bbaab64a64c585860ca0664afdec44890af8"
+  },
+  "allTenProductionSourceHashesMatched": true,
+  "activeReleaseManifestSha256": "a5390dcc93b5f1393e7b95732ca4df679dc5065200f80cf509d96e0f759e2a2f",
+  "activeReleaseManifestUnchanged": true,
+  "agentPid": 19756,
+  "agentCreatedAt": 1793599962.9654255,
+  "adbPid": 27912,
+  "adbCreatedAt": 1793603626.369136,
+  "agentFileHashes": {
+    "src/index.mjs": "85b2b2eea012a345f87b455ebbb994ef6ce9dd70b6e1dddc4769594781c29eff",
+    "src/wecom-preview-task.mjs": "2d5fb3354edde14d2673e7c25bc7e9e25e60e8ba3d1e1e76358b675e20847e24",
+    "scripts/wecom_platform_preview.py": "5cb7e5fc041e5dbe62ec57aed4ddbf938d7f684fbab023f9fb86d67cb7cfa8cc"
+  },
+  "all17Listed": true,
+  "ownActiveLocks": 0,
+  "foreignScreenControlsPreserved": [
+    "127",
+    "82"
+  ],
+  "currentConcurrency": "8",
+  "currentConfigRevision": "183",
+  "restoreTo12Written": false,
+  "laterConfigurationChangePreserved": true,
+  "sharedServiceReloads": 0,
+  "adbRestarts": 0,
+  "adbIdentityChanges": 0,
+  "invitesSent": 0,
+  "productionDeployment": false,
+  "devices": [
+    {
+      "number": "144",
+      "at": "2026-11-03T06:46:43.344Z",
+      "listed": true,
+      "ownActiveLocks": 0,
+      "foreignLockRecords": 0,
+      "busy": false,
+      "occupancyType": null
+    },
+    {
+      "number": "125",
+      "at": "2026-11-03T06:46:43.389Z",
+      "listed": true,
+      "ownActiveLocks": 0,
+      "foreignLockRecords": 0,
+      "busy": false,
+      "occupancyType": null
+    },
+    {
+      "number": "127",
+      "at": "2026-11-03T06:46:43.431Z",
+      "listed": true,
+      "ownActiveLocks": 0,
+      "foreignLockRecords": 1,
+      "busy": true,
+      "occupancyType": "screen_control"
+    },
+    {
+      "number": "59",
+      "at": "2026-11-03T06:46:43.898Z",
+      "listed": true,
+      "ownActiveLocks": 0,
+      "foreignLockRecords": 0,
+      "busy": false,
+      "occupancyType": null
+    },
+    {
+      "number": "69",
+      "at": "2026-11-03T06:46:44.073Z",
+      "listed": true,
+      "ownActiveLocks": 0,
+      "foreignLockRecords": 0,
+      "busy": false,
+      "occupancyType": null
+    },
+    {
+      "number": "71",
+      "at": "2026-11-03T06:46:44.238Z",
+      "listed": true,
+      "ownActiveLocks": 0,
+      "foreignLockRecords": 0,
+      "busy": false,
+      "occupancyType": null
+    },
+    {
+      "number": "78",
+      "at": "2026-11-03T06:46:44.591Z",
+      "listed": true,
+      "ownActiveLocks": 0,
+      "foreignLockRecords": 0,
+      "busy": false,
+      "occupancyType": null
+    },
+    {
+      "number": "91",
+      "at": "2026-11-03T06:46:44.817Z",
+      "listed": true,
+      "ownActiveLocks": 0,
+      "foreignLockRecords": 0,
+      "busy": false,
+      "occupancyType": null
+    },
+    {
+      "number": "98",
+      "at": "2026-11-03T06:46:45.049Z",
+      "listed": true,
+      "ownActiveLocks": 0,
+      "foreignLockRecords": 0,
+      "busy": false,
+      "occupancyType": null
+    },
+    {
+      "number": "106",
+      "at": "2026-11-03T06:46:45.204Z",
+      "listed": true,
+      "ownActiveLocks": 0,
+      "foreignLockRecords": 0,
+      "busy": false,
+      "occupancyType": null
+    },
+    {
+      "number": "123",
+      "at": "2026-11-03T06:46:45.481Z",
+      "listed": true,
+      "ownActiveLocks": 0,
+      "foreignLockRecords": 0,
+      "busy": false,
+      "occupancyType": null
+    },
+    {
+      "number": "143",
+      "at": "2026-11-03T06:46:45.671Z",
+      "listed": true,
+      "ownActiveLocks": 0,
+      "foreignLockRecords": 0,
+      "busy": false,
+      "occupancyType": null
+    },
+    {
+      "number": "145",
+      "at": "2026-11-03T06:46:45.829Z",
+      "listed": true,
+      "ownActiveLocks": 0,
+      "foreignLockRecords": 0,
+      "busy": false,
+      "occupancyType": null
+    },
+    {
+      "number": "173",
+      "at": "2026-11-03T06:46:46.013Z",
+      "listed": true,
+      "ownActiveLocks": 0,
+      "foreignLockRecords": 0,
+      "busy": false,
+      "occupancyType": null
+    },
+    {
+      "number": "185",
+      "at": "2026-11-03T06:46:46.173Z",
+      "listed": true,
+      "ownActiveLocks": 0,
+      "foreignLockRecords": 0,
+      "busy": false,
+      "occupancyType": null
+    },
+    {
+      "number": "25",
+      "at": "2026-11-03T06:46:46.369Z",
+      "listed": true,
+      "ownActiveLocks": 0,
+      "foreignLockRecords": 0,
+      "busy": false,
+      "occupancyType": null
+    },
+    {
+      "number": "82",
+      "at": "2026-11-03T06:46:46.504Z",
+      "listed": true,
+      "ownActiveLocks": 0,
+      "foreignLockRecords": 1,
+      "busy": true,
+      "occupancyType": "screen_control"
+    }
+  ]
+}

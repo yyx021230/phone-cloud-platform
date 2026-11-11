@@ -1,0 +1,47 @@
+{
+  "sourceCommit": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "variant": "retain two exact actual production files",
+  "tests": 1908,
+  "pass": 1890,
+  "fail": 18,
+  "newFailureNamesComparedWithPriorProductionVariant": 0,
+  "baselineReproduction": {
+    "source": "3a266d71ba861f8e81d6ec3a173d7efc12d5b245",
+    "testFiles": [
+      "windows-agent/src/screen-serial-identity.test.mjs",
+      "windows-agent/src/serial-adb-health.test.mjs"
+    ],
+    "same18Failures": true
+  },
+  "failedTests": [
+    "a case alias cannot take over an already active physical device",
+    "a stop during identity resolution cannot resurrect the session",
+    "all lifecycle callbacks use the exact observed serial and keep an unrelated session untouched",
+    "correcting serial casing preserves every per-device media/profile policy",
+    "distinguishes abort from an unresponsive phone",
+    "distinguishes empty server inventory from an unresponsive phone",
+    "distinguishes execFile timeout from an unresponsive phone",
+    "distinguishes offline from an unresponsive phone",
+    "distinguishes other command failure from an unresponsive phone",
+    "distinguishes quoted device not found from an unresponsive phone",
+    "distinguishes timeout code from an unresponsive phone",
+    "distinguishes timeout message from an unresponsive phone",
+    "distinguishes unauthorized from an unresponsive phone",
+    "distinguishes unquoted device not found from an unresponsive phone",
+    "missing inventory never preempts, reserves or prepares the device",
+    "offline inventory never preempts, reserves or prepares the device",
+    "unauthorized inventory never preempts, reserves or prepares the device",
+    "unknown and ambiguous identity/profile are rejected before background preemption"
+  ],
+  "decision": "Retain frozen production files; do not enable unshipped frozen behavior merely to satisfy candidate-only tests. Actual runtime/native acceptance remains outstanding.",
+  "logs": [
+    {
+      "path": "/private/tmp/pc-platform-release-overlay-20261102-TEST-FULL.log",
+      "sha256": "6f84fabdbeff1caf4fe62f93481b2d93dcec7f3db8641586eae6cb19a731a866"
+    },
+    {
+      "path": "/private/tmp/pc-platform-production-baseline-20261102-TEST.log",
+      "sha256": "6ee197e1a6ec7437d4f372138a6bc94a1ff967a3fbc4fa68f6bcf7ddd7458b1f"
+    }
+  ]
+}

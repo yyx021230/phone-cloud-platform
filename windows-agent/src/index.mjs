@@ -1,5 +1,13 @@
-import {isLookupReaderRecovery, readerExitDiagnostic, verifyLookupReaderCleanup, lookupReaderStopReason} from "./lookup-reader-lifecycle.mjs";
+import { createLookupReaderAdmissionLog } from "./lookup-reader-admission-log.mjs";
+import { buildLookupReaderCapacityReport } from "./lookup-reader-capacity-report.mjs";
+import { measureLookupExecution } from "./lookup-execution-metrics.mjs";
+import {lookupXmlFailure} from "./lookup-xml-failure.mjs";
+import {isLookupReaderRecovery, rejectExitedReaderRequest, readerExitDiagnostic, verifyLookupReaderCleanup, lookupReaderStopReason} from "./lookup-reader-lifecycle.mjs";
 const lookupReaderStopBarriers = new Map();
+import { runWecomPreviewTask } from "./wecom-preview-task.mjs";
+import { physicalBinding } from "./wecom-cleanup-protocol.mjs";
+import { handleWecomCleanupVerification } from "./wecom-cleanup-verify.mjs";
+import {runWecomPreinputRecovery} from './wecom-preinput-recovery.mjs';
 import {collectLookupTrace, isAutomaticLookupResume} from "./lookup-recovery-trace.mjs";
 import { createRecoveryIsolation } from './recovery-isolation.mjs';
 import { createDeviceScanPipeline, recoverySnapshotAdmission } from './device-scan-pipeline.mjs';
@@ -7,6 +15,7 @@ import { createPnpRecoveryControl } from './pnp-recovery-control.mjs';
 import {hydrateManagedLookupTask,MANAGED_LOOKUP_PROTOCOL} from './managed-lookup-delivery.mjs';
 import {randomUUID} from "node:crypto";
 const lookupRuntimeId=randomUUID();
+const observeLookupReaderAdmission = createLookupReaderAdmissionLog({log});
 import { execFile, spawn } from "node:child_process";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -14,7 +23,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { isDeviceSerialInNotificationFallbackScope, loadAgentConfig } from "./config.mjs";
 import { cachedAdbSerials, indexCachedDevices, mergeCachedDeviceScanRow } from "./device-scan-cache.mjs";
-import { runXhsDataCollection } from "./xhs-data-collection.mjs";
+import { runXhsDataCollection, waitForXhsDataReservation } from "./xhs-data-collection.mjs";
 import { galleryImportFileName, parseGalleryImportImage } from "./gallery-import.mjs";
 import {
   hydrateLeasedWindowsTask,
@@ -23,6 +32,7 @@ import {
 } from "./gallery-task-delivery.mjs";
 import { createSerialAdbActivityTracker } from "./serial-adb-activity.mjs";
 import { assertSerialAdbHealthy } from "./serial-adb-health.mjs";
+import { resolveOnlineAdbSerial } from "./adb-serial-identity.mjs";
 import { createSerialDelayScheduler } from "./serial-delay-scheduler.mjs";
 import { isSerialReservedForBackgroundWork, shouldScheduleSmsBackground } from "./serial-reservation.mjs";
 import { shouldRunPostTaskDeviceScan } from "./post-task-scan-policy.mjs";
@@ -31,6 +41,7 @@ import {
   shouldFallbackAlipayPocoFailure
 } from "./alipay-poco-fallback-policy.mjs";
 import { restartLookupQueryOnce } from "./lookup-page-recovery.mjs";
+import {lookupReaderCleanupFailure,requireConfirmedLookupCleanup} from './lookup-cleanup-policy.mjs';
 import { createLookupStatusOutbox } from "./lookup-status-outbox.mjs";
 import { runLookupWithAccountPolicy } from "./lookup-account-policy.mjs";
 import { createDeviceActorManager } from "./device-actor.mjs";
@@ -313,6 +324,7 @@ screenStreamManager = createScreenStreamManager({
   config,
   agentDir,
   log,
+  resolveSerial: (serial) => resolveOnlineAdbSerial(serial, lastDevices),
   preemptSerial(serial) {
     return preemptSmsSyncForScreen(serial);
   },
@@ -435,6 +447,12 @@ async function runGuardedInterval(name, fn) {
   return await guardedTasks.run(name, fn, timeoutMs);
 }
 
+function lookupReaderCapacityReport() {
+  return buildLookupReaderCapacityReport({ runtimeId: lookupRuntimeId, limit: config.airtestMaxResidentWorkers,
+    workers: airtestWorkersBySerial, activeSerials: activeTaskSerials, screenControlledSerials,
+    preflightSerials: automationPreflightRunning });
+}
+
 async function buildHealth(reason, previousHealth = null) {
   const [adbCheck, logDirCheck, cacheDirCheck, airtestCheck, collectionProtocolCheck] = await Promise.allSettled([
     adbVersion(),
@@ -520,7 +538,7 @@ async function heartbeat() {
       platform: os.platform(),
       arch: os.arch(),
       adbVersion: lastAdbVersion,
-      managedLookupProtocol: MANAGED_LOOKUP_PROTOCOL, lookupPostHumanProtocol: 1, lookupRuntimeId,
+      managedLookupProtocol: MANAGED_LOOKUP_PROTOCOL, lookupPostHumanProtocol: 1, lookupRuntimeId, lookupReaderCapacityProtocol: 1,
       maxConcurrentAdbTasks: config.maxConcurrentAdbTasks,
       deviceTaskConcurrency: config.deviceTaskConcurrency,
       health
@@ -636,7 +654,7 @@ async function syncDevicesToPlatform(devices) {
         platform: os.platform(),
         arch: os.arch(),
         adbVersion: lastAdbVersion,
-        managedLookupProtocol: MANAGED_LOOKUP_PROTOCOL, lookupPostHumanProtocol: 1, lookupRuntimeId,
+        managedLookupProtocol: MANAGED_LOOKUP_PROTOCOL, lookupPostHumanProtocol: 1, lookupRuntimeId, lookupReaderCapacityProtocol: 1,
         health
       },
       devices:snapshot
@@ -1140,10 +1158,18 @@ async function pollTask() {
     if (screenGallerySerials) params.set("screenGallerySerials", screenGallerySerials);
     if (activeTaskIds) params.set("activeTaskIds", activeTaskIds);
     params.set("managedLookupDelivery", MANAGED_LOOKUP_PROTOCOL);
+    params.set("lookupReaderCapacityProtocol", "1");
+    params.set("lookupReaderCapacity", JSON.stringify(lookupReaderCapacityReport()));
     params.set("galleryDelivery", SCREEN_GALLERY_DELIVERY_PROTOCOL);
     params.set("xhsPublishDelivery", XHS_PUBLISH_DELIVERY_PROTOCOL);
+    params.set("wecomPreview", "wecom-invitation-v4");
+    params.set("wecomRemarkPhone", "verified-v1");
+    params.set("wecomCleanupProtocol", "1");
+    params.set("wecomCausalProtocol", "wecom-causal-v1");
+    params.set('wecomPreinputRecovery','wecom-preinput-recovery-v1');
     const suffix = params.size ? `?${params.toString()}` : "";
     const payload = await api(`/api/v1/windows-agents/${encodeURIComponent(config.agentId)}/tasks/next${suffix}`);
+    observeLookupReaderAdmission(payload.readerCapacity);
     cancellationChecked = true;
     abortCancelledAutomationTasks(payload.cancelledTaskIds || []);
     if (!payload.task) break;
@@ -1157,7 +1183,7 @@ async function pollTask() {
       // Gallery import is idempotent enough to finish after a lost ACK
       // response. Publishing is an external side effect: never click publish
       // unless the server has confirmed ownership of this delivery.
-      if (prepared.task.type === "xhs_publish" || prepared.task.payload?.managedLookup) continue;
+      if (prepared.task.type === "xhs_publish" || prepared.task.type === "wecom_customer_preview" || prepared.task.type === "wecom_cleanup_verify" || prepared.task.payload?.managedLookup) continue;
     }
     startTask(prepared.task);
     picked += 1;
@@ -1206,8 +1232,17 @@ function startTask(task) {
 }
 
 async function runTask(task, options = {}) {
+  if (task.type === "wecom_cleanup_verify") {
+    return handleWecomCleanupVerification(task, {
+      ...(task.payload?.preinputRecovery?{run:runWecomPreinputRecovery}:{}),
+      config, agentDir, signal: options.signal,
+      event: (phase, level, message) => taskEvent(task, phase, level, message),
+      reportFailure: result => taskStatus(task, "failed", result)
+    });
+  }
   const isLookup = task.type.startsWith("alipay_name_");
   let lookupTerminal = null;
+  let xhsPreflightOnly = false;
   log("task picked", { taskId: task.taskId, type: task.type, adbSerial: task.adbSerial });
   taskEvent(task, "start", "info", `开始执行 ${task.type}`)
     .catch((error) => log("task start event failed", { taskId: task.taskId, error: error.message }));
@@ -1227,33 +1262,48 @@ async function runTask(task, options = {}) {
     else if (task.type === "xhs_qr_appium") result = await taskXhsQrAirtestPoco(task);
     else if (task.type === "xhs_publish") result = await taskXhsPublish(task);
     else if (task.type === "xhs_data_collect") result = await taskXhsDataCollect(task, options);
+    else if (task.type === "wecom_customer_preview") result = await taskWecomPreview(task, options);
     else if (task.type === "kuaishou_lead") result = await taskKuaishouLead(task, options);
     else if (["alipay_name_start", "alipay_name_query", "alipay_name_switch", "alipay_name_stop"].includes(task.type)) result = await taskAlipayNameLookupWithAccounts(task, options);
     else throw new Error(`unsupported task type: ${task.type}`);
     const collectionIncomplete = task.type === "xhs_data_collect" && result.collection?.complete !== true;
-    await taskEvent(task, "finish", collectionIncomplete ? "warn" : "info", collectionIncomplete ? "已保存部分采集结果" : "执行成功", compactTaskResultForEvent(result))
+    const previewBlocked = task.type === "wecom_customer_preview" && !["ready_before_send", "send_attempted"].includes(result.previewStatus);
+    xhsPreflightOnly = task.type === "xhs_data_collect" && result.diagnostic?.phase === "before_device_actions"
+      && result.diagnostic.collectionStarted === false;
+    const finishMessage = task.type === "wecom_customer_preview" && task.payload?.mode === "send"
+      ? "企微单次邀请流程结束，请核对发送状态"
+      : previewBlocked ? "企微预览已保护性停止，未发送邀请"
+      : collectionIncomplete ? (result.collection ? "已保存部分采集结果" : result.message) : "执行成功";
+    await taskEvent(task, "finish", collectionIncomplete || previewBlocked ? "warn" : "info", finishMessage, compactTaskResultForEvent(result))
       .catch((error) => log("task finish event failed", { taskId: task.taskId, error: error.message }));
     if (isLookup) lookupTerminal = { status: "succeeded", result };
-    else await taskStatus(task, collectionIncomplete ? "failed" : "succeeded", result);
+    else await taskStatus(task, collectionIncomplete || previewBlocked ? "failed" : "succeeded", result);
   } catch (error) {
+    // A failed status upload is uncertain delivery, not permission to inspect
+    // the phone that the cache-only preflight deliberately left untouched.
+    if (xhsPreflightOnly) throw error;
     if (isAutomationTaskCancellation(error)) {
       taskEvent(task, "cancelled", "info", "用户已结束会话，当前自动化任务已停止", { reason: "automation_task_cancelled" })
         .catch((eventError) => log("task cancellation event failed", { taskId: task.taskId, error: eventError.message }));
-      taskStatus(task, "cancelled", { code: "automation_task_cancelled", message: "用户已结束会话，当前自动化任务已停止" })
+      taskStatus(task, "cancelled", { ...(isLookup ? taskFailureResult(error) : {}), code: "automation_task_cancelled", message: "用户已结束会话，当前自动化任务已停止" })
         .catch((statusError) => log("task cancellation status failed", { taskId: task.taskId, error: statusError.message }));
       return;
     }
     if (isScreenPriorityCancellation(error)) {
       taskEvent(task, "cancelled", "info", "投屏优先，已暂停短信同步", { reason: "screen_control_priority" })
         .catch((eventError) => log("task cancellation event failed", { taskId: task.taskId, error: eventError.message }));
-      taskStatus(task, "cancelled", { code: "screen_control_priority", message: "投屏优先，已暂停短信同步" })
+      taskStatus(task, "cancelled", { ...(isLookup ? taskFailureResult(error) : {}), code: "screen_control_priority", message: "投屏优先，已暂停短信同步" })
         .catch((statusError) => log("task cancellation status failed", { taskId: task.taskId, error: statusError.message }));
       return;
     }
-    const evidence = error.code === "lookup_status_storage_unavailable" ? {} : await captureFailureEvidence(task).catch((evidenceError) => ({
+    const evidence = task.type === "wecom_customer_preview" || error.code === "lookup_status_storage_unavailable" ? {} : await captureFailureEvidence(task).catch((evidenceError) => ({
       evidenceError: evidenceError?.message || String(evidenceError)
     }));
-    const failure = { ...taskFailureResult(error), ...evidence };
+    const failure = { ...taskFailureResult(error), ...evidence,
+      ...(task.type === "wecom_customer_preview" ? { previewStatus: "blocked", invitationSent: task.payload?.mode === "send" ? null : false,
+        sendStatus: task.payload?.mode === "send" ? "unknown" : "not_attempted",
+        previewCode: /^[a-z0-9_]{1,100}$/.test(error.message || "") ? error.message : "wecom_preview_outcome_unknown",
+        remarkSaveStatus: "unknown" } : {}) };
     await taskEvent(task, "finish", "error", error.message, compactTaskResultForEvent(failure))
       .catch((eventError) => log("task failure event failed", { taskId: task.taskId, error: eventError.message }));
     if (isLookup) lookupTerminal = { status: "failed", result: failure };
@@ -1265,7 +1315,7 @@ async function runTask(task, options = {}) {
         adbSerial: task.adbSerial,
         reason: options.signal.reason?.code || options.signal.reason?.message || "cancelled"
       });
-    } else if (shouldRunPostTaskDeviceScan(task.type)) {
+    } else if (task.type !== "wecom_customer_preview" && shouldRunPostTaskDeviceScan(task.type)) {
       await scanAndSync({ force: true, skipSms: true, reason: "post_task" }).catch((error) => log("post-task scan failed", error.message));
     } else {
       log("post-task device scan skipped", {
@@ -1350,6 +1400,10 @@ function isAutomationTaskCancellation(error) {
 }
 
 async function captureFailureEvidence(task) {
+  // Stop failures retain the original cleanup diagnostics. Taking evidence
+  // must not start a reader or send additional phone commands after cleanup.
+  if (task?.type === "alipay_name_stop") return {};
+  const isLookup = /^alipay_name_(start|query|switch)$/.test(task?.type || "");
   const serial = String(task?.adbSerial || "").trim();
   if (!serial) return {};
   const capturedAt = new Date().toISOString();
@@ -1363,7 +1417,9 @@ async function captureFailureEvidence(task) {
     evidence.currentActivity = focusLines.join("\n").slice(0, 1000);
     evidence.packageName = packageNameFromFocusLines(focusLines);
   }
-  const hierarchy = await adb(serial, ["exec-out", "uiautomator", "dump", "/dev/tty"], {
+  // A missing host worker is not proof that Poco's on-phone instrumentation
+  // exited. Never launch an independent UIAutomator merely to record failure.
+  const hierarchy = isLookup ? "" : await adb(serial, ["exec-out", "uiautomator", "dump", "/dev/tty"], {
     timeoutMs: 15_000,
     maxBuffer: 2 * 1024 * 1024
   }).catch(() => "");
@@ -1826,6 +1882,10 @@ async function taskXhsQrAirtestPoco(task) {
 
 async function taskXhsDataCollect(task, options = {}) {
   if (!(await fileExists(config.xhsDataCollectionRunnerPath))) throw new Error("小红书数据采集脚本不存在，请更新 Windows 管理器");
+  const preflight = await waitForXhsDataReservation(task, { deviceCachePath: deviceScanCachePath(), signal: options.signal });
+  // Return a failed result (no collection), not an exception: the shared error
+  // handler would otherwise capture evidence by operating an occupied phone.
+  if (preflight) return preflight;
   await assertAdbDeviceOnlineFast(task.adbSerial);
   await ensureXmlUiAutomatorReady(task.adbSerial);
   await taskEvent(task, "xhs_data_collect", "info", "开始读取最近30天作品列表", { xhsAppSlot: task.payload?.xhsAppSlot, days: 30 });
@@ -2098,6 +2158,11 @@ function classifyAlipayNameLookupFailure(rawMessage = "") {
     .slice(0, 500);
   const readerExit = /worker (?:已退出|exited)|poco_worker_bootstrap_failed:/.test(raw) ? readerExitDiagnostic(raw) : null;
   const diagnostic = { code: "alipay_lookup_failed", retryable: true, runnerReason: compactReason, ...(readerExit ? {readerExit} : {}) };
+  if ((readerExit?.stage === 'instrumentation' && readerExit.cause === 'dependency_missing') || raw === 'poco_service_not_installed') return {...diagnostic,
+    retryable:false,runnerReason:'poco_worker_bootstrap_failed:instrumentation:dependency_missing',
+    message:'这台手机缺少查名读取组件，需安装已核验组件后重新探测；不会通过重启支付宝、切号或XML兜底重试。'};
+  if (/^Airtest\/Poco 常驻 worker 已达到上限 \d+，当前均在执行任务$/.test(raw)) return {...diagnostic,
+    runnerReason:"lookup_worker_capacity_reached", message:"查名读取器资源暂满，原请求保留，等待资源后继续。"};
   if (raw.includes("local_lookup_result_unconfirmed:")) return { ...diagnostic,
     code: "alipay_lookup_result_unconfirmed", retryable: false,
     message: "当前号码查询结果尚未确认，原请求已保留，等待平台恢复；请勿重新创建查询。" };
@@ -2312,21 +2377,34 @@ async function observeLookupHumanVerification(probe) {
 }
 
 async function taskAlipayNameLookupWithAccounts(task, options = {}) {
-  return runLookupWithAccountPolicy({ task,
+  return measureLookupExecution(lookupMetrics => runLookupWithAccountPolicy({ task,
     assertAllowed: () => {
       if (options.signal?.aborted) throw automationTaskCancellationError();
       if (screenControlledSerials.has(task.adbSerial)) throw screenPriorityCancellationError();
     },
-    execute: (next, hooks = {}) => taskAlipayNameLookup(next, { ...options, ...hooks }),
+    execute: (next, hooks = {}) => taskAlipayNameLookup(next, { ...options, ...hooks, lookupMetrics }),
     recordLimit: (record) => taskEvent(task, "alipay_name", "warn", "查询限制已确认，保存账户八小时冷却后再继续", {
       ...record, currentAccount: record.account, accountSwitchRequired: true,
       stepId: "lookup_account_limit_confirmed"
     })
-  });
+  }));
 }
 
 async function taskAlipayNameLookup(task, options = {}) {
   const lookupTrace = [];
+  const metrics = options.lookupMetrics;
+  const rejectUnconfirmedCleanup = error => {
+    const cleanupFailure = lookupReaderCleanupFailure(error);
+    if (!cleanupFailure) return;
+    const diagnostic = {...classifyAlipayNameLookupFailure(cleanupFailure),
+      runnerReason: cleanupFailure, retryable: false, recoveryTrace: lookupTrace.slice(),
+      message: "旧查名读取器清理尚未确认，保留原任务等待安全收尾；请勿重新提交查询。"};
+    throw Object.assign(new Error(diagnostic.message), {code: diagnostic.code, diagnostic});
+  };
+  const rebuildReader = reason => {
+    if (metrics) metrics.readerRebuildAttempts += 1;
+    return stopAirtestWorker(task.adbSerial, reason);
+  };
   let searchSubmitted = false;
   let resultRecoveryAttempted = false;
   const replayLookupEvents = events => {
@@ -2335,6 +2413,23 @@ async function taskAlipayNameLookup(task, options = {}) {
     return replayAirtestEvents(task, events);
   };
   const startedAt = Date.now();
+  if (task.type === "alipay_name_stop") {
+    // Stop is cleanup, never a reason to bootstrap another reader or touch UI.
+    if (options.signal?.aborted) throw automationTaskCancellationError();
+    clearAirtestLookupWarmLease(task.adbSerial, "lookup_session_stopped");
+    automationResumeScheduler.cancel(task.adbSerial);
+    let confirmed = false;
+    try { confirmed = await stopAirtestWorker(task.adbSerial, "lookup_session_stopped") === true; }
+    catch { /* An exception is not physical cleanup acknowledgement. */ }
+    if (!confirmed) throw Object.assign(new Error("查名读取器清理未确认，保留占用等待核验"), {
+      code: "lookup_reader_cleanup_unconfirmed", diagnostic: { lookupStopCleanupConfirmed: false }
+    });
+    markAutomationReadyOnDemand(task.adbSerial, "lookup_session_stopped");
+    return { action: "查名字会话已结束", message: "session_stopped", durationMs: Date.now()-startedAt,
+      diagnostic: { lookupStopProof: { version: 1, readerCleanupConfirmed: true,
+        taskId: task.taskId, sessionId: String(task.payload?.automationSessionId || ""),
+        generation: String(task.payload?.managedLookup?.generation || "") } } };
+  }
   if (!(await fileExists(config.alipayNameLookupRunnerPath))) throw new Error(`支付宝查名字执行器不存在：${config.alipayNameLookupRunnerPath}`);
   await assertAdbDeviceOnlineFast(task.adbSerial);
   const packageName = "com.eg.android.AlipayGphone";
@@ -2364,6 +2459,10 @@ async function taskAlipayNameLookup(task, options = {}) {
     targetAccount: String(task.payload?.targetAccount || ""),
     postHumanStartup: task.payload?.postHumanStartup === true,
     accountCooldownProtocol: task.payload?.accountCooldownProtocol,
+    // Managed readiness always follows identity preparation with a real probe.
+    // Let that existing Poco path open Search, as it already does after switching.
+    deferSearchPreparation: operation === "start" && task.payload?.accountCooldownProtocol === 1
+      && Boolean(task.payload?.managedLookup?.generation),
     knownAccount: String(task.payload?.knownAccount || ""),
     preparedEmptyResult: task.payload?.preparedEmptyResult === true,
     observationOnlyResume: operation === "query_resume" && task.payload?.preparedLookup?.observationOnlyResume === true,
@@ -2452,6 +2551,7 @@ async function taskAlipayNameLookup(task, options = {}) {
             readyTimeoutMs: 25_000,
             timeoutMs: queryOperation ? 65_000 : ["start", "post_human_check"].includes(operation) ? 45_000 : 12_000,
             maxIdleMs: 15 * 60_000,
+            onReaderRebuild: () => { if (metrics) metrics.readerRebuildAttempts += 1; },
             onEvent: (event) => replayLookupEvents([event])
           });
           if (operation === "start"
@@ -2467,7 +2567,9 @@ async function taskAlipayNameLookup(task, options = {}) {
               fallbackSkipped: "xml_uiautomator",
               driver: "poco"
             });
-            await stopAirtestWorker(task.adbSerial, "poco_start_transport_timeout").catch(() => {});
+            await requireConfirmedLookupCleanup(() => rebuildReader("poco_start_transport_timeout"));
+            if (options.signal?.aborted) throw automationTaskCancellationError();
+            if (screenControlledSerials.has(task.adbSerial)) throw screenPriorityCancellationError();
             parsed = null;
             continue;
           }
@@ -2487,7 +2589,9 @@ async function taskAlipayNameLookup(task, options = {}) {
             : startRequestTimedOut
               ? "start_request_timeout"
               : "worker_probe_failed";
-          await stopAirtestWorker(task.adbSerial, `poco_start_${retryReason}`).catch(() => {});
+          await requireConfirmedLookupCleanup(() => rebuildReader(`poco_start_${retryReason}`));
+          if (options.signal?.aborted) throw automationTaskCancellationError();
+          if (screenControlledSerials.has(task.adbSerial)) throw screenPriorityCancellationError();
           await taskEvent(task, "alipay_name", "warn", "Poco 启动阶段异常，正在重建 Poco 后重试", {
             operation,
             attempt,
@@ -2516,7 +2620,8 @@ async function taskAlipayNameLookup(task, options = {}) {
           fallbackSkipped: "xml_uiautomator",
           driver: "poco"
         });
-        if (await stopAirtestWorker(task.adbSerial, "poco_query_resume_result_channel_timeout") !== true) throw new Error("lookup_old_worker_exit_unconfirmed");
+        if (await rebuildReader("poco_query_resume_result_channel_timeout") !== true) throw new Error("lookup_old_worker_exit_unconfirmed");
+        if (metrics) metrics.resultResumeAttempts += 1;
         let observed;
         try {
           observed = await runXhsAirtestPocoWorker({
@@ -2528,10 +2633,12 @@ async function taskAlipayNameLookup(task, options = {}) {
             readyTimeoutMs: 25_000,
             timeoutMs: 65_000,
             maxIdleMs: 15 * 60_000,
+            onReaderRebuild: () => { if (metrics) metrics.readerRebuildAttempts += 1; },
             onEvent: (event) => replayLookupEvents([event])
           });
         } catch (observationError) {
-          throw new Error(`poco_query_resume_observation_failed:${String(observationError?.message || observationError)}`);
+          if (isAutomationTaskCancellation(observationError) || observationError?.code === 'screen_control_priority' || observationError?.message === 'screen_control_priority') throw observationError;
+          throw new Error(`poco_query_resume_observation_failed:${lookupReaderCleanupFailure(observationError) || String(observationError?.message || observationError)}`);
         }
         const observationReplayCount = Number(observed.streamedReplayCount || 0);
         if (!observationReplayCount) await replayLookupEvents(observed.log || []);
@@ -2565,7 +2672,8 @@ async function taskAlipayNameLookup(task, options = {}) {
             fallbackSkipped: "xml_uiautomator",
             driver: "poco"
           });
-          if (await stopAirtestWorker(task.adbSerial, "poco_query_result_channel_timeout") !== true) throw new Error("lookup_old_worker_exit_unconfirmed");
+          if (await rebuildReader("poco_query_result_channel_timeout") !== true) throw new Error("lookup_old_worker_exit_unconfirmed");
+          if (metrics) metrics.resultResumeAttempts += 1;
           let resumed;
           try {
             resumed = await runXhsAirtestPocoWorker({
@@ -2577,10 +2685,12 @@ async function taskAlipayNameLookup(task, options = {}) {
               readyTimeoutMs: 25_000,
               timeoutMs: 65_000,
               maxIdleMs: 15 * 60_000,
-              onEvent: (event) => replayLookupEvents([event])
+              onReaderRebuild: () => { if (metrics) metrics.readerRebuildAttempts += 1; },
+            onEvent: (event) => replayLookupEvents([event])
             });
           } catch (resumeError) {
-            throw new Error(`poco_query_resume_failed:${String(resumeError?.message || resumeError)}`);
+            if (isAutomationTaskCancellation(resumeError) || resumeError?.code === 'screen_control_priority' || resumeError?.message === 'screen_control_priority') throw resumeError;
+            throw new Error(`poco_query_resume_failed:${lookupReaderCleanupFailure(resumeError) || String(resumeError?.message || resumeError)}`);
           }
           const resumeReplayCount = Number(resumed.streamedReplayCount || 0);
           if (!resumeReplayCount) await replayLookupEvents(resumed.log || []);
@@ -2599,13 +2709,11 @@ async function taskAlipayNameLookup(task, options = {}) {
       }
       if (!parsed.ok) throw new Error(parsed.error || "支付宝 Poco 快路径失败");
       const result = buildResult(parsed, "poco");
-      if (operation === "stop") {
-        await stopAirtestWorker(task.adbSerial, "lookup_session_stopped");
-        markAutomationReadyOnDemand(task.adbSerial, "lookup_session_stopped");
-      }
       return result;
     } catch (error) {
       if (isAutomationTaskCancellation(error)) throw error;
+      rejectUnconfirmedCleanup(error);
+      if (error?.code === 'screen_control_priority' || error?.message === 'screen_control_priority') throw error;
       if (operation === "post_human_check") {
         const diagnostic = classifyAlipayNameLookupFailure(String(error?.message || error));
         throw Object.assign(new Error(diagnostic.message), {code: diagnostic.code, diagnostic: {...diagnostic, recoveryTrace: lookupTrace.slice()}});
@@ -2627,14 +2735,17 @@ async function taskAlipayNameLookup(task, options = {}) {
             recoveryMode: mode || "restart_app", resubmitsInput: mode === "restart_app",
             accountSwitchRequested: false, driver: "poco"
           }),
-          stopWorker: () => stopAirtestWorker(task.adbSerial, "lookup_query_app_recovery"),
+          stopWorker: () => rebuildReader("lookup_query_app_recovery"),
           runWorker: async (recoveryPayload) => {
+            if (metrics && recoveryPayload.pageRecoveryStage === "restart_app") metrics.appRestartAttempts += 1;
+            if (metrics && recoveryPayload.operation === "query_resume") metrics.resultResumeAttempts += 1;
             if (["continue_query", "reattach_before_input"].includes(recoveryPayload.pageRecoveryStage) && options.beforeLookupRecovery) {
               const policy = await options.beforeLookupRecovery();
               recoveryPayload = { ...recoveryPayload, ...policy };
             }
             return runXhsAirtestPocoWorker(recoveryPayload, {
             readyTimeoutMs: 25_000, timeoutMs: recoveryPayload.pageRecoveryStage === "restart_app" ? 45_000 : 65_000, maxIdleMs: 15 * 60_000,
+            onReaderRebuild: () => { if (metrics) metrics.readerRebuildAttempts += 1; },
             onEvent: (event) => replayLookupEvents([event])
           }); }
         });
@@ -2645,24 +2756,12 @@ async function taskAlipayNameLookup(task, options = {}) {
         }
       } catch (recoveryError) {
         if (isAutomationTaskCancellation(recoveryError)) throw recoveryError;
-        error = new Error(`poco_query_page_recovery_failed:${String(recoveryError?.message || recoveryError)}`);
+        if (recoveryError?.code === 'screen_control_priority' || recoveryError?.message === 'screen_control_priority') throw recoveryError;
+        const cleanupFailure = lookupReaderCleanupFailure(recoveryError);
+        error = new Error(`poco_query_page_recovery_failed:${cleanupFailure || String(recoveryError?.message || recoveryError)}`);
       }
+      rejectUnconfirmedCleanup(error);
       const pocoError = String(error?.message || error || "");
-      if (operation === "stop") {
-        // Ending a lookup session is a platform lifecycle action. Clearing the
-        // warm search input is only best effort; never start the independent
-        // XML/UIAutomator stack just because a stale PocoService session could
-        // not be probed or recycled.
-        await taskEvent(task, "alipay_name", "warn", "Poco 结束清理异常，已直接释放查名字会话", {
-          operation,
-          reason: cleanLogText(pocoError).slice(0, 500),
-          fallbackSkipped: "xml_uiautomator",
-          driver: "poco"
-        });
-        await stopAirtestWorker(task.adbSerial, "lookup_session_stop_best_effort").catch(() => {});
-        markAutomationReadyOnDemand(task.adbSerial, "lookup_session_stopped");
-        return buildResult({ ok: true, message: "session_stopped", log: [] }, "poco");
-      }
       if (pocoError.includes("poco_query_page_recovery_failed:")) {
         const diagnostic = classifyAlipayNameLookupFailure(pocoError);
         const runnerError = new Error(diagnostic.message);
@@ -2698,7 +2797,14 @@ async function taskAlipayNameLookup(task, options = {}) {
           resumedAfterHumanVerification: operation === "query_resume",
           fallbackDriver: "xml_uiautomator_account_rotation"
         });
-        await stopAirtestWorker(task.adbSerial, "automatic_account_rotation").catch(() => {});
+        try {
+          await requireConfirmedLookupCleanup(() => stopAirtestWorker(task.adbSerial, "automatic_account_rotation"));
+        } catch (cleanupError) {
+          rejectUnconfirmedCleanup(cleanupError);
+          throw cleanupError;
+        }
+        if (options.signal?.aborted) throw automationTaskCancellationError();
+        if (screenControlledSerials.has(task.adbSerial)) throw screenPriorityCancellationError();
         // A post-jigsaw result can itself be an exact account restriction.
         // The independent XML runner owns account rotation and intentionally
         // replays this same phone only after switching to another saved account.
@@ -2737,9 +2843,15 @@ async function taskAlipayNameLookup(task, options = {}) {
       });
     } catch (error) {
       if (isAutomationTaskCancellation(error)) throw error;
-      const failed = parseAirtestRunnerOutput(String(error.stdout || ""));
+      const failed = lookupXmlFailure(error, parseAirtestRunnerOutput);
       await replayLookupEvents(failed.log || []);
       const diagnostic = classifyAlipayNameLookupFailure(failed.error || error.message || "");
+      if (failed.executionExit) {
+        diagnostic.executionExit = failed.executionExit;
+        await taskEvent(task, "alipay_name", "warn",
+          `查名执行进程未返回最终结果；最后记录步骤：${failed.executionExit.lastStep || "无"}。`,
+          { stepId: "lookup_xml_executor_exit", executionExit: failed.executionExit });
+      }
       diagnostic.accountSwitched = Boolean(failed.accountSwitched);
       diagnostic.currentAccount = String(failed.currentAccount || "");
       diagnostic.accountSwitchReason = String(failed.accountSwitchReason || "");
@@ -2935,7 +3047,9 @@ async function runXhsAirtestPocoWorker(payload, options = {}) {
         delay(readyTimeoutMs).then(() => { throw new Error(`Airtest/Poco worker 启动超时：${serial}`); })
       ]);
     } catch (error) {
-      await stopAirtestWorker(serial, lookupReaderStopReason(payload, "ready_timeout")).catch(() => {});
+      const stop = () => stopAirtestWorker(serial, lookupReaderStopReason(payload, "ready_timeout"));
+      if (payload.workflow === 'alipay_name') await requireConfirmedLookupCleanup(stop);
+      else await stop().catch(() => {});
       throw error;
     }
   } else {
@@ -2945,6 +3059,7 @@ async function runXhsAirtestPocoWorker(payload, options = {}) {
   const idleMs = Date.now() - Number(worker.lastUsedAt || worker.startedAt || Date.now());
   if (idleMs >= maxIdleMs) {
     log("recycling idle Airtest/Poco worker before task", { serial, idleMs, maxIdleMs });
+    if (payload.workflow === "alipay_name") options.onReaderRebuild?.();
     worker = await recycleAirtestWorker(serial, lookupReaderStopReason(payload, "idle_before_task"));
   }
   try {
@@ -2954,6 +3069,7 @@ async function runXhsAirtestPocoWorker(payload, options = {}) {
       serial,
       error: error.message || String(error)
     });
+    if (payload.workflow === "alipay_name") options.onReaderRebuild?.();
     worker = await recycleAirtestWorker(serial, lookupReaderStopReason(payload, "poco_probe_failed"));
     await probeAirtestWorker(worker, payload.workflow);
   }
@@ -2987,9 +3103,13 @@ async function probeAirtestWorker(worker, workflow) {
 
 async function recycleAirtestWorker(serial, reason) {
   const existing = airtestWorkersBySerial.get(serial);
-  if (existing) {
+  // An exit callback may already have removed the host worker. Its Android
+  // instrumentation can outlive it, so lookup still needs cleanup proof.
+  if (existing || isLookupReaderRecovery(reason)) {
     const stopped = await stopAirtestWorker(serial, reason);
     if (isLookupReaderRecovery(reason) && stopped !== true) throw new Error("lookup_reader_cleanup_unconfirmed");
+  }
+  if (existing) {
     const exited = await waitForWorkerExit(existing, 8_000);
     if (!exited) throw new Error(`Airtest/Poco worker 未能停止：${serial}`);
   }
@@ -3201,20 +3321,14 @@ function createAirtestWorker(serial) {
     const marker = `poco_worker_bootstrap_failed:${readerExit.stage}:${readerExit.cause}`;
     const error = new Error(`Airtest/Poco worker 已退出：${serial} code=${code ?? ""} signal=${signal ?? ""} ${marker} ${worker.stderrBuffer}`.trim());
     if (worker.readyReject) worker.readyReject(error);
-    if (worker.pending) {
-      worker.pending.reject(error);
-      worker.pending = null;
-    }
+    rejectExitedReaderRequest(worker, error);
   });
   child.on("error", (error) => {
     worker.exited = true;
     if (airtestWorkersBySerial.get(serial) === worker) airtestWorkersBySerial.delete(serial);
     clearTimeout(readyTimer);
     if (worker.readyReject) worker.readyReject(error);
-    if (worker.pending) {
-      worker.pending.reject(error);
-      worker.pending = null;
-    }
+    rejectExitedReaderRequest(worker, error);
   });
   return worker;
 }
@@ -3303,7 +3417,15 @@ async function stopAirtestWorker(serial, reason = "stop") {
 
 async function stopAirtestWorkerImpl(serial, reason = "stop") {
   const worker = airtestWorkersBySerial.get(serial);
-  if (!worker) return true;
+  if (!worker) {
+    if (!isLookupReaderRecovery(reason)) return true;
+    // Host process exit is not evidence that Android stopped instrumentation.
+    // Keep the same bounded, serial-scoped proof before lookup can reattach.
+    const cleanupConfirmed = await verifyLookupReaderCleanup(serial, (args, options) => run(config.adbPath, args, options), Date.now, {observeFirst:true})
+      .then(() => true, error => {log('lookup reader cleanup unconfirmed',{serial,reason,cleanup:error?.lookupCleanup||null});return false;});
+    log("lookup exited reader cleanup completed", { serial, reason, cleanupConfirmed });
+    return cleanupConfirmed;
+  }
   const screenPriority = reason === "screen_control" || reason === "xml_uiautomator";
   const lookupRecovery = isLookupReaderRecovery(reason);
   let cleanupConfirmed = true;
@@ -3326,13 +3448,13 @@ async function stopAirtestWorkerImpl(serial, reason = "stop") {
         ? verifyLookupReaderCleanup(serial, (args, options) => run(config.adbPath, args, options)).then(() => { worker.lookupStopConfirmed = true; })
         : cleanupAirtestDeviceAfterForcedStop(serial)).catch((error) => {
         cleanupConfirmed = false;
-        log("forced airtest cleanup failed", { serial, reason, error: error.message || String(error) });
+        log("forced airtest cleanup failed", { serial, reason, error: error.message || String(error), ...(lookupRecovery?{cleanup:error?.lookupCleanup||null}:{}) });
       });
     }
   });
   if (lookupRecovery && result.exited && !worker.lookupStopConfirmed && !result.forced) {
     cleanupConfirmed = await verifyLookupReaderCleanup(serial, (args, options) => run(config.adbPath, args, options))
-      .then(() => true, () => false);
+      .then(() => true, error => {log('lookup reader cleanup unconfirmed',{serial,reason,cleanup:error?.lookupCleanup||null});return false;});
   }
   if (screenPriority && result.exited && !result.forced) {
     await cleanupAirtestForwardsAfterStop(serial).catch((error) => {
@@ -3939,9 +4061,9 @@ function compactTaskResultForStatus(result = {}) {
     qrRemotePath: String(result.qrRemotePath || "").slice(0, 500),
     packageName: String(result.packageName || "").slice(0, 160),
     currentActivity: String(result.currentActivity || "").slice(0, 1000),
-    durationMs: Number.isFinite(Number(result.durationMs)) ? Number(result.durationMs) : null,
-    wallMs: Number.isFinite(Number(result.wallMs)) ? Number(result.wallMs) : null,
-    timeoutSeconds: Number.isFinite(Number(result.timeoutSeconds)) ? Number(result.timeoutSeconds) : null,
+    durationMs: ((typeof result.durationMs === "number" || typeof result.durationMs === "string" && result.durationMs.trim()) && Number.isFinite(Number(result.durationMs)) && Number(result.durationMs) >= 0) ? Number(result.durationMs) : null,
+    wallMs: ((typeof result.wallMs === "number" || typeof result.wallMs === "string" && result.wallMs.trim()) && Number.isFinite(Number(result.wallMs)) && Number(result.wallMs) >= 0) ? Number(result.wallMs) : null,
+    timeoutSeconds: ((typeof result.timeoutSeconds === "number" || typeof result.timeoutSeconds === "string" && result.timeoutSeconds.trim()) && Number.isFinite(Number(result.timeoutSeconds)) && Number(result.timeoutSeconds) >= 0) ? Number(result.timeoutSeconds) : null,
     realNameTailCharacter: String(result.realNameTailCharacter || "").slice(0, 8),
     alipayDisplayName: String(result.alipayDisplayName || "").slice(0, 80),
     currentAccount: String(result.currentAccount || "").slice(0, 120),
@@ -3971,10 +4093,38 @@ function compactTaskResultForStatus(result = {}) {
       log: runnerLog.slice(-80).map((item) => compactEventDetail(item, 3000))
     } : null
   };
+  // Keep bounded counters even when a large failure diagnostic is compacted.
+  // Never copy arbitrary extra fields from this transport extension.
+  const measurement = result.diagnostic?.lookupExecution;
+  const metricKeys = ["durationMs", "readerRebuildAttempts", "appRestartAttempts", "resultResumeAttempts"];
+  if (measurement?.version === 1 && measurement.scope === "agent_command"
+      && metricKeys.every(key => Number.isSafeInteger(measurement[key]) && measurement[key] >= 0)) {
+    compact.diagnostic = { ...compact.diagnostic, lookupExecution: { version: 1, scope: "agent_command",
+      ...Object.fromEntries(metricKeys.map(key => [key, measurement[key]])) } };
+  }
   if (result.accountIdentityVerified !== undefined) compact.accountIdentityVerified = result.accountIdentityVerified === true;
   if (result.accountSwitchCount !== undefined) compact.accountSwitchCount = Math.max(0, Number(result.accountSwitchCount || 0));
   if (result.accountSwitchReason !== undefined) compact.accountSwitchReason = String(result.accountSwitchReason || "").slice(0, 120);
   if (result.collection) compact.collection = result.collection;
+  // Keep the invitation outcome through the real status transport. Dropping
+  // unknown send/save states would remove the server's no-replay fence.
+  if (result.previewStatus !== undefined) {
+    compact.previewStatus = ["ready_before_send", "send_attempted", "blocked"].includes(result.previewStatus) ? result.previewStatus : "blocked";
+    compact.previewCode = typeof result.previewCode === "string" && /^[a-z0-9_]{1,100}$/.test(result.previewCode) ? result.previewCode : "wecom_preview_stopped";
+    compact.sendStatus = result.sendStatus === "unknown" ? "unknown" : "not_attempted";
+    compact.invitationSent = compact.sendStatus === "unknown" ? null : false;
+    compact.remarkSaveStatus = ["not_attempted", "unknown", "confirmed", "not_needed"].includes(result.remarkSaveStatus) ? result.remarkSaveStatus : "unknown";
+    if (typeof result.remarkPhoneSet === "boolean") compact.remarkPhoneSet = result.remarkPhoneSet;
+    if (result.invitationRequestConfirmed === true && result.invitationRequestProof === "wecom_system_dialog_v1") {
+      compact.invitationRequestConfirmed = true;
+      compact.invitationRequestProof = "wecom_system_dialog_v1";
+    }
+    if (result.previewCode === "wecom_add_friend_too_frequent" && result.addFriendLimitConfirmed === true
+        && result.addFriendLimitProof === "wecom_system_dialog_v1") {
+      compact.addFriendLimitConfirmed = true;
+      compact.addFriendLimitProof = "wecom_system_dialog_v1";
+    }
+  }
   const uiHierarchy = result.uiHierarchy || result.evidence?.uiHierarchy || "";
   const uiSnapshot = result.uiSnapshot || result.evidence?.uiSnapshot || uiHierarchy;
   if (uiSnapshot) compact.uiSnapshot = String(uiSnapshot).slice(0, 8000);
@@ -6158,6 +6308,7 @@ function taskFailureResult(error) {
   };
   if (error.diagnostic) {
     result.diagnostic = error.diagnostic;
+    if (error.diagnostic.lookupExecution?.version === 1) result.durationMs = error.diagnostic.lookupExecution.durationMs;
     if (error.diagnostic.accountSwitched !== undefined) result.accountSwitched = Boolean(error.diagnostic.accountSwitched);
     if (error.diagnostic.currentAccount) result.currentAccount = String(error.diagnostic.currentAccount);
     if (error.diagnostic.accountIdentityVerified !== undefined) result.accountIdentityVerified = error.diagnostic.accountIdentityVerified === true;
@@ -6292,4 +6443,14 @@ function log(message, detail = "") {
   if (logDir) {
     fs.appendFile(path.join(logDir, "agent.log"), `${line}\n`).catch(() => {});
   }
+}
+
+// Existing workers are never stopped or adopted by this preview path.
+// The one-shot adapter rejects a device with an existing Poco owner.
+async function taskWecomPreview(task, options = {}) {
+  // This Agent advertises protocol 1. An old server's unbound task must never
+  // fall through the legacy wrapper and operate without a durable obligation.
+  if (!physicalBinding(task, config)) throw new Error("wecom_cleanup_binding_missing");
+  return runWecomPreviewTask(task, { config, agentDir, signal: options.signal,
+    onPhysicalPending: code => log("wecom physical cleanup pending", { taskId: task.taskId, code }) });
 }

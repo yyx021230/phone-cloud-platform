@@ -1,0 +1,121 @@
+✖ preview is excluded by the helper; same/different remarks still hit physical pending gate, not cross-mode ID reuse (1.847917ms)
+✔ unknown send same remarks reuses its original queryable send ID before the physical gate without creating work (0.719833ms)
+✖ unknown send with changed remarks is a conflict and does not advance to creation (0.111375ms)
+✖ send claim remains non-replayable; another admin cannot query or obtain that original ID (0.867625ms)
+✔ uncertain submission persistence returns 503 rather than accepted-ID permission (0.307834ms)
+✖ after physical pending is absent, a preview-only unknown save does not create a send-recipient hold in current code (policy gap) (0.263709ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 2
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 86.169959
+
+✖ failing tests:
+
+test at verification/wecom-external-preview-contract-20261102/compatibility-counterexample.test.mjs:38:1
+✖ preview is excluded by the helper; same/different remarks still hit physical pending gate, not cross-mode ID reuse (1.847917ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'device_not_available'
+  - 'wecom_cleanup_pending'
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-external-preview-contract-20261102/compatibility-counterexample.test.mjs:41:61)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'device_not_available',
+    expected: 'wecom_cleanup_pending',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at verification/wecom-external-preview-contract-20261102/compatibility-counterexample.test.mjs:51:1
+✖ unknown send with changed remarks is a conflict and does not advance to creation (0.111375ms)
+  Error: invalid_wecom_remarkName
+      at problem (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-preview.mjs:109:59)
+      at normalize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-preview.mjs:34:67)
+      at previewRemarkInput (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-preview.mjs:37:24)
+      at previewRequest (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-preview.mjs:63:25)
+      at invitationRequest (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-preview.mjs:124:10)
+      at fixture (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-external-preview-contract-20261102/compatibility-counterexample.test.mjs:25:15)
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-external-preview-contract-20261102/compatibility-counterexample.test.mjs:52:11)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18) {
+    statusCode: 400
+  }
+
+test at verification/wecom-external-preview-contract-20261102/compatibility-counterexample.test.mjs:55:1
+✖ send claim remains non-replayable; another admin cannot query or obtain that original ID (0.867625ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be reference-equal to "expected":
+  + actual - expected
+  
+    {
+  +   androidUser: 0,
+  +   appSlot: 'main',
+  +   completedAt: undefined,
+  +   createdAt: undefined,
+      deviceId: 'adb:10HFB8FE4A000R3',
+  +   deviceNumber: '43',
+      jobId: 'fixture-original-job',
+  +   mode: 'send',
+  +   requestId: 'fixture-old-key',
+  -   kind: 'wecom_customer_preview',
+  -   phoneNumber: '13900000000',
+      result: {
+  +     code: 'fixture_stopped',
+  +     invitationSent: null,
+  -     invitationSent: false,
+  -     previewCode: 'fixture_stopped',
+  -     previewStatus: 'blocked',
+        remarkSaveStatus: 'unknown',
+  +     sendClaimed: true,
+  +     sendStatus: 'unknown',
+  +     status: 'blocked'
+  -     sendStatus: 'not_attempted'
+      },
+      status: 'failed',
+  +   updatedAt: undefined
+  -   userId: 'fixture-admin',
+  -   wecomAndroidUser: 0,
+  -   wecomAppSlot: 'main',
+  -   wecomDeviceNumber: '43',
+  -   wecomMode: 'send',
+  -   wecomRequestId: 'fixture-old-key',
+  -   wecomSendClaimAt: '2026-11-02T00:00:00.000Z'
+    }
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-external-preview-contract-20261102/compatibility-counterexample.test.mjs:56:99)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { jobId: 'fixture-original-job', deviceId: 'adb:10HFB8FE4A000R3', deviceNumber: '43', mode: 'send', appSlot: 'main', androidUser: 0, requestId: 'fixture-old-key', status: 'failed', createdAt: undefined, updatedAt: undefined, completedAt: undefined, result: { status: 'blocked', code: 'fixture_stopped', invitationSent: null, sendStatus: 'unknown', sendClaimed: true, remarkSaveStatus: 'unknown' } },
+    expected: { jobId: 'fixture-original-job', kind: 'wecom_customer_preview', userId: 'fixture-admin', deviceId: 'adb:10HFB8FE4A000R3', phoneNumber: '13900000000', wecomDeviceNumber: '43', wecomAndroidUser: 0, wecomAppSlot: 'main', wecomMode: 'send', wecomRequestId: 'fixture-old-key', status: 'failed', result: { previewStatus: 'blocked', previewCode: 'fixture_stopped', remarkSaveStatus: 'unknown', invitationSent: false, sendStatus: 'not_attempted' }, wecomSendClaimAt: '2026-11-02T00:00:00.000Z' },
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at verification/wecom-external-preview-contract-20261102/compatibility-counterexample.test.mjs:65:1
+✖ after physical pending is absent, a preview-only unknown save does not create a send-recipient hold in current code (policy gap) (0.263709ms)
+  AssertionError [ERR_ASSERTION]: stops BEFORE actual create function: only local source branch evidence
+  + actual - expected
+  
+  + undefined
+  - true
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-external-preview-contract-20261102/compatibility-counterexample.test.mjs:67:10)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

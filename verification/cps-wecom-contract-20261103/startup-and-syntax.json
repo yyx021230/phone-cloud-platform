@@ -1,0 +1,45 @@
+[
+  {
+    "file": "server/cps-wecom/domain.mjs",
+    "syntax": "passed"
+  },
+  {
+    "file": "server/cps-wecom/http.mjs",
+    "syntax": "passed"
+  },
+  {
+    "file": "server/cps-wecom/main.mjs",
+    "syntax": "passed"
+  },
+  {
+    "file": "server/cps-wecom/platform.mjs",
+    "syntax": "passed"
+  },
+  {
+    "file": "server/cps-wecom/protocol.mjs",
+    "syntax": "passed"
+  },
+  {
+    "file": "server/cps-wecom/service.mjs",
+    "syntax": "passed"
+  },
+  {
+    "file": "server/cps-wecom/store.mjs",
+    "syntax": "passed"
+  },
+  {
+    "startupCase": "disabled",
+    "rejectedBeforeNetwork": true,
+    "expectedError": "cps_bridge_disabled"
+  },
+  {
+    "startupCase": "missing_mode",
+    "rejectedBeforeNetwork": true,
+    "expectedError": "cps_explicit_execution_mode_required"
+  },
+  {
+    "startupCase": "remote_http",
+    "rejectedBeforeNetwork": true,
+    "expectedError": "cps_secure_platform_transport_required"
+  }
+]

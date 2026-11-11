@@ -1,0 +1,16 @@
+{
+  "version": "wecom-recovery155-20261104-deployed.1",
+  "source": "462eaf35442b943dda128b88085ba7a449c6257b",
+  "activeSha256": "9afc29aee37eec07c4049cea3c9c776926d7b01c830b314deca0e3e25c705648",
+  "imageId": "sha256:aba0ddc3f61015a797ac6437fe6f1ec5c801af8cbc300036197c39ffb7c71893",
+  "startedAt": "2026-11-04T02:36:02.869494949Z",
+  "health": "healthy",
+  "mediaVerification": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  }
+}

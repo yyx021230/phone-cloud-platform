@@ -1,0 +1,17 @@
+{
+  "atUtc": "2026-11-02T08:54:28.158046+00:00",
+  "exitCode": 0,
+  "sourceSha256": {
+    "verification/wecom-external-matrix-20261102/readonly-client.test.mjs": "a9e4ea006e7d268cd7ceb8da90a255778700d8da97468cfdfaff434948c9a3e9",
+    "verification/wecom-external-matrix-20261102/external-preview-gap.test.mjs": "f6801ed72fbc8c86a9e37b6c7a8e3fce42a52958e6f9c47fb1c39e2a3e9daa42",
+    "server/wecom-preview.test.mjs": "b5583e25276438f9c6ff46b601dcc9631b82a981bf8b09ebe4cbd8e6b13d60ed",
+    "examples/wecom-integration/client.test.mjs": "ce9db8d40dec4ca1fbf389c0da363dff96e6cee832cfd63f4bf235c48057a6f1",
+    "verification/wecom-external-matrix-20261102/readonly-client.mjs": "6bbc0eb979823bc338cc7c4b90b1994e3ebfc94364b6bc8f76915b6f716a8bfc",
+    "server/wecom-preview.mjs": "ec9126e6c85d787f80355df8b5c84fb5c525f8ba746847573c9d5b589779cbaf",
+    "examples/wecom-integration/client.mjs": "dc305017a026dee80ce913eba58eca5bdc3904e6f59fc101f4c0ba2ee11405bb"
+  },
+  "outputSha256": "52594b011efdecef36931d4ca2b0c50e1e7299eba0a8bdfc34d34206e520af0a",
+  "scope": "local GET collector guards / nine-slot external preview gap / existing contract and client; not native",
+  "nativeTests": 0,
+  "invitationSends": 0
+}

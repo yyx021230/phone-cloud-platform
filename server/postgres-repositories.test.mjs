@@ -212,3 +212,59 @@ function fakeDatabase({ failOn = "" } = {}) {
   };
   return database;
 }
+
+test('archive lookup is one bounded parameterized read by exact primary key',async()=>{
+ const calls=[];const repos=createPostgresRepositories({getPool:async()=>({query:async q=>{calls.push(q);return {rows:[{job:{jobId:'j'},task:{taskId:'t'}}]};}})});
+ assert.equal((await repos.readLookupJob('j')).job.jobId,'j');assert.equal(calls.length,1);
+ assert.deepEqual(calls[0].values,['j']);assert.match(calls[0].text,/where j.job_id = \$1 limit 1/);assert.equal(calls[0].query_timeout,5000);
+ assert.equal(await repos.readLookupJob('../bad'),null);assert.equal(calls.length,1);
+});
+
+test("physical cleanup pending rows load independently of the recent 5000 lock window", async () => {
+  const pending = { lockId: "old-duty", lockType: "wecom_physical_cleanup", status: "cleanup_pending", expiresAt: "" };
+  const calls = [];
+  const repos = createPostgresRepositories({ getPool: async () => ({ query: async sql => {
+    calls.push(String(sql));
+    return { rows: String(sql).includes("where data->>'lockType'") ? [{ data: pending }] : [] };
+  } }) });
+  const overlay = await repos.loadOverlay();
+  assert.deepEqual(overlay.deviceLocks, [pending]);
+  assert.ok(calls.some(sql => sql.includes("limit 5001") && !sql.includes("expires_at >")));
+});
+
+test("physical cleanup load overflow fails closed instead of dropping pending obligations", async () => {
+  const repos = createPostgresRepositories({ getPool: async () => ({ query: async sql => ({ rows:
+    String(sql).includes("where data->>'lockType'") ? Array.from({ length: 5001 }, (_, i) => ({ data: { lockId: `pending-${i}` } })) : []
+  }) }) });
+  await assert.rejects(repos.loadOverlay(), /wecom_cleanup_pending_load_overflow/);
+});
+
+test('pending context is loaded by exact primary keys outside recent history without writes or fabricated missing rows',async()=>{
+ const pending={lockId:'duty',lockType:'wecom_physical_cleanup',status:'cleanup_pending',physicalCleanup:{binding:{originalTaskId:'old-task'},originalJobId:'old-job',originalLockId:'old-lock',verification:{verificationTaskId:'missing-verify'},recovery:{verificationTaskId:'old-recovery'}}};
+ const rows={phone_cloud_windows_tasks:[{taskId:'old-task',status:'failed'},{taskId:'old-recovery',status:'failed'}],phone_cloud_automation_jobs:[{jobId:'old-job',status:'failed'}],phone_cloud_device_locks:[{lockId:'old-lock',status:'released'}]};
+ const calls=[];const repos=createPostgresRepositories({getPool:async()=>({query:async(q)=>{
+  const sql=typeof q==='string'?q:q.text;calls.push(q);assert.match(sql,/^select /i);
+  if(sql.includes("where data->>'lockType'"))return{rows:[{data:pending}]};
+  if(sql.includes('= any($1::text[])'))return{rows:rows[sql.match(/from (\w+)/)[1]].map(data=>({data}))};
+  return{rows:[]};
+ }})});
+ const overlay=await repos.loadOverlay();assert.deepEqual(overlay.windowsTasks,rows.phone_cloud_windows_tasks);
+ assert.deepEqual(overlay.automationJobs,rows.phone_cloud_automation_jobs);
+ assert.deepEqual(overlay.deviceLocks,[pending,...rows.phone_cloud_device_locks]);
+ const exact=calls.filter(q=>typeof q==='object');assert.equal(exact.length,3);
+ assert.deepEqual(exact[0].values,[['old-task','missing-verify','old-recovery']]);
+ for(const q of exact){assert.equal(q.query_timeout,5000);assert.doesNotMatch(q.text,/data->|order by|update|insert/i);}
+ assert.equal(overlay.windowsTasks.some(t=>t.taskId==='missing-verify'),false);
+});
+
+test("new and ordinary locks persist with task in one transaction and rollback on hold failure", async () => {
+  const db = fakeDatabase({ failOn: "insert into phone_cloud_device_locks" });
+  const repos = createPostgresRepositories({ getPool: async () => db.pool });
+  await assert.rejects(repos.persistTaskMutation({
+    windowsTask: { taskId: "verify", status: "succeeded" },
+    deviceLocks: [{ lockId: "duty", status: "released", lockType: "wecom_physical_cleanup" }]
+  }), /structured_write_failed/);
+  assert.ok(db.calls.some(c => c.sql.includes("phone_cloud_windows_tasks")));
+  assert.equal(db.calls.at(-1).sql, "rollback");
+  assert.ok(!db.calls.some(c => c.sql === "commit"));
+});

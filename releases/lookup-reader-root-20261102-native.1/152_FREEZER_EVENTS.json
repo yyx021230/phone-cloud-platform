@@ -1,0 +1,20 @@
+{
+  "device": 152,
+  "scope": "Bounded live logcat during attempt4; no phone setting changes",
+  "events": [
+    "11-02 09:52:35.516  1626  2042 D OAppNetControlService: Hans update:[10263=true][0|0] blackList:[10263]",
+    "11-02 09:53:26.484  1626  2042 D OAppNetControlService: Hans update:[10263=false][0|0] blackList:[]",
+    "11-02 09:53:26.555  1626  2637 W ActivityManager: Invalid packageName: com.netease.open.pocoservice.test",
+    "11-02 09:53:43.426  1626  2420 I OplusBinderProxy: proxyBinder uid: 10263 pkg: com.netease.open.pocoservice proxy: true calling: OFreezer",
+    "11-02 09:53:43.431  1626  2042 D OAppNetControlService: Hans update:[10263=true][0|0] blackList:[10263]",
+    "11-02 09:53:44.428  1626  2042 D OAppNetControlService: Hans update:[10263=false][0|0] blackList:[]",
+    "11-02 09:53:44.430  1626  2420 I OplusBinderProxy: proxyBinder uid: 10263 pkg: com.netease.open.pocoservice proxy: false calling: OFreezer",
+    "11-02 09:53:52.440  1626  2420 I OplusBinderProxy: proxyBinder uid: 10263 pkg: com.netease.open.pocoservice proxy: true calling: OFreezer",
+    "11-02 09:53:52.443  1626  2042 D OAppNetControlService: Hans update:[10263=true][0|0] blackList:[10263]",
+    "11-02 09:54:22.147  1626  1643 W ActivityManager: Crash of app com.netease.open.pocoservice running instrumentation ComponentInfo{com.netease.open.pocoservice/androidx.test.runner.AndroidJUnitRunner}",
+    "11-02 09:54:22.149  1626  2042 D OAppNetControlService: Hans update:[10263=false][0|0] blackList:[]",
+    "11-02 09:54:22.176  1626  2420 I OplusBinderProxy: proxyBinder uid: 10263 pkg: com.netease.open.pocoservice proxy: false calling: OFreezer",
+    "11-02 09:54:22.206  1626  4834 W ActivityManager: Invalid packageName: com.netease.open.pocoservice.test"
+  ],
+  "causeOfPreviousTimeoutsProven": false
+}

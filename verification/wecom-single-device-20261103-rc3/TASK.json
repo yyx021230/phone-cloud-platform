@@ -1,0 +1,36 @@
+{
+  "status": "local_candidate_not_native_accepted",
+  "base": "c2f68784f3e4eb8ece994d9cafa360f38722c281",
+  "changedSources": [
+    "scripts/qa/test_wecom_single_candidate.py",
+    "scripts/qa/wecom_single_candidate.py",
+    "scripts/qa/wecom_single_reader.mjs",
+    "scripts/qa/wecom_single_reader.test.mjs",
+    "scripts/qa/wecom_single_state.py"
+  ],
+  "runtimeStagedClosure": "same22 as690/c2f; all changes local QA reader/controller only",
+  "actualValidation": {
+    "nodeTests": 12,
+    "nodeBreakdown": "reader8 + existing trace4",
+    "runnerMethods": 9,
+    "resourceWarning": "treated as error",
+    "actualProductionRead": "PG READ ONLY plus Redis GET/PTTL/GET of only59 own runtime key; no screen/session created by new candidate",
+    "actualReadResult": "no key TTL-2, zeroPG/runtime locks,59listed/online/available",
+    "phoneUiSteps": 0
+  },
+  "rootCause": "Screen create32c only updates state.deviceLocks and runtime Redis; structured phone_cloud_device_locks is not canonical for screen own-lock. c2f prepared session930036b7 then conservatively stopped before listing/native. Original session was explicitly GET scope checked and DELETE200 closed;59remainedlisted.",
+  "readRules": [
+    "Hash-pin production server/index and extract only existing RESP client definitions, not import/start index. Actual invoked commands GET exactkey, PTTL samekey, GET exactkey with byte equality. No write/TTL renewal or alternate backend fallback.",
+    "Keep all structured PG nonreleased/physical duty; merge matching runtime view only; missing/old key or TTL blocks grant.",
+    "Original201session.userId fixes owner; currentGET session.userId/deviceId/agentId/adbSerial and Redisowner/task/expiry must match.",
+    "Known-not-started pre-unlist errors now close only original owned screen; no fabricated native cleanup."
+  ],
+  "unverified": [
+    "New candidate native on Windows still0; no own Redis lock native acquisition live acceptance yet.",
+    "Current temporarypool11/rev175 is authorized separate resource operation, not a software deployment. Restore12 after test cleanup under CAS ownership."
+  ],
+  "productionCodeChanged": false,
+  "agentReload": false,
+  "adbIdentityChanged": false,
+  "old23and43Preserved": true
+}

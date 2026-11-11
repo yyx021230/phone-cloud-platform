@@ -1,0 +1,11 @@
+{
+  "rawBytesUnchanged": true,
+  "onlyExceptions": {
+    "verification/wecom-v2-claim-pg-observed2-20261102/INITDB.txt": {
+      "trailingWhitespaceLines": [],
+      "newBlankAtEofLines": [
+        24
+      ]
+    }
+  }
+}

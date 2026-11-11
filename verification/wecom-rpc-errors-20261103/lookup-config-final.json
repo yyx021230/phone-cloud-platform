@@ -1,0 +1,11 @@
+{
+  "at": "2026-11-03T07:20:55.368Z",
+  "rows": [
+    {
+      "read_only": "on",
+      "concurrency": "8",
+      "config_revision": "183"
+    }
+  ],
+  "productionWrites": 0
+}

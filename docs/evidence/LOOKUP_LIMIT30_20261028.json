@@ -1,0 +1,31 @@
+{
+  "at": "2026-10-28T06:15:54.533014+00:00",
+  "active": {
+    "version": "platform-integration-20261028-deployed.1",
+    "imageId": "sha256:fca45ec32e72b0787e4375fd6812a5ac97d3aebec4b830b6393b03117554b45e",
+    "sha256": "4bb61c39a8a5cd912069ed494d84dba1af4cf3cc37adbac8285db935586b995a"
+  },
+  "beforeRevision": 120,
+  "afterRevision": 121,
+  "changes": {
+    "preparedClientInflightLimit": {
+      "before": 20,
+      "after": 30
+    }
+  },
+  "currentLimit": 30,
+  "concurrency": 8,
+  "whitelistUnchanged": true,
+  "response": {
+    "status": 200,
+    "body": {
+      "ok": true,
+      "configRevision": 121
+    }
+  },
+  "rollback": {
+    "endpoint": "PUT /api/v1/admin/lookup-pool",
+    "preparedClientInflightLimit": 20,
+    "requireFreshConfigRevision": true
+  }
+}

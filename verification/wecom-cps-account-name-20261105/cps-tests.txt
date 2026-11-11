@@ -1,0 +1,79 @@
+
+> phone-cloud-platform@0.1.0 test:cps-wecom
+> node --test server/cps-wecom*.test.mjs server/wecom-preview.http.test.mjs
+
+✔ signed device list exposes account phones under the correct main and clone; dispatch uses customer phone (254.645625ms)
+✔ configured account nicknames are display-only, may repeat, and include offline registered phones (285.612917ms)
+✔ nickname changes never invalidate or repeat an existing phone-routed task (318.024375ms)
+✔ nickname config accepts Unicode and rejects invalid values without requiring names for old configs (0.773583ms)
+✔ account phone is required in phone mode, validated, signed, and never falls back to another member (155.272917ms)
+✔ 121-second retry and changed member ID do not duplicate the same account/customer (278.808583ms)
+✔ callbacks retry notification only; changing configured slot never reroutes a pending phone task (343.964417ms)
+✔ busy physical phone makes both account phone entries unavailable; unverified account cannot execute (124.741916ms)
+✔ a rate limit belongs to account phone even when caller changes member metadata (206.684667ms)
+✔ phone binding optionally pins official IDs and rejects conflicting caller identity (62.601916ms)
+✔ legacy recipient fence survives phone routing migration and callback phone redaction (288.93375ms)
+✔ configuration rejects duplicate account phones, mixed routing, shared slots and partial official IDs (0.398083ms)
+✔ new single-account phones: signed list, dispatch, timeout retry and callback retry stay independent (541.903209ms)
+▶ CPS external HTTP lifecycle (short default wait; no real phones)
+  ✔ device status is signed, complete and read-only; real lookup occupancy refuses CPS admission (115.593208ms)
+  ✔ lost client acceptance and lost internal POST response recover the original task once (6910.623291ms)
+  ✔ concurrent repeated dispatch and new lead ID cannot overwrite or repeat held work (67.66025ms)
+  ✔ another phone finishes while the first waits; callback 500 retries notification only (10921.44675ms)
+  ✔ main and clone bind distinct Android users and share one physical busy fence (11054.780708ms)
+  ✔ CPS signature rejection stops callback retries; no second device execution (4996.705ms)
+  ✔ bridge restart preserves pending original execution, signatures and recipient fences (212.317667ms)
+  ✔ real callback HTTP timeout and bridge restart preserve the outbox without a second send (15188.707542ms)
+  ✔ lookup acquiring a device after CPS acceptance is not preempted; only known non-admission retries (10997.728958ms)
+  ✔ short delay without a result then new-request retry does not create a second execution (2979.869958ms)
+  ✔ unknown delivery cannot become a successful or frequency callback; no replay on new lead (4026.210834ms)
+  ✔ frequency callback isolates only the exact member; its clone still accepts another customer (9947.646833ms)
+  ✔ final accounting: one launch per job, exact callback effects and unchanged lookup (5.771916ms)
+✔ CPS external HTTP lifecycle (short default wait; no real phones) (78064.024083ms)
+ℹ {"store":"temporary_json","physicalJobs":9,"syntheticLaunches":9,"syntheticSendClaims":4,"callbacks":11,"appliedCpsResults":7,"lookupUnchanged":true,"trace":["accepted_dispatch_ack_lost","original_platform_submission_ack_lost","lookup_wins_post_acceptance_race","timeout_retry_elapsed_ms:60351"]}
+✔ two main accounts process multiple customers independently; retries never repeat execution (3458.756208ms)
+ℹ {"boundary":"synthetic phones/results and virtual time only","customers":12,"jobs":12,"burstCustomers":6,"callbackAttempts":12,"completed":11,"needsAttention":1,"blockedPhoneDidNotBlockOtherPhone":true,"realInvitations":0}
+✔ journal has one coordinator, durably serializes revisions and refuses an obsolete schema (385.305083ms)
+✔ a stale owner file is never stolen and a failed commit fences all later mutations (53.141125ms)
+✔ Postgres lost acknowledgement, revision conflict and owner disconnect fence execution (0.402417ms)
+﹣ isolated real Postgres SQL, advisory owner, CAS conflict and restart persistence (0.032ms) # SKIP
+✔ CPS published signature vector is exact; booleans, zero and Chinese participate unchanged (1.154708ms)
+✔ INT64 survives parse, signature and callback serialization; duplicates/arrays/floats are rejected (0.442834ms)
+✔ configuration rejects ambiguous member/slot, invalid callbacks and unknown auth (0.384333ms)
+✔ all devices include offline and unmapped phones; account mapping/availability is explicit and private IDs stay private (182.509708ms)
+✔ nonce, skew and signatures fail before dispatch; one nonce is consumed across both routes (114.685083ms)
+✔ same lead with new nonce returns accepted once; parameter changes and unconfigured members fail closed (373.740041ms)
+✔ lost submission acknowledgement is reconciled by original request, never submitted twice (188.408417ms)
+✔ unknown submission without original task stays held and does not become a fresh invitation (159.67225ms)
+✔ verified duplicate callback retries with new signed nonce, without repeating device work (275.350542ms)
+✔ a native unknown send or unrelated failure cannot be disguised as CPS success or frequency limit (522.701625ms)
+✔ successful callback requires both send confirmation and independent remark phone confirmation (210.558458ms)
+✔ preview never calls CPS callback, including verified duplicate; same journal survives graceful restart (191.153042ms)
+✔ real loopback HTTP receives CPS dispatch and queries all status without accepting query/body confusion (148.50075ms)
+✔ platform bridge joins only verified private identities, requests phone proof and never leaks platform credentials (0.746917ms)
+✔ busy before admission may wait; stale physical remapping cannot switch the selected phone (143.009459ms)
+✔ one phone submission hanging does not block a second phone reaching its original task (289.61875ms)
+✔ configured but unverified account cannot execute or be advertised as available (99.3315ms)
+✔ HTTP oversized body is rejected with a defined response before authentication or task creation (42.157583ms)
+✔ lead-only remarks admit nine-digit and maximum INT64 IDs without losing idempotency (299.253333ms)
+✔ signed HTTP preserves maximum INT64 through remark, phone proof request and callback (230.275792ms)
+✔ two-minute timeout, fresh lead ID, restart and phone migration cannot bypass the logical recipient fence (172.744875ms)
+✔ concurrent different lead IDs for the same member/customer reserve only one original execution (171.260959ms)
+✔ a completed callback retains the recipient fence after deleting the raw phone (189.423375ms)
+✔ only terminal confirmed non-send with cleanup permits a different lead for the same recipient (224.982958ms)
+✔ confirmed frequency pauses just that official member immediately, persists, and expires at China midnight (275.632916ms)
+✔ missing trustworthy frequency time isolates member without fabricating a callback day (62.596ms)
+✔ preview journal cannot become a send journal on restart (17.310042ms)
+✔ callback rejection and exhausted retries do not repeat device operations (220.800833ms)
+✔ queued work on one busy phone cannot consume the slot of a second idle phone (105.135791ms)
+✔ future-but-valid timestamp cannot replay after the nominal five-minute nonce interval (23.335292ms)
+✔ preview HTTP covers authentication, legacy and local phones, leases, original-id reuse and restart (4518.798667ms)
+ℹ {"contract":"CPS-v0.4-single-account","exchanges":[{"endpoint":"/api/v1/lead/devices/query","code":200,"success":true},{"endpoint":"/api/v1/lead/dispatch","code":200,"success":true},{"endpoint":"/api/v1/lead/dispatch","code":200,"success":true},{"endpoint":"/api/v1/lead/dispatch","code":200,"success":true},{"endpoint":"/api/v1/lead/devices/query","code":200,"success":true},{"endpoint":"/api/v1/lead/dispatch","code":2003,"success":false},{"endpoint":"/api/v1/lead/dispatch","code":200,"success":true},{"endpoint":"/api/v1/lead/devices/query","code":200,"success":true},{"endpoint":"/api/v1/lead/dispatch","code":200,"success":true},{"endpoint":"/api/v1/lead/dispatch","code":200,"success":true},{"endpoint":"/api/v1/lead/devices/query","code":200,"success":true}],"executionAccounts":2,"physicalTasks":3,"mainAndroidUser":0,"duplicateDispatchReused":true,"callbackAttempts":3,"callback500RetriedOnlyNotification":true,"ordinaryFailurePreserved":true,"phoneReleasedAfterFailure":true,"lookupLockPreserved":true,"syntheticAgent":true,"realInvitations":0}
+ℹ tests 63
+ℹ suites 0
+ℹ pass 62
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 78190.413458

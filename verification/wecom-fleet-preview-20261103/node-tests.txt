@@ -1,0 +1,17 @@
+✔ target snapshot stays read-only and uses pure runtime inventory (13.421333ms)
+✔ unknown stop array shape rejects rather than treating it as empty (3.623667ms)
+✔ unconfigured reason is retained as evidence rather than rewriting availability (2.272084ms)
+✔ failed matching stop and disabled device channel are still exclusion evidence (6.193167ms)
+✔ another phones historical stop does not block this target (1.874583ms)
+✔ multiple physical aliases deny admission (1.390417ms)
+✔ real Redis projection supplies own lock absent from structured PG (2.089417ms)
+✔ physical pending remains alongside Redis own lock (2.034333ms)
+✔ Redis changed value or unknown/expired TTL denies read (4.93575ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 105.4475

@@ -1,0 +1,13 @@
+{
+  "status": "prepared_not_executed",
+  "sourceCommit": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "mainImage": "sha256:4468f5ce0f2107b8df7c4ab6cb90bb0dc584e41d0a3a55a8a9dee3c1e20440e0",
+  "phase1": "CAS lookup enabled=false; HMAC stop original preparation; stop app+batch; read cutoff; hold on new unresolved business; retain all locks/claims/unknown",
+  "phase2": "root/Windows owner deploy Agent while services closed; original SYSTEM task only",
+  "phase3": "root GO only: main Compose image-only activation; verify health/Agent; original batch container start; verify unique advisory lock; restore only prior enabled with fresh CAS",
+  "rollback": "stop main+batch+Agent and preserve data; never reopen old app while cleanup_pending exists or old-runtime unknown remains; no blanket lock release or DB restore",
+  "scripts": {
+    "pause-and-stop.mjs": "0847552228fd99752565d1e335622e920fbf75d183d5df4b694e4d958db9daaa",
+    "phase1-pause-stop.py": "a8aa2f2b26e7b7a131d0f37ac016f5783af21814247146ebe464e4ede2a239cc"
+  }
+}

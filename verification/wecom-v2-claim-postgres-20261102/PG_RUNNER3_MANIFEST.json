@@ -1,0 +1,18 @@
+{
+  "baseCommit": "b5f1a8a04e640299566ce369c74ed49d86aa1727",
+  "candidateTag": "wecom-v2-claim-pg-20261102-draft.3",
+  "branch": "codex/wecom-v2-claim-pg-runner3-20261102",
+  "productAndDDLUnchanged": true,
+  "onlyIntegrationScenarioChange": "read-only missing loop namespace",
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "9ff850ee67d92ad8577c7d1540e1de6b0d1ced89b13e9ffa4872000d6045c5be",
+    "verification/wecom-v2-claim-postgres-20261102/postgres.integration.mjs": "05da1011131566b89f0ea5663216dd24d669e12387128a4512fddc5436b8e75c",
+    "verification/wecom-v2-claim-postgres-20261102/RUNNER_SOURCE_HASHES.json": "ca6948c7d703f48ff97c6cd44c6692c2d59c8fc9a3eeba69ab52c32620a594eb",
+    "verification/wecom-v2-claim-postgres-20261102/RUNNER_REVIEW.md": "ccb65597bf6a459186840ac0833d92c581b88c5f51ef1e1d1590efcd14365790",
+    "verification/wecom-v2-claim-postgres-20261102/fixture-names.mjs": "38a7afe40df6cbcda3147b57eb3cf49de66eba904f0f0af522ca294072756c56",
+    "verification/wecom-v2-claim-postgres-20261102/fixture-names.test.mjs": "41aef9152c6fbe44a72bb196486c886c1ea9ed06400ff73e3e5a54c3290365fc",
+    "verification/wecom-v2-claim-postgres-20261102/NAMESPACE_OUTPUT.txt": "4ef5825e95783be0294919874618b4fb42e41578ff9fc5ecb76ed63e78bad1aa",
+    "verification/wecom-v2-claim-postgres-20261102/NAMESPACE_RECEIPT.json": "732f058f4b0f1a51125ddf4652a44fcb71156d42732a5cf7b26a971c8f0a9884",
+    "verification/wecom-v2-claim-postgres-20261102/RUNNER3_CHECKS.json": "4d0d2c18b4f82ae446513b8ed72c98bfe105918e4b34368be0e08e01a62ffa10"
+  }
+}

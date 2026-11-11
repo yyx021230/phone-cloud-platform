@@ -1,0 +1,19 @@
+{
+  "protectedFiles": 132,
+  "changedProtectedFiles": [],
+  "businessSourceChanged": false,
+  "productionSourceChanged": false,
+  "productionDataSideEffects": {
+    "previewTasksCreated": 1,
+    "deviceNumber": "155",
+    "slot": "main",
+    "unresolvedPhysicalCleanup": 1,
+    "sendClaims": 0,
+    "invitations": 0
+  },
+  "cloneSubmitted": false,
+  "deployment": false,
+  "serviceReload": false,
+  "sharedAdbRestart": false,
+  "adbIdentityOrKeysChanged": false
+}

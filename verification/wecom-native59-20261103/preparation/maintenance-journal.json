@@ -1,0 +1,22 @@
+{
+  "phase": "unknown_keep_unlisted",
+  "scope": "qa-3fe2805bc8a642a6b25d0f2e9babf813",
+  "target": {
+    "deviceId": "adb:10AEAS224X005FT",
+    "serial": "10AEAS224X005FT",
+    "deviceNumber": "59"
+  },
+  "sourceRef": "c2f68784f3e4eb8ece994d9cafa360f38722c281",
+  "sessionId": "930036b7-f8f1-4d02-a2c6-4cbc580fdf5c",
+  "unlistedAt": null,
+  "original": {
+    "listingStatus": "listed",
+    "unlistedAt": "",
+    "updatedAt": "2026-11-03T01:57:27.870Z"
+  },
+  "productionTask": false,
+  "unknownMustStayUnlisted": true,
+  "stage": null,
+  "code": "qa_screen_lock_unknown",
+  "physicalCleanup": false
+}

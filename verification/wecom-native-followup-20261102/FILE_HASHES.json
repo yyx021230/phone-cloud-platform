@@ -1,0 +1,15 @@
+{
+  "baseCommit": "fca7650c78ad613a09cb08f0f97fc16eaf37307a",
+  "scope": "read-only preparation, no native acceptance",
+  "sha256": {
+    "docs/PROJECT_DEVELOPMENT.md": "b42fec6a3a5814905cec0cbce04ee059549bbe6ab9ae0361dfed4aa16e84615f",
+    "verification/wecom-external-matrix-20261102/readonly-client.mjs": "6bbc0eb979823bc338cc7c4b90b1994e3ebfc94364b6bc8f76915b6f716a8bfc",
+    "verification/wecom-native-followup-20261102/ACTIVE_BINDING.json": "fc1677729ae8438c760718af6855ab9f135846afc9b58180986de6c0e41c4a45",
+    "verification/wecom-native-followup-20261102/ACTIVE_PREFLIGHT.json": "b0ca7b774efc61378272c237c8a2f8968fc99de893a1e77aa758c83cd9e6733d",
+    "verification/wecom-native-followup-20261102/CLOUD_RUNTIME_HASHES.json": "aa4d89f1879416373614373f8d5cf918206780623d5117c868e3801ebb1d9b3a",
+    "verification/wecom-native-followup-20261102/INVENTORY_PREFLIGHT.json": "041575a80a07181badf42d75dfb1daa091a7822e8cd773b1c0ca724090431434",
+    "verification/wecom-native-followup-20261102/RECEIPT.json": "3c623853e8f28d80f0a2d9cf38b513987d45587749acbf05d0efe0d034e72772",
+    "verification/wecom-native-followup-20261102/TASK.md": "878e354e260d5013edb65399ee73d66d728220882ad6bba61f9fb62e28522954",
+    "verification/wecom-native-followup-20261102/WINDOWS_PREFLIGHT.json": "9c175b00f4e1bc35bd0e1622b34ab7fb425fed5a84667791d3433c246c4a6f8a"
+  }
+}

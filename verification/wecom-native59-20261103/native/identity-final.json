@@ -1,0 +1,117 @@
+{
+  "at": "2026-11-03T02:16:00.940358+00:00",
+  "agentPid": 19756,
+  "agentExe": "D:\\PhoneCloud\\tools\\node\\node.exe",
+  "agentCreatedAt": 1793599962.9654255,
+  "adbPid": 27912,
+  "adbCreatedAt": 1793603626.369136,
+  "adbExe": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+  "readers": [
+    {
+      "pid": 2520,
+      "parent": 19756,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 6536,
+      "parent": 10552,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 9200,
+      "parent": 19756,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 10552,
+      "parent": 19756,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 13460,
+      "parent": 32572,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 14140,
+      "parent": 19756,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 15796,
+      "parent": 14140,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 16440,
+      "parent": 2520,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 17588,
+      "parent": 19756,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 18332,
+      "parent": 9200,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 19328,
+      "parent": 19756,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 19668,
+      "parent": 19756,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 21848,
+      "parent": 19756,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 25828,
+      "parent": 19756,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 26436,
+      "parent": 21848,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 26804,
+      "parent": 30232,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 27240,
+      "parent": 19668,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 29152,
+      "parent": 19328,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 30232,
+      "parent": 19756,
+      "kind": "native_candidate_or_lookup"
+    },
+    {
+      "pid": 32572,
+      "parent": 19756,
+      "kind": "native_candidate_or_lookup"
+    }
+  ],
+  "staged": [],
+  "files": {
+    "src/index.mjs": "85b2b2eea012a345f87b455ebbb994ef6ce9dd70b6e1dddc4769594781c29eff",
+    "src/wecom-preview-task.mjs": "2d5fb3354edde14d2673e7c25bc7e9e25e60e8ba3d1e1e76358b675e20847e24",
+    "scripts/wecom_platform_preview.py": "5cb7e5fc041e5dbe62ec57aed4ddbf938d7f684fbab023f9fb86d67cb7cfa8cc"
+  }
+}

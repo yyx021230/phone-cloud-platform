@@ -1,0 +1,69 @@
+{
+  "atUtc": "2026-11-02T09:52:13.2675650Z",
+  "scope": "CIM/process metadata/listener/file hashes only",
+  "processes": [
+    {
+      "pid": 19756,
+      "parentPid": 1808,
+      "name": "node.exe",
+      "path": "D:\\PhoneCloud\\tools\\node\\node.exe",
+      "createdUtc": "2026-11-02T06:12:42.9654250Z",
+      "owner": "NT AUTHORITY\\SYSTEM"
+    },
+    {
+      "pid": 27912,
+      "parentPid": 34840,
+      "name": "adb.exe",
+      "path": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+      "createdUtc": "2026-11-02T07:13:46.3691350Z",
+      "owner": "NT AUTHORITY\\SYSTEM"
+    }
+  ],
+  "listeners": [
+    {
+      "port": 5037,
+      "pid": 27912
+    }
+  ],
+  "hashes": [
+    {
+      "relative": "scripts/wecom_invite_preview.py",
+      "sha256": "f77bc50419eaee27aa46c372132f07eae5ed63dd1d69645778f3b3062a87059c"
+    },
+    {
+      "relative": "scripts/wecom_remark_preview.py",
+      "sha256": "444023f34654ad73642eb5b9ca592b7a60aea06756cf0ca3a4b890e56f2371ea"
+    },
+    {
+      "relative": "scripts/wecom_customer_invitation.py",
+      "sha256": "5c8a4438318cb10dba2b3ddc0017aff9294aead36e3c99ad5878d0f3465cbd24"
+    },
+    {
+      "relative": "scripts/wecom_platform_preview.py",
+      "sha256": "5cb7e5fc041e5dbe62ec57aed4ddbf938d7f684fbab023f9fb86d67cb7cfa8cc"
+    },
+    {
+      "relative": "src/wecom-preview-task.mjs",
+      "sha256": "2d5fb3354edde14d2673e7c25bc7e9e25e60e8ba3d1e1e76358b675e20847e24"
+    },
+    {
+      "relative": "src/wecom-cleanup-protocol.mjs",
+      "sha256": "918dfee2f090e94ad946266d2292fe73d0422a4485e87cdd04cfa522d5dbb9be"
+    },
+    {
+      "relative": "src/index.mjs",
+      "sha256": "85b2b2eea012a345f87b455ebbb994ef6ce9dd70b6e1dddc4769594781c29eff"
+    }
+  ],
+  "phoneActions": 0,
+  "adbCommands": 0,
+  "matchesDeployed32c": {
+    "scripts/wecom_invite_preview.py": true,
+    "scripts/wecom_remark_preview.py": true,
+    "scripts/wecom_customer_invitation.py": true,
+    "scripts/wecom_platform_preview.py": true,
+    "src/wecom-preview-task.mjs": true,
+    "src/wecom-cleanup-protocol.mjs": true,
+    "src/index.mjs": true
+  }
+}

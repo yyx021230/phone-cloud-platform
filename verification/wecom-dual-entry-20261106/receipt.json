@@ -1,0 +1,49 @@
+{
+  "baseline": "02ff8cf41acf4d54a113ed8b1ec36b7274e2e7bf",
+  "branch": "codex/wecom-dual-entry-20261106",
+  "tests": {
+    "wecomPythonPassed": 614,
+    "wecomPythonFailed": 0
+  },
+  "preview": {
+    "lead": "157811",
+    "device": "202",
+    "elapsedMs": 42265,
+    "cleanup": true,
+    "code": "stopped_before_send",
+    "invitationSent": false,
+    "remarkPhoneSet": true,
+    "steps": [
+      "open_menu",
+      "open_add",
+      "open_search",
+      "enter_phone",
+      "search",
+      "open_personal_wechat",
+      "open_preview"
+    ]
+  },
+  "delivery": {
+    "lead": "157812",
+    "device": "200",
+    "elapsedMs": 46250,
+    "cleanup": true,
+    "code": "invitation_click_issued_delivery_unknown",
+    "remarkPhoneSet": true,
+    "claimFiles": 1
+  },
+  "confirmation": "test_recipient_confirmed_new_invitation",
+  "cpsAck": {
+    "httpStatus": 200,
+    "success": true,
+    "code": 200,
+    "acknowledged": true
+  },
+  "cpsAckAt": "2026-11-06T16:18:31+08:00",
+  "sourceSha256": {
+    "windows-agent/scripts/wecom_invite_preview.py": "64c9b4f71de6d912c30b177d9a61de15aa978c8147607f672a1da6695c2be930",
+    "windows-agent/scripts/wecom_call_trace.py": "1fb0191619bb5078a0752420a8f22250545df41e04d63eef1b1db2408ff527c4",
+    "windows-agent/scripts/test_wecom_invite_preview.py": "660e148d4a607d8f92b2e20db577f3e52bff0c050d4c4596078a750eeae29101"
+  },
+  "productionChanged": false
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "log": "pg-recovery-start.txt",
+    "exitCode": 0
+  },
+  {
+    "log": "pg-recovery-create.txt",
+    "exitCode": 0
+  },
+  {
+    "log": "recovery-pg-tests.txt",
+    "exitCode": 0
+  },
+  {
+    "log": "pg-recovery-stop.txt",
+    "exitCode": 0
+  }
+]

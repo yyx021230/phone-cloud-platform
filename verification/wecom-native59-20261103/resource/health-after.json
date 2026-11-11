@@ -1,0 +1,13 @@
+{
+  "at": "2026-11-03T02:17:02.026Z",
+  "checks": [
+    {
+      "route": "/healthz",
+      "http": 200
+    },
+    {
+      "route": "/readyz",
+      "http": 200
+    }
+  ]
+}

@@ -17,6 +17,7 @@ class PageRecoveryTests(unittest.TestCase):
         r.adb = mock.Mock(side_effect=lambda args, **kw: "device" if args == ["get-state"] else "package:fake")
         r.focus = mock.Mock(return_value=["mCurrentFocus=Window{1 u0 com.vivo.browser/.BrowserActivity}"])
         r.emit = mock.Mock()
+        r.wake_before_query_if_asleep = mock.Mock(return_value=False)
         r.poco_raise_if_login_focus = mock.Mock()
         r.poco_raise_if_login_required = mock.Mock()
         r.poco_raise_if_account_restricted = mock.Mock()
@@ -72,6 +73,27 @@ class PageRecoveryTests(unittest.TestCase):
             r.run_poco(mock.Mock())
         r.query_once_poco.assert_not_called()
         self.assertFalse(any(call.args[0][:3] == ["shell", "am", "force-stop"] for call in r.adb.call_args_list))
+
+    def test_continue_guard_read_timeout_requests_only_preinput_reattach(self):
+        r = self.runner(pageRecoveryStage="continue_query")
+        p = mock.Mock()
+        p.freeze.side_effect = TimeoutError("HTTPConnectionPool(host='127.0.0.1', port=19020): Read timed out. (read timeout=2.0)")
+        with self.assertRaisesRegex(RuntimeError, "^poco_query_page_recovery_prepare_failed:poco_rpc_failed:"):
+            r.run_poco(p)
+        r.query_once_poco.assert_not_called()
+        r.poco_try_reuse_search_page.assert_not_called()
+        self.assertFalse(any(c.args[0][:3] == ["shell", "am", "force-stop"] for c in r.adb.call_args_list))
+
+    def test_restart_guard_timeout_and_unknown_continue_failure_stay_closed(self):
+        for stage, message in [("restart_app", "HTTPConnectionPool: Read timed out"),
+                               ("continue_query", "unknown hierarchy structure")]:
+            r = self.runner(pageRecoveryStage=stage)
+            p = mock.Mock()
+            p.freeze.side_effect = TimeoutError(message)
+            with self.assertRaises(TimeoutError):
+                r.run_poco(p)
+            r.query_once_poco.assert_not_called()
+            self.assertFalse(any(c.args[0][:3] == ["shell", "am", "force-stop"] for c in r.adb.call_args_list))
 
     def test_post_input_failure_is_never_tagged_as_preparation(self):
         r = self.runner(pageRecoveryStage="continue_query")

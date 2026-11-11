@@ -1,0 +1,8 @@
+{
+  "status": "proposal_only",
+  "files": {
+    "verification/wecom-v2-cas-m2-plan-20261102/SOURCE_BASELINE.json": "1ef39e7d619a539210b0c05b9e189453ff9b2a65d4032ede40cf177f4c6b2f68",
+    "verification/wecom-v2-cas-m2-plan-20261102/PLAN.md": "c32e6613212dd18ab6a13d9f8baba096c26210f8665d69e4de56d42a105f6252",
+    "docs/PROJECT_DEVELOPMENT.md": "a6628b350a26759eb987304cc65419c16ae9a2fcf5e9864cbf7cd4d7cf984d9b"
+  }
+}

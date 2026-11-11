@@ -1,0 +1,40 @@
+{
+  "status": "candidate_rolled_back_inventory_live",
+  "candidate": "e183b8fc4fe85509f8c860faf74586e528075562",
+  "inventoryRelease": "wecom-cps-20261110-inventory-deployed.1",
+  "atUtc": "2026-11-10T10:24:46Z",
+  "preAttemptMainActiveSha256": "e4eeded6498f66752966beaac853b5c7d6eb4c69dc417b80e21f0032f30caac1",
+  "preAttemptMainImage": "sha256:50a1fafcf13f739a0a4173048ed9065e470484eef95f2381ca2ed94cf29a86b6",
+  "candidateMainImage": "sha256:ad60e030143f0fdd8dcbdc9920186cdf2383b2271c038d028b80794e9991b073",
+  "restoredMainImage": "sha256:afb66834c491c35864fb24230a29ca567dd644b9aed63ba3eb21f9258aa0c88b",
+  "restoredMainContainer": "1fd3e262ac52f183e2666e355c3ca8de0891ef79d0ae39c85a75bb25358adc68",
+  "restoredMainPid": 393928,
+  "restoredMainStartedAtUtc": "2026-11-10T10:22:58.137163998Z",
+  "firstObservedRestoredReadyUtc": "2026-11-10T10:23:56Z",
+  "measuredRestoredStartupSeconds": 58,
+  "candidateStartupDeadlineSeconds": 25,
+  "candidateFailure": "readiness_deadline_exceeded",
+  "candidateReadinessCauseEstablished": false,
+  "restoredRuntimeFilesChecked": 704,
+  "restoredRuntimeFileDrift": 0,
+  "nginxRestoredSha256": "24cd66a94a4543080374572c9a20ad7cc924636368626f1dac62cf4a2e5b54b3",
+  "admissionGateRemoved": true,
+  "health200": true,
+  "ready200": true,
+  "dockerHealth": "healthy",
+  "publicCpsSignedInventory200": true,
+  "cpsRealDispatchEnabled": false,
+  "mediaD075": "live_pass",
+  "windowsCandidateApplied": false,
+  "agentRecreated": false,
+  "adbRecreated": false,
+  "pending": [
+    "202 preview on loaded candidate",
+    "200 listing and dual-phone preview",
+    "signed production callback"
+  ],
+  "nextWindow": {
+    "candidateReadinessBudgetSeconds": 120,
+    "requireDrainOfExistingLookupRequests": true
+  }
+}

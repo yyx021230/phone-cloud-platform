@@ -1,0 +1,18 @@
+{
+  "version": "platform-integration-20261029-deployed.1",
+  "businessSourceCommit": "3a266d71ba861f8e81d6ec3a173d7efc12d5b245",
+  "imageId": "sha256:a4db69c8a61befac7591924e354227146cb97fc6574556da35a2b86b7ddd6b4d",
+  "restartImageId": "sha256:a4db69c8a61befac7591924e354227146cb97fc6574556da35a2b86b7ddd6b4d",
+  "agentPid": 20232,
+  "adbServerPid": 17764,
+  "activeSha256": "a0b5b612359d617c2cbe1841189b69d566203fd308a80f46ae149bce51f2bb2a",
+  "actualImage": "sha256:a4db69c8a61befac7591924e354227146cb97fc6574556da35a2b86b7ddd6b4d",
+  "restartCount": "148",
+  "manifestPidsAreHistorical": true,
+  "runtimeIdentityGuard": {
+    "adbPid": 8148,
+    "agentPid": 22668,
+    "owner": "SYSTEM",
+    "verifiedBeforeWindowsCalls": true
+  }
+}

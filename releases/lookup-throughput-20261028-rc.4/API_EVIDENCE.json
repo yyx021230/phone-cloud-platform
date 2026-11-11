@@ -1,0 +1,162 @@
+{
+  "production": {
+    "at": "2026-10-29T02:37:13.668348+00:00",
+    "version": "platform-integration-20261028-deployed.1",
+    "source": "baca5721214658b46f24c974c9147490b0bafada",
+    "activeSha256": "4bb61c39a8a5cd912069ed494d84dba1af4cf3cc37adbac8285db935586b995a",
+    "image": "sha256:fca45ec32e72b0787e4375fd6812a5ac97d3aebec4b830b6393b03117554b45e",
+    "running": true,
+    "restarts": 0
+  },
+  "rounds": [
+    {
+      "at": "2026-10-29T02:26:25.345Z",
+      "physicalPhones": [
+        "51",
+        "142"
+      ],
+      "ready": false,
+      "stopped": true,
+      "tasks": [
+        {
+          "taskId": "0bf695ad-0aaf-4d72-a823-8782635e7af9",
+          "device": "142",
+          "type": "alipay_name_start",
+          "purpose": "account_preparation",
+          "startedAt": "2026-10-29T02:26:27.013Z",
+          "status": "succeeded",
+          "hasName": false,
+          "endedAt": "2026-10-29T02:28:04.644Z"
+        },
+        {
+          "taskId": "515cafd2-4f4b-45c0-8e01-126e9d1c25cd",
+          "device": "51",
+          "type": "alipay_name_start",
+          "purpose": "account_preparation",
+          "startedAt": "2026-10-29T02:26:27.515Z",
+          "status": "succeeded",
+          "hasName": false,
+          "endedAt": "2026-10-29T02:28:04.758Z"
+        },
+        {
+          "taskId": "237fb1d3-fddb-43af-8526-e337a42f7ba5",
+          "device": "142",
+          "type": "alipay_name_query",
+          "purpose": "probe",
+          "startedAt": "2026-10-29T02:28:05.552Z",
+          "status": "failed",
+          "code": "alipay_human_verification_required",
+          "reason": "poco_alipay_human_verification_required:jigsaw_verification",
+          "finishScreenshot": true,
+          "endedAt": "2026-10-29T02:28:43.526Z"
+        },
+        {
+          "taskId": "2f7b9067-e2b6-4f71-abc5-8631fc3feaf2",
+          "device": "51",
+          "type": "alipay_name_query",
+          "purpose": "probe",
+          "startedAt": "2026-10-29T02:28:05.818Z",
+          "status": "failed",
+          "code": "alipay_human_verification_required",
+          "reason": "poco_alipay_human_verification_required:jigsaw_verification",
+          "finishScreenshot": true,
+          "endedAt": "2026-10-29T02:28:47.127Z"
+        },
+        {
+          "taskId": "6821221b-d26d-4eca-8961-0c74a8fc295c",
+          "device": "142",
+          "type": "alipay_name_stop",
+          "purpose": "cleanup",
+          "startedAt": "2026-10-29T02:28:45.234Z",
+          "status": "succeeded",
+          "hasName": false,
+          "endedAt": "2026-10-29T02:29:05.950Z"
+        },
+        {
+          "taskId": "01c5fce6-cd7b-4358-bf62-e86ebcf4e771",
+          "device": "51",
+          "type": "alipay_name_stop",
+          "purpose": "cleanup",
+          "startedAt": "2026-10-29T02:28:47.135Z",
+          "status": "succeeded",
+          "hasName": false,
+          "endedAt": "2026-10-29T02:29:07.071Z"
+        }
+      ],
+      "results": null,
+      "faultInjected": null,
+      "duplicateChecks": null,
+      "testError": null
+    },
+    {
+      "at": "2026-10-29T02:34:52.510Z",
+      "physicalPhones": [
+        "51",
+        "52"
+      ],
+      "ready": false,
+      "stopped": true,
+      "tasks": [
+        {
+          "taskId": "70b10303-d959-49d0-bf9b-8519361b4020",
+          "device": "52",
+          "type": "alipay_name_start",
+          "purpose": "account_preparation",
+          "startedAt": "2026-10-29T02:34:53.387Z",
+          "status": "failed",
+          "code": "alipay_human_verification_required",
+          "reason": "alipay_human_verification_required:jigsaw_verification",
+          "endedAt": "2026-10-29T02:35:11.207Z"
+        },
+        {
+          "taskId": "71e94f63-b590-47fd-8714-b28acb0bbf09",
+          "device": "51",
+          "type": "alipay_name_start",
+          "purpose": "account_preparation",
+          "startedAt": "2026-10-29T02:34:53.885Z",
+          "status": "succeeded",
+          "hasName": false,
+          "endedAt": "2026-10-29T02:36:32.183Z"
+        },
+        {
+          "taskId": "65d5a241-22c2-423d-bd9d-a855c4d5020a",
+          "device": "52",
+          "type": "alipay_name_stop",
+          "purpose": "cleanup",
+          "startedAt": "2026-10-29T02:35:12.001Z",
+          "status": "succeeded",
+          "hasName": false,
+          "endedAt": "2026-10-29T02:35:35.070Z"
+        },
+        {
+          "taskId": "63e28f2e-9bab-405b-9c01-5fb4c868d7d6",
+          "device": "51",
+          "type": "alipay_name_stop",
+          "purpose": "cleanup",
+          "startedAt": "2026-10-29T02:36:32.477Z",
+          "status": "succeeded",
+          "hasName": false,
+          "endedAt": "2026-10-29T02:36:52.240Z"
+        }
+      ],
+      "results": null,
+      "faultInjected": null,
+      "duplicateChecks": null,
+      "testError": null
+    }
+  ],
+  "businessQueries": 0,
+  "naturalTimeoutRecoveryCompleted": false,
+  "controlledFaultRecoveryCompleted": false,
+  "testLeasesReleased": true,
+  "privateEvidenceSha256": {
+    "production-before.json": "4e1e0c123ed5dbfb753d073a0c4640b96002f449cdaeaabfbd0754613c18cd4e",
+    "production-after.json": "6de8a7fbde8ca9115d4af13c251f8d879294cbe75fcb773a27935a3c5f67aea0",
+    "probe51.json": "16a79f6ea0e573db7b59b18e1097d132a64526e869aa24dd4eebd547cf51126f",
+    "52-events-private.json": "b26613a0134bfb2968975b559c808984a7aa5a2fc844d962a9762049b602bf48",
+    "52-system-main-private.json": "0274b1833f96ea38248b20e9e433532a19f3ca47a3528c8737ba1fbe1abc3574",
+    "rc4-regression.log": "ebdcd2aa3c2439dca5c8788f04c4236f64d2e82bf29ce779763cb1d6b90fae4e",
+    "rc4-focused.log": "2191689ab51348d2e0c7c9a8fa39d76ec09ed815597991f690be49575149cdbc",
+    "rc4-check.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+  }
+}

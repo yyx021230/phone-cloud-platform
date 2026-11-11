@@ -1,0 +1,36 @@
+{
+  "baseCommit": "66c4eb89e3624e8ac92db999c38c8b9805c36c40",
+  "localTime": "2026-11-02T21:26:08.303389+08:00",
+  "scope": "pure claim prep + existing local business tests only; no PG/OS/phone/atomic-claim proof",
+  "commands": [
+    {
+      "label": "CLAIM_PURE",
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "server/wecom-cleanup-v2-claim.test.mjs"
+      ],
+      "exitCode": 0,
+      "outputSha256": "c87850ba311fcd07942558c9347cc9face654b342cb31e8d99a0a8853643e30e"
+    },
+    {
+      "label": "PREVIEW_BUSINESS",
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "server/wecom-preview.test.mjs"
+      ],
+      "exitCode": 0,
+      "outputSha256": "2e85bc9fc372832a1a0f519985af3084e977278d7708885255934938c2380dc8"
+    }
+  ],
+  "sourceSha256": {
+    "server/wecom-cleanup-v2-claim.mjs": "4c079cfcf3b77505b0cbc2aa1e416d8d446dfc1240d25fcb03401494264a18fd",
+    "server/wecom-cleanup-v2-claim.test.mjs": "4a14bb9f90d2e9ee0d5f2d79882a10bd5a57482ef710b4e88cbd8db79ca5ac8f",
+    "verification/wecom-v2-claim-bundle-20261102/fixture.mjs": "9acf7d46e50cc3e3957a6f3af968cf8af29a6ccb6f4cb6e9935b28c7a613854d",
+    "server/wecom-preview.mjs": "ec9126e6c85d787f80355df8b5c84fb5c525f8ba746847573c9d5b589779cbaf",
+    "server/wecom-preview.test.mjs": "b5583e25276438f9c6ff46b601dcc9631b82a981bf8b09ebe4cbd8e6b13d60ed"
+  }
+}

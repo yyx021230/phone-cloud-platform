@@ -1,0 +1,14 @@
+{
+  "windowsLoopback": [
+    {
+      "closedDetected": true,
+      "timeoutRestored": true
+    },
+    {
+      "closedDetected": true,
+      "timeoutRestored": true
+    }
+  ],
+  "adbConnections": 0,
+  "phoneActions": 0
+}

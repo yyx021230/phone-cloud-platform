@@ -1,0 +1,201 @@
+{
+  "at": "2026-11-03T09:25:48.967Z",
+  "sourceCommit": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "status": "observed_not_admitted",
+  "sourceHashes": {
+    "server/index.mjs": "4bcecc8702ea577a77e5f17664b7833ced33b681f88e5beedcdc6875b6f047cc",
+    "server/wecom-preview.mjs": "ec9126e6c85d787f80355df8b5c84fb5c525f8ba746847573c9d5b589779cbaf",
+    "server/screen-sessions.mjs": "811a15aa7ecb87a934ef5f92826ed9031278d87df2387cc20a85098ce91cde09",
+    "server/managed-lookup.mjs": "74fc9138a8ffc571b4504964762432386d6995426131e4a8b861032161dc7f44",
+    "server/managed-lookup-platform.mjs": "c641ee8e32a30262fe93ae96a6317c24a89b9813c7e1ff16ad19cbe52b96a2f2",
+    "server/postgres-repositories.mjs": "22f7e458bf28e8252639c5bcc5957d56abe8361307baa79432bb869fa34c65ad",
+    "server/wecom-physical-cleanup.mjs": "7fea00c14fcd6df20a30b5492c4c52c244b6dec26bbc5169212d0fcd2e15a07b",
+    "server/wecom-cleanup-service.mjs": "fb594dd7a191bb37f7a2abdf508298059ca4730814f394c491965f0c46c366a0",
+    "server/device-occupancy.mjs": "4f33caecf089118a2b7e4241f21a763dd83f1b37f42c9d378a6a748a6e49d81a",
+    "server/recovery-controls.mjs": "0147f3f3c122e9d444bf48666cb6bbaab64a64c585860ca0664afdec44890af8"
+  },
+  "capacity": {
+    "limit": 2,
+    "active": 0,
+    "remaining": 2
+  },
+  "candidates": [
+    {
+      "deviceNumber": "155",
+      "online": true,
+      "adbOnline": true,
+      "agentOnline": true,
+      "listed": true,
+      "available": false,
+      "busy": true,
+      "wecomAllowed": true,
+      "appSlots": [
+        {
+          "appSlot": "main",
+          "label": "主应用"
+        },
+        {
+          "appSlot": "clone",
+          "label": "分身"
+        }
+      ],
+      "unavailableReason": "device_busy",
+      "lastSeenAt": null,
+      "adbLastSeenAt": "2026-11-03T09:25:32.884Z",
+      "occupancy": {
+        "type": "wecom_physical_cleanup",
+        "label": "企微清理待确认 · 需单机维护"
+      }
+    },
+    {
+      "deviceNumber": "93",
+      "online": true,
+      "adbOnline": true,
+      "agentOnline": true,
+      "listed": true,
+      "available": true,
+      "busy": false,
+      "wecomAllowed": true,
+      "appSlots": [
+        {
+          "appSlot": "main",
+          "label": "主应用"
+        }
+      ],
+      "unavailableReason": "",
+      "lastSeenAt": null,
+      "adbLastSeenAt": "2026-11-03T09:25:32.878Z",
+      "occupancy": {}
+    },
+    {
+      "deviceNumber": "59",
+      "online": true,
+      "adbOnline": true,
+      "agentOnline": true,
+      "listed": true,
+      "available": true,
+      "busy": false,
+      "wecomAllowed": true,
+      "appSlots": [
+        {
+          "appSlot": "main",
+          "label": "主应用"
+        }
+      ],
+      "unavailableReason": "",
+      "lastSeenAt": null,
+      "adbLastSeenAt": "2026-11-03T09:25:32.878Z",
+      "occupancy": {}
+    },
+    {
+      "deviceNumber": "145",
+      "online": true,
+      "adbOnline": true,
+      "agentOnline": true,
+      "listed": true,
+      "available": true,
+      "busy": false,
+      "wecomAllowed": true,
+      "appSlots": [
+        {
+          "appSlot": "main",
+          "label": "主应用"
+        }
+      ],
+      "unavailableReason": "",
+      "lastSeenAt": null,
+      "adbLastSeenAt": "2026-11-03T09:25:32.889Z",
+      "occupancy": {}
+    },
+    {
+      "deviceNumber": "25",
+      "online": true,
+      "adbOnline": true,
+      "agentOnline": true,
+      "listed": true,
+      "available": false,
+      "busy": true,
+      "wecomAllowed": true,
+      "appSlots": [
+        {
+          "appSlot": "main",
+          "label": "主应用"
+        }
+      ],
+      "unavailableReason": "device_busy",
+      "lastSeenAt": null,
+      "adbLastSeenAt": "2026-11-03T09:25:32.889Z",
+      "occupancy": {
+        "type": "screen_control",
+        "label": "实时控制"
+      }
+    },
+    {
+      "deviceNumber": "23",
+      "online": true,
+      "adbOnline": true,
+      "agentOnline": true,
+      "listed": true,
+      "available": false,
+      "busy": true,
+      "wecomAllowed": true,
+      "appSlots": [
+        {
+          "appSlot": "main",
+          "label": "主应用"
+        }
+      ],
+      "unavailableReason": "device_busy",
+      "lastSeenAt": null,
+      "adbLastSeenAt": "2026-11-03T09:25:32.888Z",
+      "occupancy": {
+        "type": "wecom_physical_cleanup",
+        "label": "企微清理待确认 · 需单机维护"
+      }
+    },
+    {
+      "deviceNumber": "43",
+      "online": true,
+      "adbOnline": true,
+      "agentOnline": true,
+      "listed": true,
+      "available": false,
+      "busy": true,
+      "wecomAllowed": true,
+      "appSlots": [
+        {
+          "appSlot": "main",
+          "label": "主应用"
+        }
+      ],
+      "unavailableReason": "device_busy",
+      "lastSeenAt": null,
+      "adbLastSeenAt": "2026-11-03T09:25:32.884Z",
+      "occupancy": {
+        "type": "wecom_physical_cleanup",
+        "label": "企微清理待确认 · 需单机维护"
+      }
+    },
+    {
+      "deviceNumber": "157",
+      "online": true,
+      "adbOnline": true,
+      "agentOnline": true,
+      "listed": true,
+      "available": true,
+      "busy": false,
+      "wecomAllowed": true,
+      "appSlots": [
+        {
+          "appSlot": "main",
+          "label": "主应用"
+        }
+      ],
+      "unavailableReason": "",
+      "lastSeenAt": null,
+      "adbLastSeenAt": "2026-11-03T09:25:32.884Z",
+      "occupancy": {}
+    }
+  ],
+  "globalPhysicalFenceCount": 297
+}

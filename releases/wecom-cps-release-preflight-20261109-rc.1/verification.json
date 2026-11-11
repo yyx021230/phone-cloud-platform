@@ -1,0 +1,93 @@
+{
+  "recordedAt": "2026-11-09T11:15:48+08:00",
+  "baseCommit": "aefdbe4db51e79f4abbabf5fd19cccecfb434d42",
+  "baseTag": "wecom-add-wechat-merge-20261106-rc.1",
+  "candidateTag": "wecom-cps-release-preflight-20261109-rc.1",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "productionBaselineObserved": false,
+  "protectedRuntimeSourceUnchangedFromCandidate": true,
+  "lanDeviceQuery": {
+    "observedAt": "2026-11-09T03:13:01.891Z",
+    "http": 200,
+    "code": 200,
+    "devices": 5,
+    "accounts": 5,
+    "onlineDevices": [
+      "202"
+    ],
+    "accountKeys": [
+      "app_slot",
+      "available",
+      "binding_verified",
+      "enabled",
+      "unavailable_reason",
+      "wecom_name",
+      "wecom_phone"
+    ],
+    "dispatches": 0,
+    "listenerPidBeforeAndAfter": 61086
+  },
+  "isolatedHttp": {
+    "database": "temporary PostgreSQL 16.15, loopback",
+    "fixtureStopped": true,
+    "suite": "npm run test:cps-wecom",
+    "passed": 65,
+    "failed": 0,
+    "skipped": 0,
+    "phoneOnlyBusinessKeys": [
+      "lead_id",
+      "phone",
+      "wecom_phone"
+    ],
+    "dispatchHttp": 200,
+    "dispatchCode": 200,
+    "accountKeysMatchDocument": true,
+    "callbackHttp": [
+      500,
+      200
+    ],
+    "callbackSignedWithFreshNonce": true,
+    "callbackResult": "success",
+    "callbackRemarkPhoneSet": true,
+    "syntheticSendClaimsForCallbackRetry": 1,
+    "clientFlowSyntheticJobs": 9,
+    "clientFlowCallbackAttempts": 11,
+    "clientFlowAppliedResults": 7,
+    "lookupSessionAndLocksPreserved": true,
+    "lookupAdmissionRaceExercised": true,
+    "realInvitations": 0
+  },
+  "otherChecks": {
+    "rootSyntax": "passed",
+    "demoSignaturesVerified": 4,
+    "nginxIsolationUnitTestsPassed": 13,
+    "nginxFragmentStaticScope": "passed"
+  },
+  "setupNotes": [
+    "First shell launch was rejected before creating resources. Temporary PostgreSQL started and stopped successfully using a dedicated local harness.",
+    "An intentional Markdown hard break failed git diff --check. Normalized the candidate docs and reran successfully."
+  ],
+  "pendingAtRelease": [
+    "actual ACTIVE, image, Compose and Windows files",
+    "formal CPS callback and ingress protocol",
+    "Nginx host configuration validation",
+    "authorized production Windows/device gray release and D-075 live checks"
+  ],
+  "productionChanges": false,
+  "filesSha256": {
+    "deploy/sql/cps-wecom.sql": "aa39b53190a4e0d464347c4ee6bc68571fbab5bc94b66a9a8d3d69cf40a67fe6",
+    "docs/CPS企微客户对接方案-v0.1.md": "c391f7ae13c1a23fe9968adab0edcb7a0586fb2ebfc77345cf3fe7816175a984",
+    "package-lock.json": "0f52fdfd7458c3fc29799402d6d0a7ff2523b0d52bcc65cf835e1797dc2d3743",
+    "public/cps-wecom-integration-api.md": "c391f7ae13c1a23fe9968adab0edcb7a0586fb2ebfc77345cf3fe7816175a984",
+    "releases/wecom-cps-release-preflight-20261109-rc.1/README.md": "036d9c72f09703c173643cbfff4d1f4516e9dc0e6a6f9d09b8486d7538a9510d",
+    "releases/wecom-cps-release-preflight-20261109-rc.1/nginx-location.conf.example": "d41394e4982e7ddd0911a1992ffd80a70b774814d9fd5418a06314125e764669",
+    "server/cps-wecom/domain.mjs": "315c32b29e39c98ab80c64646e0a27482be81c22131345f52dc5960ff333929a",
+    "server/cps-wecom/http.mjs": "f0e3a9acc7964379e176388ed6e74d20cde3b26f6a2a2b6f03b6938bc3417182",
+    "server/cps-wecom/main.mjs": "22402cc2c4ad810abbcc017e6f53da0befb7be0f3e202d47d394a0d55b7e164a",
+    "server/cps-wecom/platform.mjs": "a6da31167452b04ceb501df59214f339ab2bd8085360509fffffbc7a191fb967",
+    "server/cps-wecom/protocol.mjs": "34bc74879ea220de7a462f7d22711ec81a873278d99d29b66903195e21f79fcd",
+    "server/cps-wecom/service.mjs": "865e294e63499547a64299666918af505aec8fc0902eeb08753b601f8d60fcec",
+    "server/cps-wecom/store.mjs": "d816f631064c5d181c5ccb98b382f5150f0d66c7df788d73f76db4d48c2831f6",
+    "server/cps-wecom.client-http.test.mjs": "54b327fd9c63f51844dd8611a68a5b0b56aae41735c2e5379a9efbdd2df200f8"
+  }
+}

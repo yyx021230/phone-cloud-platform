@@ -1,0 +1,181 @@
+{
+  "pureFunctionObservations": {
+    "scope": "local pure functions with synthetic values; no network, ADB, phone or model calls",
+    "checks": [
+      {
+        "name": "generic-cleanup-domain-gap",
+        "observed": "empty domain",
+        "pass": true
+      },
+      {
+        "name": "admin-cleanup-reason-gap",
+        "observed": "empty reason despite result.message",
+        "pass": true
+      },
+      {
+        "name": "structured-cleanup-marker",
+        "observed": "device domain",
+        "pass": true
+      },
+      {
+        "name": "ninth-new-reader-at-eight-limit",
+        "observed": {
+          "allowed": false,
+          "reason": "lookup_reader_capacity_full",
+          "used": 8,
+          "limit": 8
+        },
+        "pass": true
+      },
+      {
+        "name": "cleanup-stop-bypasses-reader-limit",
+        "observed": "allowed",
+        "pass": true
+      },
+      {
+        "name": "cleanup-unconfirmed-app-restart-guard",
+        "observed": "restart denied",
+        "pass": true
+      },
+      {
+        "name": "cleanup-unconfirmed-xml-fallback-guard-gap",
+        "observed": "XML fallback allowed",
+        "pass": true
+      }
+    ],
+    "productionFixed": false
+  },
+  "sourceHashes": {
+    "checks": [
+      {
+        "component": "cloud",
+        "path": "server/index.mjs",
+        "productionSha256": "53fc2b55dcb330762a437a1be3e248dd7dccafc9a041606020eb5ae85cf351cf",
+        "localSha256": "53fc2b55dcb330762a437a1be3e248dd7dccafc9a041606020eb5ae85cf351cf",
+        "matches": true
+      },
+      {
+        "component": "cloud",
+        "path": "server/managed-lookup.mjs",
+        "productionSha256": "c58747a82c750aa7ab643e84ca7028475ed4b9d797dc1542b96cb495f37ad3c0",
+        "localSha256": "c58747a82c750aa7ab643e84ca7028475ed4b9d797dc1542b96cb495f37ad3c0",
+        "matches": true
+      },
+      {
+        "component": "cloud",
+        "path": "server/managed-lookup-platform.mjs",
+        "productionSha256": "2340aac9014ed006ab39a29dcbe0259d53b47fb68c3227d398f5979122439ec7",
+        "localSha256": "2340aac9014ed006ab39a29dcbe0259d53b47fb68c3227d398f5979122439ec7",
+        "matches": true
+      },
+      {
+        "component": "cloud",
+        "path": "server/managed-lookup-store.mjs",
+        "productionSha256": "78e79206181fd3e4fb3529175b08fa67c5c1431f9600f35de8e5c1e4087f75c6",
+        "localSha256": "78e79206181fd3e4fb3529175b08fa67c5c1431f9600f35de8e5c1e4087f75c6",
+        "matches": true
+      },
+      {
+        "component": "cloud",
+        "path": "server/lookup-reader-admission.mjs",
+        "productionSha256": "6143dc1f18d25eb0e3e0d82c0075b80d5a069360d1ed9d70a818e7122954d3ec",
+        "localSha256": "6143dc1f18d25eb0e3e0d82c0075b80d5a069360d1ed9d70a818e7122954d3ec",
+        "matches": true
+      },
+      {
+        "component": "cloud",
+        "path": "server/lookup-reader-capacity.mjs",
+        "productionSha256": "cd27eb166caf02eddf54322685e475fae3edb7f375cb923cf7e78a487b0455d7",
+        "localSha256": "cd27eb166caf02eddf54322685e475fae3edb7f375cb923cf7e78a487b0455d7",
+        "matches": true
+      },
+      {
+        "component": "cloud",
+        "path": "server/lookup-stop-proof.mjs",
+        "productionSha256": "f36587d11613679ff013b2aa071d552a8719851ee80890b45e685b5884ae6a18",
+        "localSha256": "f36587d11613679ff013b2aa071d552a8719851ee80890b45e685b5884ae6a18",
+        "matches": true
+      },
+      {
+        "component": "cloud",
+        "path": "server/lookup-readiness.mjs",
+        "productionSha256": "139a3d44cd2130d8f9f7c1c1c05f1e254995c7b71057346468846f0518d3de6c",
+        "localSha256": "139a3d44cd2130d8f9f7c1c1c05f1e254995c7b71057346468846f0518d3de6c",
+        "matches": true
+      },
+      {
+        "component": "cloud",
+        "path": "server/lookup-failure-domain.mjs",
+        "productionSha256": "d256d831f639c19e7c111fc6541f0c215370d9b20fb3f47dc53bd005bea5a29a",
+        "localSha256": "d256d831f639c19e7c111fc6541f0c215370d9b20fb3f47dc53bd005bea5a29a",
+        "matches": true
+      },
+      {
+        "component": "cloud",
+        "path": "server/lookup-ai-vision.mjs",
+        "productionSha256": "27179e050b12abdca392534962cfbe4dbda1b8bbd15eaf81193cee6009878269",
+        "localSha256": "27179e050b12abdca392534962cfbe4dbda1b8bbd15eaf81193cee6009878269",
+        "matches": true
+      },
+      {
+        "component": "cloud",
+        "path": "server/lookup-ai-recovery.mjs",
+        "productionSha256": "5d5acf90a7fbf70f22940372bb9d8e62db896b1813b37c4a1ea150fbea60962e",
+        "localSha256": "5d5acf90a7fbf70f22940372bb9d8e62db896b1813b37c4a1ea150fbea60962e",
+        "matches": true
+      },
+      {
+        "component": "agent",
+        "path": "windows-agent/src/index.mjs",
+        "productionSha256": "c309d1f6dd0bda9530ec6ff8dccc874509aa7cd57e8ef6bdea77a64b7a1c5a67",
+        "localSha256": "c309d1f6dd0bda9530ec6ff8dccc874509aa7cd57e8ef6bdea77a64b7a1c5a67",
+        "matches": true
+      },
+      {
+        "component": "agent",
+        "path": "windows-agent/scripts/alipay_name_lookup.py",
+        "productionSha256": "8c60bb140a4e2bcf07ee29ccd85591b210f20365dc6638cd3f62451444fd4a63",
+        "localSha256": "8c60bb140a4e2bcf07ee29ccd85591b210f20365dc6638cd3f62451444fd4a63",
+        "matches": true
+      },
+      {
+        "component": "agent",
+        "path": "windows-agent/scripts/alipay_visual_result.py",
+        "productionSha256": "e5159fe17b3509fdd7accd997b3af03fc35071d5ae557181ed22f32fa140bd81",
+        "localSha256": "e5159fe17b3509fdd7accd997b3af03fc35071d5ae557181ed22f32fa140bd81",
+        "matches": true
+      },
+      {
+        "component": "agent",
+        "path": "windows-agent/src/lookup-page-recovery.mjs",
+        "productionSha256": "6ac3f752e52db13667b9f0d6a42380c4e3807bbe33c95777e823ef107d8f48b0",
+        "localSha256": "6ac3f752e52db13667b9f0d6a42380c4e3807bbe33c95777e823ef107d8f48b0",
+        "matches": true
+      },
+      {
+        "component": "agent",
+        "path": "windows-agent/src/lookup-reader-lifecycle.mjs",
+        "productionSha256": "d957d51ff0cba4bb1c504e979fb61eadf1fd4b7113c804882e62456210d70168",
+        "localSha256": "d957d51ff0cba4bb1c504e979fb61eadf1fd4b7113c804882e62456210d70168",
+        "matches": true
+      },
+      {
+        "component": "agent",
+        "path": "windows-agent/src/lookup-reader-capacity-report.mjs",
+        "productionSha256": "feb2f97e05ad631f4ece7a6e49491d8204d3118b7bfaa6322094afcc10b33900",
+        "localSha256": "feb2f97e05ad631f4ece7a6e49491d8204d3118b7bfaa6322094afcc10b33900",
+        "matches": true
+      },
+      {
+        "component": "agent",
+        "path": "windows-agent/src/alipay-poco-fallback-policy.mjs",
+        "productionSha256": "d9cca5a6ce0e97f0d6145306f4322d5a8873aaa5e71c2a5441707a46d349f917",
+        "localSha256": "d9cca5a6ce0e97f0d6145306f4322d5a8873aaa5e71c2a5441707a46d349f917",
+        "matches": true
+      }
+    ],
+    "allMatch": true
+  },
+  "runtimeFilesModified": [],
+  "productionMutationPerformed": false
+}

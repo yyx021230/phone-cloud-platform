@@ -1,0 +1,45 @@
+{
+  "candidateTag": "lookup-throughput-20261028-rc.11",
+  "state": "local-candidate-not-deployed",
+  "parentCommit": "179b124ad990c158f02010dbaa42acb20964abe1",
+  "files": {
+    "windows-agent/scripts/alipay_name_lookup.py": "8c60bb140a4e2bcf07ee29ccd85591b210f20365dc6638cd3f62451444fd4a63",
+    "windows-agent/scripts/test_lookup_navigation_focus_transition.py": "1cf3eb2ed196438490949608ced9dd8ad652e8887a6abc58420535a25c079000",
+    "docs/PROJECT_DEVELOPMENT.md": "3c254e3fa071cbbd9f1a0bd404835d6c65ac806a7a7be83d223378730ca151ea",
+    "releases/lookup-throughput-20261028-rc.11/README.md": "276fc06ef5e9508964e6ce77259077675e86f827d67097a2a685cbeb12afeced"
+  },
+  "validation": {
+    "pythonDiscovery": 1013,
+    "pythonLegacy": 166,
+    "nodeFull": 1629,
+    "failed": 0,
+    "newSyntheticTests": 7,
+    "independentTargeted": 31,
+    "rootCheck": "passed",
+    "historical130And181IntermediateFocus": "not captured; original cause not proven",
+    "realBusinessApiRecovery": "not passed",
+    "newPhoneActions": 0,
+    "newInferenceCalls": 0,
+    "productionChanged": false
+  },
+  "addedObservationBudget": {
+    "monotonicSeconds": 2,
+    "maxFocusReads": 8,
+    "eachTimeoutSeconds": 0.5,
+    "recoveryFallback": false,
+    "extraBackOrTapOrLaunch": 0,
+    "scope": "cold restricted Search exit with absent focus only; not entire prepare wall-time"
+  },
+  "evidence": {
+    "pc-focus-transition-rc11.log": "209637c5270ea62667d3505f25f6e8e713fd220b3020983b799e40ff6ae4138a",
+    "pc-focus-python-discover-rc11.log": "7a386769a7f86d192915d0eddebe87276000c576278eaec546525a5ce353f7f2",
+    "pc-focus-python-legacy-rc11.log": "c0cae711fe8abad1f3706ac5391f6ff1ca1558426c7f198ba13ee098ff6da5d7",
+    "pc-focus-node-full-rc11.log": "4285ef3c614e59a3c9daced775bc35904fc6997939ecd827af854923f492c8ed",
+    "pc-focus-check-rc11.log": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "REPRESENTATIVE_EVENT_REVIEW.json": "fa0ddb974b312dc782883e4fc2e8c407d3c788d1a2473a7e01b896fd2ffe7b27",
+    "FOCUS_TRANSITION_REPRO.json": "1c4ca091a6c5f91e4180b7c9e79a91ad9f43f6fb6a8ad7d4dd4dce9b43da5089",
+    "FOCUS_INDEPENDENT_REVIEW.json": "20a1396eeb4ffae06f573dc59ff066b97b8d6c51c105a407aebd682c2e0e7167",
+    "focus-independent-tests.txt": "3828d293c2459ef37a9290ea8dc2832e81034c5e77624716566a986816c1ad37"
+  },
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+}

@@ -1,0 +1,51 @@
+import fs from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {Workbook,SpreadsheetFile} from '@oai/artifact-tool';
+const base='/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform';
+const data=JSON.parse(await fs.readFile(base+'/verification/wecom-native-rate-20261103/ACCOUNT_MATCH.json','utf8'));
+const out=base+'/outputs/wecom-native-rate-20261103-a8d3';await fs.mkdir(out,{recursive:true});
+const wb=Workbook.create(),phones=wb.worksheets.add('手机核对'),accounts=wb.worksheets.add('账户对应');
+const phoneRows=data.phones.map(p=>[p.deviceNumber,p.status,p.accounts,p.scriptConfigured?(p.deviceNumber==='155'?'主号/分身已配置':'仅主号已配置'):'未开放',p.deviceNumber==='43'?'原清理义务未结束':p.deviceNumber==='155'?'查名隔离，主号分身均先排除':p.deviceNumber==='157'?'查名池已启用，需避让':p.status==='平台未找到'?'登录手机编号待核实':'尚未验证企微登录状态',[...new Set(data.accounts.filter(a=>a.deviceNumbers.includes(p.deviceNumber)).flatMap(a=>a.rows.filter(r=>r.deviceNumber===p.deviceNumber).map(r=>'表'+r.source)))].join('、')]);
+const accountRows=data.accounts.map(a=>[a.accountId,'尾号'+a.phoneTail,a.deviceNumbers.join('、')||'未确定',[...new Set(a.rows.filter(r=>r.accountLabel).map(r=>r.accountLabel))].join('、')||'未确定',a.status,[...new Set(a.rows.map(r=>r.source+':'+r.record))].join(' / '),[...new Set(a.rows.filter(r=>r.mappingReason).map(r=>r.mappingReason))].join('、')]);
+const phoneEnd=10+phoneRows.length,accountEnd=5+accountRows.length;
+phones.getRange('A2').values=[['企微手机在线核对']];phones.getRange('A3').values=[['核对时间（北京时间）']];phones.getRange('B3').values=[[new Date(new Date(data.at).getTime()+8*3600*1000)]];phones.getRange('B3').setNumberFormat('yyyy-mm-dd hh:mm');
+phones.getRange('A5:B7').values=[['名单手机',null],['平台有记录',null],['在线',null]];
+phones.getRange('D5:E7').values=[['离线',null],['平台未找到',null],['待确认账户',null]];
+phones.getRange('B5').formulas=[[`=COUNTA(A11:A${phoneEnd})`]];
+phones.getRange('B6').formulas=[[`=COUNTIFS(B11:B${phoneEnd},"在线")+COUNTIFS(B11:B${phoneEnd},"离线")`]];
+phones.getRange('B7').formulas=[[`=COUNTIFS(B11:B${phoneEnd},"在线")`]];
+phones.getRange('E5').formulas=[[`=COUNTIFS(B11:B${phoneEnd},"离线")`]];
+phones.getRange('E6').formulas=[[`=COUNTIFS(B11:B${phoneEnd},"平台未找到")`]];
+phones.getRange('E7').formulas=[[`=COUNTIFS('账户对应'!E6:E${accountEnd},"待确认编号")`]];
+phones.getRange('A8').values=[['手机在线不代表企微已登录；分身脚本仅155号已配置。']];
+phones.getRange(`A10:F${phoneEnd}`).values=[['手机编号','平台状态','表列号码数','脚本开放','需确认说明','名单来源'],...phoneRows];
+accounts.getRange('A2').values=[['企微账户对应明细（脱敏）']];accounts.getRange('A3').values=[[`原始${data.inputAccountRows}条记录，按号码去重${data.uniqueAccountNumbers}个；仅使用登录手机列。`]];
+accounts.getRange(`A5:G${accountEnd}`).values=[['索引','号码尾号','登录手机编号','原表槽位标签','平台状态','表号:记录号','待确认事项'],...accountRows];
+// Sources are recorded beside the underlying account data, once per source.
+accounts.getRange('I5:J10').values=[['来源','说明'],['表1','使用人 / 号码1 / 登陆手机'],['表2','号码 / 企微登录手机编号，中途第39条换表头'],['表3','号码 / 企微登录手机编号'],['表4','序号 / 电话号码 / 企微登陆手机'],['线上快照','平台纯企微库存接口与只读事务，时间见手机核对']];
+for(const [sheet,end,last,header] of [[phones,phoneEnd,'F',10],[accounts,accountEnd,'G',5]]){
+ sheet.showGridLines=false;sheet.tabColor=sheet===phones?'#243B53':'#627D98';
+ sheet.getRange(`A1:${last}${end}`).format.font={name:'Arial',size:11,color:'#243B53'};
+ sheet.getRange(`A1:${last}${end}`).format.verticalAlignment='center';sheet.getRange(`A1:${last}${end}`).format.rowHeight=23;
+ sheet.getRange('A2').format.font={size:16,bold:true,color:'#102A43'};
+ sheet.getRange(`A${header}:${last}${header}`).format={fill:'#243B53',font:{name:'Arial',size:11,bold:true,color:'#FFFFFF'},rowHeight:29,horizontalAlignment:'center'};
+ sheet.getRange(`A${header+1}:${last}${end}`).format.wrapText=false;
+ sheet.freezePanes.freezeRows(header);
+ sheet.tables.add(`A${header}:${last}${end}`,true,sheet===phones?'PhoneInventory':'AccountMapping');
+ sheet.getRange(`B${header+1}:B${end}`).format.horizontalAlignment='left';
+}
+for(const [col,width]of [['A',17],['B',23],['C',16],['D',20],['E',44],['F',24]])phones.getRange(`${col}1:${col}${phoneEnd}`).format.columnWidth=width;
+for(const [col,width]of [['A',10],['B',15],['C',17],['D',33],['E',18],['F',34],['G',28],['I',14],['J',52]])accounts.getRange(`${col}1:${col}${accountEnd}`).format.columnWidth=width;
+phones.getRange('A5:B7').format.fill='#F0F4F8';phones.getRange('D5:E7').format.fill='#F0F4F8';phones.getRange('B5:B7').setNumberFormat('0');phones.getRange('E5:E7').setNumberFormat('0');
+for(const [sheet,col,start,end]of [[phones,'B',11,phoneEnd],[accounts,'E',6,accountEnd]]){
+ for(const [status,color]of [['离线','#FFF3CD'],['平台未找到','#FDE8E7'],['待确认编号','#FFF3CD']])sheet.getRange(`A${start}:${sheet===phones?'F':'G'}${end}`).conditionalFormats.addCustom(`=$${col}${start}="${status}"`,{fill:color});
+}
+accounts.getRange('I5:J5').format={fill:'#E4E7EB',font:{name:'Arial',bold:true,size:11,color:'#243B53'}};accounts.getRange('I6:J10').format.rowHeight=25;
+const originalStatus=phones.getRange('B11').values[0][0];phones.getRange('B11').values=[['离线']];wb.recalculate();assert.equal(phones.getRange('B7').values[0][0],49);assert.equal(phones.getRange('E5').values[0][0],5);phones.getRange('B11').values=[[originalStatus]];wb.recalculate();
+const result=await wb.inspect({kind:'table',range:'手机核对!A5:F7',include:'values,formulas',tableMaxRows:3,tableMaxCols:6});await fs.writeFile(out+'/inspect-summary.json',result.ndjson);
+assert.equal(phones.getRange('B5').values[0][0],61);assert.equal(phones.getRange('B6').values[0][0],54);assert.equal(phones.getRange('B7').values[0][0],50);assert.equal(phones.getRange('E5').values[0][0],4);assert.equal(phones.getRange('E6').values[0][0],7);assert.equal(phones.getRange('E7').values[0][0],18);
+const errors=await wb.inspect({kind:'match',searchTerm:'#REF!|#DIV/0!|#VALUE!|#NAME\\?|#N/A|#NUM!|#NULL!|#SPILL!|#CALC!',options:{useRegex:true,maxResults:50},summary:'formula error scan'});await fs.writeFile(out+'/formula-errors.json',errors.ndjson);
+for(const [sheet,range,file]of [['手机核对','A1:F22','phones-preview.png'],['账户对应','A1:G18','accounts-preview.png']]){
+ const image=await wb.render({sheetName:sheet,range,scale:1.5,format:'png'});await fs.writeFile(out+'/'+file,new Uint8Array(await image.arrayBuffer()));
+}
+const xlsx=await SpreadsheetFile.exportXlsx(wb);await xlsx.save(out+'/企微手机在线核对.xlsx');console.log(JSON.stringify({output:out+'/企微手机在线核对.xlsx',phoneRows:phoneRows.length,accountRows:accountRows.length,summary:[61,54,50,4,7,18]}));

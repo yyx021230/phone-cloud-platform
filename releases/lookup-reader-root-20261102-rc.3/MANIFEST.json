@@ -1,0 +1,20 @@
+{
+  "candidate": "lookup-reader-root-20261102-rc.3",
+  "status": "local_candidate_not_deployed",
+  "base": "7957e07d27f86cbb6cbddb0849d7ef4ffab5a0f7",
+  "productionReference": {
+    "source": "3a266d71ba861f8e81d6ec3a173d7efc12d5b245",
+    "release": "platform-integration-20261029-deployed.1",
+    "lastReadOnlyCheck": "2026-11-02T11:03:33+08:00",
+    "currentPhaseNoProductionAccess": true
+  },
+  "files": {
+    "server/managed-lookup-platform.mjs": "c641ee8e32a30262fe93ae96a6317c24a89b9813c7e1ff16ad19cbe52b96a2f2",
+    "server/lookup-legacy-stop.test.mjs": "31e8f12964702b5de14af8a5d4bc296827fe1679d2b7eedd30ed6c274238fd69",
+    "docs/PROJECT_DEVELOPMENT.md": "3c0e8f14f19bc6854f528559695b81b9aebdd6ec1e3e9adebdfd15ee8bf2dd83",
+    "docs/LOOKUP_PROBLEM_CLOSURE_LEDGER.md": "c819c4a9942cdb092f8fbede83772b18e4ebebf9c5957a533c7a4983ab036221",
+    "releases/lookup-reader-root-20261102-rc.3/README.md": "1c2a5d5e7df2cfbbe4f9ae59c2652885ca9f5be61587570f83fbf78644e5c8a6",
+    "releases/lookup-reader-root-20261102-rc.3/TEST_RESULTS.json": "19fc961fda2138e1c1b7bd2ae1b9a05498da1db7338280a9331baefbf63f3227"
+  },
+  "rollback": "Candidate not deployed; no production change to undo. Existing tags retained."
+}

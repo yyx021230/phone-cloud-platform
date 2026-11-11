@@ -1,0 +1,11 @@
+{
+  "automationId": "127",
+  "targetDevice": "127",
+  "everyMinutes": 30,
+  "notifications": "completion, actionable failure or required human handling only",
+  "sourceCommit": "c17ff0dc1d15372762e38d5b89e126fe3cd337f9",
+  "previewOnly": true,
+  "noInvitation": true,
+  "mustBeIdle": true,
+  "noOtherThreads": true
+}

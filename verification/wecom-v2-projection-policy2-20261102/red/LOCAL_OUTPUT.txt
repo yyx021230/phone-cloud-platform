@@ -1,0 +1,124 @@
+✔ retain reviewed M3 normalized main/preview tuple, no permissions (5.722209ms)
+✔ retain reviewed M3 normalized main/send tuple, no permissions (0.592084ms)
+✔ retain reviewed M3 normalized clone/preview tuple, no permissions (0.464708ms)
+✔ retain reviewed M3 normalized clone/send tuple, no permissions (0.405459ms)
+✔ old queued proposals without v2 markers retain committed canonical rows (0.680708ms)
+✔ canonical running legitimate progress is not original queued CAS (0.497417ms)
+✔ canonical stalled legitimate progress is not original queued CAS (0.408708ms)
+✔ canonical succeeded legitimate progress is not original queued CAS (0.346916ms)
+✔ canonical failed legitimate progress is not original queued CAS (0.640792ms)
+✔ canonical cancelled legitimate progress is not original queued CAS (0.4605ms)
+✔ canonical expired legitimate progress is not original queued CAS (0.340792ms)
+✔ success/failed or running/cancelled status divergence is legitimate (0.465042ms)
+✔ business lock release and proposed physical release cannot clear obligation (0.307375ms)
+✔ missing canonical anchor rejects only that target (0.204167ms)
+✔ missing canonical windowsTask rejects only that target (0.171166ms)
+✔ missing canonical automationJob rejects only that target (0.176542ms)
+✔ missing canonical physicalHold rejects only that target (0.179792ms)
+✔ missing canonical businessLock rejects only that target (0.183875ms)
+✔ missing canonical ledger rejects only that target (0.350083ms)
+✔ missing canonical device rejects only that target (0.25525ms)
+✔ canonical conflict s=>{s.f.canonical.ledger.claim_data=null;} is not repaired/upgraded (0.354292ms)
+✔ canonical conflict s=>{s.f.canonical.ledger.protocol_state.version=1;} is not repaired/upgraded (0.31325ms)
+✔ canonical conflict s=>{s.f.canonical.windowsTask.status=s.f.canonical.windowsTask.data.status="queued";} is not repaired/upgraded (0.291834ms)
+✔ canonical conflict s=>{delete s.f.canonical.windowsTask.data.wecomV2Claim;} is not repaired/upgraded (0.287166ms)
+✔ canonical conflict s=>{s.f.canonical.automationJob.data.phoneNumber="13900000001";} is not repaired/upgraded (0.325292ms)
+✔ canonical conflict s=>{s.f.canonical.physicalHold.data.physicalCleanup.originalJobId="other";} is not repaired/upgraded (0.275083ms)
+✔ canonical conflict s=>{s.f.canonical.anchor.mapping_state="disabled";} is not repaired/upgraded (0.584084ms)
+✔ canonical conflict s=>{s.f.canonical.anchor.mapping_fingerprint="0".repeat(64);} is not repaired/upgraded (0.366666ms)
+✔ canonical conflict s=>{s.f.canonical.device.adb.agentId="other";} is not repaired/upgraded (0.441333ms)
+✔ canonical conflict s=>{s.f.canonical.windowsTask.status="failed";} is not repaired/upgraded (0.283291ms)
+✔ changed immutable proposed windowsTask refused (0.300208ms)
+✔ changed immutable proposed automationJob refused (0.260667ms)
+✔ changed immutable proposed device refused (0.230208ms)
+✔ changed immutable proposed physicalHold refused (0.24125ms)
+✔ changed immutable proposed businessLock refused (0.233459ms)
+✔ missing observation null never means absent (0.124625ms)
+✔ missing observation undefined never means absent (0.128167ms)
+✔ missing observation {} never means absent (0.11825ms)
+✔ missing observation true never means absent (0.104542ms)
+✔ missing observation {"kind":"unknown"} never means absent (0.106709ms)
+✔ explicit observed absent remains candidate with zero permission (0.116125ms)
+✔ absent with records or v1 pending never upgrades or releases (0.2735ms)
+✔ provider bool cannot attest ownership/provenance (0.146458ms)
+✔ first device provider fails, independent second still classified (0.423416ms)
+✔ first canonical conflict, second confirmed absence independently continues (0.284834ms)
+✔ invalid target does not throw whole batch or invoke provider for it (0.252167ms)
+✔ canonical provider getter not invoked and next target continues (0.374542ms)
+✔ immutable frozen results contain no business data or snapshots (0.282875ms)
+✔ unknown COMMIT-like observation never produces replay/clear/write action (0.114583ms)
+✔ changed epoch and mismatched target observations stay unconfirmed (0.187375ms)
+✔ normalized M1 revision1/2 progress retains exact claim (1.228333ms)
+✔ batch getter is rejected without invoking user code (0.134333ms)
+✔ missing provider and extra authority booleans rejected at construction (0.233542ms)
+✖ normalized anchor revision rejects 1 (0.83675ms)
+✔ normalized anchor revision rejects true (0.200625ms)
+✔ normalized anchor revision rejects false (0.178333ms)
+✔ normalized anchor revision rejects "01" (0.169583ms)
+✔ normalized anchor revision rejects "0" (0.165208ms)
+✔ normalized anchor revision rejects "-1" (0.164208ms)
+✔ normalized anchor revision rejects 1.5 (0.163542ms)
+✔ normalized anchor revision rejects null (0.164917ms)
+✔ normalized positive string revision 1 remains valid (0.260792ms)
+✔ normalized positive string revision 2 remains valid (0.317208ms)
+✖ numeric revision on first target cannot block normal independent target (1.019875ms)
+ℹ tests 64
+ℹ suites 0
+ℹ pass 62
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 105.850417
+
+✖ failing tests:
+
+test at server/wecom-v2-projection-policy.test.mjs:64:57
+✖ normalized anchor revision rejects 1 (0.83675ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'retain_canonical'
+  - 'reject_target'
+       ^
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-v2-projection-policy.test.mjs:64:196)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'retain_canonical',
+    expected: 'reject_target',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server/wecom-v2-projection-policy.test.mjs:66:1
+✖ numeric revision on first target cannot block normal independent target (1.019875ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  -   'reject_target',
+      'retain_canonical',
+  +   'retain_canonical'
+    ]
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-v2-projection-policy.test.mjs:69:58)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'retain_canonical', 'retain_canonical' ],
+    expected: [ 'reject_target', 'retain_canonical' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

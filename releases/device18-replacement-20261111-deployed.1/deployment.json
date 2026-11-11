@@ -1,0 +1,167 @@
+{
+  "version": "device18-replacement-20261111-deployed.1",
+  "atUtc": "2026-11-11T08:49:45.651333+00:00",
+  "baselineVersion": "wecom-cps-send-20261111-deployed.1",
+  "activeBeforeSha256": "d74ea72e6003951d2f669e1bfdaa526b77f814166c9a3d0ac39f83c676818056",
+  "branch": "codex/device18-replacement-20261111",
+  "runtimePatchCommit": "a661b57935adb0356694f4c35c6e05374e006baa",
+  "runtimePatchTag": "device18-replacement-20261111-rc.1",
+  "operationToolsCommit": "ff99e06998c35b207744fb003f0072900a4d73fb",
+  "operationToolsTag": "device18-replacement-20261111-rc.3",
+  "preparedRelease": {
+    "atUtc": "2026-11-11T08:38:43.354120+00:00",
+    "candidateCommit": "a661b57935adb0356694f4c35c6e05374e006baa",
+    "candidateTag": "device18-replacement-20261111-rc.1",
+    "activeBeforeSha256": "d74ea72e6003951d2f669e1bfdaa526b77f814166c9a3d0ac39f83c676818056",
+    "previousNextImageId": "sha256:16e06c48a5fb32a92ba14b8d22d9c814341bb143f23c4fe1205426bab6b322d7",
+    "nextImageId": "sha256:e5b243b5e3b8c7bbd5c014bf059212db704f4d9592e639cbb5c773915f16ca30",
+    "nextImageTag": "phone-cloud-platform:device18-replacement-20261111-rc.1",
+    "runtimeFilesVerified": 708,
+    "onlyChangedFile": "server/postgres-repositories.mjs",
+    "beforeRepositorySha256": "f2e9b9544d3d7f12afd59ea7836e73f55aa752260eb0e2f1c2ecec4fb76ca7fc",
+    "repositorySha256": "e8d42324f5e67922d5b558abd31bc995c8af796c8e39e439a2556692f415634e",
+    "nextImageAllOtherHashesUnchanged": true,
+    "composeOnlyImageChanged": true,
+    "composeOverlay": "/opt/phone-cloud-staging/device18-replacement-20261111-rc.1/compose.pending.json",
+    "structuredBackupSha256": "64353c44f0f6ca7d7aab7bc1babde475c54e235e2678556c10c1fcb01e35ec14"
+  },
+  "applied": {
+    "atUtc": "2026-11-11T08:45:53.478979+00:00",
+    "applied": true,
+    "oldDeviceId": "adb:2e74c3a20920",
+    "newDeviceId": "adb:10CF3B074E002N1",
+    "bindingsMoved": 2,
+    "simBindingsChanged": false,
+    "oldInventoryArchived": true,
+    "newListed": true,
+    "newAdbOnline": true,
+    "mainPidUnchanged": 1730700,
+    "sharedServicesRestarted": false,
+    "backupSha256": "7abc2e90af658f3bdaca467250fc4e37311fac1cf478868b1415ca5c19f45b1e",
+    "retirement": {
+      "mode": "retire",
+      "archived": true,
+      "removedFromInventory": true,
+      "oldDeviceId": "adb:2e74c3a20920",
+      "newDeviceId": "adb:10CF3B074E002N1",
+      "retiredAt": "2026-11-11T08:45:53.247Z",
+      "remainingNumber18": 1,
+      "historicalTasksAndSmsDeleted": 0,
+      "fullSnapshotRewritten": false
+    }
+  },
+  "batchApplied": {
+    "mode": "apply",
+    "targetCount": 1,
+    "appSlot": "app1",
+    "xhsId": "63033691880",
+    "oldDeviceId": "adb:2e74c3a20920",
+    "newDeviceId": "adb:10CF3B074E002N1",
+    "activeRuns": 0,
+    "changed": true,
+    "credentialsChanged": false,
+    "schedulesChanged": false,
+    "historyChanged": false,
+    "restarted": false,
+    "configBeforeSha256": "ae267f7f8cd3af9c057e7e239be098a355cada649c99520526f1d216cb7462ee",
+    "configAfterSha256": "1d85daaeb9a25ce8362e48f1951896c7156c26ed8e28ab6e58b6cd4eb37d583a",
+    "inodeUnchanged": true
+  },
+  "batchVerification": {
+    "actualRuntimeAndDiskTargetsAgree": true,
+    "targetDeviceId": "adb:10CF3B074E002N1",
+    "targetCount": 1,
+    "readOnlyVerification": true,
+    "activeRuns": 0
+  },
+  "productionVerification": {
+    "atUtc": "2026-11-11T08:48:38.804150+00:00",
+    "number18Count": 1,
+    "newDeviceId": "adb:10CF3B074E002N1",
+    "newModel": "V2410A",
+    "newOnline": true,
+    "newListed": true,
+    "newOccupancy": null,
+    "newLastSeenAt": "2026-11-11T08:48:20.016Z",
+    "xhsAccounts": [
+      {
+        "appSlot": "app1",
+        "xhsId": "63033691880",
+        "accountName": "云凌胜"
+      },
+      {
+        "appSlot": "app2",
+        "xhsId": "63025254245",
+        "accountName": "云盛久"
+      }
+    ],
+    "simBindingsUnchanged": true,
+    "oldDeviceAbsentFromInventory": true,
+    "oldArchiveMarkerPersisted": true,
+    "noDuplicateXhsBindings": true,
+    "mainPidUnchanged": 1730700,
+    "mainStartedAt": "2026-11-11T01:13:54.196513707Z",
+    "batchPidUnchanged": 2508335,
+    "batchStartedAt": "2026-11-09T08:51:15.04199097Z",
+    "cpsContainerUnchanged": "88703bcbe6da15af62e45258f09320e782f82b6514e6f73fb19d6bbc3b261241",
+    "cpsMode": "send",
+    "health": {
+      "main": 200,
+      "ready": 200,
+      "cps": 200
+    },
+    "media": {
+      "decision": "D-075",
+      "verified": "live",
+      "pid": 2503525,
+      "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+      "bitsPerSecond": 8000000,
+      "packetsPerGroup": 2
+    },
+    "phoneSideLoginVerified": false,
+    "historicalTasksOrSmsDeleted": 0,
+    "realPhoneTasksStarted": 0
+  },
+  "cloudRuntimeFilesVerified": 708,
+  "nextStartupReplayProbePassed": true,
+  "inspectorClosedOnBothServices": true,
+  "restartedComponents": [],
+  "adbOrAgentOperations": 0,
+  "historicalRowsDeleted": 0,
+  "realPhoneTasksStarted": 0,
+  "tests": {
+    "repositoryPassed": 17,
+    "isolatedPostgresPassed": 1,
+    "screenRegressionPassed": 27,
+    "batchEnginePassed": 34
+  },
+  "failuresResolved": [
+    "Runtime sync awaitPromise collected; synchronous calls corrected",
+    "Read-only batch container copy denied; stdin used without changing permissions",
+    "Inspector dynamic import unavailable; require ESM export used",
+    "Whole pool idle precondition blocked on coordinator lease; pre-activation transaction barrier verified"
+  ],
+  "observerFailuresResolved": [
+    "Missing XHS id on unrelated empty account template; read-only observer made tolerant",
+    "Health probe path corrected to healthz/readyz",
+    "Shell-expanded SQL parameter in read-only timestamp query; moved to structured subprocess argument"
+  ],
+  "rollbackDirectory": "/opt/phone-cloud-staging/device18-replacement-20261111-rc.1",
+  "notVerified": [
+    "New phone app-side XHS login state, QR scan, data collection and publishing were not executed",
+    "No production restart performed; next-start image replay and all 708 hashes verified instead"
+  ],
+  "previousUnverifiedItemsRetained": [
+    "Full WeCom SYSTEM phone cleanup protocol",
+    "176 hierarchy failure and147 post-input recovery/retyping issue",
+    "158 initial target disappearance cause and original/next query",
+    "Next natural02:00 and100-account acceptance",
+    "PG internal SIGABRT initial cause",
+    "Four historical hashes with API-truncated titles",
+    "Legacy complete runtime download archive not updated",
+    "202 new-customer remark/send-page path: authorized test customer is already a contact",
+    "Production invitation and official CPS callback using a new CPS lead",
+    "Source commit for preserved external XHS collector hot overlay",
+    "Previous three baseline UI assertions still fail; not a full green regression"
+  ]
+}

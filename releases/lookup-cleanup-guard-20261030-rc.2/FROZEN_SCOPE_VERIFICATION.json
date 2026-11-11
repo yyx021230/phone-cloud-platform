@@ -1,0 +1,213 @@
+{
+  "frozenFileCount": 33,
+  "frozenFiles": [
+    {
+      "path": "server/screen-gallery-import.mjs",
+      "candidateSha256": "39f7727860372f25959a5ca78145be07dfaf92c3747954afc99c8cd02cd8e697",
+      "baseSha256": "39f7727860372f25959a5ca78145be07dfaf92c3747954afc99c8cd02cd8e697",
+      "matches": true
+    },
+    {
+      "path": "server/screen-sessions.mjs",
+      "candidateSha256": "811a15aa7ecb87a934ef5f92826ed9031278d87df2387cc20a85098ce91cde09",
+      "baseSha256": "811a15aa7ecb87a934ef5f92826ed9031278d87df2387cc20a85098ce91cde09",
+      "matches": true
+    },
+    {
+      "path": "server/screen-media-auth.mjs",
+      "candidateSha256": "c569931fdbad95338ebc50dee5d04b0f62550733bc627324171ab3590d3668b1",
+      "baseSha256": "c569931fdbad95338ebc50dee5d04b0f62550733bc627324171ab3590d3668b1",
+      "matches": true
+    },
+    {
+      "path": "server/screen-relay.mjs",
+      "candidateSha256": "91b706a0cd00ea573997fdea338cad8f37e2c88e62fdbeee24b86ec4a6036c02",
+      "baseSha256": "91b706a0cd00ea573997fdea338cad8f37e2c88e62fdbeee24b86ec4a6036c02",
+      "matches": true
+    },
+    {
+      "path": "server/screen-transport-policy.mjs",
+      "candidateSha256": "331b212c564bc992628712eef81bff6dafe3b0df3f480f64fb808dfe7c41c721",
+      "baseSha256": "331b212c564bc992628712eef81bff6dafe3b0df3f480f64fb808dfe7c41c721",
+      "matches": true
+    },
+    {
+      "path": "server/screen-backpressure.mjs",
+      "candidateSha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4",
+      "baseSha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4",
+      "matches": true
+    },
+    {
+      "path": "server/screen-quality.mjs",
+      "candidateSha256": "bfadf379b03fadcf73bedc911649680ac6e3ace77907afee3524b335d4406451",
+      "baseSha256": "bfadf379b03fadcf73bedc911649680ac6e3ace77907afee3524b335d4406451",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/serial-delay-scheduler.mjs",
+      "candidateSha256": "ee71bc11573cb0880f6017a4ef1c3ca186bf2441c6e7e167be4c2d3f14ab7ea1",
+      "baseSha256": "ee71bc11573cb0880f6017a4ef1c3ca186bf2441c6e7e167be4c2d3f14ab7ea1",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-safety.mjs",
+      "candidateSha256": "ad7de7d0575476cb807201e88b1c12842d12af0d9864e54809f4b98913c6d355",
+      "baseSha256": "ad7de7d0575476cb807201e88b1c12842d12af0d9864e54809f4b98913c6d355",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/adb-priority-queue.mjs",
+      "candidateSha256": "0bb8cfd86baaddc8a32d040e5835452f06e1ae5e3b78cbe2aeb0a67a24e5495d",
+      "baseSha256": "0bb8cfd86baaddc8a32d040e5835452f06e1ae5e3b78cbe2aeb0a67a24e5495d",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/screen-control-queue.mjs",
+      "candidateSha256": "27e6e5e39364817b2ee6a8ced3ecae8cee522904a7d4d3b0321bacd697212879",
+      "baseSha256": "27e6e5e39364817b2ee6a8ced3ecae8cee522904a7d4d3b0321bacd697212879",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-wake-scheduler.mjs",
+      "candidateSha256": "c0f98f5dac1454eba52317dda13f991cc1d765387b5256c67e892b599be678af",
+      "baseSha256": "c0f98f5dac1454eba52317dda13f991cc1d765387b5256c67e892b599be678af",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/screen-webrtc-publisher.mjs",
+      "candidateSha256": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04",
+      "baseSha256": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/device-actor.mjs",
+      "candidateSha256": "b1d97b76ce1d71d0fa3fd70757311e78f76255661288e9cd5199b6c3cba2a2cf",
+      "baseSha256": "b1d97b76ce1d71d0fa3fd70757311e78f76255661288e9cd5199b6c3cba2a2cf",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-admission.mjs",
+      "candidateSha256": "dede33101b9765342ffa50121a8edadf066d519c047646fcca82635ab6cc236f",
+      "baseSha256": "dede33101b9765342ffa50121a8edadf066d519c047646fcca82635ab6cc236f",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/serial-adb-health.mjs",
+      "candidateSha256": "ea6066d526ce12c6a1fd7d4e15b19f012ace259dbf7461549d951c40afb46334",
+      "baseSha256": "ea6066d526ce12c6a1fd7d4e15b19f012ace259dbf7461549d951c40afb46334",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-policy.mjs",
+      "candidateSha256": "5a66a8ccb4defbf837c58cb473fd884ffe1763c17256ed6642d91dfe1be4e850",
+      "baseSha256": "5a66a8ccb4defbf837c58cb473fd884ffe1763c17256ed6642d91dfe1be4e850",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/adb-server-recovery.mjs",
+      "candidateSha256": "693535b4379089e33b7badeaac2e2665c1b2efb797adba1264e8c431d356fb2f",
+      "baseSha256": "693535b4379089e33b7badeaac2e2665c1b2efb797adba1264e8c431d356fb2f",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/pnp-screen-coordinator.mjs",
+      "candidateSha256": "5eb1551e7dedbef4eed8d941733fa20b4780a362196338c51db4651b78ab9003",
+      "baseSha256": "5eb1551e7dedbef4eed8d941733fa20b4780a362196338c51db4651b78ab9003",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-verification.mjs",
+      "candidateSha256": "0658e51af5e109fa3d78588860f64face9f15c7062b97e575e0201b7c1f2915a",
+      "baseSha256": "0658e51af5e109fa3d78588860f64face9f15c7062b97e575e0201b7c1f2915a",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-control.mjs",
+      "candidateSha256": "92e2bcc37d7bc8b9d3e61d4385116db7181530d5fe125c6c2a3210c5142fde0f",
+      "baseSha256": "92e2bcc37d7bc8b9d3e61d4385116db7181530d5fe125c6c2a3210c5142fde0f",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/pnp-recovery-wave.mjs",
+      "candidateSha256": "cc9a01d0f80cf72f1de0b09288fee61d9c91919b8d59b60ec66aa6fde4b7d83c",
+      "baseSha256": "cc9a01d0f80cf72f1de0b09288fee61d9c91919b8d59b60ec66aa6fde4b7d83c",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/screen-stream.mjs",
+      "candidateSha256": "2a2dc815a6b9068b4ca9f234102fdb97eb8785474f587bb31eaf4b2707dbb569",
+      "baseSha256": "2a2dc815a6b9068b4ca9f234102fdb97eb8785474f587bb31eaf4b2707dbb569",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/pnp-exact-actions.mjs",
+      "candidateSha256": "2e67e3fb1612ac79499055878caa042fd91c4e42caa28df4621d4cabf7172cab",
+      "baseSha256": "2e67e3fb1612ac79499055878caa042fd91c4e42caa28df4621d4cabf7172cab",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/screen-video-channel.mjs",
+      "candidateSha256": "9e8c1ccd1439568beca2e99595764aa598893cee576109c514ae503486c1ca25",
+      "baseSha256": "9e8c1ccd1439568beca2e99595764aa598893cee576109c514ae503486c1ca25",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/serial-reservation.mjs",
+      "candidateSha256": "97fe332bc4877dc4ac70d613fc8c27f8c86a84072e90b95a277ca108e7895802",
+      "baseSha256": "97fe332bc4877dc4ac70d613fc8c27f8c86a84072e90b95a277ca108e7895802",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/pnp-windows-inventory.mjs",
+      "candidateSha256": "7fef1564a5159238064d207905326f1d8cd9b5f39274fe85ddcd951fdc3cef5d",
+      "baseSha256": "7fef1564a5159238064d207905326f1d8cd9b5f39274fe85ddcd951fdc3cef5d",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/pnp-missing-device-recovery.mjs",
+      "candidateSha256": "eddfcf36dd904bf2ca834fb8958d21c55fa62c45139d880399d565b1006825f6",
+      "baseSha256": "eddfcf36dd904bf2ca834fb8958d21c55fa62c45139d880399d565b1006825f6",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/serial-adb-activity.mjs",
+      "candidateSha256": "4668e7a416feac9860289d1d903849970645f45544eec77c77f26859b67132d9",
+      "baseSha256": "4668e7a416feac9860289d1d903849970645f45544eec77c77f26859b67132d9",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/config.mjs",
+      "candidateSha256": "b233775c589ab22e6662a23bb82e507c9a3f635f1112709bfdae24d854a5d254",
+      "baseSha256": "b233775c589ab22e6662a23bb82e507c9a3f635f1112709bfdae24d854a5d254",
+      "matches": true
+    },
+    {
+      "path": "windows-agent/src/screen-backpressure.mjs",
+      "candidateSha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4",
+      "baseSha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4",
+      "matches": true
+    },
+    {
+      "path": "public/vendor/screen-control.js",
+      "candidateSha256": "ef4e36d5934050ad85075fb877257e4ec63b30af94becefc69e29bf76b2f44c5",
+      "baseSha256": "ef4e36d5934050ad85075fb877257e4ec63b30af94becefc69e29bf76b2f44c5",
+      "matches": true
+    },
+    {
+      "path": "public/vendor/worker-Dm9DNeDt.js",
+      "candidateSha256": "1d2f4e9d5377fe41356be079ad925ddb38b10b5035914f2b883ec1696f831687",
+      "baseSha256": "1d2f4e9d5377fe41356be079ad925ddb38b10b5035914f2b883ec1696f831687",
+      "matches": true
+    }
+  ],
+  "changedAgentTopLevelFunctions": [
+    "taskAlipayNameLookup",
+    "runXhsAirtestPocoWorker",
+    "stopAirtestWorkerImpl"
+  ],
+  "nonLookupReadyTimeoutBehaviorRetainedByTests": true,
+  "cleanupTotalBudgetMs": 8000,
+  "cleanupPerCommandBudgetMs": 2000,
+  "productionFrozenFileDifferencesKnownFromPreviousRelease": true,
+  "freshProductionScreenAcceptance": false
+}

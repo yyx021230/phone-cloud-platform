@@ -1,0 +1,31 @@
+{
+  "command": [
+    "/opt/homebrew/bin/node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=spec",
+    "server/wecom-preview.http.test.mjs",
+    "server/wecom-physical-cleanup.http.test.mjs",
+    "server/wecom-status-transport.http.test.mjs",
+    "server/wecom-integration.e2e.test.mjs"
+  ],
+  "target": "http",
+  "startedAt": "2026-11-02T17:50:44.951328+00:00",
+  "endedAt": "2026-11-02T17:51:13.433647+00:00",
+  "exitCode": 1,
+  "timedOut": false,
+  "environmentKeys": [
+    "DATABASE_URL",
+    "HOME",
+    "PATH",
+    "PYTHONDONTWRITEBYTECODE",
+    "REDIS_URL",
+    "STORAGE_BACKEND",
+    "TMPDIR"
+  ],
+  "inheritedCredentials": false,
+  "databaseUrl": "",
+  "redisUrl": "",
+  "temporaryStorage": true,
+  "services": "loopback fixtures only"
+}

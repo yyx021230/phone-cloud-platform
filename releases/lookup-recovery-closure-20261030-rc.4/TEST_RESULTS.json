@@ -1,0 +1,24 @@
+{
+  "targetedNode": {
+    "passed": 142
+  },
+  "lookupPython": {
+    "passed": 525
+  },
+  "automationPython": {
+    "passed": 168
+  },
+  "rootCheck": "passed",
+  "fullNodeCandidate": {
+    "total": 1798,
+    "passed": 1796,
+    "failed": 1,
+    "cancelled": 1,
+    "note": "Two HTTP timing cases failed under full parallel run; serial rerun including these and runtime/scan cases passed all 5. Not a clean full-suite pass."
+  },
+  "serialHttpRerun": {
+    "passed": 5
+  },
+  "productionAcceptance": false,
+  "manualPopupExperiment": "excluded after user scope clarification"
+}

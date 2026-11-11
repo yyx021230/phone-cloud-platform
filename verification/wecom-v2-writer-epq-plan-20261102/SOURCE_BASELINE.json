@@ -1,0 +1,28 @@
+{
+  "baseCommit": "4adcc0d3f3a1779937d867a11ef793dad759614a",
+  "rootCompatibilityClosure": "1444f87a40cb18d20b85c584747a781832853f23",
+  "branch": "codex/wecom-v2-writer-epq-plan-20261102",
+  "candidateTag": "wecom-v2-writer-epq-20261102-draft.1",
+  "sourceSha256": {
+    "server/index.mjs": "4bcecc8702ea577a77e5f17664b7833ced33b681f88e5beedcdc6875b6f047cc",
+    "server/postgres-repositories.mjs": "22f7e458bf28e8252639c5bcc5957d56abe8361307baa79432bb869fa34c65ad",
+    "server/wecom-cleanup-service.mjs": "fb594dd7a191bb37f7a2abdf508298059ca4730814f394c491965f0c46c366a0",
+    "server/wecom-physical-cleanup.mjs": "7fea00c14fcd6df20a30b5492c4c52c244b6dec26bbc5169212d0fcd2e15a07b",
+    "server/persistence-policy.mjs": "a25cbbbb296c23a4f8876c13a97c8235824881ebc28daa3998762fcf2c0658ca",
+    "server/wecom-cleanup-v2-claim.mjs": "4c079cfcf3b77505b0cbc2aa1e416d8d446dfc1240d25fcb03401494264a18fd",
+    "server/wecom-cleanup-v2-claim-postgres.mjs": "46d0e8ee2857656acf765920f1d58a10e313ba05aff5b2a867270c3611d0a276",
+    "server/wecom-cleanup-v2-postgres.mjs": "1816196b59d4175a162e7d5fd18c62445459a8e663baf9e732c3add07b1a6ca3",
+    "server/wecom-cleanup-v2-host.mjs": "6caf31175e62002476f37d0785ef3b5d3c3de87581cd117320ce6695c98be397",
+    "windows-agent/src/wecom-preview-task.mjs": "2d5fb3354edde14d2673e7c25bc7e9e25e60e8ba3d1e1e76358b675e20847e24",
+    "windows-agent/src/wecom-cleanup-protocol.mjs": "918dfee2f090e94ad946266d2292fe73d0422a4485e87cdd04cfa522d5dbb9be",
+    "windows-agent/scripts/wecom_host_identity.py": "43c95de5f3ecdcc09094fbf2bb8a02aec7e6b1cce5a77eb9fbe954738ec9fc51",
+    "windows-agent/scripts/wecom_system_runtime.py": "95e87ed27257eaea55f0be8e9c774cdaa020b2770777586719b782b80118316e",
+    "deploy/sql/wecom-cleanup-v2-claim.sql": "9b89cc925083933e04a1888c6567202f7c2a0b5f8eeb9268c1ffa424b7d2fc7d",
+    "server/task-history-maintenance.mjs": "fbb8bad420c3e8423f1b0bf9abc37819b83d59a33e5b1e788ba42737d89fab0d",
+    "server/snapshot-stream.mjs": "6a28e2a09ec78a3b8f5cc3203bc054db732dcc503ee198f25a94d8f09af47f73",
+    "server/wecom-v2-projection-policy.mjs": "62c47aaf78ae9925d8b66bb0e33e79fbae0a22e238b01460f69671ee1a27ac03"
+  },
+  "lookupCanonicalWaitContractNotImplementedInThisBranch": true,
+  "planAndVerificationSqlTextOnly": true,
+  "noPgSqlWindowsPhoneOrProductionActions": true
+}

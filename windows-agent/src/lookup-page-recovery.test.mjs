@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import fs from "node:fs";
 import { canRestartLookupAfterFailure, restartLookupQueryOnce } from "./lookup-page-recovery.mjs";
+import {shouldFallbackAlipayPocoFailure,isRetryableAlipayPocoStartFailure} from './alipay-poco-fallback-policy.mjs';
+import {lookupReaderCleanupFailure,requireConfirmedLookupCleanup} from './lookup-cleanup-policy.mjs';
 
 test("unexpected failures before/during/after input all enter app recovery", () => {
   for (const error of ["poco_query_before_input_failed:editableLength=None",
@@ -112,13 +114,13 @@ test("cancel or unconfirmed exit blocks the pre-input transport reattach", async
   }
 });
 
-function realTaskHarness(responses, stopResult = true) {
+function realTaskHarness(responses, stopResult = true, {realFallback = false, taskType = 'alipay_name_query', realSwitch = false} = {}) {
   const source = fs.readFileSync(new URL("./index.mjs", import.meta.url), "utf8");
   const begin = source.indexOf("async function taskAlipayNameLookup(");
   const end = source.indexOf("\nasync function assertAdbDeviceOnline(", begin);
   assert.ok(begin >= 0 && end > begin);
-  const calls = []; const budgets = []; let stops = 0;
-  const dependencies = {collectLookupTrace,isAutomaticLookupResume,
+  const calls = []; const budgets = []; let stops = 0, xmlCalls = 0;
+  const dependencies = {collectLookupTrace,isAutomaticLookupResume,lookupReaderCleanupFailure,requireConfirmedLookupCleanup,
     config: { alipayNameLookupRunnerPath: "synthetic", adbPath: "fake-adb" },
     fileExists: async () => true, assertAdbDeviceOnlineFast: async () => {},
     isPackageInstalled: async () => true, taskEvent: async () => {},
@@ -126,7 +128,7 @@ function realTaskHarness(responses, stopResult = true) {
     isAutomationTaskCancellation: (e) => e.code === "automation_task_cancelled",
     automationTaskCancellationError: () => Object.assign(new Error("cancelled"), { code: "automation_task_cancelled" }),
     screenPriorityCancellationError: () => new Error("screen_control_priority"),
-    restartLookupQueryOnce,
+    restartLookupQueryOnce,isRetryableAlipayPocoStartFailure,
     runXhsAirtestPocoWorker: async (payload, options) => {
       budgets.push(options.timeoutMs); calls.push(payload); const r = responses.shift();
       if (typeof r === "function") return r(payload, options);
@@ -134,16 +136,45 @@ function realTaskHarness(responses, stopResult = true) {
       if (!r) throw new Error("unexpected extra worker call");
       return r;
     },
-    stopAirtestWorker: async () => { stops++; return stopResult; },
+    stopAirtestWorker: async () => { stops++; return typeof stopResult === 'function' ? stopResult() : stopResult; },
     replayAirtestEvents: async () => {},
     classifyAlipayNameLookupFailure: (e) => ({ code: e.includes("human_verification") ? "human_verification" : "failed", message: e }),
-    alipayAccountSwitchReasonFromError: () => "",
-    shouldFallbackAlipayPocoFailure: () => false,
-    ensureXmlUiAutomatorReady: async () => { throw new Error("XML must not run"); }
+    alipayAccountSwitchReasonFromError: realSwitch ? new Function(source.match(/^function alipayAccountSwitchReasonFromError\([^\n]*\) \{[\s\S]*?^\}/m)[0]+';return alipayAccountSwitchReasonFromError;')() : () => "",
+    shouldFallbackAlipayPocoFailure: realFallback ? shouldFallbackAlipayPocoFailure : () => false,
+    ensureXmlUiAutomatorReady: async () => { xmlCalls++; throw new Error("XML must not run"); }
   };
   const fn = new Function(...Object.keys(dependencies), source.slice(begin, end) + "; return taskAlipayNameLookup;")(...Object.values(dependencies));
-  return { run: (signal, payloadPatch = {}) => fn({ type: "alipay_name_query", taskId: "original", adbSerial: "LOCAL",
-    payload: { phoneNumber: "13800138000", ...payloadPatch } }, { signal }), calls, budgets, stops: () => stops };
+  return { run: (signal, payloadPatch = {}) => fn({ type: taskType, taskId: "original", adbSerial: "LOCAL",
+    payload: { phoneNumber: "13800138000", ...payloadPatch } }, { signal }), calls, budgets, stops: () => stops, xmlCalls: () => xmlCalls,
+    takeControl: () => dependencies.screenControlledSerials.add('LOCAL') };
+}
+
+test('192 missing instrumentation dependency never restarts Alipay or falls through to XML',async()=>{
+ const reason='Airtest/Poco worker 已退出：TEST code=1 signal= poco_worker_bootstrap_failed:instrumentation:dependency_missing';
+ const h=realTaskHarness([Error(reason)],true,{realFallback:true});
+ await assert.rejects(h.run(),/dependency_missing/);
+ assert.equal(h.calls.length,1);assert.equal(h.stops(),0);assert.equal(h.xmlCalls(),0);
+ for(const submitted of [false,true]){
+  const r=await restartLookupQueryOnce({operation:'query',error:Error(reason),payload:{},submitted,
+   stopWorker:assert.fail,runWorker:assert.fail,onRecovery:assert.fail});assert.equal(r,null);
+ }
+});
+
+for (const code of ['lookup_reader_cleanup_unconfirmed','lookup_reader_forward_cleanup_unconfirmed',
+  'lookup_old_worker_exit_unconfirmed','lookup_restart_worker_exit_unconfirmed','lookup_prepare_worker_exit_unconfirmed']) {
+  for (const mode of ['plain','code-only','wrapped']) test('real query cleanup fence before XML: '+code+' '+mode,async()=>{
+    const error = mode === 'code-only' ? Object.assign(Error('暂停'),{code})
+      : Error(mode === 'wrapped' ? 'poco_query_resume_failed:'+code : code);
+    const h = realTaskHarness([error], true, {realFallback:true});
+    await assert.rejects(h.run(),e=>{
+      assert.equal(e.diagnostic?.runnerReason,code);
+      assert.equal(e.diagnostic?.retryable,false);
+      return true;
+    });
+    assert.equal(h.calls.length,1);
+    assert.equal(h.xmlCalls(),0);
+    assert.equal(h.stops(),0);
+  });
 }
 
 test("actual Agent function recovers both thrown transport and parsed page errors", async () => {
@@ -159,10 +190,37 @@ test("actual Agent function recovers both thrown transport and parsed page error
     assert.equal(h.calls[2].pageRecoveryStage, "continue_query");
   }
 });
+test("actual Agent pre-input reattach that times out after input observes the original result", async () => {
+  const h = realTaskHarness([
+    {ok:false,error:"poco_query_before_input_failed:ReadTimeout:HTTPConnectionPool read timed out"},
+    {ok:false,error:"poco_query_result_channel_timeout_after_input:ReadTimeout:HTTPConnectionPool read timed out",log:[{step:"input_phone"}]},
+    {ok:true,realNameTailCharacter:"甲",log:[]}
+  ]);
+  const result=await h.run();
+  assert.equal(result.realNameTailCharacter,"甲");
+  assert.deepEqual(h.calls.map(x=>x.operation),["query","query","query_resume"]);
+  assert.equal(h.calls[2].observationOnlyResume,true);
+  assert.equal(h.calls[2].allowEmptyInputRecovery,false);
+  assert.ok(h.calls.every(x=>x.taskId==="original"&&x.phoneNumber==="13800138000"));
+  assert.equal(h.stops(),2);assert.equal(h.xmlCalls(),0);
+});
+
 test("actual Agent recovery failure terminates without another restart or XML", async () => {
   const h = realTaskHarness([{ ok: false, error: "unexpected" }, { ok: false, error: "still_wrong_page" }]);
   await assert.rejects(h.run(), /poco_query_page_recovery_failed/);
   assert.equal(h.calls.length, 2); assert.equal(h.stops(), 1);
+});
+test("actual Agent post-restart continuation also preserves a later input boundary", async () => {
+  const h=realTaskHarness([
+    {ok:false,error:"unexpected_popup"},
+    {ok:true,appRecoveryStage:"app_restarted",log:[]},
+    {ok:false,error:"poco_query_result_channel_timeout_after_input:ReadTimeout",log:[{step:"input_phone"}]},
+    {ok:true,realNameTailCharacter:"甲",log:[]}
+  ]);
+  assert.equal((await h.run()).realNameTailCharacter,"甲");
+  assert.deepEqual(h.calls.map(x=>x.pageRecoveryStage),[undefined,"restart_app","continue_query","reattach_result_only"]);
+  assert.equal(h.calls[3].observationOnlyResume,true);assert.equal(h.calls[3].allowEmptyInputRecovery,false);
+  assert.equal(h.stops(),3);assert.equal(h.xmlCalls(),0);
 });
 test("actual Agent retries tagged preparation once, with the original task and no extra app restart", async () => {
   const h = realTaskHarness([{ ok: false, error: "unexpected_popup" },
@@ -274,7 +332,7 @@ test('read-only reader reattach requires confirmed old worker exit and unchanged
 
 test("actual Agent tagged post-input timeout requires confirmed old worker exit", async () => {
   const h=realTaskHarness([{ok:false,error:"poco_query_result_channel_timeout_after_input:ReadTimeout",log:[{step:"submit_search"}]}],false);
-  await assert.rejects(h.run(),/exit_unconfirmed/);assert.equal(h.calls.length,1);
+  await assert.rejects(h.run(),e=>{assert.equal(e.diagnostic.runnerReason,'lookup_old_worker_exit_unconfirmed');assert.equal(e.diagnostic.retryable,false);return true;});assert.equal(h.calls.length,1);
 });
 
 
@@ -289,4 +347,77 @@ test("real navigation Read timed out casing reattaches before any app restart", 
   assert.equal(h.calls[1].pageRecoveryStage, "reattach_before_input");
   assert.equal(h.calls[1].recoverUnexpectedPage, false);
   assert.equal(h.calls[1].taskId, "original");
+});
+
+test('cleanup code thrown inside app recovery survives wrapping and blocks XML or another input',async()=>{
+ const h=realTaskHarness([Error('unexpected_popup')],()=>{throw Object.assign(Error('paused'),{code:'lookup_reader_cleanup_unconfirmed'});},{realFallback:true});
+ await assert.rejects(h.run(),error=>{assert.equal(error.diagnostic.runnerReason,'lookup_reader_cleanup_unconfirmed');assert.equal(error.diagnostic.retryable,false);return true;});
+ assert.equal(h.calls.length,1);assert.equal(h.stops(),1);assert.equal(h.xmlCalls(),0);
+});
+
+for(const operation of ['query','query_resume','start'])for(const mode of ['false','throw','code-only'])test('cold '+operation+' cannot retry after cleanup '+mode,async()=>{
+ const stop=()=>{if(mode==='throw')throw Error('worker still running');if(mode==='code-only')throw Object.assign(Error('paused'),{code:'lookup_reader_forward_cleanup_unconfirmed'});return false;};
+ const h=realTaskHarness([Error('Airtest/Poco worker 启动超时'),{ok:true,notFound:true}],stop,
+  {realFallback:true,taskType:operation==='start'?'alipay_name_start':'alipay_name_query'});
+ await assert.rejects(h.run(undefined,operation==='query_resume'?{resumeAfterHumanVerification:true}:{}),e=>{
+  assert.equal(e.diagnostic.runnerReason,mode==='code-only'?'lookup_reader_forward_cleanup_unconfirmed':'lookup_reader_cleanup_unconfirmed');
+  assert.equal(e.diagnostic.retryable,false);return true;
+ });
+ assert.equal(h.calls.length,1);assert.equal(h.stops(),1);assert.equal(h.xmlCalls(),0);
+});
+for(const mode of ['false','throw'])test('parsed startup transport failure cannot ignore cleanup '+mode,async()=>{
+ const h=realTaskHarness([{ok:false,error:'poco_rpc_failed:ReadTimeout',log:[]},{ok:true}],
+  ()=>{if(mode==='throw')throw Error('not stopped');return false;},
+  {realFallback:true,taskType:'alipay_name_start'});
+ await assert.rejects(h.run(),e=>{assert.equal(e.diagnostic.runnerReason,'lookup_reader_cleanup_unconfirmed');return true;});
+ assert.equal(h.calls.length,1);assert.equal(h.stops(),1);assert.equal(h.xmlCalls(),0);
+});
+test('cold retry remains possible only after positive cleanup',async()=>{
+ const h=realTaskHarness([Error('Airtest/Poco worker 启动超时'),{ok:true,notFound:true}],true,{realFallback:true});
+ assert.equal((await h.run()).notFound,true);assert.equal(h.calls.length,2);assert.equal(h.stops(),1);
+});
+for(const mode of ['cancel','screen'])test('cold retry rechecks '+mode+' after cleanup',async()=>{
+ const controller=new AbortController();let h;
+ h=realTaskHarness([Error('Airtest/Poco worker 启动超时'),{ok:true}],
+  ()=>{if(mode==='cancel')controller.abort();else h.takeControl();return true;},{realFallback:true});
+ await assert.rejects(h.run(controller.signal),mode==='cancel'?{code:'automation_task_cancelled'}:/screen_control_priority/);
+ assert.equal(h.calls.length,1);assert.equal(h.xmlCalls(),0);
+});
+
+for(const resume of [false,true])for(const code of ['lookup_reader_cleanup_unconfirmed','lookup_reader_forward_cleanup_unconfirmed'])test('result resume wrapper keeps cleanup code resume='+resume+' '+code,async()=>{
+ const error=Object.assign(Error('cleanup paused'),{code});
+ const h=realTaskHarness([{ok:false,error:'poco_query_result_channel_timeout_after_input:ReadTimeout',log:[{step:'submit_search'}]},error],true,{realFallback:true});
+ await assert.rejects(h.run(undefined,resume?{resumeAfterHumanVerification:true}:{}),e=>{
+  assert.equal(e.diagnostic.runnerReason,code);assert.equal(e.diagnostic.retryable,false);return true;
+ });
+ assert.equal(h.calls.length,2);assert.equal(h.stops(),1);assert.equal(h.xmlCalls(),0);
+ assert.equal(h.calls[1].operation,'query_resume');assert.equal(h.calls[1].observationOnlyResume,true);
+});
+for(const resume of [false,true])for(const code of ['automation_task_cancelled','screen_control_priority'])test('result resume wrapper preserves cancellation resume='+resume+' '+code,async()=>{
+ const error=Object.assign(Error('cancelled'),{code});
+ const h=realTaskHarness([{ok:false,error:'poco_query_result_channel_timeout_after_input:ReadTimeout',log:[{step:'submit_search'}]},error],true,{realFallback:true});
+ await assert.rejects(h.run(undefined,resume?{resumeAfterHumanVerification:true}:{}),e=>{assert.equal(e,error);return true;});
+ assert.equal(h.calls.length,2);assert.equal(h.stops(),1);assert.equal(h.xmlCalls(),0);
+});
+
+for(const mode of ['false','throw'])test('legacy account rotation cannot enter XML after cleanup '+mode,async()=>{
+ const h=realTaskHarness([{ok:false,error:'alipay_access_denied_account_switch_required',log:[]}],
+  ()=>{if(mode==='throw')throw Error('still running');return false;},{realFallback:true,realSwitch:true});
+ await assert.rejects(h.run(),e=>{assert.equal(e.diagnostic.runnerReason,'lookup_reader_cleanup_unconfirmed');assert.equal(e.diagnostic.retryable,false);return true;});
+ assert.equal(h.calls.length,1);assert.equal(h.xmlCalls(),0);assert.equal(h.stops(),1);
+});
+test('legacy account rotation enters its existing XML path only after confirmed cleanup',async()=>{
+ const h=realTaskHarness([{ok:false,error:'alipay_access_denied_account_switch_required',log:[]}],true,{realFallback:true,realSwitch:true});
+ await assert.rejects(h.run(),/XML must not run/);assert.equal(h.calls.length,1);assert.equal(h.stops(),1);assert.equal(h.xmlCalls(),1);
+});
+for(const mode of ['cancel','screen'])test('legacy rotation rechecks '+mode+' before XML',async()=>{
+ const controller=new AbortController();let h;
+ h=realTaskHarness([{ok:false,error:'alipay_access_denied_account_switch_required',log:[]}],
+  ()=>{if(mode==='cancel')controller.abort();else h.takeControl();return true;},{realFallback:true,realSwitch:true});
+ await assert.rejects(h.run(controller.signal),mode==='cancel'?{code:'automation_task_cancelled'}:/screen_control_priority/);
+ assert.equal(h.calls.length,1);assert.equal(h.xmlCalls(),0);
+});
+test('managed account protocol still stops on restriction without legacy account rotation',async()=>{
+ const h=realTaskHarness([{ok:false,error:'alipay_access_denied_account_switch_required',log:[]}],assert.fail,{realFallback:true,realSwitch:true});
+ await assert.rejects(h.run(undefined,{accountCooldownProtocol:1}));assert.equal(h.calls.length,1);assert.equal(h.xmlCalls(),0);assert.equal(h.stops(),0);
 });

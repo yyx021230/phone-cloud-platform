@@ -1,0 +1,91 @@
+✔ actual Agent classification enters resumable lifecycle, bypassing image AI and account limits (5.35925ms)
+✔ start saturation pauses new probes on same Agent, without isolating phones; other Agent proceeds (9.188917ms)
+✔ capacity failure preserves original ID through ACK, other warmed phone completes, no permanent exclusion (4.111125ms)
+✔ capacity wait persists restart, expires once and requires new probe; stop never dispatches queued work (3.780916ms)
+✖ exhausted stop resumes paced cleanup, never releases before proof, then accepts next lookup (2.521875ms)
+✖ late cleanup retries pause for live manual control and do not burst after long gap (3.071333ms)
+✖ runtime loss requires exact acknowledged old task and fresh authenticated new runtime report (0.260292ms)
+✖ new runtime preserves original lookup through real stop barrier; late known result wins (2.593208ms)
+✔ result received during runtime grace is preserved and does not trigger duplicate query (2.17875ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 5
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 143.439375
+
+✖ failing tests:
+
+test at server/lookup-recovery-closure.test.mjs:6:1
+✖ exhausted stop resumes paced cleanup, never releases before proof, then accepts next lookup (2.521875ms)
+  AssertionError [ERR_ASSERTION]: old retry2 must not permanently suppress real cleanup
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reprobe-reset/phone-cloud-platform/server/lookup-recovery-closure.test.mjs:12:9)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server/lookup-recovery-closure.test.mjs:23:1
+✖ late cleanup retries pause for live manual control and do not burst after long gap (3.071333ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reprobe-reset/phone-cloud-platform/server/lookup-recovery-closure.test.mjs:28:45)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server/lookup-recovery-closure.test.mjs:42:1
+✖ runtime loss requires exact acknowledged old task and fresh authenticated new runtime report (0.260292ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  undefined !== 't'
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reprobe-reset/phone-cloud-platform/server/lookup-recovery-closure.test.mjs:43:34)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 't',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at server/lookup-recovery-closure.test.mjs:48:1
+✖ new runtime preserves original lookup through real stop barrier; late known result wins (2.593208ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/lookup-reprobe-reset/phone-cloud-platform/server/lookup-recovery-closure.test.mjs:53:45)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

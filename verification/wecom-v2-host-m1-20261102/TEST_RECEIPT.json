@@ -1,0 +1,48 @@
+{
+  "localTime": "2026-11-02T19:34:43.295321+08:00",
+  "baseline": "441a0e7744f77844c70d5aacc0b3159d1d938679",
+  "node": "v25.9.0",
+  "commands": [
+    {
+      "label": "M1",
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "server/wecom-cleanup-v2-host.test.mjs"
+      ],
+      "exitCode": 0,
+      "output": "verification/wecom-v2-host-m1-20261102/M1_OUTPUT.txt",
+      "outputSha256": "6b0fce96e4496f33c47ed4b74bd5c27bb37339c447913648c4ffe0b901af66a8"
+    },
+    {
+      "label": "V1_REGRESSION",
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "server/wecom-physical-cleanup.test.mjs",
+        "windows-agent/src/wecom-cleanup-protocol.test.mjs",
+        "windows-agent/src/wecom-physical-readiness.test.mjs"
+      ],
+      "exitCode": 0,
+      "output": "verification/wecom-v2-host-m1-20261102/V1_REGRESSION_OUTPUT.txt",
+      "outputSha256": "6a9a04f9638b0eca876644999a3721619a101cecd5af2959ad6a938b978eebe4"
+    }
+  ],
+  "scope": "local pure schema/state tests and existing v1 fake regression; no OS attestation/storage/phone/Windows/deployment",
+  "sourceSha256": {
+    "server/wecom-cleanup-v2-host.mjs": "66ba8759717805e248d40cd45ffd79b289a850e3fd337670e8501cb56afbe446",
+    "server/wecom-cleanup-v2-host.test.mjs": "9b3aad87e6c9de2421a8706dc58edd2146405e5ed70ae63724384cbbe5bccab2",
+    "server/wecom-physical-cleanup.mjs": "7fea00c14fcd6df20a30b5492c4c52c244b6dec26bbc5169212d0fcd2e15a07b",
+    "server/wecom-cleanup-service.mjs": "fb594dd7a191bb37f7a2abdf508298059ca4730814f394c491965f0c46c366a0",
+    "windows-agent/src/wecom-cleanup-protocol.mjs": "918dfee2f090e94ad946266d2292fe73d0422a4485e87cdd04cfa522d5dbb9be",
+    "server/wecom-physical-cleanup.test.mjs": "60fe6899946c77151f881ab9d2f443cf4d2eb9c600d8d6c99605baf26e010970",
+    "windows-agent/src/wecom-cleanup-protocol.test.mjs": "2a56944c5100dcb27db9cfb4d5ce8f6f76adba1e1888b52939541c41b929db62",
+    "windows-agent/src/wecom-physical-readiness.test.mjs": "2fd6da27a6df6aa3ef5c2286d453842ef2e4c0968db93942f67d50f6907a1bba"
+  },
+  "syntaxChecks": [
+    "node --check server/wecom-cleanup-v2-host.mjs",
+    "node --check server/wecom-cleanup-v2-host.test.mjs"
+  ]
+}

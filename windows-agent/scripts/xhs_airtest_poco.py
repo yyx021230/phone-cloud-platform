@@ -133,6 +133,26 @@ def start_poco_instrument_once(poco, port, timeout_seconds=12.0, http=None):
             http.close()
 
 
+def verify_poco_service_installed(adb_path, serial):
+    """Read-only dependency check; command failure is not package absence."""
+    package = "com.netease.open.pocoservice"
+    try:
+        existing = run_adb(adb_path, serial, ["shell", "pm", "path", package], timeout=4)
+    except RuntimeError as exc:
+        # Android pm path returns exit 1 with no output for a missing package.
+        # Confirm through an independent successful package-list command;
+        # offline, authorization, timeout and other failures retain their cause.
+        if str(exc) != "adb exited 1":
+            raise
+        listed = run_adb(adb_path, serial, ["shell", "pm", "list", "packages", package], timeout=4)
+        if listed.strip():
+            raise
+        raise RuntimeError("poco_service_not_installed") from None
+    if any(line.startswith("package:") for line in existing.splitlines()):
+        return
+    raise RuntimeError("poco_service_path_unconfirmed")
+
+
 def create_stable_poco(**options):
     import poco.drivers.android.uiautomation as uiautomation
 
@@ -142,9 +162,7 @@ def create_stable_poco(**options):
         def _install_service(self):
             # Production QA is not permission to install or update an APK.
             adb = self.adb_client
-            existing = run_adb(adb.adb_path, adb.serialno, ["shell", "pm", "path", "com.netease.open.pocoservice"], timeout=4)
-            if "package:" not in existing:
-                raise RuntimeError("poco_service_not_installed")
+            verify_poco_service_installed(adb.adb_path, adb.serialno)
             return False
 
         def _start_instrument(self, port_to_ping, force_restart=False):
@@ -2252,11 +2270,13 @@ def reader_bootstrap_stage(stage, action):
         return action()
     except Exception as exc:
         text = str(exc).lower()
-        if isinstance(exc, subprocess.TimeoutExpired) or "timed out" in text:
+        if text == "poco_service_not_installed":
+            cause = "dependency_missing"
+        elif isinstance(exc, subprocess.TimeoutExpired) or "timed out" in text:
             cause = "timeout"
         elif any(token in text for token in ("offline", "not found", "unauthorized")):
             cause = "device_unavailable"
-        elif isinstance(exc, subprocess.CalledProcessError):
+        elif isinstance(exc, subprocess.CalledProcessError) or text.startswith("adb exited "):
             cause = "command_failed"
         elif "connection" in text:
             cause = "connection_failed"
@@ -2293,9 +2313,9 @@ def run_worker(serial, adb_path):
     try:
         instrumentation_started_at = time.perf_counter()
         try:
-            poco = create_stable_poco(
+            poco = reader_bootstrap_stage("instrumentation", lambda: create_stable_poco(
                 use_airtest_input=True, screenshot_each_action=False, force_restart=True,
-            )
+            ))
         except Exception as exc:
             instrumentation_ms = int((time.perf_counter() - instrumentation_started_at) * 1000)
             raise RuntimeError(
@@ -2303,7 +2323,7 @@ def run_worker(serial, adb_path):
             ) from exc
         instrumentation_ms = int((time.perf_counter() - instrumentation_started_at) * 1000)
         try:
-            transport_probe_ms = verify_poco_transport_ready(poco)
+            transport_probe_ms = reader_bootstrap_stage("transport_probe", lambda: verify_poco_transport_ready(poco))
         except Exception as exc:
             raise RuntimeError(
                 f"poco_worker_transport_probe_failed:instrumentationMs={instrumentation_ms}:{exc}"

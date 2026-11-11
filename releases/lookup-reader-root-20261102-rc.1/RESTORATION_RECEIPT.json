@@ -1,0 +1,27 @@
+{
+  "at": "2026-11-02T01:42:27.220422+00:00",
+  "restored": [
+    149,
+    152
+  ],
+  "originalEnabledRestored": true,
+  "beforeRevision": 162,
+  "afterRevision": 163,
+  "otherConfigUnchanged": true,
+  "newWhitelist": [
+    {
+      "deviceNumber": 117,
+      "enabled": true
+    },
+    {
+      "deviceNumber": 119,
+      "enabled": true
+    },
+    {
+      "deviceNumber": 120,
+      "enabled": true
+    }
+  ],
+  "cleanupConfirmed": true,
+  "ownedControlSessionsReleased": true
+}

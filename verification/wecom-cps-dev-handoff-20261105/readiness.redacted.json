@@ -1,0 +1,237 @@
+{
+  "docSignatureVector": "passed",
+  "requests": [
+    {
+      "name": "LAN-bound health",
+      "request": {
+        "url": "http://192.168.10.119:8797/healthz",
+        "method": "GET",
+        "body": null
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "result": null,
+          "timestamp": 1793848581891,
+          "ok": true
+        }
+      }
+    },
+    {
+      "name": "signed devices via LAN address",
+      "request": {
+        "url": "http://192.168.10.119:8797/api/v1/lead/devices/query",
+        "method": "POST",
+        "body": {
+          "online_only": false,
+          "app_id": "cps_local_dev_20261105",
+          "timestamp": 1793848581891,
+          "nonce": "35f989a7366e83955458fc92",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "result": {
+            "devices": [
+              {
+                "device_number": "200",
+                "device_name": "200号本地测试手机",
+                "online": true,
+                "adb_online": true,
+                "agent_online": true,
+                "listed": true,
+                "busy": false,
+                "busy_reason": "",
+                "occupancy": null,
+                "accounts": [
+                  {
+                    "app_slot": "main",
+                    "binding_verified": true,
+                    "enabled": true,
+                    "wecom_phone": "17508437040",
+                    "available": true,
+                    "unavailable_reason": ""
+                  }
+                ],
+                "available": true,
+                "unavailable_reason": "",
+                "last_seen_at": "2026-11-05T03:16:21.989Z",
+                "adb_last_seen_at": "2026-11-05T03:16:21.989Z"
+              },
+              {
+                "device_number": "202",
+                "device_name": "202号本地测试手机",
+                "online": true,
+                "adb_online": true,
+                "agent_online": true,
+                "listed": true,
+                "busy": false,
+                "busy_reason": "",
+                "occupancy": null,
+                "accounts": [
+                  {
+                    "app_slot": "main",
+                    "binding_verified": true,
+                    "enabled": true,
+                    "wecom_phone": "13067238489",
+                    "available": true,
+                    "unavailable_reason": ""
+                  }
+                ],
+                "available": true,
+                "unavailable_reason": "",
+                "last_seen_at": "2026-11-05T03:16:21.989Z",
+                "adb_last_seen_at": "2026-11-05T03:16:21.989Z"
+              }
+            ],
+            "total": 2,
+            "updated_at": "2026-11-05T03:16:21.989Z",
+            "capacity": {
+              "limit": 2,
+              "active": 0,
+              "remaining": 2
+            }
+          },
+          "timestamp": 1793848581989,
+          "success": true,
+          "code": 200,
+          "message": "查询成功"
+        }
+      }
+    },
+    {
+      "name": "same nonce rejected",
+      "request": {
+        "url": "http://192.168.10.119:8797/api/v1/lead/devices/query",
+        "method": "POST",
+        "body": {
+          "online_only": false,
+          "app_id": "cps_local_dev_20261105",
+          "timestamp": 1793848581891,
+          "nonce": "35f989a7366e83955458fc92",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "status": 401,
+        "body": {
+          "result": null,
+          "timestamp": 1793848581990,
+          "success": false,
+          "code": 1003,
+          "message": "nonce重复"
+        }
+      }
+    },
+    {
+      "name": "invalid signature rejected",
+      "request": {
+        "url": "http://192.168.10.119:8797/api/v1/lead/devices/query",
+        "method": "POST",
+        "body": {
+          "online_only": false,
+          "app_id": "cps_local_dev_20261105",
+          "timestamp": 1793848581991,
+          "nonce": "16dbcda944def93a1d335703",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "status": 401,
+        "body": {
+          "result": null,
+          "timestamp": 1793848581991,
+          "success": false,
+          "code": 1001,
+          "message": "签名验证失败"
+        }
+      }
+    },
+    {
+      "name": "test customer allowlist rejects before admission",
+      "request": {
+        "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+        "method": "POST",
+        "body": {
+          "lead_id": 61104901,
+          "phone": "139****0001",
+          "wecom_phone": "17508437040",
+          "wecom_corp_id": "local_test_corp",
+          "wecom_userid": "local_test_member_200",
+          "app_id": "cps_local_dev_20261105",
+          "timestamp": 1793848581991,
+          "nonce": "4d33f60f37df594b479778e3",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "result": null,
+          "timestamp": 1793848581992,
+          "success": false,
+          "code": 2003,
+          "message": "本地联调仅允许本轮已授权测试客户号码"
+        }
+      }
+    },
+    {
+      "name": "unmapped executing account rejected",
+      "request": {
+        "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+        "method": "POST",
+        "body": {
+          "lead_id": 61104901,
+          "phone": "136****6441",
+          "wecom_phone": "13900000000",
+          "wecom_corp_id": "local_test_corp",
+          "wecom_userid": "local_test_member_200",
+          "app_id": "cps_local_dev_20261105",
+          "timestamp": 1793848581992,
+          "nonce": "de3fbaae23be6e3d4368b205",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": {
+          "result": null,
+          "timestamp": 1793848582004,
+          "success": false,
+          "code": 2003,
+          "message": "指定企微成员未配置手机与主号/分身映射"
+        }
+      }
+    },
+    {
+      "name": "wrong content type rejected",
+      "request": {
+        "url": "http://192.168.10.119:8797/api/v1/lead/devices/query",
+        "method": "POST",
+        "body": {
+          "online_only": false,
+          "app_id": "cps_local_dev_20261105",
+          "timestamp": 1793848582005,
+          "nonce": "d2bc5e94d61771c3354dd14e",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "status": 415,
+        "body": {
+          "result": null,
+          "timestamp": 1793848582006,
+          "success": false,
+          "code": 2003,
+          "message": "Content-Type必须为application/json"
+        }
+      }
+    }
+  ],
+  "nativeStarts": 0,
+  "admittedLeads": 0,
+  "executionMode": "preview",
+  "otherComputerConnectivity": "not verified"
+}

@@ -1,0 +1,6 @@
+{
+  "verification/wecom-single-device-20261103-rc2/runner.stderr": "03959367f852d05558676cb2e6ef61e72ac77d33a2294a1462b4950f8b2cc3be",
+  "verification/wecom-single-device-20261103-rc2/TASK.json": "35619a5d993e6ad724b358141b4e321ae6d31a6f766c695becfdbf7b6010e291",
+  "verification/wecom-single-device-20261103-rc2/runner.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "verification/wecom-single-device-20261103-rc2/SOURCE_HASHES.json": "8c5e3e05f4e576688843fcb5774dc28a0682709009079efabdad8df7c2731143"
+}

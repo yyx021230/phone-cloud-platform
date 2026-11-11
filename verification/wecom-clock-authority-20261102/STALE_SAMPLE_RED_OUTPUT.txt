@@ -1,0 +1,141 @@
+✖ one observation and issue cannot authorize repeated decisions without new samples (1.383875ms)
+✖ proof gate with no fresh sample refuses instead of reading its last snapshot (0.096416ms)
+✖ pause first arrives through proof decision, without prior background observation (0.08775ms)
+✖ pause first arrives through task decision and invalidates all outstanding tasks (0.103042ms)
+✖ a proof sample is consumed once and its sequence cannot be replayed (0.091583ms)
+✖ healthy task decisions require fresh samples every time, including the second action (0.075833ms)
+✖ new budget issuance also refuses to reuse the last observation (0.059625ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 0
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 68.953917
+
+✖ failing tests:
+
+test at verification/wecom-clock-authority-20261102/decision-freshness.test.mjs:13:1
+✖ one observation and issue cannot authorize repeated decisions without new samples (1.383875ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-clock-authority-20261102/decision-freshness.test.mjs:15:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /sample_invalid/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at verification/wecom-clock-authority-20261102/decision-freshness.test.mjs:19:1
+✖ proof gate with no fresh sample refuses instead of reading its last snapshot (0.096416ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-clock-authority-20261102/decision-freshness.test.mjs:21:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /sample_invalid/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at verification/wecom-clock-authority-20261102/decision-freshness.test.mjs:23:1
+✖ pause first arrives through proof decision, without prior background observation (0.08775ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-clock-authority-20261102/decision-freshness.test.mjs:25:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /os_pause_observed/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at verification/wecom-clock-authority-20261102/decision-freshness.test.mjs:27:1
+✖ pause first arrives through task decision and invalidates all outstanding tasks (0.103042ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-clock-authority-20261102/decision-freshness.test.mjs:29:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /os_pause_observed/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at verification/wecom-clock-authority-20261102/decision-freshness.test.mjs:33:1
+✖ a proof sample is consumed once and its sequence cannot be replayed (0.091583ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-clock-authority-20261102/decision-freshness.test.mjs:36:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /sample_sequence_changed/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at verification/wecom-clock-authority-20261102/decision-freshness.test.mjs:38:1
+✖ healthy task decisions require fresh samples every time, including the second action (0.075833ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-clock-authority-20261102/decision-freshness.test.mjs:41:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /sample_sequence_changed/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at verification/wecom-clock-authority-20261102/decision-freshness.test.mjs:44:1
+✖ new budget issuance also refuses to reuse the last observation (0.059625ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-clock-authority-20261102/decision-freshness.test.mjs:46:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /sample_invalid/,
+    operator: 'throws',
+    diff: 'simple'
+  }

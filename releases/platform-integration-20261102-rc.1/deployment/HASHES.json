@@ -1,0 +1,11 @@
+{
+  "CRITICAL_BACKUP.json": "52f78c3b09416d475c16850bc87f2073b277bfb3a33d79b6b88cbe40547f5f24",
+  "prepare-agent.ps1": "c873212afecf9039756c79270e61861173c336bfe0c90b2523e5ca1dce6b0d92",
+  "CUTOVER_REVIEW.json": "91bd596525bbd219a17d31375236ff77ce225e7cc1ad07d781ef41f2fcea1b66",
+  "phase1-pause-stop.py": "a8aa2f2b26e7b7a131d0f37ac016f5783af21814247146ebe464e4ede2a239cc",
+  "agent-release-common.ps1": "49ba93b58358a7adae370534877d9a104c8767e5a9a74a44c02c6e3bd51c5957",
+  "pause-and-stop.mjs": "0847552228fd99752565d1e335622e920fbf75d183d5df4b694e4d958db9daaa",
+  "activate-agent.ps1": "893bfbce860cc691e8bd15c6df63836a5fa358b3bc07e31ee4c94275c44b13c9",
+  "AGENT_MANIFEST.json": "7ad822bbf45b2d2b71bc9f491b7e61bcdf01ecc2625adb457a03b8c0f463a06d",
+  "PREPARE_STDOUT.json": "91593a3c2ee4eb773e18c7d89ae14c84ade866f2034a83ad623e33e4fcb35a5a"
+}

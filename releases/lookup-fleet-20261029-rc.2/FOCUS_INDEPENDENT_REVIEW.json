@@ -1,0 +1,13 @@
+{
+  "result": "passed",
+  "independentPythonTests": 31,
+  "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v test_lookup_navigation_focus_transition test_lookup_cold_restriction test_lookup_prepare_technical_recovery",
+  "sourceHashes": {
+    "windows-agent/scripts/alipay_name_lookup.py": "8c60bb140a4e2bcf07ee29ccd85591b210f20365dc6638cd3f62451444fd4a63",
+    "windows-agent/scripts/test_lookup_navigation_focus_transition.py": "1cf3eb2ed196438490949608ced9dd8ad652e8887a6abc58420535a25c079000"
+  },
+  "logSha256": "3828d293c2459ef37a9290ea8dc2832e81034c5e77624716566a986816c1ad37",
+  "newRealDeviceCommands": 0,
+  "historical130181Cause": "unproven",
+  "review": "new narrow caller settle observation; max8 calls, monotonic2s budget, per-read<=0.5s, recovery disabled, no actions, original Home/XML/account/captcha guards retained"
+}

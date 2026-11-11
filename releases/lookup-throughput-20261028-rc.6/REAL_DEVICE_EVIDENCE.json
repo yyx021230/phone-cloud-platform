@@ -1,0 +1,99 @@
+{
+  "at": "2026-10-29T04:16:32.477Z",
+  "devices": [
+    "51",
+    "52"
+  ],
+  "ready": false,
+  "stopped": true,
+  "tasks": [
+    {
+      "device": "52",
+      "type": "alipay_name_start",
+      "purpose": "account_preparation",
+      "startedAt": "2026-10-29T04:16:33.393Z",
+      "endedAt": "2026-10-29T04:18:14.207Z",
+      "status": "succeeded",
+      "code": null
+    },
+    {
+      "device": "51",
+      "type": "alipay_name_start",
+      "purpose": "account_preparation",
+      "startedAt": "2026-10-29T04:16:33.895Z",
+      "endedAt": "2026-10-29T04:18:13.075Z",
+      "status": "succeeded",
+      "code": null
+    },
+    {
+      "device": "51",
+      "type": "alipay_name_query",
+      "purpose": "probe",
+      "startedAt": "2026-10-29T04:18:13.138Z",
+      "endedAt": "2026-10-29T04:19:38.469Z",
+      "status": "failed",
+      "code": "alipay_human_verification_required"
+    },
+    {
+      "device": "52",
+      "type": "alipay_name_query",
+      "purpose": "probe",
+      "startedAt": "2026-10-29T04:18:14.647Z",
+      "endedAt": "2026-10-29T04:19:00.297Z",
+      "status": "failed",
+      "code": "alipay_human_verification_required"
+    },
+    {
+      "device": "52",
+      "type": "alipay_name_stop",
+      "purpose": "cleanup",
+      "startedAt": "2026-10-29T04:19:02.716Z",
+      "endedAt": "2026-10-29T04:19:12.294Z",
+      "status": "succeeded",
+      "code": null
+    },
+    {
+      "device": "51",
+      "type": "alipay_name_stop",
+      "purpose": "cleanup",
+      "startedAt": "2026-10-29T04:19:38.475Z",
+      "endedAt": "2026-10-29T04:19:48.121Z",
+      "status": "succeeded",
+      "code": null
+    }
+  ],
+  "stopSummary": {
+    "sessions": [
+      {
+        "status": "ended",
+        "proofConfirmed": true,
+        "hasTaskId": true,
+        "matchingSession": true,
+        "matchingGeneration": true
+      },
+      {
+        "status": "ended",
+        "proofConfirmed": true,
+        "hasTaskId": true,
+        "matchingSession": true,
+        "matchingGeneration": true
+      }
+    ],
+    "channelCount": 0,
+    "businessCount": 0
+  },
+  "rawReceiptSha256": "9bcae4977d65958ed9f7ade46744196708c84a9a04999cf91abc35ac33b4e66b",
+  "runtimeSourceHashes": {
+    "windows-agent/src/index.mjs": "5707a55f68ac56a3e0d48339b67c71c87314d095e9544170a3bce9839930a1b7",
+    "server/index.mjs": "2ddd0e0d410528bb0d800dea1a4190f8de8cbda6e0a98648c3fb4a9ac1b6a891",
+    "server/managed-lookup.mjs": "c58747a82c750aa7ab643e84ca7028475ed4b9d797dc1542b96cb495f37ad3c0",
+    "server/managed-lookup-platform.mjs": "2340aac9014ed006ab39a29dcbe0259d53b47fb68c3227d398f5979122439ec7",
+    "server/lookup-stop-proof.mjs": "f36587d11613679ff013b2aa071d552a8719851ee80890b45e685b5884ae6a18"
+  },
+  "finalAgentDifference": "One added pre-cleanup cancelled-signal guard; local regression only",
+  "leasesReleased": [
+    51,
+    52
+  ],
+  "nativeProcessesAfter": 0
+}

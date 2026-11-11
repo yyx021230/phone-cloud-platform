@@ -1,0 +1,14 @@
+{
+  "targets": 100,
+  "physicalDevices": 66,
+  "clientId": "operations",
+  "platformUser": "xhs_batch_service",
+  "accountCreated": false,
+  "scheduleEnabled": false,
+  "configMode": "0600",
+  "configUid": 1000,
+  "onlyNewService": "xhs-batch",
+  "existingServiceDefinitionsPreserved": true,
+  "privateConfigSha256": "63080a080c81b11658a2a65c1b478f5bcfc6e1072a8b72f31bded8a33d7088e0",
+  "batchComposeSha256": "761950db9b1460867e93788f86c8f006092170ebe372a625643e9aa50fd3f78d"
+}

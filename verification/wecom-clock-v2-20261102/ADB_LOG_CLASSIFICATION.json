@@ -1,0 +1,30 @@
+{
+  "state": "existing_log_text_classified_not_execution_evidence",
+  "windowUtc": "2026-11-02T07:12:00Z..07:15:59Z",
+  "killServerSuggestionMatches": 19,
+  "allKillMatchesContainTryAdbKillServer": true,
+  "serverVersionMismatchMatches": 0,
+  "structuredRecoveryEventMatches": 0,
+  "firstKillSuggestionAt": "2026-11-02T07:13:11.193Z",
+  "lastKillSuggestionAt": "2026-11-02T07:13:16.836Z",
+  "phraseCounts": {
+    "socket": 6,
+    "unauthorized": 103,
+    "kill-server": 19,
+    "daemon not running": 5
+  },
+  "privateEvidenceSha256": {
+    "ADB_EVENT_EXISTING_LOG.json": "7a37994a86b7d8ea41cb029a5e18b435ef1b258335be5d6b7e65401d54e704ee",
+    "ADB_EVENT_TECHNICAL_PHRASES.json": "88b2ae3a4dc6977b11e555c3e3739b05cd5f0de6165d166355650f987c6d2df1",
+    "ADB_EVENT_TECHNICAL_PHRASES_EXTENDED.json": "04c26239780c463bb1d7d7568bd77b6a87bc96bc5f3f8ccb2eb5e1eee1f4a1fa",
+    "ADB_KILL_TEXT_CLASSIFICATION.json": "c93d7ceaabca07eadecc4ce1d0f0907a0eb982bbf4c705186efb2cb3d9ab394e"
+  },
+  "adbClientCalls": 0,
+  "phoneActions": 0,
+  "limitations": [
+    "Text advice is not a command execution record.",
+    "Bounded existing Agent log only; no claim about all Windows logs.",
+    "No exact parent command lineage recovered by this owner.",
+    "Unrelated to establishing the unique cause of earlier 43 host failure."
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "status": "prepared_not_activated",
+  "sourceCommit": "f2e8bf7689d044dd088af6359eb03439507e01d8",
+  "imageTag": "phone-cloud-platform:wecom-preview-20261028-rc2",
+  "imageId": "sha256:8abefc2f1d6217704ebf3ea43e621000d5fc5e554fbed9e87f249fb1726e62ee",
+  "previousImage": "sha256:fca45ec32e72b0787e4375fd6812a5ac97d3aebec4b830b6393b03117554b45e",
+  "atUtc": "2026-10-28T05:57:28Z",
+  "media": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "cloudFiles": {
+    "server/index.mjs": {
+      "before": "999bef9821e57ec9729f14ca5d8bb19ec2099f8ab6c0d64f445d9cd2433218da",
+      "after": "4c018404102c65801a04ec4aba181678d7e52161bf591ebcbbc44f68e32e3436"
+    },
+    "server/automation-center.mjs": {
+      "before": "49cc414f4b6dd1edf550d94140b32f46f98493a2db0bf9781660cdcd323a6344",
+      "after": "e1d7e001bfe42582bacf2366f89ddda4df2c7cdb0fa306996c96a15e3bd97d9d"
+    },
+    "server/wecom-preview.mjs": {
+      "before": null,
+      "after": "02f57813db413cdd4b694afbb814681256e1f63f1970be306492bad90c4b4820"
+    },
+    "server/wecom-preview-devices.json": {
+      "before": null,
+      "after": "13a9bb4004cfbbd22153a2944d822eba888473055ed525a2e2db91659b424159"
+    },
+    "public/index.html": {
+      "before": "185aded6485a64a9f905389b09c8cc18530540a5a01691e8305c5728333bd7ee",
+      "after": "123a85de9e915b33aac58ef6d7cacbe36b541a61217b3c866a996c86812aa757"
+    },
+    "public/wecom-preview.html": {
+      "before": null,
+      "after": "c7890db70517a635224046c289eb096e5f05b407a35236415b5b22d68850da96"
+    },
+    "public/wecom-preview.js": {
+      "before": null,
+      "after": "650bd1c61121a6a06bde09e4597c36a258ae8e3265e434f243ade04604352cf2"
+    },
+    "public/wecom-preview.css": {
+      "before": null,
+      "after": "1238557a85819a9fe7c160e62bc9ec38fac7e1afbe99226a79b81c07c381e4c8"
+    },
+    "public/wecom-preview-api.md": {
+      "before": null,
+      "after": "88126a769738c85d61d3d104af2bbb8a20a07c9e3c02f37cfb0d597ab1cd2d81"
+    }
+  },
+  "composeOnlyImageChanged": true,
+  "databaseBytes": 2912219144,
+  "databaseSha256": "60c6495e5d60b18b4e65a9b6586c01d7b5e5fb5459e74eec59dfdaa5e496cbb9",
+  "databaseFullDecode": true,
+  "fullDatabaseRestoreRehearsed": false,
+  "previousImageArchiveBytes": 87394084,
+  "previousImageArchiveSha256": "fed232bdddf11527e6576ee4c383701e129f1fcf16cc14840f30a23125dea6f3",
+  "activeBeforeSha256": "0331c108d9ffd150ecc3118ff984ff1fc2edbd24f5c99454e56ccc8d539e51e8",
+  "serviceReloaded": false,
+  "agentReloaded": false,
+  "adbChanged": false
+}

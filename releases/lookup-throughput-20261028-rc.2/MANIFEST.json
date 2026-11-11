@@ -1,0 +1,37 @@
+{
+  "version": "lookup-throughput-20261028-rc.2",
+  "status": "candidate-not-deployed",
+  "baseCommit": "b4894e6ebdc182b09884bea9ec6be195703812a9",
+  "productionSource": "baca5721214658b46f24c974c9147490b0bafada",
+  "productionImage": "sha256:fca45ec32e72b0787e4375fd6812a5ac97d3aebec4b830b6393b03117554b45e",
+  "sharedWorkflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "files": {
+    "windows-agent/scripts/alipay_name_lookup.py": "081bad2c6ebe4aab2c0f30d167c06edcd559982e041a01dc0e830470382edbff",
+    "windows-agent/scripts/lookup_home_modal.py": "17955787340edbc8558269199812ffa93b8fda5ec61ecee65e90b0dc3a8bce84",
+    "windows-agent/scripts/test_lookup_account_usb_overlay.py": "8759991a216ea78e6c627f0a654555672b26c9adc00faadb126beec59a2e389d",
+    "windows-agent/scripts/test_lookup_fresh_xml.py": "f9856f085f97f58fa13613595f803a5c4b20dccf8f028d22eeb7bffdd99c40d6",
+    "windows-agent/scripts/test_lookup_home_modal.py": "c4cb918b12ce66c93363c98d35c113f12d7eccf153ec2e488fc8191c2d237d0a",
+    "windows-agent/scripts/test_lookup_vivo_systemui_usb.py": "e76458b58ca3f7bc130dc805638cc7faaf7efeff9fb1a0b9f54083e793482538",
+    "windows-agent/src/index.mjs": "e2af9d58500a3b1e61b33a21d6bdcdaa528521f6238bfafac3fb708a0961e5e0",
+    "windows-agent/src/lookup-xml-failure.mjs": "2e6097bbe3aa23c433e68d8bdb414137a1a12fa349447364de90dbb13a852539",
+    "windows-agent/src/lookup-xml-failure.test.mjs": "398e81ecba4e282fe5d50b89053826d16c6616c89ed4d795fa4e3ba090150231",
+    "docs/PROJECT_DEVELOPMENT.md": "8886529a14769c77bcc121932ab083fc697bb98556666685e4e8dc5786a5ff47",
+    "releases/lookup-throughput-20261028-rc.2/README.md": "13f9b8e78643415c278a3e74e8b65087b0cde513528592a5368c2f0820f253b9",
+    "releases/lookup-throughput-20261028-rc.2/DEVICE_EVIDENCE.json": "57abd4e667864f3018ed4a1ecf549ebc3b66b6b367aeaaaaa633df54e936896e"
+  },
+  "tests": {
+    "pythonComplete": 1171,
+    "agentSerial": 497,
+    "screenClientServer": 114
+  },
+  "productionAcceptanceComplete": false,
+  "liveScope": "idle phones 153/157/164 account navigation; no business query/prepare/stop API calls",
+  "notVerified": [
+    "full external API chain for this combination",
+    "initial Poco/RPC/ADB-probe timeout root cause",
+    "new Postgres integration",
+    "10-device throughput and paired speed comparison",
+    "archived admin detail retrieval",
+    "media host live verification"
+  ]
+}

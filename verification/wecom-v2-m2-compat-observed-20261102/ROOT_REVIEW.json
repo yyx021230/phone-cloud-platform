@@ -1,0 +1,68 @@
+{
+  "runnerCommit": "23d781d353acd9ea12b69366546c2cc7de0f40f3",
+  "artifactRoot": "/private/tmp/pc-wecom-v2-compat-pg-w57mcq87",
+  "startedAtUtc": "2026-11-02T14:38:07.198080+00:00",
+  "actualM2Cases": 14,
+  "m2TapPass": 14,
+  "m2TapFail": 0,
+  "actualClaimedCases": 2,
+  "claimedTapPass": 2,
+  "claimedTapFail": 0,
+  "claimedEvidence": [
+    {
+      "name": "claimed-main",
+      "dataMode": "preview",
+      "hostRevision": 1,
+      "closedRevision": 2,
+      "originalClaimDataPreserved": true,
+      "m3ReconciledAfterBoth": true,
+      "protocolPermit": false,
+      "syntheticHostFactsNotOsAttestation": true
+    },
+    {
+      "name": "claimed-clone",
+      "dataMode": "send",
+      "hostRevision": 1,
+      "closedRevision": 2,
+      "originalClaimDataPreserved": true,
+      "m3ReconciledAfterBoth": true,
+      "protocolPermit": false,
+      "syntheticHostFactsNotOsAttestation": true
+    }
+  ],
+  "sourceAfterMatched": true,
+  "m2NodeCleanup": {
+    "started": true,
+    "pid": 49655,
+    "exitCode": 0,
+    "groupAbsent": true
+  },
+  "claimedNodeCleanup": {
+    "started": true,
+    "pid": 49679,
+    "exitCode": 0,
+    "groupAbsent": true
+  },
+  "postgresCleanup": {
+    "pid": 49643,
+    "exitCode": 0,
+    "confirmed": true
+  },
+  "successDbRemoved": true,
+  "oldFailedDbRetained": true,
+  "noActiveOwnedCluster": true,
+  "originalArtifacts": {
+    "fixture.json": "6dc18d5e4568a6dc900549c5aa7447549c62d7542579e6619fee0a2fcdb29de5",
+    "POSTGRES.txt": "5ee106dfd9afc54e534aeb13ed9755c5198e9a4b23ee9cdc5652aee2d0d984ad",
+    "PG_EVIDENCE.json": "287ed6f336c79dd7c82a3fda9fb5193d89912207b11f72cffb65cde249e94551",
+    "CLAIMED_EVIDENCE.json": "1df85b4e690d2af47fc8023f75edbfd24e37541003df9f68134673921bc32757",
+    "CREATEDB.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "INITDB.txt": "9f5638effe8b819ef423866da201f45d78da993f4d9d202822a4bcecfba4cefa",
+    "NODE_TEST_OUTPUT.txt": "7517b10cd4ec0bf885d6fa2848be89cea2251a1a5da36f817722554b28bc3dd5",
+    "NODE_CLAIMED_OUTPUT.txt": "7311df220d1d18c66cd5a2ec55c8368a4400fd7dca17325104c8aab73fd05188",
+    "RUN_RECEIPT.json": "6aa4f3f2a2fb7550ff02645a501578a0d430605a702214d6e356308663ee3c38"
+  },
+  "syntheticHostFactsOnly": true,
+  "phoneAcceptance": false,
+  "productionChanged": false
+}

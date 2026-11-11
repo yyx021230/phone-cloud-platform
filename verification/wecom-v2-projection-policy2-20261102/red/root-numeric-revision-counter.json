@@ -1,0 +1,15 @@
+{
+  "case": "numeric_mapping_revision_violates_normalized_string_schema",
+  "actual": {
+    "targetIndex": 0,
+    "decision": "retain_canonical",
+    "reason": "protected_projection",
+    "writePermit": false,
+    "protocolPermit": false,
+    "releaseAllowed": false,
+    "retainExistingObligations": true,
+    "canonicalSourceVerified": false,
+    "liveChecksRequired": true
+  },
+  "expectedDecision": "reject_target"
+}

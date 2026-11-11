@@ -1,0 +1,195 @@
+{
+  "at": "2026-11-04T05:59:46.677Z",
+  "tasks": [
+    {
+      "task_id": "6cc5be6a-d435-4cc0-9713-ace893740154",
+      "status": "queued",
+      "type": "screen_gallery_import"
+    },
+    {
+      "task_id": "9dbf0e77-2ba5-4067-88e6-43bafac00c3f",
+      "status": "queued",
+      "type": "alipay_name_query"
+    },
+    {
+      "task_id": "0f846d70-187d-48ee-ab9c-6a9ed3de4b2d",
+      "status": "queued",
+      "type": "alipay_name_query"
+    },
+    {
+      "task_id": "18b35b03-5652-4cef-8f67-aa9b4dd275d7",
+      "status": "queued",
+      "type": "alipay_name_query"
+    },
+    {
+      "task_id": "cab8418b-a120-48aa-b84d-4161eb4c5add",
+      "status": "queued",
+      "type": "alipay_name_query"
+    },
+    {
+      "task_id": "6ff35e7b-41a1-4771-bca7-95710b2a506d",
+      "status": "queued",
+      "type": "alipay_name_query"
+    },
+    {
+      "task_id": "a1a9f6f3-73bb-4537-8a35-32b74e31dc79",
+      "status": "running",
+      "type": "sms_sync_now"
+    },
+    {
+      "task_id": "69b00bbf-c4a4-40bf-9448-3a33040d8ac4",
+      "status": "running",
+      "type": "sms_sync_now"
+    },
+    {
+      "task_id": "74b133f4-e231-4cc2-a395-5a9e13327add",
+      "status": "running",
+      "type": "screen_gallery_import"
+    },
+    {
+      "task_id": "954a9dad-603e-4a3f-a9b0-239d6dbeebbb",
+      "status": "running",
+      "type": "screen_gallery_import"
+    },
+    {
+      "task_id": "c844d367-2b74-44dd-8040-da0d374385d5",
+      "status": "running",
+      "type": "sms_sync_now"
+    },
+    {
+      "task_id": "6ba6ae65-5deb-42b2-9fab-0846d6046586",
+      "status": "running",
+      "type": "sms_sync_now"
+    },
+    {
+      "task_id": "aa1cc35b-039b-4680-b335-cc0dcf2bb8a7",
+      "status": "running",
+      "type": "alipay_name_start"
+    },
+    {
+      "task_id": "faa50e0b-4a70-4377-a82f-a5627a61ad36",
+      "status": "running",
+      "type": "alipay_name_stop"
+    }
+  ],
+  "occupied": [
+    {
+      "number": "74",
+      "type": "screen_control",
+      "label": "实时控制"
+    },
+    {
+      "number": "82",
+      "type": "screen_control",
+      "label": "实时控制"
+    },
+    {
+      "number": "172",
+      "type": "alipay_name_lookup",
+      "label": "支付宝查名字"
+    },
+    {
+      "number": "163",
+      "type": "screen_control",
+      "label": "实时控制"
+    },
+    {
+      "number": "116",
+      "type": "alipay_name_lookup",
+      "label": "支付宝查名字"
+    },
+    {
+      "number": "117",
+      "type": "alipay_name_lookup",
+      "label": "支付宝查名字"
+    },
+    {
+      "number": "101",
+      "type": "alipay_name_lookup",
+      "label": "支付宝查名字"
+    },
+    {
+      "number": "159",
+      "type": "screen_control",
+      "label": "实时控制"
+    },
+    {
+      "number": "161",
+      "type": "alipay_name_lookup",
+      "label": "支付宝查名字"
+    },
+    {
+      "number": "138",
+      "type": "alipay_name_lookup",
+      "label": "支付宝查名字"
+    },
+    {
+      "number": "176",
+      "type": "alipay_name_lookup",
+      "label": "支付宝查名字"
+    },
+    {
+      "number": "128",
+      "type": "alipay_name_lookup",
+      "label": "支付宝查名字"
+    },
+    {
+      "number": "91",
+      "type": "screen_control",
+      "label": "实时控制"
+    },
+    {
+      "number": "60",
+      "type": "alipay_name_lookup",
+      "label": "支付宝查名字"
+    }
+  ],
+  "pool": {
+    "enabled": true,
+    "revision": 187,
+    "counts": {
+      "registered": 51,
+      "executing": 2,
+      "waitingHuman": 2,
+      "queued": 0
+    }
+  },
+  "agent": [
+    {
+      "agentId": "win-bf-202605262318-20260727",
+      "lastSeenAt": "2026-11-04T05:59:43.194Z",
+      "taskCounts": {
+        "running": 2,
+        "failed": 1502,
+        "succeeded": 3497
+      },
+      "control": {
+        "enabled": true,
+        "connected": true,
+        "activeSessions": 5,
+        "serverJarReady": true
+      }
+    },
+    {
+      "agentId": "windows-desktop-8v8n4pe-v2",
+      "lastSeenAt": "2026-08-10T06:02:47.953Z",
+      "taskCounts": {},
+      "control": {
+        "enabled": true,
+        "connected": true,
+        "activeSessions": 0,
+        "serverJarReady": true
+      }
+    },
+    {
+      "agentId": "windows-desktop-8v8n4pe",
+      "lastSeenAt": "2026-07-03T04:15:49.959Z",
+      "taskCounts": {}
+    },
+    {
+      "agentId": "local-mac-windows-agent",
+      "lastSeenAt": "2026-07-03T05:36:47.198Z",
+      "taskCounts": {}
+    }
+  ]
+}

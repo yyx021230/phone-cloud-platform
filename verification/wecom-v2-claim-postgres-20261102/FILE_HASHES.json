@@ -1,0 +1,33 @@
+{
+  "baseCommit": "ccc38ae38769c91ce5530a77a82257a427990776",
+  "candidateTag": "wecom-v2-claim-postgres-20261102-rc.1",
+  "scope": "unwired_SQL_unexecuted_fake_only",
+  "files": {
+    "deploy/sql/wecom-cleanup-v2-claim.sql": "9b89cc925083933e04a1888c6567202f7c2a0b5f8eeb9268c1ffa424b7d2fc7d",
+    "docs/PROJECT_DEVELOPMENT.md": "5c595f29804d06b921015a5255702ccc759ccf254fcc3c557c495f65a685b466",
+    "server/wecom-cleanup-v2-claim-postgres.mjs": "46d0e8ee2857656acf765920f1d58a10e313ba05aff5b2a867270c3611d0a276",
+    "server/wecom-cleanup-v2-claim-postgres.test.mjs": "4e5347a2286f81265703d22524c41c5755bfe5155f561bc442fda31a37005fe0",
+    "verification/wecom-v2-claim-postgres-20261102/LOCAL_OUTPUT.txt": "52144113879b55e5a44b1f72f0689d320b6993c55881135813523e18d423ca38",
+    "verification/wecom-v2-claim-postgres-20261102/LOCAL_RECEIPT.json": "10907dea3b792037719c57a4a529a3cc04dfa17316ccb476e16e06fa9da202c3",
+    "verification/wecom-v2-claim-postgres-20261102/RAW_WHITESPACE.json": "c390601f3c0905adcc9a4caeaddcff6fdc8bd40b5bd9f244ab0dabba98fa5b00",
+    "verification/wecom-v2-claim-postgres-20261102/REGRESSION_OUTPUT.txt": "a2edcdcf5800ca590ce7bd5862297110c3662a379ea4a72c7f969db2a3dc7695",
+    "verification/wecom-v2-claim-postgres-20261102/REGRESSION_RECEIPT.json": "368d5843433bb52a5af97fdb6d8a3daf7a6e1fcfd28e3e0a4d34674742dbc861",
+    "verification/wecom-v2-claim-postgres-20261102/SOURCE_BASELINE.json": "20a63f47c289fb5c4722f399dc99c054067041c42e0069bac0cb4a9c215863d0",
+    "verification/wecom-v2-claim-postgres-20261102/SYNTAX_1.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification/wecom-v2-claim-postgres-20261102/SYNTAX_2.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verification/wecom-v2-claim-postgres-20261102/TASK.md": "a2ff555c4a489ae9de10578114639fdc59b18f670d461c1f8f2ed0840560f7b0",
+    "verification/wecom-v2-claim-postgres-20261102/fixture.mjs": "4f8c713618185540c296dca380ed6027b45e0a777de5e63e7110ace147608f0c",
+    "verification/wecom-v2-claim-postgres-20261102/initial/FIRST_OUTPUT.txt": "90c16c9ea8941bab462b5bd28466a1544e247bce85b875c3698da529e39f784a",
+    "verification/wecom-v2-claim-postgres-20261102/initial/RECEIPT.json": "1b42a06aafceb59e94bfb4ffbcefcaeee8a03970544f02d21edf086f6f91e3c0",
+    "verification/wecom-v2-claim-postgres-20261102/initial/REPRODUCED_OUTPUT.txt": "3584c464b87fe37f227addf063a87421aa528e3776374015d53ccae13deb8fe8",
+    "verification/wecom-v2-claim-postgres-20261102/initial/fixture.mjs.txt": "4f8c713618185540c296dca380ed6027b45e0a777de5e63e7110ace147608f0c",
+    "verification/wecom-v2-claim-postgres-20261102/initial/wecom-cleanup-v2-claim-postgres.mjs.txt": "1c49d9011b476b69728878d5f091e00227deadcff7455e842cc105d8fe877c64",
+    "verification/wecom-v2-claim-postgres-20261102/initial/wecom-cleanup-v2-claim-postgres.test.mjs.txt": "30098563849e9f9b9c9fbfd6fd6aaaa7a4d789fe5e1308d524f98092f0f2d73e",
+    "verification/wecom-v2-claim-postgres-20261102/initial/wecom-cleanup-v2-claim.sql.txt": "ac4f3ff145be462845312531075d6690d76845111ad15cfebca9a69e437a3916",
+    "verification/wecom-v2-claim-postgres-20261102/progress-fixture-red/OUTPUT.txt": "04896ebb7640b880947ad75a48aeca6d6d8898b89c4a36ac5f84b9d77f72ddaa",
+    "verification/wecom-v2-claim-postgres-20261102/progress-fixture-red/RECEIPT.json": "f71af34c73174dc8d5f7bf53b75623f1ad09f2d5d1a1e9dcb5de5f5b29df6155",
+    "verification/wecom-v2-claim-postgres-20261102/progress-fixture-red/wecom-cleanup-v2-claim-postgres.mjs.txt": "7edd907fa3b56948d00f7b6ca2e6003f3bfdc9282d917b5823c0f64a06f27e8a",
+    "verification/wecom-v2-claim-postgres-20261102/progress-fixture-red/wecom-cleanup-v2-claim-postgres.test.mjs.txt": "58ffe7ddf07bed20d3d44540db6497008aa300afdd01be3fcf85e90a3fe7a136",
+    "verification/wecom-v2-claim-postgres-20261102/DIFFCHECK_RECEIPT.json": "163e9b320003d88aba0a4842f9e7655ee49c6b9cfc5eb04d05ba1371b5328b5b"
+  }
+}

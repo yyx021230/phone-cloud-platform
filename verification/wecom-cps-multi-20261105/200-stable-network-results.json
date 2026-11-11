@@ -1,0 +1,63 @@
+{
+  "networkPhase": "after user changed 200 to stable network",
+  "status": "passed",
+  "results": [
+    {
+      "lead_id": "61108200",
+      "elapsedMs": 50847,
+      "restart": {
+        "forceStopCommands": 1,
+        "startCommands": 1,
+        "stopBeforeReader": true,
+        "previousMainPids": [
+          "14513"
+        ],
+        "stoppedMainPids": [],
+        "newMainPids": [
+          "17535"
+        ]
+      },
+      "cleanupConfirmed": true,
+      "status": "ready_before_send"
+    },
+    {
+      "lead_id": "61109200",
+      "elapsedMs": 50514,
+      "restart": {
+        "forceStopCommands": 1,
+        "startCommands": 1,
+        "stopBeforeReader": true,
+        "previousMainPids": [
+          "17535"
+        ],
+        "stoppedMainPids": [],
+        "newMainPids": [
+          "19114"
+        ]
+      },
+      "cleanupConfirmed": true,
+      "status": "ready_before_send"
+    },
+    {
+      "lead_id": "61110200",
+      "elapsedMs": 50518,
+      "restart": {
+        "forceStopCommands": 1,
+        "startCommands": 1,
+        "stopBeforeReader": true,
+        "previousMainPids": [
+          "19114"
+        ],
+        "stoppedMainPids": [],
+        "newMainPids": [
+          "20448"
+        ]
+      },
+      "cleanupConfirmed": true,
+      "status": "ready_before_send"
+    }
+  ],
+  "duplicateSubmissions": 3,
+  "extraNativeStartsFromDuplicates": 0,
+  "realInvitations": 0
+}

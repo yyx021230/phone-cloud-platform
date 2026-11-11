@@ -1,0 +1,16 @@
+{
+  "authorizedBy": "user: temporarily remove tested phones from whitelist, restore after test",
+  "devices": [
+    188,
+    191
+  ],
+  "operation": "enabled true -> false -> true; entries retained",
+  "disabledAt": "2026-10-30T06:03:05.276838+00:00",
+  "restoredAt": "2026-10-30T06:18:19.346567+00:00",
+  "beforeRevision": 141,
+  "disabledRevision": 142,
+  "restoredRevision": 143,
+  "onlySelectedEnabledFlagsChanged": true,
+  "productionCodeChanged": false,
+  "cleanupAndOwnLeaseReleaseVerified": true
+}

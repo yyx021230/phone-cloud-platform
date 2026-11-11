@@ -1,0 +1,77 @@
+{
+  "at": "2026-11-03T07:20:02.028168+00:00",
+  "sourceStatus": "observed_not_admitted",
+  "productionSourceCommit": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "sourceHashes": {
+    "server/index.mjs": "4bcecc8702ea577a77e5f17664b7833ced33b681f88e5beedcdc6875b6f047cc",
+    "server/wecom-preview.mjs": "ec9126e6c85d787f80355df8b5c84fb5c525f8ba746847573c9d5b589779cbaf",
+    "server/screen-sessions.mjs": "811a15aa7ecb87a934ef5f92826ed9031278d87df2387cc20a85098ce91cde09",
+    "server/managed-lookup.mjs": "74fc9138a8ffc571b4504964762432386d6995426131e4a8b861032161dc7f44",
+    "server/managed-lookup-platform.mjs": "c641ee8e32a30262fe93ae96a6317c24a89b9813c7e1ff16ad19cbe52b96a2f2",
+    "server/postgres-repositories.mjs": "22f7e458bf28e8252639c5bcc5957d56abe8361307baa79432bb869fa34c65ad",
+    "server/wecom-physical-cleanup.mjs": "7fea00c14fcd6df20a30b5492c4c52c244b6dec26bbc5169212d0fcd2e15a07b",
+    "server/wecom-cleanup-service.mjs": "fb594dd7a191bb37f7a2abdf508298059ca4730814f394c491965f0c46c366a0",
+    "server/device-occupancy.mjs": "4f33caecf089118a2b7e4241f21a763dd83f1b37f42c9d378a6a748a6e49d81a",
+    "server/recovery-controls.mjs": "0147f3f3c122e9d444bf48666cb6bbaab64a64c585860ca0664afdec44890af8"
+  },
+  "activeManifestSha256": "a5390dcc93b5f1393e7b95732ca4df679dc5065200f80cf509d96e0f759e2a2f",
+  "agentAdbIdentityAndFilesUnchanged": true,
+  "agentPid": 19756,
+  "adbPid": 27912,
+  "activeStagedWorkers": [],
+  "health": {
+    "rows": [
+      {
+        "route": "/healthz",
+        "status": 200
+      },
+      {
+        "route": "/readyz",
+        "status": 200
+      }
+    ]
+  },
+  "devices": {
+    "185": {
+      "deviceNumber": "185",
+      "runtime": {
+        "online": true,
+        "adbOnline": true,
+        "agentOnline": true,
+        "listed": true,
+        "busy": false,
+        "available": false,
+        "occupancy": null,
+        "unavailableReason": "wecom_not_configured"
+      },
+      "locks": 0,
+      "tasks": 0,
+      "jobs": 0,
+      "sessions": 0
+    },
+    "127": {
+      "deviceNumber": "127",
+      "runtime": {
+        "online": true,
+        "adbOnline": true,
+        "agentOnline": true,
+        "listed": true,
+        "busy": true,
+        "available": false,
+        "occupancy": {
+          "type": "screen_control",
+          "label": "\u5b9e\u65f6\u63a7\u5236"
+        },
+        "unavailableReason": "wecom_not_configured"
+      },
+      "locks": 1,
+      "tasks": 0,
+      "jobs": 0,
+      "sessions": 0
+    }
+  },
+  "noDeploy": true,
+  "noAgentReload": true,
+  "noSharedAdbRestartOrIdentitySwitch": true,
+  "otherScreenSessionsUntouched": true
+}

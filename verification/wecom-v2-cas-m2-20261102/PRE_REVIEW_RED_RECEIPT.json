@@ -1,0 +1,15 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "server/wecom-cleanup-v2-postgres.test.mjs"
+  ],
+  "exitCode": 1,
+  "scope": "unit fake lifecycle only; 21 existing green / 3 new red, no PG",
+  "sourceSha256": {
+    "server/wecom-cleanup-v2-postgres.mjs": "55198cd154c271dda65b515ca0aa35f1a97f48699547fee6012c8cced71cf677",
+    "server/wecom-cleanup-v2-postgres.test.mjs": "f97832c55a8c048f3f81307a64455cc802f2f8640d8b47d266f963391ad75a9d"
+  },
+  "outputSha256": "708739c93506f7f4c76ff5f65d5d0773894e847f07f465a920aea0a4adcf4569"
+}

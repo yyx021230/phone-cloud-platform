@@ -1,0 +1,26 @@
+{
+  "atUtc": "2026-11-02T07:51:18.145173+00:00",
+  "baseline": "5d75159182f60f1654bd5976867bf74af45e24e2",
+  "scope": "offline synthetic interval and in-memory task ledger model only",
+  "exitCode": 0,
+  "sourceSha256": {
+    "model.mjs": "d9437cedee4797f6f4e95a961193341c86178d4283eb46d91498bb9c9f20a18b",
+    "model.test.mjs": "f6712558b4afb5075180cc5438008e6541e102bb5c032b2536a0f560d4722fa7"
+  },
+  "outputSha256": "e70640ee2ad59517aecb975a74bc83fa431f0686d38b99cba4492f98211184c1",
+  "nodeVersion": "v25.9.0",
+  "syntheticErrorAndRateBounds": true,
+  "osClockAdaptersCalled": false,
+  "windowsOrLinuxNativeVerified": false,
+  "productionConnected": false,
+  "actualVmPauseGuaranteeEstablished": false,
+  "persistentTransactionOrJournalVerified": false,
+  "productImplementationApproved": false,
+  "limitations": [
+    "Unknown real error/ppm bounds refuse production authority; factory numbers are synthetic assumptions.",
+    "All-guest-clock VM freeze can be observationally indistinguishable; it is not detected by the model.",
+    "Uncharacterized VM profiles refuse construction; fixture-profile success cannot establish real VM behavior.",
+    "JSON task restore is in-memory only, not PostgreSQL/checkpoint/crash recovery.",
+    "Prior 8 latency tests were not rerun or counted here."
+  ]
+}

@@ -1,0 +1,48 @@
+✔ two stages prepare immutable held states; neither is durable ACK or release (6.936875ms)
+✔ audit wall 2000-01-01T00:00:00.000Z is not compared to cloud now (0.224125ms)
+✔ audit wall 2099-01-01T00:00:00.000Z is not compared to cloud now (0.173708ms)
+✔ configured clone binds Android user999, never changes main identity (0.163625ms)
+✔ object key order normalizes; identical operation returns original candidate without increment (0.45375ms)
+✔ same operationId with changed content cannot be reinterpreted (0.237625ms)
+✔ competing candidates require external CAS; this leaf does not pick a committed winner (0.147167ms)
+✔ close before host, skipped revision, new host after registration reject (0.482125ms)
+✔ authenticated context rejects mismatched obligationId (0.084792ms)
+✔ authenticated context rejects mismatched originalTaskId (0.087709ms)
+✔ authenticated context rejects mismatched executionId (0.0635ms)
+✔ authenticated context rejects mismatched deviceId (0.0485ms)
+✔ authenticated context rejects mismatched serial (0.044417ms)
+✔ authenticated context rejects mismatched agentId (0.044792ms)
+✔ authenticated context rejects mismatched appSlot (0.037416ms)
+✔ authenticated context rejects mismatched androidUser (0.047292ms)
+✔ authenticated context rejects mismatched nonce (0.045917ms)
+✔ authenticated context rejects mismatched serverEpoch (0.04475ms)
+✔ authenticated context rejects mismatched agentInstanceId (0.043167ms)
+✔ authenticated context rejects mismatched handshakeNonce (0.041708ms)
+✔ wrong request nonce does not grant preparation (0.057875ms)
+✔ wrong trusted spawn nonce does not grant preparation (0.042ms)
+✔ wrong parent instance does not grant preparation (0.0405ms)
+✔ wrong parent PID does not grant preparation (0.0365ms)
+✔ wrong reader PID does not grant preparation (0.04275ms)
+✔ wrong parent birth token does not grant preparation (0.041666ms)
+✔ wrong reader birth token does not grant preparation (0.042709ms)
+✔ wrong parent audit timestamp does not grant preparation (0.039709ms)
+✔ wrong reader audit timestamp does not grant preparation (0.041042ms)
+✔ wrong reader machine does not grant preparation (0.0345ms)
+✔ nonce alone cannot replace parent/reader facts or genuine close observation (0.178375ms)
+✔ known instance cannot be substituted between registration and close (0.097917ms)
+✔ JSON roundtrip only rehydrates structure, never durable ACK or runtime authority (0.153208ms)
+✔ rehydration rejects tampered phase (0.100542ms)
+✔ rehydration rejects tampered fence (0.062625ms)
+✔ rehydration rejects tampered revision (0.060667ms)
+✔ rehydration rejects tampered stored host (0.081375ms)
+✔ rehydration rejects tampered candidate ACK (0.072042ms)
+✔ rehydration rejects tampered extra operation (0.061875ms)
+✔ v1, HTTP booleans, privilege claims, proof/release actions are not accepted (0.304792ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 76.989625

@@ -1,0 +1,11 @@
+{
+  "command": [
+    "node",
+    "--check",
+    "verification/wecom-v2-writer-epq-plan-20261102/comparison-queries.mjs"
+  ],
+  "exitCode": 0,
+  "sqlParsed": false,
+  "queriesExecuted": false,
+  "noPgWindowsDeviceOrServiceActions": true
+}

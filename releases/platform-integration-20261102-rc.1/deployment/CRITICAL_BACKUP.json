@@ -1,0 +1,17 @@
+{
+  "status": "critical_configuration_and_affected_record_backup_not_full_database",
+  "criticalDumpBytes": 2365722,
+  "criticalDumpSha256": "6a11c69c21176a13f6f21ead52e72c73bff430fb2d3ba5e56b43ceeb38c92d94",
+  "fullDecodePassed": true,
+  "tables": [
+    "phone_cloud_managed_lookup",
+    "phone_cloud_managed_lookup_aliases",
+    "phone_cloud_devices",
+    "phone_cloud_device_locks",
+    "phone_cloud_xhs_batch_records"
+  ],
+  "affectedRecords": "rollback/affected-records-preflight.json",
+  "automaticDatabaseRestoreAllowed": false,
+  "composeOnlyMainImageChanged": true,
+  "activationPreparedNotExecuted": true
+}

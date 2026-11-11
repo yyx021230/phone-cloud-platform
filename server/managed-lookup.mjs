@@ -1,4 +1,5 @@
 import {ROUND_IDLE_MS,roundIdleNeedsSync,syncRoundIdle} from './lookup-round-idle.mjs';
+import {readerCapacityWaiting,deferReaderCapacity} from './lookup-reader-capacity.mjs';
 import {requestRoundStop,expireIdleRound,settleRoundStops,roundStopRequested,ROUND_STOP_OFFLINE_GRACE_MS} from './lookup-round-stop.mjs';
 import {lookupDeviceUnavailable,currentDeviceReprobe,temporaryPreparationDomain,preparationBlocked,pagePreparationRetryAt,recordLookupPreparationFailure,recordLookupPreparationSuccess,resetLookupUnavailable} from './lookup-device-availability.mjs';
 import {createManagedAsyncLookup,managedRequestByKey} from './managed-lookup-async.mjs';
@@ -9,6 +10,9 @@ import {LOOKUP_POOL_NUMBERS} from './managed-lookup-store.mjs';
 const DONE=new Set(['succeeded','not_found','failed','expired','cancelled']);
 const OFFLINE_HANDOFF_GRACE_MS=30000;
 const ACTIVE=new Set(['starting','querying','switching','stopping','resuming','unknown']);
+// Two quick retries, then at most one cleanup per phone every 1/2/4/5 minutes.
+// Keep the physical reservation until a matching proof; never restart a reader.
+const stopRetryDelay=count=>count<2?30000:Math.min(300000,60000*2**Math.min(3,Math.max(0,count-2)));
 export function managedLookupError(code,status=400){const e=new Error(code);e.statusCode=status;return e;}
 export function managedLookupResponse(r) {
   if(r.status==='succeeded')return {status:200,body:{ok:true,name:r.name||''}};
@@ -22,6 +26,7 @@ const at=()=>new Date().toISOString();
 function aiDiagnostics(result) {
   const source=result.diagnostics||{},out={};
   if([1,2,3].includes(source.reads))out.reads=source.reads;
+  if([1,2].includes(source.transientRetries))out.transientRetries=source.transientRetries;
   if(['evidence_loading','model_reading','input_validation','model_request','model_body','model_validation'].includes(source.stage))out.stage=source.stage;
   for(const key of ['evidenceLoadMs','responseHeadersMs','responseBodyMs'])if(Number.isFinite(source[key])&&source[key]>=0)out[key]=Math.min(120000,Math.round(source[key]));
   if(Number.isInteger(source.upstreamStatus)&&source.upstreamStatus>=100&&source.upstreamStatus<=599)out.upstreamStatus=source.upstreamStatus;
@@ -105,6 +110,56 @@ export function createManagedLookupService({store,adapter,now=Date.now,probePhon
       r.name=o.result.name||'';finish(r,o.result.status);releaseCompleted(s,c,o,releasedDevices);return;
     }
     if(r&&['succeeded','not_found'].includes(r.status)&&releaseCompleted(s,c,o,releasedDevices))return;
+    // An explicit failed cleanup is not a stop ACK. After the quick retries,
+    // retain a paced cleanup obligation instead of permanently skipping it.
+    // Actual offline devices still use the existing durable generation fence.
+    if(o.stopUnconfirmed&&!adapter.isOffline?.(c)){
+      c.phase='stopping';c.stopRetryAt??=now()+30000;c.stopCleanupSince??=now();
+      c.stopCleanupLastJobId=o.stopJobId||'';
+      if((c.stopRetryCount||0)>=2&&!c.stopCleanupAttentionAt){
+        c.stopCleanupAttentionAt=now();
+        audit(s,'lookup_cleanup_attention_required','system',{deviceId:c.deviceId,generation:c.generation});
+      }
+      // Logical completion is not physical release. Persist a cancellation
+      // fence first; deadlines and caller stop must not wait forever on a
+      // broken phone command. The channel still consumes its physical budget.
+      const expired=r?.mode==='async'&&!DONE.has(r.status)&&now()>=r.executionDeadline;
+      const detachRound=c.roundStopPreparationId&&c.roundStopDetachedAt===undefined;
+      if(adapter.fenceCleanupWait&&(detachRound||(r&&!DONE.has(r.status)&&(r.cancelRequested||expired)))){
+        const reason=detachRound?'lookup_round_stopped':r.cancelRequested?(r.cancelReason||'lookup_cancelled'):'lookup_processing_timeout';
+        await adapter.fenceCleanupWait(c,tx,reason);
+        c.cleanupBusinessDetachedAt=now();c.cleanupEndReason=reason;
+        if(detachRound)c.roundStopDetachedAt=now();
+        if(r&&!DONE.has(r.status)){r.cancelRequested=true;r.cancelReason=reason;finish(r,reason==='lookup_processing_timeout'?'expired':'cancelled',reason);}
+        delete c.rerouteAfterStop;delete c.rerouteReason;
+        audit(s,'lookup_cleanup_business_detached','system',{deviceId:c.deviceId,lookupId:r?.lookupId,reason});
+        return;
+      }
+      if(now()>=c.stopRetryAt&&adapter.canStop(c)&&!adapter.screenActive?.(c)){
+        const count=c.stopRetryCount||0;
+        await adapter.stop(c,tx);c.stopRetryCount=count+1;c.stopRetryAt=now()+stopRetryDelay(count);
+        audit(s,'lookup_stop_cleanup_retry','system',{deviceId:c.deviceId,attempt:c.stopRetryCount});
+      }
+      return;
+    }
+    // A fresh new process report is evidence of a lost executor, not proof
+    // the old phone reader has stopped. Allow its outbox a bounded grace,
+    // then cancel the exact old delivery via stop() and wait for real proof.
+    const lost=adapter.runtimeLoss?.(c);
+    if(lost){
+      const identity=lost.taskId+':'+lost.runtimeId;
+      if(c.runtimeLossIdentity!==identity){c.runtimeLossIdentity=identity;c.runtimeLossSince=now();}
+      delete c.readinessProof;
+      if(now()-c.runtimeLossSince<30000||adapter.screenActive?.(c)||!adapter.canStop(c))return;
+      if(r&&!DONE.has(r.status)&&!r.cancelRequested&&!c.roundStopPreparationId){
+        if(r.purpose==='readiness_probe')finish(r,'failed','lookup_executor_runtime_lost');
+        else{r.status='rerouting';c.rerouteAfterStop=true;c.rerouteReason='lookup_reroute_runtime_lost';}
+      }
+      await adapter.stop(c,tx);c.phase='stopping';
+      audit(s,'lookup_runtime_lost_cleanup','system',{deviceId:c.deviceId,lookupId:r?.lookupId,taskId:lost.taskId,generation:c.generation});
+      delete c.runtimeLossIdentity;delete c.runtimeLossSince;return;
+    }
+    delete c.runtimeLossIdentity;delete c.runtimeLossSince;
     // End the caller's round independently of unreachable phone cleanup.
     // Offline is never a physical ACK: keep this generation reserved, cancel
     // its deliverable work durably, and only then detach it from round gating.
@@ -214,6 +269,21 @@ export function createManagedLookupService({store,adapter,now=Date.now,probePhon
       }
       return;
     }
+    // A terminal admission failure did not prove a bad phone/page/account.
+    // Fence and stop this attempt, retain the original business ID, and pace
+    // further dispatch to this Agent instead of rotating across its devices.
+    const capacityFailure=adapter.preparationFailure?.(c);
+    if(r&&!DONE.has(r.status)&&capacityFailure?.domain==='capacity'){
+      if(c.capacityFailureJobId!==capacityFailure.jobId){deferReaderCapacity(s,adapter,c,capacityFailure,now());c.capacityFailureJobId=capacityFailure.jobId;}
+      delete c.readinessProof;delete c.pageCompatibilityRequired;
+      if(r.purpose==='readiness_probe')finish(r,'failed','lookup_reader_capacity_wait');
+      else{r.status='rerouting';r.code='lookup_reader_capacity_wait';c.rerouteAfterStop=true;c.rerouteReason='lookup_retry_reader_capacity';}
+      audit(s,'lookup_reader_capacity_wait','system',{deviceId:c.deviceId,lookupId:r.lookupId,jobId:capacityFailure.jobId});
+      if(o.stopped)c.phase='stopping';
+      else if(adapter.canStop(c)){await adapter.stop(c,tx);c.phase='stopping';}
+      else c.phase='unknown';
+      return;
+    }
     // A confirmed lost-input state is recoverable on the same probe phone;
     // it is not an unknown page. Permit one normal resume with the unchanged
     // account/runtime identity, then retire the failed probe as before.
@@ -317,7 +387,7 @@ export function createManagedLookupService({store,adapter,now=Date.now,probePhon
       if(r.attempts.length<2&&!r.queryId){r.status='queued';c.requestId='';}else finish(r,'failed','lookup_prepare_failed');
       if(o.stopped)s.channels.splice(s.channels.indexOf(c),1);else{await adapter.stop(c,tx);c.phase='stopping';}return;
     }
-    if(o.ready&&r&&(c.phase==='starting'||(c.phase==='querying'&&!r.queryId&&!c.queryId))){if(!adapter.health(c.deviceId).ready)return;if(r.purpose!=='readiness_probe')recordLookupPreparationSuccess(s,c);await adapter.query(c,r,tx,{prepared:r.resultProtocol===PREPARED_PROTOCOL,probePhone:readiness.probePhone,verified:readiness.valid(s,c)});c.phase='querying';r.status='running';return;}
+    if(o.ready&&r&&(c.phase==='starting'||(c.phase==='querying'&&!r.queryId&&!c.queryId))){if(!adapter.health(c.deviceId).ready||readerCapacityWaiting(s,adapter,c.deviceId,now()))return;if(r.purpose!=='readiness_probe')recordLookupPreparationSuccess(s,c);await adapter.query(c,r,tx,{prepared:r.resultProtocol===PREPARED_PROTOCOL,probePhone:readiness.probePhone,verified:readiness.valid(s,c)});c.phase='querying';r.status='running';return;}
     if(c.phase==='resuming'&&o.ready){c.phase=r&&!DONE.has(r.status)?'starting':'idle';}
     if(c.phase==='idle'&&(!s.config.enabled||!s.devices.some(d=>d.deviceId===c.deviceId&&d.enabled)||!authorized(s,c.clientId)||(now()-c.idleAt>=s.config.idleMs&&!readiness.keepWarm(s,c)))){
       if(adapter.canStop(c)&&activeCount(s)<s.config.concurrency){await adapter.stop(c,tx);c.phase='stopping';}
@@ -335,6 +405,15 @@ export function createManagedLookupService({store,adapter,now=Date.now,probePhon
   }
   function unchangedChannel(s,c){
     const r=s.requests.find(r=>r.lookupId===c.requestId);
+    const stopObservation=adapter.observe(c);
+    if(r&&!DONE.has(r.status)&&completedResult(r,c,stopObservation))return false;
+    if(stopObservation.stopUnconfirmed&&!adapter.isOffline?.(c)){
+      if(adapter.fenceCleanupWait&&((c.roundStopPreparationId&&c.roundStopDetachedAt===undefined)
+        ||(r&&!DONE.has(r.status)&&(r.cancelRequested||(r.mode==='async'&&now()>=r.executionDeadline)))))return false;
+      if((c.stopRetryCount||0)>=2&&!c.stopCleanupAttentionAt)return false;
+      return c.stopRetryAt!==undefined&&(now()<c.stopRetryAt||!adapter.canStop(c)||adapter.screenActive?.(c));
+    }
+    if(adapter.runtimeLoss?.(c)||c.runtimeLossIdentity)return false;
     if(c.roundStopPreparationId||c.offlineHandoffAt!==undefined){
       const o=adapter.observe(c);
       if(o.stopped||(r&&!DONE.has(r.status)&&completedResult(r,c,o)))return false;
@@ -504,7 +583,10 @@ export function createManagedLookupService({store,adapter,now=Date.now,probePhon
           audit(s,'lookup_ai_probe_recorded','system',{lookupId:r.lookupId,deviceId:c.deviceId,jobId:binding.jobId,evidenceId:binding.evidenceId,ready});
           return true;
         }
-        r.name=named?result.name:'';finish(r,named?'succeeded':'not_found');
+        const provenEmpty=['no_name','unverified'].includes(result.kind)&&result.evidenceSha256===binding.evidenceSha256&&result.matchedPhone===r.phoneNumber;
+        // Technical/model ambiguity is not a completed empty lookup. Preserve
+        // the existing failed envelope and original ID; never poison history.
+        r.name=named?result.name:'';finish(r,named?'succeeded':provenEmpty?'not_found':'failed',named||provenEmpty?'':'lookup_result_unconfirmed');
         r.aiVision={...r.aiVision,status:'completed',completedAt:at(),model:'gpt-6.1-sol',evidenceSha256:binding.evidenceSha256,reason:named?'name':result.reason||'empty',readKind:['name','no_name','unverified','unconfirmed'].includes(result.kind)?result.kind:'unconfirmed',rejectionCode:['model_unconfirmed','card_actions_or_compact_boundary','result_contract_rejected','name_verification_mismatch'].includes(result.rejectionCode)?result.rejectionCode:'',elapsedMs:result.elapsedMs,diagnostics:aiDiagnostics(result)};
         await adapter.recordAiResult(c,r,tx,binding);
         // Restore only this process's existing, previously probed account proof.
@@ -603,6 +685,9 @@ export function createManagedLookupService({store,adapter,now=Date.now,probePhon
               if(r.waitForLookupId&&s.channels.some(c=>c.requestId===r.waitForLookupId))continue;
               const used=new Set(r.attempts.map(a=>a.deviceId)),candidates=[];
               for(const d of s.devices){
+                // Existing verified channels may reuse their resident reader;
+                // only creating a new channel waits for shared capacity.
+                if(!s.channels.some(c=>c.deviceId===d.deviceId)&&readerCapacityWaiting(s,adapter,d.deviceId,now()))continue;
                 if(retiring.has(d.deviceId)||(r.recoveryExcludedDevices?.includes(d.deviceId)||r.humanWaitExcludedDevices?.includes(d.deviceId))||!d.enabled||lookupDeviceUnavailable(d)||d.accountOffline||releasedDevices.has(d.deviceId)||failedDevices.has(d.deviceId)||d.quarantineUntil>now()||(r.resultProtocol!==PREPARED_PROTOCOL&&used.has(d.deviceId)))continue;
                 const c=s.channels.find(c=>c.deviceId===d.deviceId);if(c&&!(c.phase==='idle'&&c.clientId===clientId))continue;
                 // One physical reservation budget includes human and idle channels.

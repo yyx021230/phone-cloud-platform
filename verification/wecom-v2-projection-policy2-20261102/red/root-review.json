@@ -1,0 +1,12 @@
+{
+  "candidateCommit": "ac9002f285f2d3dc68cf60b9249a0740eb9131ec",
+  "candidateTag": "wecom-v2-projection-policy-20261102-rc.1",
+  "manifestHashesMatched": 9,
+  "unchangedExistingSources": 14,
+  "rootIndependentPureTests": 53,
+  "suiteExit": 0,
+  "suiteSha256": "2f1b850a3444aea5e5f5fb1b26028ce01e1d5079cd9beb21b0f26107b4431fee",
+  "diffCheckExit": 0,
+  "newPgOrPhoneActions": false,
+  "productionChanged": false
+}

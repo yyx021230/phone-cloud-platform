@@ -1,0 +1,33 @@
+{
+  "scope": "pure protocol bytes and runner safety only; no listening sockets or PG started",
+  "commands": [
+    {
+      "label": "PROTOCOL_PARSER",
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-v2-cas-m2-20261102/pg-commit-proxy.test.mjs"
+      ],
+      "exitCode": 0,
+      "outputSha256": "69f51387c8a7d37e454f8c544d192dd0daeb52ea26af0de79f52ee6d36bbbc9b"
+    },
+    {
+      "label": "RUNNER_SAFETY",
+      "command": [
+        "python3",
+        "-I",
+        "-B",
+        "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-v2-cas-m2-20261102/test_owned_runner.py"
+      ],
+      "exitCode": 0,
+      "outputSha256": "125c03d88cb1c0903061edb2e35a13d34f8d5509914b7fd6abb3a845739486bc"
+    }
+  ],
+  "sourceSha256": {
+    "verification/wecom-v2-cas-m2-20261102/pg-commit-proxy.mjs": "a884a5e9147daf8cf8fffab93a6878f80793c825e833a2c4bddb0d6c8678a3b1",
+    "verification/wecom-v2-cas-m2-20261102/pg-commit-proxy.test.mjs": "79ec0ee937bb5e001601de46104755a4992b3a231826b318ceced3140291b517",
+    "verification/wecom-v2-cas-m2-20261102/run-owned-postgres.py": "07d7674a5109763fb066f0ca8d4b1ab25cf7332411d21d1bd6f9fd021eb26ca0",
+    "verification/wecom-v2-cas-m2-20261102/test_owned_runner.py": "7efb2b5098b7a0aea8596283ecaa20d55b65a170630996da136d6aabaf506f8c"
+  }
+}

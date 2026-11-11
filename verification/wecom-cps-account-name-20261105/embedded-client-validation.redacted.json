@@ -1,0 +1,156 @@
+{
+  "extractedCodeExact": true,
+  "credentialsAuthenticated": true,
+  "newNamesMatchUserRegistry": true,
+  "response": {
+    "http_status": 200,
+    "body": {
+      "result": {
+        "devices": [
+          {
+            "device_number": "200",
+            "device_name": "200号本地测试手机",
+            "online": true,
+            "adb_online": true,
+            "agent_online": true,
+            "listed": true,
+            "busy": false,
+            "busy_reason": "",
+            "occupancy": null,
+            "accounts": [
+              {
+                "app_slot": "main",
+                "binding_verified": true,
+                "enabled": true,
+                "wecom_phone": "17508437040",
+                "wecom_name": "小文",
+                "available": true,
+                "unavailable_reason": ""
+              }
+            ],
+            "available": true,
+            "unavailable_reason": "",
+            "last_seen_at": "2026-11-05T06:24:13.689Z",
+            "adb_last_seen_at": "2026-11-05T06:24:13.689Z"
+          },
+          {
+            "device_number": "201",
+            "device_name": "201号（未接入本地测试）",
+            "online": false,
+            "adb_online": false,
+            "agent_online": false,
+            "listed": true,
+            "busy": false,
+            "busy_reason": "",
+            "occupancy": null,
+            "accounts": [
+              {
+                "app_slot": "main",
+                "binding_verified": true,
+                "enabled": true,
+                "wecom_phone": "17514026939",
+                "wecom_name": "小文",
+                "available": false,
+                "unavailable_reason": "adb_offline"
+              }
+            ],
+            "available": false,
+            "unavailable_reason": "adb_offline",
+            "last_seen_at": null,
+            "adb_last_seen_at": null
+          },
+          {
+            "device_number": "202",
+            "device_name": "202号本地测试手机",
+            "online": true,
+            "adb_online": true,
+            "agent_online": true,
+            "listed": true,
+            "busy": false,
+            "busy_reason": "",
+            "occupancy": null,
+            "accounts": [
+              {
+                "app_slot": "main",
+                "binding_verified": true,
+                "enabled": true,
+                "wecom_phone": "13067238489",
+                "wecom_name": "小文",
+                "available": true,
+                "unavailable_reason": ""
+              }
+            ],
+            "available": true,
+            "unavailable_reason": "",
+            "last_seen_at": "2026-11-05T06:24:13.689Z",
+            "adb_last_seen_at": "2026-11-05T06:24:13.689Z"
+          },
+          {
+            "device_number": "203",
+            "device_name": "203号（未接入本地测试）",
+            "online": false,
+            "adb_online": false,
+            "agent_online": false,
+            "listed": true,
+            "busy": false,
+            "busy_reason": "",
+            "occupancy": null,
+            "accounts": [
+              {
+                "app_slot": "main",
+                "binding_verified": true,
+                "enabled": true,
+                "wecom_phone": "18627591004",
+                "wecom_name": "小珍",
+                "available": false,
+                "unavailable_reason": "adb_offline"
+              }
+            ],
+            "available": false,
+            "unavailable_reason": "adb_offline",
+            "last_seen_at": null,
+            "adb_last_seen_at": null
+          },
+          {
+            "device_number": "204",
+            "device_name": "204号（未接入本地测试）",
+            "online": false,
+            "adb_online": false,
+            "agent_online": false,
+            "listed": true,
+            "busy": false,
+            "busy_reason": "",
+            "occupancy": null,
+            "accounts": [
+              {
+                "app_slot": "main",
+                "binding_verified": true,
+                "enabled": true,
+                "wecom_phone": "18613985590",
+                "wecom_name": "珍珍",
+                "available": false,
+                "unavailable_reason": "adb_offline"
+              }
+            ],
+            "available": false,
+            "unavailable_reason": "adb_offline",
+            "last_seen_at": null,
+            "adb_last_seen_at": null
+          }
+        ],
+        "total": 5,
+        "updated_at": "2026-11-05T06:24:13.689Z",
+        "capacity": {
+          "limit": 2,
+          "active": 0,
+          "remaining": 2
+        }
+      },
+      "timestamp": 1793859853689,
+      "success": true,
+      "code": 200,
+      "message": "查询成功"
+    }
+  },
+  "newPhoneTasks": 0
+}

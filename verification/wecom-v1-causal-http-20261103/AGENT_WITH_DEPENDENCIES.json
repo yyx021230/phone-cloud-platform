@@ -1,0 +1,28 @@
+{
+  "command": [
+    "/opt/homebrew/bin/npm",
+    "run",
+    "check",
+    "--prefix",
+    "windows-agent"
+  ],
+  "target": "agent",
+  "startedAt": "2026-11-02T17:51:47.001125+00:00",
+  "endedAt": "2026-11-02T17:51:53.521942+00:00",
+  "exitCode": 0,
+  "timedOut": false,
+  "environmentKeys": [
+    "DATABASE_URL",
+    "HOME",
+    "PATH",
+    "PYTHONDONTWRITEBYTECODE",
+    "REDIS_URL",
+    "STORAGE_BACKEND",
+    "TMPDIR"
+  ],
+  "inheritedCredentials": false,
+  "databaseUrl": "",
+  "redisUrl": "",
+  "temporaryStorage": true,
+  "services": "loopback fixtures only"
+}

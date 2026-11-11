@@ -1,0 +1,20 @@
+{
+  "fullDiffCheckExit": 2,
+  "scopedExcludingOnlyRawCrLfExit": 0,
+  "reason": "Original Windows/Python CRLF bytes retained without normalization",
+  "exceptions": {
+    "verification/wecom-native-23-20261103/agent-log.stdout.raw": {
+      "sha256": "0d544ee86294fce2547d63d428f4bc3da12af28b4db5cd2c8b5021bcced091ce",
+      "endingHex": "0d0a"
+    },
+    "verification/wecom-native-23-20261103/windows-after.stdout.raw": {
+      "sha256": "bd9d574f592026f25e480d739a04a3220b9dac2cf2048dfc2140194734afb400",
+      "endingHex": "0d0a"
+    },
+    "verification/wecom-native-23-20261103/windows.stdout.raw": {
+      "sha256": "23a36addbb7e5f4a4abc9484710d6e2b0cb45dde242605f62f2c1d569ec29ea6",
+      "endingHex": "0d0a"
+    }
+  },
+  "actualBehaviorValidation": "One actual production preview attempt; host/host-closed409; no UI/send; no code tests rerun for observation-only files."
+}

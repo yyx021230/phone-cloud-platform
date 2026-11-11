@@ -1,0 +1,38 @@
+✔ proof stays behind child close and pickedAt comes from the actual claimed task (10.079083ms)
+✔ lease denial and business payload in verification cannot start a child (0.811083ms)
+✔ lost proof ACK retries exact original proof once and never sends generic success (1.294458ms)
+✔ permanent proof uncertainty never downgrades a possibly committed task or resamples (4.4735ms)
+✔ native read failure reports only fixed failure, without evidence or scan callbacks (0.646833ms)
+✔ verify hard kill false is not child close (1.328042ms)
+✔ verify hard kill throw is not child close (0.521791ms)
+✔ real OS pipe returns fixture facts before exit, but HTTP proof waits for exit (245.655417ms)
+✔ real delayed child close is included in3s and proof is never submitted (3088.91875ms)
+✔ real OS pipe keeps config behind durable host ACK and result behind actual close (fixture machine) (284.597584ms)
+✔ actual Node payload crosses the real Python causal configuration validator after host ACK (298.279542ms)
+✔ cancel during host ACK cannot release config after a late ACK (real pipe) (74.5555ms)
+✔ mismatched ready PID stops before registration and config (real pipe) (66.266542ms)
+✔ actual child with stale private pipe nonce stops before registration/config (65.188417ms)
+✔ real pipe and loopback HTTP keep config behind fsynced same-body registration ACK (298.920458ms)
+✔ two unknown registration ACKs never allow config, even if close is acknowledged (74.66175ms)
+✔ fixture exit before ready wakes the waiter instead of hanging (56.431541ms)
+✔ preview child receives secrets only on stdin and exposes only bounded public fields (4.134625ms)
+✔ uncertain remark state remains blocked without replay (0.625666ms)
+✔ custom remark and multiline description travel only on stdin (4.590125ms)
+✔ explicit main and clone choice is carried on stdin without an Android-user fallback (0.97075ms)
+✔ claimed send success, invalid statuses and nonzero exits fail closed (0.741166ms)
+✔ cancelled and non-preview tasks cannot start a child (0.105208ms)
+✔ active cancellation keeps ownership until the child acknowledges cleanup and exits (3.446416ms)
+✔ sending uses an explicit mode and private fixed claim directory; unknown delivery stays unknown (0.322834ms)
+✔ a send worker may never turn a click into confirmed delivery or silently preview instead (0.248459ms)
+✔ split progress records survive; arbitrary stderr, oversized and regressing frames are discarded (1.19325ms)
+✔ parent watchdog retains last stage and waits for child cleanup without replay (0.490416ms)
+✔ real Python adapter configuration rejection crosses the child pipe with a fixed stage and no ADB (76.632458ms)
+✔ CPS phone verification flag reaches stdin; successful output without independent proof fails closed (0.338792ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3453.434834

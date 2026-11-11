@@ -1,0 +1,113 @@
+// Pure, unwired claim preparation. No DB/OS/clock/ID generation or permission.
+// Provider provenance, physical exclusion and live lease checks remain outside.
+import { createHash } from "node:crypto";
+import { isDeepStrictEqual } from "node:util";
+import { createWecomV2HostState } from "./wecom-cleanup-v2-host.mjs";
+
+const KIND = "wecom_customer_preview";
+const CONTEXT = ["binding", "claimOperationId", "originalJobId", "originalLockId", "ownerUserId", "requestId", "mode", "target", "businessFingerprint", "recordedAt"];
+const id = v => typeof v === "string" && /^[A-Za-z0-9_-]{1,160}$/.test(v);
+const exact = (v, keys) => v !== null && typeof v === "object" && !Array.isArray(v)
+  && Reflect.ownKeys(v).length === keys.length && keys.every(k => Object.hasOwn(v, k));
+const fail = code => { throw new Error(`wecom_v2_claim_${code}`); };
+const sha = v => createHash("sha256").update(JSON.stringify(v)).digest("hex");
+const canonicalTime = v => typeof v === "string" && Number.isFinite(Date.parse(v)) && new Date(v).toISOString() === v;
+function frozen(v) { if (v && typeof v === "object") { for (const x of Object.values(v)) frozen(x); Object.freeze(v); } return v; }
+function jsonCopy(value) {
+  const active = new WeakSet(); let nodes = 0;
+  function visit(v, depth = 0) {
+    if (++nodes > 20000 || depth > 20) fail("snapshot_invalid");
+    if (v === null || typeof v === "boolean") return;
+    if (typeof v === "string" && !/[\u0000\ud800-\udfff]/u.test(v)) return;
+    if (typeof v === "number" && Number.isFinite(v) && Math.abs(v) <= Number.MAX_SAFE_INTEGER && !Object.is(v, -0)) return;
+    if (!v || typeof v !== "object" || active.has(v)) fail("snapshot_invalid");
+    if (!Array.isArray(v) && ![Object.prototype, null].includes(Object.getPrototypeOf(v))) fail("snapshot_invalid");
+    active.add(v);
+    const keys = Reflect.ownKeys(v);
+    if (Array.isArray(v) && (keys.length !== v.length + 1 || !Array.from({ length: v.length }, (_, i) => Object.hasOwn(v, i)).every(Boolean))) fail("snapshot_invalid");
+    for (const key of keys) {
+      if (Array.isArray(v) && key === "length") continue;
+      const d = Object.getOwnPropertyDescriptor(v, key);
+      if (typeof key !== "string" || !d.enumerable || !Object.hasOwn(d, "value")) fail("snapshot_invalid");
+      visit(d.value, depth + 1);
+    }
+    active.delete(v);
+  }
+  visit(value); const text = JSON.stringify(value);
+  if (Buffer.byteLength(text) > 131072) fail("snapshot_invalid");
+  return JSON.parse(text);
+}
+function context(value) {
+  const v = jsonCopy(value);
+  if (!exact(v, CONTEXT) || !["claimOperationId", "originalJobId", "originalLockId", "ownerUserId"].every(k => id(v[k]))
+    || typeof v.requestId !== "string" || !/^[A-Za-z0-9_-]{8,100}$/.test(v.requestId)
+    || !["preview", "send"].includes(v.mode) || typeof v.businessFingerprint !== "string" || !/^[a-f0-9]{64}$/.test(v.businessFingerprint)
+    || !canonicalTime(v.recordedAt) || !exact(v.target, ["deviceNumber", "appSlot", "androidUser"])
+    || typeof v.target.deviceNumber !== "string" || !/^[1-9]\d{0,2}$/.test(v.target.deviceNumber)) fail("context_invalid");
+  const b = createWecomV2HostState(v.binding).binding;
+  if (v.target.appSlot !== b.appSlot || v.target.androidUser !== b.androidUser || b.obligationId === v.originalLockId) fail("context_invalid");
+  return frozen({ ...v, binding: b });
+}
+function canonicalRemarks(name, description) {
+  if (typeof name !== "string" || !name || name !== name.trim() || [...name].length > 20
+    || /[\u0000-\u001f\u007f-\u009f\ud800-\udfff]/u.test(name)
+    || typeof description !== "string" || !description || description !== description.replace(/\r\n?/g, "\n").trim()
+    || [...description].length > 120 || /[\u0000-\u0009\u000b-\u001f\u007f-\u009f\ud800-\udfff]/u.test(description)) fail("business_invalid");
+}
+function business(task, job, b, c) {
+  const p = task.payload;
+  if (!p || typeof p !== "object" || Array.isArray(p)
+    || task.type !== KIND || job.kind !== KIND || task.status !== "queued" || job.status !== "queued"
+    || task.pickedAt !== null || job.pickedAt !== null || task.completedAt !== null || job.completedAt !== null
+    || p.wecomCleanupProtocol !== 2 || job.wecomCleanupProtocol !== 2
+    || Object.hasOwn(p, "physicalCleanup") || Object.hasOwn(task, "wecomV2Claim") || Object.hasOwn(job, "wecomV2Claim")
+    || !exact(task.result, []) || !exact(job.result, []) || (Object.hasOwn(job, "wecomSendClaimAt") && job.wecomSendClaimAt !== "")) fail("fresh_task_required");
+  if (task.taskId !== b.originalTaskId || job.jobId !== c.originalJobId || p.automationJobId !== job.jobId || job.windowsTaskId !== task.taskId
+    || task.agentId !== b.agentId || job.agentId !== b.agentId || task.adbSerial !== b.serial || job.adbSerial !== b.serial
+    || task.deviceId !== b.deviceId || job.deviceId !== b.deviceId || job.userId !== c.ownerUserId || job.lockId !== c.originalLockId
+    || job.wecomRequestId !== c.requestId || job.sessionId !== "" || p.automationSessionId !== "") fail("identity_mismatch");
+  if (job.wecomMode !== c.mode || p.mode !== c.mode || p.previewOnly !== (c.mode === "preview")
+    || job.wecomAppSlot !== b.appSlot || p.appSlot !== b.appSlot || job.wecomAndroidUser !== b.androidUser || p.androidUser !== b.androidUser
+    || job.wecomDeviceNumber !== c.target.deviceNumber || p.deviceNumber !== c.target.deviceNumber
+    || job.xhsAppSlot !== "" || p.xhsAppSlot !== "") fail("business_mismatch");
+  canonicalRemarks(job.wecomRemarkName, job.wecomDescription);
+  if (typeof job.phoneNumber !== "string" || !/^1[3-9]\d{9}$/.test(job.phoneNumber)
+    || p.phoneNumber !== job.phoneNumber || p.remarkName !== job.wecomRemarkName || p.description !== job.wecomDescription) fail("business_mismatch");
+  const fingerprint = sha([c.mode, sha([job.wecomRemarkName, job.wecomDescription]), job.phoneNumber, b.deviceId, b.androidUser]);
+  if (fingerprint !== c.businessFingerprint) fail("business_fingerprint_mismatch");
+  return fingerprint;
+}
+
+export function createWecomV2ClaimPreparer({ readClaimContext } = {}) {
+  if (typeof readClaimContext !== "function") fail("context_provider_required");
+  const read = () => { let value; try { value = readClaimContext(); } catch { fail("context_unconfirmed"); } return context(value); };
+  // One fixed server attempt. A changed provider cannot silently assign new
+  // execution/nonces on retry; global uniqueness still needs DB CAS/anchor.
+  const fixed = read();
+  return input => {
+    if (!isDeepStrictEqual(fixed, read())) fail("context_changed");
+    if (!exact(input, ["task", "job", "businessLock", "device"])) fail("input_invalid");
+    const { task, job, businessLock: lock, device } = jsonCopy(input), c = fixed, b = c.binding;
+    if (![task, job, lock, device].every(v => v !== null && typeof v === "object" && !Array.isArray(v))) fail("input_invalid");
+    const fingerprint = business(task, job, b, c);
+    if (device.deviceId !== b.deviceId || device.deviceName !== c.target.deviceNumber
+      || device.adb?.serial !== b.serial || device.adb?.agentId !== b.agentId) fail("device_mismatch");
+    // Existing WeCom business lock is physical: appSlot is intentionally "".
+    if (lock.lockId !== c.originalLockId || lock.lockType !== KIND || lock.deviceId !== b.deviceId || lock.taskId !== job.jobId
+      || lock.ownerUserId !== c.ownerUserId || lock.status !== "active" || lock.appSlot !== "" || !canonicalTime(lock.expiresAt)) fail("lock_mismatch");
+    const claimData = { version: 1, claimOperationId: c.claimOperationId, originalJobId: c.originalJobId,
+      originalLockId: c.originalLockId, ownerUserId: c.ownerUserId, requestId: c.requestId,
+      mode: c.mode, businessFingerprint: fingerprint, recordedAt: c.recordedAt, binding: jsonCopy(b) };
+    const nextTask = { ...task, status: "running", pickedAt: c.recordedAt, updatedAt: c.recordedAt,
+      payload: { ...task.payload, physicalCleanup: jsonCopy(b) }, wecomV2Claim: jsonCopy(claimData) };
+    const nextJob = { ...job, status: "running", pickedAt: c.recordedAt, updatedAt: c.recordedAt, wecomV2Claim: jsonCopy(claimData) };
+    const physicalHold = { lockId: b.obligationId, taskId: b.obligationId, lockType: "wecom_physical_cleanup", status: "cleanup_pending",
+      deviceId: b.deviceId, appSlot: b.appSlot, ownerUserId: c.ownerUserId, expiresAt: "", createdAt: c.recordedAt, updatedAt: c.recordedAt,
+      physicalCleanup: { binding: jsonCopy(b), originalJobId: c.originalJobId, originalLockId: c.originalLockId,
+        phase: "awaiting_host", originalTerminalAt: "", hosts: null, hostClosedAt: "", verification: null } };
+    return frozen({ version: 1, protocolPermit: false, durable: false, requiresPersistence: true, requiresPhysicalExclusion: true, requiresLiveChecks: true,
+      physicalKey: b.serial.toLowerCase(), expected: { windowsTask: task, automationJob: job, businessLock: lock },
+      candidate: { windowsTask: nextTask, automationJob: nextJob, businessLock: jsonCopy(lock), physicalHold,
+        protocolState: createWecomV2HostState(b), claimData } });
+  };
+}

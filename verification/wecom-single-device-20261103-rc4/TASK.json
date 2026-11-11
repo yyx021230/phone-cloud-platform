@@ -1,0 +1,19 @@
+{
+  "status": "local_diagnostic_candidate_not_phone_accepted",
+  "baseCommit": "d9951a147215cf83855549ab969683e2dd370f9c",
+  "change": "Record first fixed socket-peer denial facts, preserving all existing checks/revocation/zero-send behavior. No guessed early-close allowance.",
+  "sourceFiles": [
+    "windows-agent/scripts/wecom_qa_socket_peer.py",
+    "windows-agent/scripts/test_wecom_qa_socket_peer.py"
+  ],
+  "actualValidation": {
+    "wecomCollected": 498,
+    "socketTests": 12,
+    "scope": "FullWeCom run before final labels-only requested_peer/unbound naming; final socket12 rerun after naming changes; no behavior gate modified."
+  },
+  "privacy": "Fixed reason/operation/portClass/ownerCount/expectedOwnerPresent/errorType/errno only; never original exception message, customer, credentials or endpoint URL.",
+  "actualRootCause": "Previous native stopped in poco_health; unique first denial remains unconfirmed until a real attempt with fixed diagnostic.",
+  "productionDeploy": false,
+  "sharedAgentAdbLifecycleChanged": false,
+  "review": "Self-review of precise diff in this chat; no cross-thread coordination."
+}

@@ -1,0 +1,246 @@
+{
+  "candidate": "rc5",
+  "sourceRef": "faf9bdca9053f96e6c44ee9860270467777a4257",
+  "deviceNumber": "59",
+  "phase": "unknown_keep_unlisted",
+  "productionApiAccepted": false,
+  "sentInvitations": 0,
+  "sourceFiles": {
+    "native-answer.json": "1c779eeb5fe2659a9c69b82ad12d7e518bb977cb66721b8a94737eb5be215077",
+    "cleanup-original-result.json": "ab8d8eec6581ef36068f03421d58b1ab727c99611dfbf27f29b4326b7ecb3109",
+    "listing-restored.json": "eeb9b7b5f0d5980c598a191bbaa23f4207ecdb7dbdeae582f03975faf0c7c418",
+    "final-state.json": "b17f05a7907ff8175d83dc64117aca781725d52461bba5717ac7e2967929a266"
+  },
+  "native": {
+    "previewStatus": "blocked",
+    "previewCode": "preview_cleanup_unconfirmed",
+    "invitationSent": false,
+    "sendStatus": "not_attempted",
+    "remarkSaveStatus": "not_attempted",
+    "diagnostic": {
+      "wecomExecution": {
+        "version": 1,
+        "phase": "cleanup",
+        "failurePhase": "recipient_search",
+        "elapsedMs": 65030,
+        "cleanupConfirmed": false,
+        "events": [
+          {
+            "version": 1,
+            "step": 9,
+            "phase": "poco_launch",
+            "state": "begin",
+            "elapsedMs": 7125
+          },
+          {
+            "version": 1,
+            "step": 10,
+            "phase": "poco_launch",
+            "state": "end",
+            "elapsedMs": 12030
+          },
+          {
+            "version": 1,
+            "step": 11,
+            "phase": "poco_health",
+            "state": "begin",
+            "elapsedMs": 12030
+          },
+          {
+            "version": 1,
+            "step": 12,
+            "phase": "poco_health",
+            "state": "end",
+            "elapsedMs": 16859
+          },
+          {
+            "version": 1,
+            "step": 13,
+            "phase": "wecom_launch",
+            "state": "begin",
+            "elapsedMs": 16859
+          },
+          {
+            "version": 1,
+            "step": 14,
+            "phase": "wecom_launch",
+            "state": "end",
+            "elapsedMs": 18280
+          },
+          {
+            "version": 1,
+            "step": 15,
+            "phase": "rpc_setup",
+            "state": "begin",
+            "elapsedMs": 18280
+          },
+          {
+            "version": 1,
+            "step": 16,
+            "phase": "rpc_setup",
+            "state": "end",
+            "elapsedMs": 18469
+          },
+          {
+            "version": 1,
+            "step": 17,
+            "phase": "startup_guards",
+            "state": "begin",
+            "elapsedMs": 18469
+          },
+          {
+            "version": 1,
+            "step": 18,
+            "phase": "startup_guards",
+            "state": "end",
+            "elapsedMs": 19109
+          },
+          {
+            "version": 1,
+            "step": 19,
+            "phase": "foreground_wait",
+            "state": "begin",
+            "elapsedMs": 19109
+          },
+          {
+            "version": 1,
+            "step": 20,
+            "phase": "selector_observe",
+            "state": "begin",
+            "elapsedMs": 19702
+          },
+          {
+            "version": 1,
+            "step": 21,
+            "phase": "selector_click",
+            "state": "begin",
+            "elapsedMs": 20234
+          },
+          {
+            "version": 1,
+            "step": 22,
+            "phase": "selector_click",
+            "state": "end",
+            "elapsedMs": 34734
+          },
+          {
+            "version": 1,
+            "step": 23,
+            "phase": "selector_observe",
+            "state": "end",
+            "elapsedMs": 34734
+          },
+          {
+            "version": 1,
+            "step": 24,
+            "phase": "foreground_wait",
+            "state": "end",
+            "elapsedMs": 37016
+          },
+          {
+            "version": 1,
+            "step": 25,
+            "phase": "home_navigation",
+            "state": "begin",
+            "elapsedMs": 37016
+          },
+          {
+            "version": 1,
+            "step": 26,
+            "phase": "home_navigation",
+            "state": "end",
+            "elapsedMs": 47000
+          },
+          {
+            "version": 1,
+            "step": 27,
+            "phase": "recipient_search",
+            "state": "begin",
+            "elapsedMs": 47000
+          },
+          {
+            "version": 1,
+            "step": 28,
+            "phase": "recipient_search",
+            "state": "begin",
+            "elapsedMs": 56750
+          },
+          {
+            "version": 1,
+            "step": 29,
+            "phase": "recipient_search",
+            "state": "error",
+            "elapsedMs": 65030
+          },
+          {
+            "version": 1,
+            "step": 30,
+            "phase": "recipient_search",
+            "state": "end",
+            "elapsedMs": 65030
+          },
+          {
+            "version": 1,
+            "step": 31,
+            "phase": "cleanup",
+            "state": "begin",
+            "elapsedMs": 65030
+          },
+          {
+            "version": 1,
+            "step": 32,
+            "phase": "cleanup",
+            "state": "end",
+            "elapsedMs": 65030,
+            "cleanupConfirmed": false
+          }
+        ]
+      }
+    },
+    "isolation": {
+      "mode": "real_screen_reservation",
+      "resources": {
+        "readerStarted": true,
+        "pid": "16231",
+        "startToken": "36934463",
+        "forwards": [
+          [
+            62261,
+            10080
+          ],
+          [
+            62365,
+            10081
+          ]
+        ],
+        "cleanupConfirmed": false
+      },
+      "productionWindowsTask": false,
+      "primaryFailure": "device_lease_lost",
+      "authorityFailure": "qa_authority_http_denied",
+      "authorityFailureStage": "proof_request",
+      "socketPeer": {
+        "executionConnections": 93,
+        "peerChecks": 687,
+        "revoked": false,
+        "firstDenial": null,
+        "closedForwardCount": 2
+      }
+    }
+  },
+  "hostExitCode": 0,
+  "pipeDrainComplete": true,
+  "manualCleanupConfirmed": true,
+  "listingRestored": true,
+  "final": {
+    "available": true,
+    "online": true,
+    "listingStatus": "listed",
+    "activeResources": {
+      "locks": 0,
+      "tasks": 0,
+      "jobs": 0,
+      "sessions": 0
+    }
+  }
+}

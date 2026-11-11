@@ -1,0 +1,255 @@
+{
+  "branchBase": "3bc97bad7a6901e45a6310d9d95d89ae7cc603c8",
+  "productionLastVerifiedSource": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "productionHistoricalActiveSha256": "a5390dcc93b5f1393e7b95732ca4df679dc5065200f80cf509d96e0f759e2a2f",
+  "comparedFiles": [
+    {
+      "path": "windows-agent/scripts/wecom_call_trace.py",
+      "category": "runtime",
+      "localSha256": "966af961c178fe3a6073d29548e62268a5de9459ec76aaf4fa46ad50fbc24355",
+      "production32cGitSha256": "966af961c178fe3a6073d29548e62268a5de9459ec76aaf4fa46ad50fbc24355",
+      "localEquals32c": true
+    },
+    {
+      "path": "windows-agent/scripts/wecom_cleanup.py",
+      "category": "runtime",
+      "localSha256": "0e6ea92f0cd738492a8e9599bebe08f56e6095d93764ea773d2926fc64a30922",
+      "production32cGitSha256": "0e6ea92f0cd738492a8e9599bebe08f56e6095d93764ea773d2926fc64a30922",
+      "localEquals32c": true
+    },
+    {
+      "path": "windows-agent/scripts/wecom_cleanup_contract.py",
+      "category": "runtime",
+      "localSha256": "aa6f62a3ce376eb12c634b0dd452d617b4feff24414b227eb4fe7a2a4c2822b3",
+      "production32cGitSha256": "aa6f62a3ce376eb12c634b0dd452d617b4feff24414b227eb4fe7a2a4c2822b3",
+      "localEquals32c": true
+    },
+    {
+      "path": "windows-agent/scripts/wecom_cleanup_verify.py",
+      "category": "runtime",
+      "localSha256": "532d4b0529cf44b65a0a776c2410e3887ed77a785714d56cc7318e2adc7e5494",
+      "production32cGitSha256": "532d4b0529cf44b65a0a776c2410e3887ed77a785714d56cc7318e2adc7e5494",
+      "localEquals32c": true
+    },
+    {
+      "path": "windows-agent/scripts/wecom_control_pipe.py",
+      "category": "runtime",
+      "localSha256": "dc17092ebe7770944e900224657b9e1b9a898a90dc27c48599308fa52543502e",
+      "production32cGitSha256": "dc17092ebe7770944e900224657b9e1b9a898a90dc27c48599308fa52543502e",
+      "localEquals32c": true
+    },
+    {
+      "path": "windows-agent/scripts/wecom_customer_invitation.py",
+      "category": "runtime",
+      "localSha256": "5c8a4438318cb10dba2b3ddc0017aff9294aead36e3c99ad5878d0f3465cbd24",
+      "production32cGitSha256": "5c8a4438318cb10dba2b3ddc0017aff9294aead36e3c99ad5878d0f3465cbd24",
+      "localEquals32c": true,
+      "historicalRuntimeSha256": "5c8a4438318cb10dba2b3ddc0017aff9294aead36e3c99ad5878d0f3465cbd24",
+      "historicalRuntimeEquals32c": true
+    },
+    {
+      "path": "windows-agent/scripts/wecom_diagnostics.py",
+      "category": "runtime",
+      "localSha256": "906ca4988f1e332f6bc423f6d230fa42b825294064fb4c8e35aeef8b80284bd2",
+      "production32cGitSha256": "906ca4988f1e332f6bc423f6d230fa42b825294064fb4c8e35aeef8b80284bd2",
+      "localEquals32c": true
+    },
+    {
+      "path": "windows-agent/scripts/wecom_host_identity.py",
+      "category": "runtime",
+      "localSha256": "43c95de5f3ecdcc09094fbf2bb8a02aec7e6b1cce5a77eb9fbe954738ec9fc51",
+      "production32cGitSha256": "43c95de5f3ecdcc09094fbf2bb8a02aec7e6b1cce5a77eb9fbe954738ec9fc51",
+      "localEquals32c": true
+    },
+    {
+      "path": "windows-agent/scripts/wecom_invite_preview.py",
+      "category": "runtime",
+      "localSha256": "f77bc50419eaee27aa46c372132f07eae5ed63dd1d69645778f3b3062a87059c",
+      "production32cGitSha256": "f77bc50419eaee27aa46c372132f07eae5ed63dd1d69645778f3b3062a87059c",
+      "localEquals32c": true,
+      "historicalRuntimeSha256": "f77bc50419eaee27aa46c372132f07eae5ed63dd1d69645778f3b3062a87059c",
+      "historicalRuntimeEquals32c": true
+    },
+    {
+      "path": "windows-agent/scripts/wecom_physical_verify.py",
+      "category": "runtime",
+      "localSha256": "a0096840632976738d01374c6ac7e6d85bd5d3a764a30855cf793b488f79261b",
+      "production32cGitSha256": "a0096840632976738d01374c6ac7e6d85bd5d3a764a30855cf793b488f79261b",
+      "localEquals32c": true
+    },
+    {
+      "path": "windows-agent/scripts/wecom_platform_preview.py",
+      "category": "runtime",
+      "localSha256": "5cb7e5fc041e5dbe62ec57aed4ddbf938d7f684fbab023f9fb86d67cb7cfa8cc",
+      "production32cGitSha256": "5cb7e5fc041e5dbe62ec57aed4ddbf938d7f684fbab023f9fb86d67cb7cfa8cc",
+      "localEquals32c": true,
+      "historicalRuntimeSha256": "5cb7e5fc041e5dbe62ec57aed4ddbf938d7f684fbab023f9fb86d67cb7cfa8cc",
+      "historicalRuntimeEquals32c": true
+    },
+    {
+      "path": "windows-agent/scripts/wecom_preview_devices.json",
+      "category": "runtime",
+      "localSha256": "2eab0e0415e7db2f7c00c8ccf8e55f36cb3987a22c03bdc5aee4b05f6167bc88",
+      "production32cGitSha256": "2eab0e0415e7db2f7c00c8ccf8e55f36cb3987a22c03bdc5aee4b05f6167bc88",
+      "localEquals32c": true
+    },
+    {
+      "path": "windows-agent/scripts/wecom_remark_preview.py",
+      "category": "runtime",
+      "localSha256": "444023f34654ad73642eb5b9ca592b7a60aea06756cf0ca3a4b890e56f2371ea",
+      "production32cGitSha256": "444023f34654ad73642eb5b9ca592b7a60aea06756cf0ca3a4b890e56f2371ea",
+      "localEquals32c": true,
+      "historicalRuntimeSha256": "444023f34654ad73642eb5b9ca592b7a60aea06756cf0ca3a4b890e56f2371ea",
+      "historicalRuntimeEquals32c": true
+    },
+    {
+      "path": "windows-agent/scripts/wecom_rpc_budget.py",
+      "category": "runtime",
+      "localSha256": "b99f85d3d3ebf3611d21f5aecd34ee651a2a0a33fd71b438feef409163dcd4f2",
+      "production32cGitSha256": "b99f85d3d3ebf3611d21f5aecd34ee651a2a0a33fd71b438feef409163dcd4f2",
+      "localEquals32c": true
+    },
+    {
+      "path": "windows-agent/scripts/wecom_startup_guards.py",
+      "category": "runtime",
+      "localSha256": "4c0c76df4c1435b64bd7d7ab627ac007da89c454bfcb5cfa3b90a891fe42be76",
+      "production32cGitSha256": "4c0c76df4c1435b64bd7d7ab627ac007da89c454bfcb5cfa3b90a891fe42be76",
+      "localEquals32c": true
+    },
+    {
+      "path": "windows-agent/scripts/wecom_system_runtime.py",
+      "category": "runtime",
+      "localSha256": "95e87ed27257eaea55f0be8e9c774cdaa020b2770777586719b782b80118316e",
+      "production32cGitSha256": "95e87ed27257eaea55f0be8e9c774cdaa020b2770777586719b782b80118316e",
+      "localEquals32c": true
+    },
+    {
+      "path": "windows-agent/src/wecom-cleanup-protocol.mjs",
+      "category": "runtime",
+      "localSha256": "918dfee2f090e94ad946266d2292fe73d0422a4485e87cdd04cfa522d5dbb9be",
+      "production32cGitSha256": "918dfee2f090e94ad946266d2292fe73d0422a4485e87cdd04cfa522d5dbb9be",
+      "localEquals32c": true,
+      "historicalRuntimeSha256": "918dfee2f090e94ad946266d2292fe73d0422a4485e87cdd04cfa522d5dbb9be",
+      "historicalRuntimeEquals32c": true
+    },
+    {
+      "path": "windows-agent/src/wecom-cleanup-verify.mjs",
+      "category": "runtime",
+      "localSha256": "98213c21acb452458e9a3f06b8abdf6c56abce2a57e2d3fa569f91da69ff9bc2",
+      "production32cGitSha256": "98213c21acb452458e9a3f06b8abdf6c56abce2a57e2d3fa569f91da69ff9bc2",
+      "localEquals32c": true
+    },
+    {
+      "path": "windows-agent/src/wecom-diagnostics.mjs",
+      "category": "runtime",
+      "localSha256": "a134b57bfcad0c5aa510049b605207a6b68c1d2aee05f094f71fc4471c3e213c",
+      "production32cGitSha256": "a134b57bfcad0c5aa510049b605207a6b68c1d2aee05f094f71fc4471c3e213c",
+      "localEquals32c": true
+    },
+    {
+      "path": "windows-agent/src/wecom-preview-task.mjs",
+      "category": "runtime",
+      "localSha256": "2d5fb3354edde14d2673e7c25bc7e9e25e60e8ba3d1e1e76358b675e20847e24",
+      "production32cGitSha256": "2d5fb3354edde14d2673e7c25bc7e9e25e60e8ba3d1e1e76358b675e20847e24",
+      "localEquals32c": true,
+      "historicalRuntimeSha256": "2d5fb3354edde14d2673e7c25bc7e9e25e60e8ba3d1e1e76358b675e20847e24",
+      "historicalRuntimeEquals32c": true
+    },
+    {
+      "path": "windows-agent/src/index.mjs",
+      "category": "runtime",
+      "localSha256": "85b2b2eea012a345f87b455ebbb994ef6ce9dd70b6e1dddc4769594781c29eff",
+      "production32cGitSha256": "85b2b2eea012a345f87b455ebbb994ef6ce9dd70b6e1dddc4769594781c29eff",
+      "localEquals32c": true,
+      "historicalRuntimeSha256": "85b2b2eea012a345f87b455ebbb994ef6ce9dd70b6e1dddc4769594781c29eff",
+      "historicalRuntimeEquals32c": true
+    },
+    {
+      "path": "server/index.mjs",
+      "category": "runtime",
+      "localSha256": "4bcecc8702ea577a77e5f17664b7833ced33b681f88e5beedcdc6875b6f047cc",
+      "production32cGitSha256": "4bcecc8702ea577a77e5f17664b7833ced33b681f88e5beedcdc6875b6f047cc",
+      "localEquals32c": true,
+      "historicalRuntimeSha256": "4bcecc8702ea577a77e5f17664b7833ced33b681f88e5beedcdc6875b6f047cc",
+      "historicalRuntimeEquals32c": true
+    },
+    {
+      "path": "server/wecom-preview.mjs",
+      "category": "runtime",
+      "localSha256": "ec9126e6c85d787f80355df8b5c84fb5c525f8ba746847573c9d5b589779cbaf",
+      "production32cGitSha256": "ec9126e6c85d787f80355df8b5c84fb5c525f8ba746847573c9d5b589779cbaf",
+      "localEquals32c": true,
+      "historicalRuntimeSha256": "ec9126e6c85d787f80355df8b5c84fb5c525f8ba746847573c9d5b589779cbaf",
+      "historicalRuntimeEquals32c": true
+    },
+    {
+      "path": "server/wecom-physical-cleanup.mjs",
+      "category": "runtime",
+      "localSha256": "7fea00c14fcd6df20a30b5492c4c52c244b6dec26bbc5169212d0fcd2e15a07b",
+      "production32cGitSha256": "7fea00c14fcd6df20a30b5492c4c52c244b6dec26bbc5169212d0fcd2e15a07b",
+      "localEquals32c": true,
+      "historicalRuntimeSha256": "7fea00c14fcd6df20a30b5492c4c52c244b6dec26bbc5169212d0fcd2e15a07b",
+      "historicalRuntimeEquals32c": true
+    },
+    {
+      "path": "server/wecom-cleanup-service.mjs",
+      "category": "runtime",
+      "localSha256": "fb594dd7a191bb37f7a2abdf508298059ca4730814f394c491965f0c46c366a0",
+      "production32cGitSha256": "fb594dd7a191bb37f7a2abdf508298059ca4730814f394c491965f0c46c366a0",
+      "localEquals32c": true
+    },
+    {
+      "path": "server/device-occupancy.mjs",
+      "category": "runtime",
+      "localSha256": "4f33caecf089118a2b7e4241f21a763dd83f1b37f42c9d378a6a748a6e49d81a",
+      "production32cGitSha256": "4f33caecf089118a2b7e4241f21a763dd83f1b37f42c9d378a6a748a6e49d81a",
+      "localEquals32c": true
+    },
+    {
+      "path": "public/wecom-integration-api.md",
+      "category": "documentation",
+      "localSha256": "d4d271ddcb1903f16c2ad34f5117f2fb8fd4afc016e4c2d50f33f39347bcb72c",
+      "production32cGitSha256": "226c4d47377edd74cb916c0b457fd5a5a47bf6348f8d74c8f2d2a263ad76bcdb",
+      "localEquals32c": false,
+      "historicalRuntimeSha256": "226c4d47377edd74cb916c0b457fd5a5a47bf6348f8d74c8f2d2a263ad76bcdb",
+      "historicalRuntimeEquals32c": true
+    }
+  ],
+  "runtimeCompared": 26,
+  "runtimeEqual": 26,
+  "documentationDifferent": 1,
+  "initialComparisonFailure": "First blanket equality assertion included the previously committed da8a2c1 API documentation changes; stopped before report write. Runtime comparison remains strict; document difference retained rather than overwritten.",
+  "evidenceSha256": {
+    "verification/wecom-api-native-20261102/RECEIPT.json": "c78b7c25d59c1199e9d83f325134117f8535452e65d014d46db273ed04fc71c5",
+    "verification/wecom-native-followup-20261102/RECEIPT.json": "3c623853e8f28d80f0a2d9cf38b513987d45587749acbf05d0efe0d034e72772",
+    "verification/wecom-native-followup-20261102/INVENTORY_PREFLIGHT.json": "041575a80a07181badf42d75dfb1daa091a7822e8cd773b1c0ca724090431434",
+    "verification/wecom-native-followup-20261102/WINDOWS_PREFLIGHT.json": "9c175b00f4e1bc35bd0e1622b34ab7fb425fed5a84667791d3433c246c4a6f8a",
+    "verification/wecom-native-followup-20261102/CLOUD_RUNTIME_HASHES.json": "aa4d89f1879416373614373f8d5cf918206780623d5117c868e3801ebb1d9b3a",
+    "releases/wecom-platform-20261028-rc.2/RESULTS.json": "bfa95eb21b0eb17e3c3d58c40b33d0dcb0bf1ca14e30d3931880218cd3fa342f",
+    "releases/wecom-platform-20261028-rc.2/MANIFEST.json": "9aafd3333d6bbd95cf9e221f668ee13e3ee8d12d6564acda9bdb66a68c9288d2",
+    "releases/platform-integration-20261102-deployed.1/MANIFEST.json": "7acdae38ed7a4958e8c8611cb6ae472c6b9994e844dbae06d5c6c9d6c6eb86e9",
+    "releases/platform-integration-20261102-rc.1/deployment/AGENT_MANIFEST.json": "7ad822bbf45b2d2b71bc9f491b7e61bcdf01ecc2625adb457a03b8c0f463a06d",
+    "verification/wecom-windows-clock-contract-20261102/ROOT_EXECUTION_RECEIPT.json": "a679b7e9021cebc7fdb9a26e37b998621da6b06209084b2ba374b1099ee0a74b"
+  },
+  "latestInventoryEvidenceUtc": "2026-11-02T09:50:57.678Z",
+  "currentLiveStateNotRead": true,
+  "windowsAdbDevicesOrNewTestsExecuted": false,
+  "v2LeavesNotImportedIntoProductionEntry": true,
+  "standaloneQaLocalSourceSha256": {
+    "windows-agent/scripts/wecom_standalone_preview.py": "42acefbf982dacd5a8c4646ccc3cc28c0720790b30e4e941e62521e7c23b8e3f",
+    "windows-agent/scripts/wecom_standalone_cleanup.py": "9774440cfbc9802866d489d3405d55456c4dac7dd570712c76614abdf0abb460",
+    "windows-agent/scripts/wecom_screen_lease.py": "a9defa300a53b50fcc4006acab3655bbe1718a805684bb3a63036a6d1d5f2afe",
+    "scripts/qa/wecom_qa_access.py": "25c43c2fec7b3916c3c3b105fbd0b18504c28fa2768840d809e137cd64b5d1d2",
+    "scripts/qa/wecom_cloud_reader.mjs": "8730ed682834979c9c8c65c88318caa704ba97353181b21f0ea34e06dd42be38",
+    "scripts/qa/wecom_candidate_live.py": "ee3a3111b6bada90ef1d9153d23e7796c0faf11580a666d0f52dbdae2fdfe7f3",
+    "scripts/qa/wecom_qa_proof.py": "22797e2cfc4b2fa8aff6fb5b58fe40b4f07f3efec8d66cd697ade95927119c49",
+    "scripts/qa/wecom_candidate_host.mjs": "3741fd733fa0f3a1b501a8b376453cfadf8a8ebaaeebf68ef1a1234d29096a29",
+    "scripts/qa/wecom_staging_process.py": "97bdc7308331b618acac6fd9b9f6fcd3bbd2e8c70fca875a70b3e03a4671e453"
+  },
+  "freshSnapshotBlocked": {
+    "fixedLegacyCloudMasterPresent": false,
+    "noFallbackLoginAttempted": true,
+    "currentOccupancy": "unknown",
+    "noWindowsMasterUsed": true
+  }
+}

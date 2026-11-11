@@ -1,0 +1,156 @@
+{
+  "status": "formal_single_passed_with_explicit_limits",
+  "phone": "140",
+  "slot": "app1",
+  "jobId": "5c82861c-c28c-4c34-8cb2-c9c9f68a601f",
+  "windowsTaskId": "a0311834-dd3e-49b9-b9e8-6517b92996a9",
+  "clientRequestId": "release-20261102-140-app1-32c0091-01",
+  "integrationRef": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "collectorSha256": "c4f0fd8cb50bd87085de18d781d52c52bb49cf9537abf11094e9592cafb3a179",
+  "agentEvidence": "root confirmed prep3/POSTCHECK_STDOUT14:12:56 SYSTEM19756 +WINDOWS_BOUNDED_LOG14:15:04 and14:17audit unchangedADB8148; automation inventory fresh<90s before POST",
+  "postCount": 34,
+  "elapsedMs": 369024,
+  "collectorDurationMs": 350352,
+  "pureElementTwoPassChecks": {
+    "present": true,
+    "noteCount": 34,
+    "status": "succeeded",
+    "checks": {
+      "apiComplete": true,
+      "legalStop": true,
+      "slotMatches": true,
+      "datesSpan30": true,
+      "datesInWindow": true,
+      "descendingDates": true,
+      "uniqueIdentities": true,
+      "bothCounts": true,
+      "bothHashes": true,
+      "twoPassVerified": true,
+      "verificationBoundary": true,
+      "elementReaderMarker": true,
+      "noOcrMarker": true
+    },
+    "calculatedHash": "8c265bd012389558b837206e21e4b609528213314b16b2d0a3905f0fc3e00b3b",
+    "verifiedComplete": true,
+    "limits": [
+      "Native marker is supporting evidence; final pure-element proof also needs deployed runtime hash.",
+      "No claim about posts hidden by server or independently verified actual login identity."
+    ]
+  },
+  "databaseChecks": {
+    "queriedAt": "2026-11-02T06:26:28.917016+00:00",
+    "checks": {
+      "dbJobFound": true,
+      "dbWindowsTaskFound": true,
+      "jobTerminal": true,
+      "windowsTaskTerminal": true,
+      "jobCollectionEqualsApi": true,
+      "windowsTaskCollectionEqualsApi": true,
+      "repeatedApiCollectionEqual": true,
+      "bindingDevice": true,
+      "bindingSlot": true,
+      "bindingXhsId": true,
+      "bindingReference": true,
+      "exactLinkedTask": true,
+      "ownLockReleased": true
+    },
+    "allChecks": true,
+    "canonicalCollectionSha256": "455dcc71d29290c55f04a460b626ee74df16fb9ed90a3f763f2bd169efa14b19",
+    "dbJobCollectionSha256": "455dcc71d29290c55f04a460b626ee74df16fb9ed90a3f763f2bd169efa14b19",
+    "dbWindowsCollectionSha256": "455dcc71d29290c55f04a460b626ee74df16fb9ed90a3f763f2bd169efa14b19",
+    "locks": [
+      {
+        "lockId": "b8ed3520-f7d9-4c77-9026-0af29ea617d6",
+        "status": "released",
+        "expiresAt": "2026-11-02T06:40:27.89+00:00",
+        "taskId": "5c82861c-c28c-4c34-8cb2-c9c9f68a601f",
+        "appSlot": "app1",
+        "releasedAt": "2026-11-02T06:25:36.996Z",
+        "releaseReason": "succeeded"
+      }
+    ]
+  },
+  "deviceAfter": {
+    "deviceId": "adb:748eb8bd",
+    "deviceName": "140",
+    "busy": false,
+    "occupancy": null,
+    "screenControlBusy": false,
+    "screenSession": null,
+    "adbOnline": true,
+    "automationCheckedAt": "2026-11-02T06:25:14.218Z"
+  },
+  "realPhoneTaskPosts": 1,
+  "externalBatchesCreated": 0,
+  "cleanupEvidenceStatus": "Normal production consumer/execFile/finally completed; API/PG lock released; later bounded task-specific Windows process and ledger census is empty. Historical per-PID exit and extra live phone-setting readback are not claimed.",
+  "limits": [
+    "This single formal job is not natural02:00 batch or100account run.",
+    "Configured snapshot identity was checked; actual logged-in XHS ID was not independently reread.",
+    "New notification/login-error/integrity-recovery branches did not naturally trigger in this successful run.",
+    "Visible ordered list/boundary is verified, not unseen server posts or95percent daily guarantee.",
+    "PG SIGABRT initial cause remains unknown.",
+    "Cleanup probe does not prove all historical descendants exited and did not independently reread phone settings."
+  ],
+  "releaseIdentity": {
+    "receiptCommit": "40f962a335a79c708472d205c457adae64ce7787",
+    "deployedTag": "platform-integration-20261102-deployed.1",
+    "runtimeSourceCommit": "32c0091a534aa7f9038deb91aa33f202f72e0e6b"
+  },
+  "cleanupWitness": {
+    "at": "2026-11-02T06:27:39.0033942Z",
+    "sourceSha256": "73263dae4d28fd789be50c3bf46a63acb7ef0225b72bbc5b03a583abe31ad1ce",
+    "copy": "FORMAL_140_WINDOWS_CLEANUP_WITNESS.json",
+    "currentMatchingPythonCount": 0,
+    "settingsLedgerCount": 0,
+    "cacheFileCount": 0,
+    "historicalHostPidRecorded": false,
+    "phoneSettingsReadBackByProbe": false,
+    "adbClientCalls": 0,
+    "phoneActions": 0,
+    "limits": [
+      "No recorded historical hostPid; not a per-PID historic exit proof or exhaustive descendant census.",
+      "Probe did not issue independent new phone settings reads. Normal consumer finally contains restoration checks; no fixed restoration error was found in bounded task logs."
+    ]
+  },
+  "updatedAt": "2026-11-02T06:29:44.862627+00:00",
+  "windowsCleanupSidecar": {
+    "at": "2026-11-02T06:27:39.0033942Z",
+    "deviceNumber": 140,
+    "taskId": "a0311834-dd3e-49b9-b9e8-6517b92996a9",
+    "jobId": "5c82861c-c28c-4c34-8cb2-c9c9f68a601f",
+    "agentPid": 19756,
+    "agentOwner": "NT AUTHORITY\\SYSTEM",
+    "matchingCurrentPythonProcesses": [],
+    "targetSettingsLedgerCount": 0,
+    "targetCacheFileCount": 0,
+    "collectorSha256": "c4f0fd8cb50bd87085de18d781d52c52bb49cf9537abf11094e9592cafb3a179",
+    "boundedLogTail": 8000,
+    "logTailEarliest": "2026-11-02T06:17:00.1410000Z",
+    "logTailLatest": "2026-11-02T06:27:38.7240000Z",
+    "targetLogRows": [
+      {
+        "at": "2026-11-02T06:19:27.6670000Z",
+        "category": "task picked",
+        "taskId": "a0311834-dd3e-49b9-b9e8-6517b92996a9",
+        "type": "xhs_data_collect"
+      },
+      {
+        "at": "2026-11-02T06:25:36.6960000Z",
+        "category": "post-task device scan skipped",
+        "taskId": "a0311834-dd3e-49b9-b9e8-6517b92996a9",
+        "type": "xhs_data_collect",
+        "reason": "device_inventory_unchanged"
+      }
+    ],
+    "unparsedTargetRows": 0,
+    "historicalHostPidRecordedByThisProbe": false,
+    "phoneSettingsReadBackByThisProbe": false,
+    "adbClientCalls": 0,
+    "phoneActions": 0,
+    "rawLogOrCollectedContentExposed": false
+  },
+  "sourceReceipts": {
+    "/Users/yyx/ztqc/phone-cloud-platform/windows-agent/data/xhs-integration-review-20261102/FORMAL_140_ACCEPTANCE.json": "a811da7ea4cf4699ad45ea2ff413f2487888782aae91fe497595e5598f91fbfb",
+    "/private/tmp/pc-wecom-deploy-readonly-20261102/DIAGNOSE_140_RELEASE.json": "73263dae4d28fd789be50c3bf46a63acb7ef0225b72bbc5b03a583abe31ad1ce"
+  }
+}

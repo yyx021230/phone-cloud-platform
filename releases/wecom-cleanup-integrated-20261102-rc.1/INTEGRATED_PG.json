@@ -1,0 +1,8 @@
+{
+  "codeCommit": "0d4f1a29f37db1b4a8f7029d803f8987eb59179d",
+  "scope": "fixed integrated local code; physical facts simulated; no SYSTEM positive acceptance",
+  "productionConnections": 0,
+  "phoneActions": 0,
+  "exitCode": 0,
+  "summary": "MODE structured\n\u2714 actual HTTP: unknown cleanup blocks same phone, survives restart/archive, proof commits before release (931.457584ms)\n\u2139 actual isolated PostgreSQL: HTTP + process restart + archive + transaction rollback\n\u2139 tests 1\n\u2139 suites 0\n\u2139 pass 1\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 1036.088583\nMODE snapshot-only\n\u2714 actual HTTP: unknown cleanup blocks same phone, survives restart/archive, proof commits before release (2242.780083ms)\n\u2139 actual isolated PostgreSQL: HTTP + process restart + archive + transaction rollback\n\u2139 tests 1\n\u2139 suites 0\n\u2139 pass 1\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 2387.909\nMODE dual-write\n\u2714 actual HTTP: unknown cleanup blocks same phone, survives restart/archive, proof commits before release (1757.966291ms)\n\u2139 actual isolated PostgreSQL: HTTP + process restart + archive + transaction rollback\n\u2139 tests 1\n\u2139 suites 0\n\u2139 pass 1\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 1878.610375\n"
+}

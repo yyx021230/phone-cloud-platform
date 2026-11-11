@@ -1,8 +1,9 @@
+import {hasConfirmedLookupStop} from './lookup-stop-proof.mjs';
 import {jobEvidence} from './lookup-admin-console.mjs';
 import {preparationFailureEvidence} from './lookup-device-availability.mjs';
 import crypto from 'node:crypto';
 import {lookupPageRecoveryExhausted} from './automation-center.mjs';
-import {lookupFailureDomain,lookupKilledExecution,lookupTerminalResultReason} from './lookup-failure-domain.mjs';
+import {lookupFailureDomain,lookupKilledExecution,lookupTerminalResultReason,lookupCleanupUnconfirmed} from './lookup-failure-domain.mjs';
 import {lookupAccountOfflineEvidence,latestAccountWork} from './lookup-account-offline.mjs';
 import {holdManagedLookupDispatch} from './managed-lookup-delivery.mjs';
 import {MANAGED_LOOKUP_PROTOCOL} from './managed-lookup-store.mjs';
@@ -25,6 +26,7 @@ export function createManagedLookupAdapter(api){
     catch(cause){throw Object.assign(new Error('managed_lookup_persistence_failed',{cause}),{code:'managed_lookup_persistence_failed'});}
   }
   return {
+    readerCapacityGroup(id){const agentId=state.devices.find(d=>d.deviceId===id)?.adb?.agentId;return agentId?`agent:${agentId}`:'';},
     aiEvidence(c,r){
       const session=state.automationSessions.find(s=>s.sessionId===c.sessionId);
       const job=latestAccountWork(state.automationJobs,c.sessionId),task=state.windowsTasks.find(t=>t.taskId===job?.windowsTaskId);
@@ -54,7 +56,7 @@ export function createManagedLookupAdapter(api){
       const before=structuredClone(session);tx.onRollback(()=>{for(const k of Object.keys(session))delete session[k];Object.assign(session,before);});
       const existing=session.results?.find(x=>x.resultId===c.queryId);
       if(!existing||existing.status!=='needs_recovery')throw managedLookupError('lookup_ai_state_changed',409);
-      api.result(session,job,{status:r.status,name:r.name,realNameTailCharacter:r.name?.match(/[（(]\*+(?:·\*+)*([\u3400-\u9fff])[）)]$/u)?.[1]||'',stage:r.name?'已取得姓名':'未取得姓名',errorCode:'',aiResolution:{source:'query_compatibility_screenshot',at:r.completedAt,evidenceId:binding.evidenceId}});
+      api.result(session,job,{status:r.status,name:r.name,realNameTailCharacter:r.name?.match(/[（(]\*+(?:·\*+)*([\u3400-\u9fff])[）)]$/u)?.[1]||'',stage:r.status==='failed'?'结果证据不足，未确认姓名':r.name?'已取得姓名':'未取得姓名',errorCode:r.status==='failed'?r.code||'lookup_result_unconfirmed':'',aiResolution:{source:'query_compatibility_screenshot',at:r.completedAt,evidenceId:binding.evidenceId}});
       session.updatedAt=r.completedAt;
       await persist(tx,{automationSession:session});
     },
@@ -84,6 +86,20 @@ export function createManagedLookupAdapter(api){
       return !d||!api.online(d)||!a||a.enabled===false||!Number.isFinite(Date.parse(a.lastSeenAt))||Date.now()-Date.parse(a.lastSeenAt)>api.onlineMs;
     },
     screenActive: c => Boolean(api.screenActive(c.deviceId)),
+    runtimeLoss(c){
+      const s=state.automationSessions.find(s=>s.sessionId===c.sessionId&&s.deviceId===c.deviceId&&s.managedLookupGeneration===c.generation);
+      const j=state.automationJobs.find(j=>j.jobId===s?.pendingJobId),t=state.windowsTasks.find(t=>t.taskId===j?.windowsTaskId);
+      const d=state.devices.find(d=>d.deviceId===c.deviceId),a=state.windowsAgents.find(a=>a.agentId===d?.adb?.agentId),report=a?.lookupExecutionReport;
+      if(!s||!j||!t||!['running','stalled'].includes(t.status)||!t.delivery?.ackedAt||!t.delivery.lookupRuntimeId||j.source!=='managed-api'||j.clientId!==c.clientId
+        ||j.deviceId!==c.deviceId||j.sessionId!==c.sessionId||t.deviceId!==c.deviceId||t.agentId!==a?.agentId
+        ||t.payload?.automationSessionId!==c.sessionId||t.payload?.managedLookup?.generation!==c.generation
+        ||!/^alipay_name_(start|query|switch|stop)$/.test(t.type)||j.kind!==t.type
+        ||(j.kind==='alipay_name_query'&&(j.resultId||j.jobId)!==c.queryId)
+        ||!a?.lookupRuntimeId||a.lookupRuntimeId===t.delivery.lookupRuntimeId||this.isOffline(c)
+        ||report?.runtimeId!==a.lookupRuntimeId||!Number.isFinite(report.receivedAt)||Date.now()-report.receivedAt<0||Date.now()-report.receivedAt>=15000
+        ||!Array.isArray(report.activeTaskIds)||report.activeTaskIds.includes(t.taskId))return null;
+      return {taskId:t.taskId,runtimeId:a.lookupRuntimeId};
+    },
     canStop:c=>{const d=state.devices.find(d=>d.deviceId===c.deviceId);return !!d&&api.online(d);},
     clientValid:id=>Boolean(userFor(id)),
     clientOptions:()=>api.clientIds().filter(id=>userFor(id)),
@@ -126,11 +142,12 @@ export function createManagedLookupAdapter(api){
       const completed=result&&['succeeded','not_found'].includes(result.status)?{result}:{};
       const job=state.automationJobs.find(j=>j.jobId===s.pendingJobId);
       if(s.pendingJobId){const task=state.windowsTasks.find(t=>t.taskId===job?.windowsTaskId);if(!task||['stalled','expired'].includes(task.status)||!api.online(state.devices.find(d=>d.deviceId===c.deviceId)))return {...completed,unknown:true};return {...completed,busy:true,switching:s.status==='switching'};}
+      if(s.status==='stopping'&&s.lookupStopFailure)return {...completed,stopUnconfirmed:true,stopJobId:s.lookupStopFailure.jobId,ready:false};
       const accountOffline=lookupAccountOfflineEvidence(latestAccountWork(state.automationJobs,c.sessionId),s);
-      if(accountOffline)return {...completed,accountOffline,stopped:s.status==='ended'||s.status==='failed',ready:false};
+      if(accountOffline)return {...completed,accountOffline,stopped:s.status==='ended'&&hasConfirmedLookupStop(s,c),ready:false};
       // A confirmed terminal session overrides historical per-result prompts.
       // Expiry alone still cannot prove that a device stopped.
-      if(['ended','expired','failed'].includes(s.status))return {...completed,stopped:s.status!=='expired',startFailed:!c.queryId,ready:false};
+      if(['ended','expired','failed'].includes(s.status))return {...completed,stopped:s.status==='ended'&&hasConfirmedLookupStop(s,c),startFailed:!c.queryId,ready:false};
       if(s.status==='needs_human_verification'||s.startupHumanVerification?.status==='needs_human_verification'||result?.status==='needs_human_verification')return {...completed,human:true};
       // Only the exact failed task can authorize a handoff. Do not turn an
       // unknown/running task or a stale generation into an automatic replay.
@@ -146,14 +163,20 @@ export function createManagedLookupAdapter(api){
         const terminal=failed?.kind==='alipay_name_query'&&failed.status==='failed'&&task?.status==='failed'&&c.queryId&&(failed.resultId||failed.jobId)===c.queryId;
         const rawReason=failed?.result?.diagnostic?.runnerReason;
         const reason=lookupPageRecoveryExhausted(failed)?'poco_query_page_recovery_failed':['local_lookup_result_unconfirmed:ocr_reader_timeout','local_lookup_result_unconfirmed:observation_budget_exhausted','local_lookup_result_unconfirmed:visual_network_busy','local_lookup_result_unconfirmed:network_refresh_exhausted'].includes(rawReason)?rawReason:'';
-        return {...completed,recovery:true,postHumanPageUnknown:failed?.postHumanCheck===true&&failed?.result?.errorCode==='alipay_lookup_result_unconfirmed',...(terminal?{recoveryFailure:{jobId:failed.jobId,identity:this.readinessIdentity(c),reason,domain:lookupFailureDomain(failed),canResume:!/(?:foreground_changed|poco_query_resume_state_mismatch:)/.test(rawReason||'')}}:{})};
+        return {...completed,recovery:true,postHumanPageUnknown:failed?.postHumanCheck===true&&failed?.result?.errorCode==='alipay_lookup_result_unconfirmed',...(terminal?{recoveryFailure:{jobId:failed.jobId,identity:this.readinessIdentity(c),reason,domain:lookupFailureDomain(failed),canResume:!lookupCleanupUnconfirmed(failed)&&!/(?:foreground_changed|poco_query_resume_state_mismatch:)/.test(rawReason||'')}}:{})};
       }
       if(result)return {result,exhausted:s.requiresAccountSwitch===true,ready:s.status==='ready'};
       return {ready:s.status==='ready',exhausted:s.requiresAccountSwitch===true};
     },
-    async quarantineRoundStop(c,tx){
+    async fenceCleanupWait(c,tx,reason){
+      if(!['lookup_processing_timeout','lookup_cancelled','lookup_round_stopped','lookup_recovery_exhausted','lookup_manual_wait_expired','lookup_ai_result_cleanup','lookup_ai_probe_cleanup'].includes(reason))throw managedLookupError('managed_cleanup_reason_invalid',409);
       const session=state.automationSessions.find(s=>s.sessionId===c.sessionId&&s.deviceId===c.deviceId);
-      if((!c.roundStopPreparationId&&c.offlineHandoffSince===undefined&&c.offlineHandoffAt===undefined)||!session||session.managedLookupGeneration!==c.generation)throw managedLookupError('managed_stop_fence_binding_missing',409);
+      if(session?.status!=='stopping'||!session.lookupStopFailure)throw managedLookupError('managed_cleanup_failure_missing',409);
+      return this.quarantineRoundStop(c,tx,reason);
+    },
+    async quarantineRoundStop(c,tx,cleanupReason=''){
+      const session=state.automationSessions.find(s=>s.sessionId===c.sessionId&&s.deviceId===c.deviceId);
+      if((!cleanupReason&&!c.roundStopPreparationId&&c.offlineHandoffSince===undefined&&c.offlineHandoffAt===undefined)||!session||session.managedLookupGeneration!==c.generation)throw managedLookupError('managed_stop_fence_binding_missing',409);
       const done=new Set(['succeeded','failed','cancelled','expired']);
       const jobs=state.automationJobs.filter(j=>j.sessionId===c.sessionId&&j.deviceId===c.deviceId&&/^alipay_name_(start|query|switch|stop)$/.test(j.kind)&&!done.has(j.status));
       const tasks=state.windowsTasks.filter(t=>t.deviceId===c.deviceId&&t.payload?.automationSessionId===c.sessionId&&t.payload?.managedLookup?.generation===c.generation&&/^alipay_name_(start|query|switch|stop)$/.test(t.type)&&!done.has(t.status));
@@ -165,7 +188,7 @@ export function createManagedLookupAdapter(api){
       }
       const affected=[session,...jobs,...tasks],copies=affected.map(x=>structuredClone(x));
       tx.onRollback(()=>affected.forEach((x,i)=>{for(const k of Object.keys(x))delete x[k];Object.assign(x,copies[i]);}));
-      const reason=c.roundStopPreparationId?'lookup_round_stopped':'lookup_device_offline_reassigned';
+      const reason=cleanupReason||(c.roundStopPreparationId?'lookup_round_stopped':'lookup_device_offline_reassigned');
       for(const j of jobs)api.cancelJob(j,reason,{releaseLock:false});
       // Includes leased or handover-pending tasks whose job record is absent.
       // Terminal task guards already reject late payload/ACK/status delivery.
@@ -174,12 +197,26 @@ export function createManagedLookupAdapter(api){
       await persist(tx,{automationSession:session,automationJobs:jobs,windowsTasks:tasks});
     },
     async stop(c,tx){
-      const mark=checkpoint(tx);const track=fn=>{try{return fn();}finally{mark();}};const s=state.automationSessions.find(s=>s.sessionId===c.sessionId);if(!s)return;
-      const old=structuredClone(s);tx.onRollback(()=>Object.assign(s,old));let cancelledJob=null,cancelledTask=null;
-      if(s.pendingJobId){const job=state.automationJobs.find(j=>j.jobId===s.pendingJobId);if(job){const copy=structuredClone(job),task=state.windowsTasks.find(t=>t.taskId===job.windowsTaskId),taskCopy=task&&structuredClone(task);tx.onRollback(()=>{Object.assign(job,copy);if(task)Object.assign(task,taskCopy);});api.cancelJob(job,'managed_pool_stopping',{releaseLock:false});cancelledJob=job;cancelledTask=task;}}
+      const s=state.automationSessions.find(s=>s.sessionId===c.sessionId);if(!s)return;
+      // A stale channel must not cancel a newer execution or create a stop for
+      // another phone. Validate the complete binding before any state mutation.
+      const pending=s.pendingJobId?state.automationJobs.find(j=>j.jobId===s.pendingJobId):null;
+      const pendingTask=pending?.windowsTaskId?state.windowsTasks.find(t=>t.taskId===pending.windowsTaskId):null;
+      if(typeof c.generation!=='string'||!c.generation||!c.clientId||s.deviceId!==c.deviceId
+        ||s.managedLookupGeneration!==c.generation||s.clientId!==c.clientId||s.source!=='managed-api'
+        ||(s.pendingJobId&&(!pending||pending.deviceId!==c.deviceId||pending.sessionId!==c.sessionId
+          ||pending.clientId!==c.clientId||pending.source!=='managed-api'||!/^alipay_name_(start|query|switch|stop)$/.test(pending.kind)
+          ||(pending.windowsTaskId&&!pendingTask)))
+        ||(pendingTask&&(pendingTask.deviceId!==c.deviceId||pendingTask.type!==pending.kind
+          ||pendingTask.payload?.automationJobId!==pending.jobId||pendingTask.payload?.automationSessionId!==c.sessionId
+          ||pendingTask.payload?.managedLookup?.generation!==c.generation)))throw managedLookupError('managed_stop_binding_mismatch',409);
       const device=state.devices.find(d=>d.deviceId===c.deviceId);
       if(!device||!api.online(device))throw managedLookupError('managed_stop_requires_online',503);
-      const job=track(()=>api.createJob({kind:'alipay_name_stop',userId:s.userId,deviceId:c.deviceId,sessionId:c.sessionId}));tag(c,job);s.status='stopping';s.pendingJobId=job.jobId;const task=track(()=>api.queueTask(device,job));holdManagedLookupDispatch(task,tx);mark();await persist(tx,{automationSession:s,automationJob:job,windowsTask:task,automationJobs:cancelledJob?[cancelledJob]:[],windowsTasks:cancelledTask?[cancelledTask]:[]});
+      const mark=checkpoint(tx);const track=fn=>{try{return fn();}finally{mark();}};
+      const restore=(target,copy)=>{for(const key of Object.keys(target))delete target[key];Object.assign(target,copy);};
+      const old=structuredClone(s);tx.onRollback(()=>restore(s,old));let cancelledJob=null,cancelledTask=null;
+      if(pending){const copy=structuredClone(pending),taskCopy=pendingTask&&structuredClone(pendingTask);tx.onRollback(()=>{restore(pending,copy);if(pendingTask)restore(pendingTask,taskCopy);});api.cancelJob(pending,'managed_pool_stopping',{releaseLock:false});cancelledJob=pending;cancelledTask=pendingTask;}
+      const job=track(()=>api.createJob({kind:'alipay_name_stop',userId:s.userId,deviceId:c.deviceId,sessionId:c.sessionId}));tag(c,job);delete s.lookupStopFailure;delete s.lookupStopConfirmation;s.status='stopping';s.pendingJobId=job.jobId;const task=track(()=>api.queueTask(device,job));holdManagedLookupDispatch(task,tx);mark();await persist(tx,{automationSession:s,automationJob:job,windowsTask:task,automationJobs:cancelledJob?[cancelledJob]:[],windowsTasks:cancelledTask?[cancelledTask]:[]});
     }
   };
 }

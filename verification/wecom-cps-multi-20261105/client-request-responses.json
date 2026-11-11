@@ -1,0 +1,798 @@
+[
+  {
+    "request": {
+      "method": "POST",
+      "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+      "body": {
+        "lead_id": 61105202,
+        "phone": "136****6441",
+        "wecom_phone": "13067238489",
+        "wecom_corp_id": "local_test_corp",
+        "wecom_userid": "local_test_member_202",
+        "app_id": "cps_local_dev_20261105",
+        "timestamp": 1793849308126,
+        "nonce": "cacf33e8c37a5b0fe4755d700ced2428",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "http_status": 200,
+      "body": {
+        "result": null,
+        "timestamp": 1793849308143,
+        "success": true,
+        "code": 200,
+        "message": "已接收"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "POST",
+      "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+      "body": {
+        "lead_id": 61106202,
+        "phone": "136****6441",
+        "wecom_phone": "13067238489",
+        "wecom_corp_id": "local_test_corp",
+        "wecom_userid": "local_test_member_202",
+        "app_id": "cps_local_dev_20261105",
+        "timestamp": 1793849308186,
+        "nonce": "0fb68c69277e691afa26deb55c18b5bf",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "http_status": 200,
+      "body": {
+        "result": null,
+        "timestamp": 1793849308286,
+        "success": true,
+        "code": 200,
+        "message": "已接收（本地预览，不发送邀请）"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "POST",
+      "url": "http://192.168.10.119:8797/api/v1/lead/devices/query",
+      "body": {
+        "online_only": false,
+        "app_id": "cps_local_dev_20261105",
+        "timestamp": 1793849413822,
+        "nonce": "975866de5bf7415be93b7f00fd4d0cfd",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "http_status": 200,
+      "body": {
+        "result": {
+          "devices": [
+            {
+              "device_number": "200",
+              "device_name": "200号本地测试手机",
+              "online": true,
+              "adb_online": true,
+              "agent_online": true,
+              "listed": true,
+              "busy": false,
+              "busy_reason": "",
+              "occupancy": null,
+              "accounts": [
+                {
+                  "app_slot": "main",
+                  "binding_verified": true,
+                  "enabled": true,
+                  "wecom_phone": "17508437040",
+                  "available": true,
+                  "unavailable_reason": ""
+                }
+              ],
+              "available": true,
+              "unavailable_reason": "",
+              "last_seen_at": "2026-11-05T03:30:13.919Z",
+              "adb_last_seen_at": "2026-11-05T03:30:13.919Z"
+            },
+            {
+              "device_number": "202",
+              "device_name": "202号本地测试手机",
+              "online": true,
+              "adb_online": true,
+              "agent_online": true,
+              "listed": true,
+              "busy": false,
+              "busy_reason": "",
+              "occupancy": null,
+              "accounts": [
+                {
+                  "app_slot": "main",
+                  "binding_verified": true,
+                  "enabled": true,
+                  "wecom_phone": "13067238489",
+                  "available": true,
+                  "unavailable_reason": ""
+                }
+              ],
+              "available": true,
+              "unavailable_reason": "",
+              "last_seen_at": "2026-11-05T03:30:13.919Z",
+              "adb_last_seen_at": "2026-11-05T03:30:13.919Z"
+            }
+          ],
+          "total": 2,
+          "updated_at": "2026-11-05T03:30:13.919Z",
+          "capacity": {
+            "limit": 2,
+            "active": 0,
+            "remaining": 2
+          }
+        },
+        "timestamp": 1793849413919,
+        "success": true,
+        "code": 200,
+        "message": "查询成功"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "POST",
+      "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+      "body": {
+        "lead_id": 61106200,
+        "phone": "136****6441",
+        "wecom_phone": "17508437040",
+        "wecom_corp_id": "local_test_corp",
+        "wecom_userid": "local_test_member_200",
+        "app_id": "cps_local_dev_20261105",
+        "timestamp": 1793849413958,
+        "nonce": "53a7f098f7f65cde4b97044d24fb4be8",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "http_status": 200,
+      "body": {
+        "result": null,
+        "timestamp": 1793849414030,
+        "success": true,
+        "code": 200,
+        "message": "已接收（本地预览，不发送邀请）"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "POST",
+      "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+      "body": {
+        "lead_id": 61106202,
+        "phone": "136****6441",
+        "wecom_phone": "13067238489",
+        "wecom_corp_id": "local_test_corp",
+        "wecom_userid": "local_test_member_202",
+        "app_id": "cps_local_dev_20261105",
+        "timestamp": 1793849414068,
+        "nonce": "43aa6b0e0b435c5ca4592c3fc5f80048",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "http_status": 200,
+      "body": {
+        "result": null,
+        "timestamp": 1793849414079,
+        "success": true,
+        "code": 200,
+        "message": "已接收"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "POST",
+      "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+      "body": {
+        "lead_id": 61107200,
+        "phone": "136****6441",
+        "wecom_phone": "17508437040",
+        "wecom_corp_id": "local_test_corp",
+        "wecom_userid": "local_test_member_200",
+        "app_id": "cps_local_dev_20261105",
+        "timestamp": 1793849742005,
+        "nonce": "1c849b72c18215893be1858fdf2fcb4c",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "http_status": 200,
+      "body": {
+        "result": null,
+        "timestamp": 1793849742119,
+        "success": true,
+        "code": 200,
+        "message": "已接收（本地预览，不发送邀请）"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "POST",
+      "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+      "body": {
+        "lead_id": 61108202,
+        "phone": "136****6441",
+        "wecom_phone": "13067238489",
+        "wecom_corp_id": "local_test_corp",
+        "wecom_userid": "local_test_member_202",
+        "app_id": "cps_local_dev_20261105",
+        "timestamp": 1793849742158,
+        "nonce": "5424f9a98f4e2ae124e28db82fff146f",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "http_status": 200,
+      "body": {
+        "result": null,
+        "timestamp": 1793849742227,
+        "success": true,
+        "code": 200,
+        "message": "已接收（本地预览，不发送邀请）"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "POST",
+      "url": "http://192.168.10.119:8797/api/v1/lead/devices/query",
+      "body": {
+        "online_only": false,
+        "app_id": "cps_local_dev_20261105",
+        "timestamp": 1793849790754,
+        "nonce": "9c3cbc94d8b241e2c5a228a0a3c48293",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "http_status": 200,
+      "body": {
+        "result": {
+          "devices": [
+            {
+              "device_number": "200",
+              "device_name": "200号本地测试手机",
+              "online": true,
+              "adb_online": true,
+              "agent_online": true,
+              "listed": true,
+              "busy": true,
+              "busy_reason": "local_preview_running",
+              "occupancy": {
+                "type": "automation",
+                "label": "企微本地预览"
+              },
+              "accounts": [
+                {
+                  "app_slot": "main",
+                  "binding_verified": true,
+                  "enabled": true,
+                  "wecom_phone": "17508437040",
+                  "available": false,
+                  "unavailable_reason": "device_busy"
+                }
+              ],
+              "available": false,
+              "unavailable_reason": "device_busy",
+              "last_seen_at": "2026-11-05T03:36:30.834Z",
+              "adb_last_seen_at": "2026-11-05T03:36:30.834Z"
+            },
+            {
+              "device_number": "202",
+              "device_name": "202号本地测试手机",
+              "online": true,
+              "adb_online": true,
+              "agent_online": true,
+              "listed": true,
+              "busy": false,
+              "busy_reason": "",
+              "occupancy": null,
+              "accounts": [
+                {
+                  "app_slot": "main",
+                  "binding_verified": true,
+                  "enabled": true,
+                  "wecom_phone": "13067238489",
+                  "available": true,
+                  "unavailable_reason": ""
+                }
+              ],
+              "available": true,
+              "unavailable_reason": "",
+              "last_seen_at": "2026-11-05T03:36:30.834Z",
+              "adb_last_seen_at": "2026-11-05T03:36:30.834Z"
+            }
+          ],
+          "total": 2,
+          "updated_at": "2026-11-05T03:36:30.834Z",
+          "capacity": {
+            "limit": 2,
+            "active": 1,
+            "remaining": 1
+          }
+        },
+        "timestamp": 1793849790835,
+        "success": true,
+        "code": 200,
+        "message": "查询成功"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "POST",
+      "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+      "body": {
+        "lead_id": 61107200,
+        "phone": "136****6441",
+        "wecom_phone": "17508437040",
+        "wecom_corp_id": "local_test_corp",
+        "wecom_userid": "local_test_member_200",
+        "app_id": "cps_local_dev_20261105",
+        "timestamp": 1793849790874,
+        "nonce": "baf45efc7dec0d566cdf92c28b3cf1e5",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "http_status": 200,
+      "body": {
+        "result": null,
+        "timestamp": 1793849790885,
+        "success": true,
+        "code": 200,
+        "message": "已接收"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "POST",
+      "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+      "body": {
+        "lead_id": 61108202,
+        "phone": "136****6441",
+        "wecom_phone": "13067238489",
+        "wecom_corp_id": "local_test_corp",
+        "wecom_userid": "local_test_member_202",
+        "app_id": "cps_local_dev_20261105",
+        "timestamp": 1793849790924,
+        "nonce": "f4b8d3905c1c71b76397a2c3d22283eb",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "http_status": 200,
+      "body": {
+        "result": null,
+        "timestamp": 1793849790935,
+        "success": true,
+        "code": 200,
+        "message": "已接收"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "POST",
+      "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+      "body": {
+        "lead_id": 61108200,
+        "phone": "136****6441",
+        "wecom_phone": "17508437040",
+        "wecom_corp_id": "local_test_corp",
+        "wecom_userid": "local_test_member_200",
+        "app_id": "cps_local_dev_20261105",
+        "timestamp": 1793850207668,
+        "nonce": "f63ab127f7fe04e5c028b27fb762664c",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "http_status": 200,
+      "body": {
+        "result": null,
+        "timestamp": 1793850207793,
+        "success": true,
+        "code": 200,
+        "message": "已接收（本地预览，不发送邀请）"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "POST",
+      "url": "http://192.168.10.119:8797/api/v1/lead/devices/query",
+      "body": {
+        "online_only": false,
+        "app_id": "cps_local_dev_20261105",
+        "timestamp": 1793850262803,
+        "nonce": "41ac538821ecc0c8267ef3f6d871e563",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "http_status": 200,
+      "body": {
+        "result": {
+          "devices": [
+            {
+              "device_number": "200",
+              "device_name": "200号本地测试手机",
+              "online": true,
+              "adb_online": true,
+              "agent_online": true,
+              "listed": true,
+              "busy": false,
+              "busy_reason": "",
+              "occupancy": null,
+              "accounts": [
+                {
+                  "app_slot": "main",
+                  "binding_verified": true,
+                  "enabled": true,
+                  "wecom_phone": "17508437040",
+                  "available": true,
+                  "unavailable_reason": ""
+                }
+              ],
+              "available": true,
+              "unavailable_reason": "",
+              "last_seen_at": "2026-11-05T03:44:22.945Z",
+              "adb_last_seen_at": "2026-11-05T03:44:22.945Z"
+            },
+            {
+              "device_number": "202",
+              "device_name": "202号本地测试手机",
+              "online": true,
+              "adb_online": true,
+              "agent_online": true,
+              "listed": true,
+              "busy": false,
+              "busy_reason": "",
+              "occupancy": null,
+              "accounts": [
+                {
+                  "app_slot": "main",
+                  "binding_verified": true,
+                  "enabled": true,
+                  "wecom_phone": "13067238489",
+                  "available": true,
+                  "unavailable_reason": ""
+                }
+              ],
+              "available": true,
+              "unavailable_reason": "",
+              "last_seen_at": "2026-11-05T03:44:22.945Z",
+              "adb_last_seen_at": "2026-11-05T03:44:22.945Z"
+            }
+          ],
+          "total": 2,
+          "updated_at": "2026-11-05T03:44:22.945Z",
+          "capacity": {
+            "limit": 2,
+            "active": 0,
+            "remaining": 2
+          }
+        },
+        "timestamp": 1793850262945,
+        "success": true,
+        "code": 200,
+        "message": "查询成功"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "POST",
+      "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+      "body": {
+        "lead_id": 61109200,
+        "phone": "136****6441",
+        "wecom_phone": "17508437040",
+        "wecom_corp_id": "local_test_corp",
+        "wecom_userid": "local_test_member_200",
+        "app_id": "cps_local_dev_20261105",
+        "timestamp": 1793850262987,
+        "nonce": "4c924dc4c0b0b4d760b3c0f5f6b990ad",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "http_status": 200,
+      "body": {
+        "result": null,
+        "timestamp": 1793850263063,
+        "success": true,
+        "code": 200,
+        "message": "已接收（本地预览，不发送邀请）"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "POST",
+      "url": "http://192.168.10.119:8797/api/v1/lead/devices/query",
+      "body": {
+        "online_only": false,
+        "app_id": "cps_local_dev_20261105",
+        "timestamp": 1793850317251,
+        "nonce": "babf165652974788a84e183844f96412",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "http_status": 200,
+      "body": {
+        "result": {
+          "devices": [
+            {
+              "device_number": "200",
+              "device_name": "200号本地测试手机",
+              "online": true,
+              "adb_online": true,
+              "agent_online": true,
+              "listed": true,
+              "busy": false,
+              "busy_reason": "",
+              "occupancy": null,
+              "accounts": [
+                {
+                  "app_slot": "main",
+                  "binding_verified": true,
+                  "enabled": true,
+                  "wecom_phone": "17508437040",
+                  "available": true,
+                  "unavailable_reason": ""
+                }
+              ],
+              "available": true,
+              "unavailable_reason": "",
+              "last_seen_at": "2026-11-05T03:45:17.367Z",
+              "adb_last_seen_at": "2026-11-05T03:45:17.367Z"
+            },
+            {
+              "device_number": "202",
+              "device_name": "202号本地测试手机",
+              "online": true,
+              "adb_online": true,
+              "agent_online": true,
+              "listed": true,
+              "busy": false,
+              "busy_reason": "",
+              "occupancy": null,
+              "accounts": [
+                {
+                  "app_slot": "main",
+                  "binding_verified": true,
+                  "enabled": true,
+                  "wecom_phone": "13067238489",
+                  "available": true,
+                  "unavailable_reason": ""
+                }
+              ],
+              "available": true,
+              "unavailable_reason": "",
+              "last_seen_at": "2026-11-05T03:45:17.367Z",
+              "adb_last_seen_at": "2026-11-05T03:45:17.367Z"
+            }
+          ],
+          "total": 2,
+          "updated_at": "2026-11-05T03:45:17.367Z",
+          "capacity": {
+            "limit": 2,
+            "active": 0,
+            "remaining": 2
+          }
+        },
+        "timestamp": 1793850317367,
+        "success": true,
+        "code": 200,
+        "message": "查询成功"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "POST",
+      "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+      "body": {
+        "lead_id": 61110200,
+        "phone": "136****6441",
+        "wecom_phone": "17508437040",
+        "wecom_corp_id": "local_test_corp",
+        "wecom_userid": "local_test_member_200",
+        "app_id": "cps_local_dev_20261105",
+        "timestamp": 1793850317415,
+        "nonce": "b39662f508f7973c67027eb899ec6dd9",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "http_status": 200,
+      "body": {
+        "result": null,
+        "timestamp": 1793850317502,
+        "success": true,
+        "code": 200,
+        "message": "已接收（本地预览，不发送邀请）"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "POST",
+      "url": "http://192.168.10.119:8797/api/v1/lead/devices/query",
+      "body": {
+        "online_only": false,
+        "app_id": "cps_local_dev_20261105",
+        "timestamp": 1793850371740,
+        "nonce": "fc77cd2a0504a8c0bb4ab90bb4e452ec",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "http_status": 200,
+      "body": {
+        "result": {
+          "devices": [
+            {
+              "device_number": "200",
+              "device_name": "200号本地测试手机",
+              "online": true,
+              "adb_online": true,
+              "agent_online": true,
+              "listed": true,
+              "busy": false,
+              "busy_reason": "",
+              "occupancy": null,
+              "accounts": [
+                {
+                  "app_slot": "main",
+                  "binding_verified": true,
+                  "enabled": true,
+                  "wecom_phone": "17508437040",
+                  "available": true,
+                  "unavailable_reason": ""
+                }
+              ],
+              "available": true,
+              "unavailable_reason": "",
+              "last_seen_at": "2026-11-05T03:46:11.847Z",
+              "adb_last_seen_at": "2026-11-05T03:46:11.847Z"
+            },
+            {
+              "device_number": "202",
+              "device_name": "202号本地测试手机",
+              "online": true,
+              "adb_online": true,
+              "agent_online": true,
+              "listed": true,
+              "busy": false,
+              "busy_reason": "",
+              "occupancy": null,
+              "accounts": [
+                {
+                  "app_slot": "main",
+                  "binding_verified": true,
+                  "enabled": true,
+                  "wecom_phone": "13067238489",
+                  "available": true,
+                  "unavailable_reason": ""
+                }
+              ],
+              "available": true,
+              "unavailable_reason": "",
+              "last_seen_at": "2026-11-05T03:46:11.847Z",
+              "adb_last_seen_at": "2026-11-05T03:46:11.847Z"
+            }
+          ],
+          "total": 2,
+          "updated_at": "2026-11-05T03:46:11.847Z",
+          "capacity": {
+            "limit": 2,
+            "active": 0,
+            "remaining": 2
+          }
+        },
+        "timestamp": 1793850371848,
+        "success": true,
+        "code": 200,
+        "message": "查询成功"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "POST",
+      "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+      "body": {
+        "lead_id": 61108200,
+        "phone": "136****6441",
+        "wecom_phone": "17508437040",
+        "wecom_corp_id": "local_test_corp",
+        "wecom_userid": "local_test_member_200",
+        "app_id": "cps_local_dev_20261105",
+        "timestamp": 1793850371889,
+        "nonce": "3396744d863320d0aa7f4015ca2be90a",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "http_status": 200,
+      "body": {
+        "result": null,
+        "timestamp": 1793850371900,
+        "success": true,
+        "code": 200,
+        "message": "已接收"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "POST",
+      "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+      "body": {
+        "lead_id": 61109200,
+        "phone": "136****6441",
+        "wecom_phone": "17508437040",
+        "wecom_corp_id": "local_test_corp",
+        "wecom_userid": "local_test_member_200",
+        "app_id": "cps_local_dev_20261105",
+        "timestamp": 1793850371940,
+        "nonce": "e0e64bad5f5f8f3a1b05e23fa238fdb4",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "http_status": 200,
+      "body": {
+        "result": null,
+        "timestamp": 1793850371952,
+        "success": true,
+        "code": 200,
+        "message": "已接收"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "POST",
+      "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+      "body": {
+        "lead_id": 61110200,
+        "phone": "136****6441",
+        "wecom_phone": "17508437040",
+        "wecom_corp_id": "local_test_corp",
+        "wecom_userid": "local_test_member_200",
+        "app_id": "cps_local_dev_20261105",
+        "timestamp": 1793850371991,
+        "nonce": "d5e71625efc4ebf2a0bc397e24dfb8e0",
+        "sign": "<已脱敏>"
+      }
+    },
+    "response": {
+      "http_status": 200,
+      "body": {
+        "result": null,
+        "timestamp": 1793850372002,
+        "success": true,
+        "code": 200,
+        "message": "已接收"
+      }
+    }
+  }
+]

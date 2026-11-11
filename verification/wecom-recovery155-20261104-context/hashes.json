@@ -1,0 +1,5 @@
+{
+  "server/index.mjs": "e65c591b962056b5a03460c9b41fc127add40b5e42ba88355f9f6c6db3303754",
+  "server/postgres-repositories.mjs": "f2e9b9544d3d7f12afd59ea7836e73f55aa752260eb0e2f1c2ecec4fb76ca7fc",
+  "server/wecom-pending-context.mjs": "91e9b50a16bfb19f3f06e50f3814c0131748b7faae9b12fd0598eb8ee7ba260f"
+}

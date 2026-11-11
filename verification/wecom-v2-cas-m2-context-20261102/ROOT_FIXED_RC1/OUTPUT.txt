@@ -1,0 +1,3 @@
+{"name":"operation_epoch","threw":"wecom_v2_obsolete_epoch","persistedRevision":1,"trace":[[1,"CONNECT"],[1,"BEGIN"],[1,"SET"],[1,"SET"],[1,"SET"],[1,"SELECT"],[1,"UPDATE"],[1,"COMMIT"],[1,"DESTROY"]]}
+{"name":"initialization_epoch","threw":"wecom_v2_obsolete_epoch","persistedRevision":0,"trace":[[1,"CONNECT"],[1,"BEGIN"],[1,"SET"],[1,"SET"],[1,"SET"],[1,"INSERT"],[1,"SELECT"],[1,"COMMIT"],[1,"DESTROY"]]}
+{"name":"operation_malformed","threw":"wecom_v2_context_unconfirmed","persistedRevision":1,"trace":[[1,"CONNECT"],[1,"BEGIN"],[1,"SET"],[1,"SET"],[1,"SET"],[1,"SELECT"],[1,"UPDATE"],[1,"COMMIT"],[1,"DESTROY"]]}

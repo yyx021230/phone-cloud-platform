@@ -1,0 +1,8 @@
+{
+  "exitCode": 0,
+  "log": "..........\n----------------------------------------------------------------------\nRan 10 tests in 0.006s\n\nOK\n",
+  "python": "3.9 Windows",
+  "profileSha256": "2eab0e0415e7db2f7c00c8ccf8e55f36cb3987a22c03bdc5aee4b05f6167bc88",
+  "stagedOnly": true,
+  "nativeSystemPositive": false
+}

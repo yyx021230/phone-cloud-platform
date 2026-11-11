@@ -1,0 +1,16 @@
+{
+  "scope": "observed bracket costs only, not error/rate/pause bounds",
+  "sampleCount": 16,
+  "qpcFrequency": "10000000",
+  "qpcBracketTicks": {
+    "min": 27,
+    "max": 69
+  },
+  "codeReportedAnomalies": [],
+  "sourceReportsAuthoritySupported": false,
+  "nativeAcceptance": false,
+  "observerUserContext": "inherited-SSH-user; not a SYSTEM worker test",
+  "sourceCommit": "ab8359c8b1f53cf82e8073db3b7d9e525f2e7dfd",
+  "remoteExecutionOwnedByRoot": true,
+  "ownerNewRemoteCommands": 0
+}

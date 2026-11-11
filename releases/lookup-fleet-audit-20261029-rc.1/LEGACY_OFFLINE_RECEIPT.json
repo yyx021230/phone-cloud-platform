@@ -1,0 +1,40 @@
+{
+  "sourceCommit": "baca5721214658b46f24c974c9147490b0bafada",
+  "candidateCommit": "73de8ba87d3f75ff3d9e32da4821b57784b69200",
+  "jobCount": 220,
+  "phoneCount": 26,
+  "finalFailedBusinessIds": 100,
+  "oldClassificationBlocksAI": 220,
+  "candidateClassificationPageDirect": 220,
+  "resultScreenshotMetadataPresent": 220,
+  "exactUniqueCaptureEventReference": 220,
+  "captureWithinJobWindow": 220,
+  "taskSessionMatches": 220,
+  "generationPresent": 220,
+  "currentStoredImageSample": {
+    "selectedFinalFailedCases": 19,
+    "http200": 17,
+    "http404": 2,
+    "visibleRegularPersonCard": 8,
+    "visibleCompactPersonCard": 8,
+    "noPersonCardVisible": 3,
+    "all19RetrievedViaAuthenticatedAssetRoute": true,
+    "historicalJobRoute404": 2,
+    "historyFailureCause": "job absent from live memory-only production lookup; exact DB job/task and stored image still exist, authenticated evidence route returns 200"
+  },
+  "notVerified": [
+    "historical session/channel readiness and account identity at failure",
+    "full adapter predicates involving exact phone/client and latest job at event time",
+    "all220 asset hashes or screenshot content",
+    "new model accuracy or phone/API recovery"
+  ],
+  "evidenceFiles": {
+    "legacy-evidence-private.json": "4447790ce32e6fe82acc5589ac656c10304f61fd682e4f7618d78e2b654227e7",
+    "legacy-replay-private.json": "cebd1c668c17aaf1bfe586b013dfd1e7e795950e1c6d3f3b0f39d3875759b661",
+    "legacy-image-receipts-private.json": "fb410b3d70e7fafc4311238f2f2c9ea994c7168ec967c78aa0961bdc5965efb8",
+    "legacy-visual-review-private.json": "fc641057922e5780551956742e071f13e1f2b57155c6c09dca788de4ea2f327d",
+    "replay-legacy.mjs": "f7b1ec599107f16f5cbf302426e9f2d58de9fb290e598759a1fe14a65d513fc2",
+    "legacy-image-unavailable.json": "2f1c26847aba8ebff2f55f6bdcb819b0cef8fc96de7bfa1ecf3e0ff33afbc426",
+    "legacy-image-archive-receipt.json": "9f9974a537cfeb77d79b874247e1ba5391db8aaff7b4e1b4781e5aeb23981d53"
+  }
+}

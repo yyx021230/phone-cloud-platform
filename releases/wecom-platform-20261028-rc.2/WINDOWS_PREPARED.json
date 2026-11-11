@@ -1,0 +1,57 @@
+{
+  "status": "prepared_not_activated",
+  "sourceCommit": "7f32118aff797069bc173ec332bf2188dba480b6",
+  "mode": "preview_only",
+  "files": {
+    "src/index.mjs": {
+      "before": "884bc370558e6b0b3f2d0d46dee309da4467757b613c0da03576de8f9b34df74",
+      "after": "cbd6dceca618b57471594d602f46e092c5f6f4b7cff2ea26df19dff050d34e3f"
+    },
+    "src/wecom-preview-task.mjs": {
+      "before": null,
+      "after": "126546338fd08bdda693d0e7964c8cd9dde011851263883ca81b6f5815645b1e"
+    },
+    "scripts/wecom_invite_preview.py": {
+      "before": "11bd468f1ca57ae193ea3e41f7911aebe404d1e7ad8f63898ccab8f5eb8d2f67",
+      "after": "f7329cf01b0d9c7f750b730d570826099abba4df6581931eb395f74527ae8692"
+    },
+    "scripts/wecom_remark_preview.py": {
+      "before": "bcfadd95c6ad69b5b957d49e37f450ff1f1b0911411047dc7393dedf746d8207",
+      "after": "8109a5cd7f35a877f29fe431dbf85040282e70c70d8b63dc86f0034083a536b5"
+    },
+    "scripts/wecom_rpc_budget.py": {
+      "before": null,
+      "after": "60aab705ab8b1a5282da225ac5e7f3ac27c90c01749e4637e0dfe732e906bff6"
+    },
+    "scripts/wecom_startup_guards.py": {
+      "before": null,
+      "after": "82fcf0d5ccc3d8aceab9901ac663725fcc9bf6b5f072715d18892036652f6d25"
+    },
+    "scripts/wecom_platform_preview.py": {
+      "before": null,
+      "after": "0f2946f219e5f1138674d3372d256be521063930385b6ef2eebb1c3d6b0e0e04"
+    },
+    "scripts/wecom_preview_devices.json": {
+      "before": null,
+      "after": "13a9bb4004cfbbd22153a2944d822eba888473055ed525a2e2db91659b424159"
+    }
+  },
+  "frozenFiles": {
+    "config.json": "ee61ff30debd1b1077a1964ebd3946a0f36d8c4a221777be219890896c865b52",
+    "adb-auth-env.cjs": "9c3aa5affb9243f255f2bf74376ee7bb01c9f9171989f5477146263ee7e2bb4d",
+    "start-agent.ps1": "dcec1c42e1bb197d3cf339f07e54515f60015c6c6806372d0d07640cba60db58",
+    "start-agent.cmd": "e0d8fc8589335fcd605ab33c6d9f7418e6997fe807a23f0ca79036affb826a0e"
+  },
+  "scheduledTaskSha256": "2dffb967e0316bb41cc04d8e4f2547128f20e9021638e377f5e21b88bceabd55",
+  "identity": {
+    "adbPid": 20316,
+    "adbCreated": 1792768226.628511,
+    "agentPid": 26488,
+    "agentCreated": 1793165838.1015558,
+    "adbOwner": "NT AUTHORITY\\SYSTEM",
+    "agentOwner": "NT AUTHORITY\\SYSTEM"
+  },
+  "productionFilesChanged": false,
+  "agentReloaded": false,
+  "keysReadOrCopied": false
+}

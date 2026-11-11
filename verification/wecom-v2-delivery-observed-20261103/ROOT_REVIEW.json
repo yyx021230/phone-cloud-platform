@@ -1,0 +1,739 @@
+{
+  "candidateCommit": "3f96cb2f500d811874800c3fd41b3bd41cd86fa2",
+  "candidateTag": "wecom-v2-delivery-verify-20261103-draft.1",
+  "manifestHashesMatched": 15,
+  "sourceHashes": 16,
+  "dependencyHashes": 6,
+  "annotatedTagBound": true,
+  "productDdlHelpersUnchanged": true,
+  "diffCheckExit": 0,
+  "rootHelperTests": 26,
+  "rootRunnerGuards": 6,
+  "rootSeedTests": 2,
+  "checks": [
+    {
+      "label": "helpers",
+      "command": [
+        "/opt/homebrew/bin/node",
+        "--test",
+        "--test-reporter=tap",
+        "verification/wecom-v2-delivery-verify-20261103/helpers.test.mjs"
+      ],
+      "exitCode": 0,
+      "rawSha256": "44c4f9f6eef92fff5a0c9ad97b81f31775e39fa14dd17d335e84611fd0d29e4b"
+    },
+    {
+      "label": "guards",
+      "command": [
+        "python3",
+        "-I",
+        "-B",
+        "verification/wecom-v2-delivery-verify-20261103/test_owned_runner.py"
+      ],
+      "exitCode": 0,
+      "rawSha256": "feb5170ecd3a84eecaab6898ebc92f39ac5f61a37eb55497bcf39d6dae69f4bc"
+    },
+    {
+      "label": "seeds",
+      "command": [
+        "/opt/homebrew/bin/node",
+        "--test",
+        "--test-reporter=tap",
+        "verification/wecom-v2-delivery-verify-20261103/fixture-names.test.mjs"
+      ],
+      "exitCode": 0,
+      "rawSha256": "13b2c420fd940d3334de55d4ef0fdbaa7e9e13305ede64705bfa98848ef4477f"
+    },
+    {
+      "label": "syntax",
+      "command": [
+        "/opt/homebrew/bin/node",
+        "--check",
+        "verification/wecom-v2-delivery-verify-20261103/postgres.integration.mjs"
+      ],
+      "exitCode": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "pythonAstParsed": true,
+  "sqlOrPgExecuted": true,
+  "actualRoot": "/private/tmp/pc-wecom-v2-delivery-pg-05g0f50n",
+  "startedAtUtc": "2026-11-02T16:10:17.253859+00:00",
+  "actualPgTests": 2,
+  "passed": 2,
+  "failed": 0,
+  "attempts": 2,
+  "completedCases": 2,
+  "cases": [
+    {
+      "name": "delivery-fields",
+      "writes": [
+        {
+          "backend": 67394,
+          "command": "UPDATE",
+          "rowCount": 1,
+          "returning": {
+            "task_id": "task-delivery-fields",
+            "agent_id": "fixture-agent",
+            "adb_serial": "fixture-delivery-fields",
+            "status": "running",
+            "created_at": "2026-11-02T05:00:00.000Z",
+            "updated_at": "2099-01-01T00:00:00.000Z",
+            "data": {
+              "type": "wecom_customer_preview",
+              "events": [],
+              "result": {},
+              "status": "running",
+              "taskId": "task-delivery-fields",
+              "agentId": "fixture-agent",
+              "payload": {
+                "mode": "preview",
+                "appSlot": "main",
+                "remarkName": "\u6d4b\u8bd5\u5ba2\u6237",
+                "xhsAppSlot": "",
+                "androidUser": 0,
+                "description": "\u63a5\u53e3\u8054\u8c03\u6d4b\u8bd5",
+                "phoneNumber": "13900000000",
+                "previewOnly": true,
+                "deviceNumber": "23",
+                "automationJobId": "job-delivery-fields",
+                "physicalCleanup": {
+                  "nonce": "binding-delivery-fields",
+                  "serial": "fixture-delivery-fields",
+                  "agentId": "fixture-agent",
+                  "appSlot": "main",
+                  "version": 2,
+                  "deviceId": "adb:fixture-delivery-fields",
+                  "androidUser": 0,
+                  "executionId": "execution-delivery-fields",
+                  "serverEpoch": "fixture-server-epoch",
+                  "obligationId": "physical-delivery-fields",
+                  "handshakeNonce": "spawn-delivery-fields",
+                  "originalTaskId": "task-delivery-fields",
+                  "agentInstanceId": "fixture-parent-instance"
+                },
+                "automationSessionId": "",
+                "wecomCleanupProtocol": 2
+              },
+              "delivery": {
+                "token": "synthetic-current",
+                "ackedAt": "",
+                "attempt": 2,
+                "leasedAt": "2099-01-01T00:00:00.000Z",
+                "expiresAt": "2099-01-01T00:01:00.000Z",
+                "unknownNested": {
+                  "keep": [
+                    true,
+                    null
+                  ]
+                }
+              },
+              "deviceId": "adb:fixture-delivery-fields",
+              "pickedAt": "2026-11-02T05:00:01.000Z",
+              "adbSerial": "fixture-delivery-fields",
+              "createdAt": "2026-11-02T05:00:00.000Z",
+              "updatedAt": "2099-01-01T00:00:00.000Z",
+              "completedAt": null,
+              "wecomV2Claim": {
+                "mode": "preview",
+                "binding": {
+                  "nonce": "binding-delivery-fields",
+                  "serial": "fixture-delivery-fields",
+                  "agentId": "fixture-agent",
+                  "appSlot": "main",
+                  "version": 2,
+                  "deviceId": "adb:fixture-delivery-fields",
+                  "androidUser": 0,
+                  "executionId": "execution-delivery-fields",
+                  "serverEpoch": "fixture-server-epoch",
+                  "obligationId": "physical-delivery-fields",
+                  "handshakeNonce": "spawn-delivery-fields",
+                  "originalTaskId": "task-delivery-fields",
+                  "agentInstanceId": "fixture-parent-instance"
+                },
+                "version": 1,
+                "requestId": "fixture_request_delivery-fields",
+                "recordedAt": "2026-11-02T05:00:01.000Z",
+                "ownerUserId": "fixture-owner",
+                "originalJobId": "job-delivery-fields",
+                "originalLockId": "business-delivery-fields",
+                "claimOperationId": "claim-delivery-fields",
+                "businessFingerprint": "b5a96affdc4cf75f968496149735b47bb7224eb8cf5e8b0e9a74d57365a48fa8"
+              },
+              "fixtureOpaque": {
+                "nested": [
+                  null,
+                  false,
+                  {
+                    "unicode": "\u6d4b\u8bd5",
+                    "unrecognized": "preserve"
+                  }
+                ],
+                "number": 17
+              },
+              "deliveryAttempts": 2
+            }
+          },
+          "commitTag": "COMMIT"
+        }
+      ],
+      "readback": {
+        "backend": 67395,
+        "row": {
+          "task_id": "task-delivery-fields",
+          "agent_id": "fixture-agent",
+          "adb_serial": "fixture-delivery-fields",
+          "status": "running",
+          "created_at": "2026-11-02T05:00:00.000Z",
+          "updated_at": "2099-01-01T00:00:00.000Z",
+          "data": {
+            "type": "wecom_customer_preview",
+            "events": [],
+            "result": {},
+            "status": "running",
+            "taskId": "task-delivery-fields",
+            "agentId": "fixture-agent",
+            "payload": {
+              "mode": "preview",
+              "appSlot": "main",
+              "remarkName": "\u6d4b\u8bd5\u5ba2\u6237",
+              "xhsAppSlot": "",
+              "androidUser": 0,
+              "description": "\u63a5\u53e3\u8054\u8c03\u6d4b\u8bd5",
+              "phoneNumber": "13900000000",
+              "previewOnly": true,
+              "deviceNumber": "23",
+              "automationJobId": "job-delivery-fields",
+              "physicalCleanup": {
+                "nonce": "binding-delivery-fields",
+                "serial": "fixture-delivery-fields",
+                "agentId": "fixture-agent",
+                "appSlot": "main",
+                "version": 2,
+                "deviceId": "adb:fixture-delivery-fields",
+                "androidUser": 0,
+                "executionId": "execution-delivery-fields",
+                "serverEpoch": "fixture-server-epoch",
+                "obligationId": "physical-delivery-fields",
+                "handshakeNonce": "spawn-delivery-fields",
+                "originalTaskId": "task-delivery-fields",
+                "agentInstanceId": "fixture-parent-instance"
+              },
+              "automationSessionId": "",
+              "wecomCleanupProtocol": 2
+            },
+            "delivery": {
+              "token": "synthetic-current",
+              "ackedAt": "",
+              "attempt": 2,
+              "leasedAt": "2099-01-01T00:00:00.000Z",
+              "expiresAt": "2099-01-01T00:01:00.000Z",
+              "unknownNested": {
+                "keep": [
+                  true,
+                  null
+                ]
+              }
+            },
+            "deviceId": "adb:fixture-delivery-fields",
+            "pickedAt": "2026-11-02T05:00:01.000Z",
+            "adbSerial": "fixture-delivery-fields",
+            "createdAt": "2026-11-02T05:00:00.000Z",
+            "updatedAt": "2099-01-01T00:00:00.000Z",
+            "completedAt": null,
+            "wecomV2Claim": {
+              "mode": "preview",
+              "binding": {
+                "nonce": "binding-delivery-fields",
+                "serial": "fixture-delivery-fields",
+                "agentId": "fixture-agent",
+                "appSlot": "main",
+                "version": 2,
+                "deviceId": "adb:fixture-delivery-fields",
+                "androidUser": 0,
+                "executionId": "execution-delivery-fields",
+                "serverEpoch": "fixture-server-epoch",
+                "obligationId": "physical-delivery-fields",
+                "handshakeNonce": "spawn-delivery-fields",
+                "originalTaskId": "task-delivery-fields",
+                "agentInstanceId": "fixture-parent-instance"
+              },
+              "version": 1,
+              "requestId": "fixture_request_delivery-fields",
+              "recordedAt": "2026-11-02T05:00:01.000Z",
+              "ownerUserId": "fixture-owner",
+              "originalJobId": "job-delivery-fields",
+              "originalLockId": "business-delivery-fields",
+              "claimOperationId": "claim-delivery-fields",
+              "businessFingerprint": "b5a96affdc4cf75f968496149735b47bb7224eb8cf5e8b0e9a74d57365a48fa8"
+            },
+            "fixtureOpaque": {
+              "nested": [
+                null,
+                false,
+                {
+                  "unicode": "\u6d4b\u8bd5",
+                  "unrecognized": "preserve"
+                }
+              ],
+              "number": 17
+            },
+            "deliveryAttempts": 2
+          }
+        }
+      },
+      "onlyThreeDataPathsChanged": true,
+      "allOtherKnownUnknownFieldsPreserved": true,
+      "protectedRecordsPreserved": true,
+      "m3StorageStatus": "recorded",
+      "comparisonSqlSha256": "64aa3eef348055bfe153c5fd836ca1441a0c2434e1da18b0e555b7c77457b282",
+      "protocolPermit": false,
+      "routeReachabilityProven": false,
+      "auditMethodTested": false
+    },
+    {
+      "name": "delivery-stale-proposal",
+      "writes": [
+        {
+          "backend": 67394,
+          "command": "UPDATE",
+          "rowCount": 1,
+          "returning": {
+            "task_id": "task-delivery-stale-proposal",
+            "agent_id": "fixture-agent",
+            "adb_serial": "fixture-delivery-stale-proposal",
+            "status": "running",
+            "created_at": "2026-11-02T05:00:00.000Z",
+            "updated_at": "2099-02-01T00:00:00.000Z",
+            "data": {
+              "type": "wecom_customer_preview",
+              "events": [],
+              "result": {},
+              "status": "running",
+              "taskId": "task-delivery-stale-proposal",
+              "agentId": "fixture-agent",
+              "payload": {
+                "mode": "preview",
+                "appSlot": "main",
+                "remarkName": "\u6d4b\u8bd5\u5ba2\u6237",
+                "xhsAppSlot": "",
+                "androidUser": 0,
+                "description": "\u63a5\u53e3\u8054\u8c03\u6d4b\u8bd5",
+                "phoneNumber": "13900000000",
+                "previewOnly": true,
+                "deviceNumber": "23",
+                "automationJobId": "job-delivery-stale-proposal",
+                "physicalCleanup": {
+                  "nonce": "binding-delivery-stale-proposal",
+                  "serial": "fixture-delivery-stale-proposal",
+                  "agentId": "fixture-agent",
+                  "appSlot": "main",
+                  "version": 2,
+                  "deviceId": "adb:fixture-delivery-stale-proposal",
+                  "androidUser": 0,
+                  "executionId": "execution-delivery-stale-proposal",
+                  "serverEpoch": "fixture-server-epoch",
+                  "obligationId": "physical-delivery-stale-proposal",
+                  "handshakeNonce": "spawn-delivery-stale-proposal",
+                  "originalTaskId": "task-delivery-stale-proposal",
+                  "agentInstanceId": "fixture-parent-instance"
+                },
+                "automationSessionId": "",
+                "wecomCleanupProtocol": 2
+              },
+              "delivery": {
+                "token": "synthetic-newer",
+                "ackedAt": "",
+                "attempt": 8,
+                "leasedAt": "2099-02-01T00:00:00.000Z",
+                "expiresAt": "2099-02-01T00:01:00.000Z"
+              },
+              "deviceId": "adb:fixture-delivery-stale-proposal",
+              "pickedAt": "2026-11-02T05:00:01.000Z",
+              "adbSerial": "fixture-delivery-stale-proposal",
+              "createdAt": "2026-11-02T05:00:00.000Z",
+              "updatedAt": "2099-02-01T00:00:00.000Z",
+              "completedAt": null,
+              "wecomV2Claim": {
+                "mode": "preview",
+                "binding": {
+                  "nonce": "binding-delivery-stale-proposal",
+                  "serial": "fixture-delivery-stale-proposal",
+                  "agentId": "fixture-agent",
+                  "appSlot": "main",
+                  "version": 2,
+                  "deviceId": "adb:fixture-delivery-stale-proposal",
+                  "androidUser": 0,
+                  "executionId": "execution-delivery-stale-proposal",
+                  "serverEpoch": "fixture-server-epoch",
+                  "obligationId": "physical-delivery-stale-proposal",
+                  "handshakeNonce": "spawn-delivery-stale-proposal",
+                  "originalTaskId": "task-delivery-stale-proposal",
+                  "agentInstanceId": "fixture-parent-instance"
+                },
+                "version": 1,
+                "requestId": "fixture_request_delivery-stale-proposal",
+                "recordedAt": "2026-11-02T05:00:01.000Z",
+                "ownerUserId": "fixture-owner",
+                "originalJobId": "job-delivery-stale-proposal",
+                "originalLockId": "business-delivery-stale-proposal",
+                "claimOperationId": "claim-delivery-stale-proposal",
+                "businessFingerprint": "c2b9d38eccc8b671a433427b1885024e761daf53189317a24f17c329cd05ae52"
+              },
+              "fixtureOpaque": {
+                "nested": [
+                  null,
+                  false,
+                  {
+                    "unicode": "\u6d4b\u8bd5",
+                    "unrecognized": "preserve"
+                  }
+                ],
+                "number": 17
+              },
+              "deliveryAttempts": 8
+            }
+          },
+          "commitTag": "COMMIT"
+        },
+        {
+          "backend": 67394,
+          "command": "UPDATE",
+          "rowCount": 1,
+          "returning": {
+            "task_id": "task-delivery-stale-proposal",
+            "agent_id": "fixture-agent",
+            "adb_serial": "fixture-delivery-stale-proposal",
+            "status": "running",
+            "created_at": "2026-11-02T05:00:00.000Z",
+            "updated_at": "2099-01-01T00:00:00.000Z",
+            "data": {
+              "type": "wecom_customer_preview",
+              "events": [],
+              "result": {},
+              "status": "running",
+              "taskId": "task-delivery-stale-proposal",
+              "agentId": "fixture-agent",
+              "payload": {
+                "mode": "preview",
+                "appSlot": "main",
+                "remarkName": "\u6d4b\u8bd5\u5ba2\u6237",
+                "xhsAppSlot": "",
+                "androidUser": 0,
+                "description": "\u63a5\u53e3\u8054\u8c03\u6d4b\u8bd5",
+                "phoneNumber": "13900000000",
+                "previewOnly": true,
+                "deviceNumber": "23",
+                "automationJobId": "job-delivery-stale-proposal",
+                "physicalCleanup": {
+                  "nonce": "binding-delivery-stale-proposal",
+                  "serial": "fixture-delivery-stale-proposal",
+                  "agentId": "fixture-agent",
+                  "appSlot": "main",
+                  "version": 2,
+                  "deviceId": "adb:fixture-delivery-stale-proposal",
+                  "androidUser": 0,
+                  "executionId": "execution-delivery-stale-proposal",
+                  "serverEpoch": "fixture-server-epoch",
+                  "obligationId": "physical-delivery-stale-proposal",
+                  "handshakeNonce": "spawn-delivery-stale-proposal",
+                  "originalTaskId": "task-delivery-stale-proposal",
+                  "agentInstanceId": "fixture-parent-instance"
+                },
+                "automationSessionId": "",
+                "wecomCleanupProtocol": 2
+              },
+              "delivery": {
+                "token": "synthetic-older",
+                "ackedAt": "",
+                "attempt": 1,
+                "leasedAt": "2099-01-01T00:00:00.000Z",
+                "expiresAt": "2099-01-01T00:01:00.000Z"
+              },
+              "deviceId": "adb:fixture-delivery-stale-proposal",
+              "pickedAt": "2026-11-02T05:00:01.000Z",
+              "adbSerial": "fixture-delivery-stale-proposal",
+              "createdAt": "2026-11-02T05:00:00.000Z",
+              "updatedAt": "2099-01-01T00:00:00.000Z",
+              "completedAt": null,
+              "wecomV2Claim": {
+                "mode": "preview",
+                "binding": {
+                  "nonce": "binding-delivery-stale-proposal",
+                  "serial": "fixture-delivery-stale-proposal",
+                  "agentId": "fixture-agent",
+                  "appSlot": "main",
+                  "version": 2,
+                  "deviceId": "adb:fixture-delivery-stale-proposal",
+                  "androidUser": 0,
+                  "executionId": "execution-delivery-stale-proposal",
+                  "serverEpoch": "fixture-server-epoch",
+                  "obligationId": "physical-delivery-stale-proposal",
+                  "handshakeNonce": "spawn-delivery-stale-proposal",
+                  "originalTaskId": "task-delivery-stale-proposal",
+                  "agentInstanceId": "fixture-parent-instance"
+                },
+                "version": 1,
+                "requestId": "fixture_request_delivery-stale-proposal",
+                "recordedAt": "2026-11-02T05:00:01.000Z",
+                "ownerUserId": "fixture-owner",
+                "originalJobId": "job-delivery-stale-proposal",
+                "originalLockId": "business-delivery-stale-proposal",
+                "claimOperationId": "claim-delivery-stale-proposal",
+                "businessFingerprint": "c2b9d38eccc8b671a433427b1885024e761daf53189317a24f17c329cd05ae52"
+              },
+              "fixtureOpaque": {
+                "nested": [
+                  null,
+                  false,
+                  {
+                    "unicode": "\u6d4b\u8bd5",
+                    "unrecognized": "preserve"
+                  }
+                ],
+                "number": 17
+              },
+              "deliveryAttempts": 1
+            }
+          },
+          "commitTag": "COMMIT"
+        }
+      ],
+      "firstRead": {
+        "backend": 67396,
+        "row": {
+          "task_id": "task-delivery-stale-proposal",
+          "agent_id": "fixture-agent",
+          "adb_serial": "fixture-delivery-stale-proposal",
+          "status": "running",
+          "created_at": "2026-11-02T05:00:00.000Z",
+          "updated_at": "2099-02-01T00:00:00.000Z",
+          "data": {
+            "type": "wecom_customer_preview",
+            "events": [],
+            "result": {},
+            "status": "running",
+            "taskId": "task-delivery-stale-proposal",
+            "agentId": "fixture-agent",
+            "payload": {
+              "mode": "preview",
+              "appSlot": "main",
+              "remarkName": "\u6d4b\u8bd5\u5ba2\u6237",
+              "xhsAppSlot": "",
+              "androidUser": 0,
+              "description": "\u63a5\u53e3\u8054\u8c03\u6d4b\u8bd5",
+              "phoneNumber": "13900000000",
+              "previewOnly": true,
+              "deviceNumber": "23",
+              "automationJobId": "job-delivery-stale-proposal",
+              "physicalCleanup": {
+                "nonce": "binding-delivery-stale-proposal",
+                "serial": "fixture-delivery-stale-proposal",
+                "agentId": "fixture-agent",
+                "appSlot": "main",
+                "version": 2,
+                "deviceId": "adb:fixture-delivery-stale-proposal",
+                "androidUser": 0,
+                "executionId": "execution-delivery-stale-proposal",
+                "serverEpoch": "fixture-server-epoch",
+                "obligationId": "physical-delivery-stale-proposal",
+                "handshakeNonce": "spawn-delivery-stale-proposal",
+                "originalTaskId": "task-delivery-stale-proposal",
+                "agentInstanceId": "fixture-parent-instance"
+              },
+              "automationSessionId": "",
+              "wecomCleanupProtocol": 2
+            },
+            "delivery": {
+              "token": "synthetic-newer",
+              "ackedAt": "",
+              "attempt": 8,
+              "leasedAt": "2099-02-01T00:00:00.000Z",
+              "expiresAt": "2099-02-01T00:01:00.000Z"
+            },
+            "deviceId": "adb:fixture-delivery-stale-proposal",
+            "pickedAt": "2026-11-02T05:00:01.000Z",
+            "adbSerial": "fixture-delivery-stale-proposal",
+            "createdAt": "2026-11-02T05:00:00.000Z",
+            "updatedAt": "2099-02-01T00:00:00.000Z",
+            "completedAt": null,
+            "wecomV2Claim": {
+              "mode": "preview",
+              "binding": {
+                "nonce": "binding-delivery-stale-proposal",
+                "serial": "fixture-delivery-stale-proposal",
+                "agentId": "fixture-agent",
+                "appSlot": "main",
+                "version": 2,
+                "deviceId": "adb:fixture-delivery-stale-proposal",
+                "androidUser": 0,
+                "executionId": "execution-delivery-stale-proposal",
+                "serverEpoch": "fixture-server-epoch",
+                "obligationId": "physical-delivery-stale-proposal",
+                "handshakeNonce": "spawn-delivery-stale-proposal",
+                "originalTaskId": "task-delivery-stale-proposal",
+                "agentInstanceId": "fixture-parent-instance"
+              },
+              "version": 1,
+              "requestId": "fixture_request_delivery-stale-proposal",
+              "recordedAt": "2026-11-02T05:00:01.000Z",
+              "ownerUserId": "fixture-owner",
+              "originalJobId": "job-delivery-stale-proposal",
+              "originalLockId": "business-delivery-stale-proposal",
+              "claimOperationId": "claim-delivery-stale-proposal",
+              "businessFingerprint": "c2b9d38eccc8b671a433427b1885024e761daf53189317a24f17c329cd05ae52"
+            },
+            "fixtureOpaque": {
+              "nested": [
+                null,
+                false,
+                {
+                  "unicode": "\u6d4b\u8bd5",
+                  "unrecognized": "preserve"
+                }
+              ],
+              "number": 17
+            },
+            "deliveryAttempts": 8
+          }
+        }
+      },
+      "readback": {
+        "backend": 67397,
+        "row": {
+          "task_id": "task-delivery-stale-proposal",
+          "agent_id": "fixture-agent",
+          "adb_serial": "fixture-delivery-stale-proposal",
+          "status": "running",
+          "created_at": "2026-11-02T05:00:00.000Z",
+          "updated_at": "2099-01-01T00:00:00.000Z",
+          "data": {
+            "type": "wecom_customer_preview",
+            "events": [],
+            "result": {},
+            "status": "running",
+            "taskId": "task-delivery-stale-proposal",
+            "agentId": "fixture-agent",
+            "payload": {
+              "mode": "preview",
+              "appSlot": "main",
+              "remarkName": "\u6d4b\u8bd5\u5ba2\u6237",
+              "xhsAppSlot": "",
+              "androidUser": 0,
+              "description": "\u63a5\u53e3\u8054\u8c03\u6d4b\u8bd5",
+              "phoneNumber": "13900000000",
+              "previewOnly": true,
+              "deviceNumber": "23",
+              "automationJobId": "job-delivery-stale-proposal",
+              "physicalCleanup": {
+                "nonce": "binding-delivery-stale-proposal",
+                "serial": "fixture-delivery-stale-proposal",
+                "agentId": "fixture-agent",
+                "appSlot": "main",
+                "version": 2,
+                "deviceId": "adb:fixture-delivery-stale-proposal",
+                "androidUser": 0,
+                "executionId": "execution-delivery-stale-proposal",
+                "serverEpoch": "fixture-server-epoch",
+                "obligationId": "physical-delivery-stale-proposal",
+                "handshakeNonce": "spawn-delivery-stale-proposal",
+                "originalTaskId": "task-delivery-stale-proposal",
+                "agentInstanceId": "fixture-parent-instance"
+              },
+              "automationSessionId": "",
+              "wecomCleanupProtocol": 2
+            },
+            "delivery": {
+              "token": "synthetic-older",
+              "ackedAt": "",
+              "attempt": 1,
+              "leasedAt": "2099-01-01T00:00:00.000Z",
+              "expiresAt": "2099-01-01T00:01:00.000Z"
+            },
+            "deviceId": "adb:fixture-delivery-stale-proposal",
+            "pickedAt": "2026-11-02T05:00:01.000Z",
+            "adbSerial": "fixture-delivery-stale-proposal",
+            "createdAt": "2026-11-02T05:00:00.000Z",
+            "updatedAt": "2099-01-01T00:00:00.000Z",
+            "completedAt": null,
+            "wecomV2Claim": {
+              "mode": "preview",
+              "binding": {
+                "nonce": "binding-delivery-stale-proposal",
+                "serial": "fixture-delivery-stale-proposal",
+                "agentId": "fixture-agent",
+                "appSlot": "main",
+                "version": 2,
+                "deviceId": "adb:fixture-delivery-stale-proposal",
+                "androidUser": 0,
+                "executionId": "execution-delivery-stale-proposal",
+                "serverEpoch": "fixture-server-epoch",
+                "obligationId": "physical-delivery-stale-proposal",
+                "handshakeNonce": "spawn-delivery-stale-proposal",
+                "originalTaskId": "task-delivery-stale-proposal",
+                "agentInstanceId": "fixture-parent-instance"
+              },
+              "version": 1,
+              "requestId": "fixture_request_delivery-stale-proposal",
+              "recordedAt": "2026-11-02T05:00:01.000Z",
+              "ownerUserId": "fixture-owner",
+              "originalJobId": "job-delivery-stale-proposal",
+              "originalLockId": "business-delivery-stale-proposal",
+              "claimOperationId": "claim-delivery-stale-proposal",
+              "businessFingerprint": "c2b9d38eccc8b671a433427b1885024e761daf53189317a24f17c329cd05ae52"
+            },
+            "fixtureOpaque": {
+              "nested": [
+                null,
+                false,
+                {
+                  "unicode": "\u6d4b\u8bd5",
+                  "unrecognized": "preserve"
+                }
+              ],
+              "number": 17
+            },
+            "deliveryAttempts": 1
+          }
+        }
+      },
+      "sequentialNotConcurrent": true,
+      "olderProposalReplacedNewerDelivery": true,
+      "allOtherKnownUnknownFieldsPreserved": true,
+      "protectedRecordsPreserved": true,
+      "m3StorageStatus": "recorded",
+      "protocolPermit": false,
+      "negativeControl": true,
+      "routeReachabilityProven": false,
+      "auditMethodTested": false
+    }
+  ],
+  "sourceAfterMatched": true,
+  "nodeCleanup": {
+    "started": true,
+    "pid": 67391,
+    "exitCode": 0,
+    "groupAbsent": true
+  },
+  "postgresCleanup": {
+    "pid": 67379,
+    "exitCode": 0,
+    "confirmed": true
+  },
+  "ownSuccessfulDataRemoved": true,
+  "previousFailedDataRetained": true,
+  "artifactSha256": {
+    "fixture.json": "8de9edf0826d41d6ddfea287ef703dd23a579ff5dce53618b95e4bcd0b8340bb",
+    "POSTGRES.txt": "fe9bd4677b0ee290ab232192aa92b1b6cfff38f0531b70dc32818783f926af1d",
+    "PG_EVIDENCE.json": "9e3a7f8177f429f13422cda2d856eca0c6544247b54a122db4a5c9b3ecd2dd03",
+    "CREATEDB.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "INITDB.txt": "ff9898640a1618907738b6e35399c7b34aa21888c2907a215f44de427f905bf9",
+    "NODE_TEST_OUTPUT.txt": "3bf671884fe608f61ea6ae3698a8040eda2d54684362e1ec3998edb993a64e23",
+    "RUN_RECEIPT.json": "afab31949ee3670e8c445b3c907921c04056bfa2d3ff3808cb273be08381c79f"
+  },
+  "negativeControl": "Sequential direct SQL stale proposal overwrites delivery only; current WeCom leased-route reachability and HTTP authentication not proven",
+  "productionChanged": false,
+  "sharedWriterRepaired": false,
+  "progressReceiptImplemented": false,
+  "phoneAcceptance": false
+}

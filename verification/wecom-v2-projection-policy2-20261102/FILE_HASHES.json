@@ -1,0 +1,25 @@
+{
+  "baseCommit": "ac9002f285f2d3dc68cf60b9249a0740eb9131ec",
+  "candidateTag": "wecom-v2-projection-policy-20261102-rc.2",
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "7deacf62da0b2daed5015f0ce0a17a70d5ce6f4bad696626a386f5a7081d6321",
+    "server/wecom-v2-projection-policy.mjs": "62c47aaf78ae9925d8b66bb0e33e79fbae0a22e238b01460f69671ee1a27ac03",
+    "server/wecom-v2-projection-policy.test.mjs": "f4ca7d35806057874aa5c3b5b9e3e5c069e8e1720a6c2fad03067ccb855dba20",
+    "verification/wecom-v2-projection-policy2-20261102/FIX.md": "35bc2bd407af2b163f68a91a20e1c1a052c7c27e3f6a31330482ba6f23fbe9e1",
+    "verification/wecom-v2-projection-policy2-20261102/OUTPUT.txt": "61373e5f0c30633b9cce69bdcf4d09e4a782283144ae09c56ecb901b5a0d3751",
+    "verification/wecom-v2-projection-policy2-20261102/RAW_WHITESPACE.json": "2835df98f007dbd50667140565aec82e148a0493573a492099e1442b85851a20",
+    "verification/wecom-v2-projection-policy2-20261102/RECEIPT.json": "737a518b34cc26f61c00b0c25f5ca837e422b2a17b4e628363fa35cf1fa21824",
+    "verification/wecom-v2-projection-policy2-20261102/SOURCE_BASELINE.json": "6a849825e3624fc11dc619ffb40ea30bfec6abdd2af903d8c7c4a61ed9ec20db",
+    "verification/wecom-v2-projection-policy2-20261102/red/LOCAL_OUTPUT.txt": "8462211e05842663a22b30059e3149df02beb6c611061d167a300d935e828aa1",
+    "verification/wecom-v2-projection-policy2-20261102/red/RECEIPT.json": "7943d52c8cbdfea3eb98c9c01ed1411fda83b603e678b0e0ce09c8007f368e5b",
+    "verification/wecom-v2-projection-policy2-20261102/red/fixture.mjs.txt": "a5ccc25833ba6510b9d07a6c2c9c02aa5a6692cd2bfb7f3309bec94b22c0b938",
+    "verification/wecom-v2-projection-policy2-20261102/red/root-numeric-revision-counter.json": "1fed6a098df306c07e482f7ae09de5ae5a023ba8ec88ca173b2a51973b248afd",
+    "verification/wecom-v2-projection-policy2-20261102/red/root-numeric-revision-red-output.txt": "22be8987fb8f50ede1abf540925598895b9de800cbfbcefa2d9e2914eefb552d",
+    "verification/wecom-v2-projection-policy2-20261102/red/root-numeric-revision-red-receipt.json": "ee4bc563c0a7a5e47a645260a0392c95a12b5ccd07eaf29b7f264820c9f927ec",
+    "verification/wecom-v2-projection-policy2-20261102/red/root-numeric-revision-red-source.mjs": "ffc1cd187c6ea483d83e07d9e348c3d07624fae765b7826759c4519a314e22ce",
+    "verification/wecom-v2-projection-policy2-20261102/red/root-review.json": "b014312e808ad3e734576200c578317782cab131620cc94dcd74fa26b81e2141",
+    "verification/wecom-v2-projection-policy2-20261102/red/wecom-v2-projection-policy.mjs.txt": "3eb362a8922d7d5a190053d9fa0caca5eedf48553151c7ffc570cd4896c4cf62",
+    "verification/wecom-v2-projection-policy2-20261102/red/wecom-v2-projection-policy.test.mjs.txt": "f4ca7d35806057874aa5c3b5b9e3e5c069e8e1720a6c2fad03067ccb855dba20",
+    "verification/wecom-v2-projection-policy2-20261102/DIFFCHECK_RECEIPT.json": "8ebf275e5b4060a5f7448cd2d63422d58216c9fc597701709308d14c716d2d6f"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "version": "platform-wecom-invitation-20261029-rc.4",
+  "runtimeSourceCommit": "7f2eaa9172eb2e07d8e4c078ce5205bdf89fbd7b",
+  "executedAtLocalDate": "2026-10-29",
+  "environment": {
+    "os": "macOS",
+    "node": "v25.9.0",
+    "python": "3.9.6",
+    "database": "isolated temporary JSON",
+    "redis": "disabled",
+    "realPhoneOperations": 0,
+    "realInvitations": 0
+  },
+  "commands": [
+    {
+      "command": "node --test --test-concurrency=1 server/wecom*.test.mjs examples/wecom-integration/client.test.mjs windows-agent/src/wecom-preview-task.test.mjs server/device-occupancy.test.mjs server/lookup-chain-reliability.test.mjs server/auth-write-persistence.test.mjs",
+      "passed": 52,
+      "failed": 0,
+      "skipped": 0,
+      "logSha256": "79ad60fad5c8f24d97469daf46db1da196a524c568ea6cfc1085b4868ec8b7bf"
+    },
+    {
+      "command": "python3 -m unittest discover -s windows-agent/scripts -p 'test_wecom*.py'",
+      "passed": 135,
+      "failed": 0,
+      "logSha256": "6efe76e5623e1056a43f42eb17d157c1601a947f40bfca6bf71175a98552642d"
+    },
+    {
+      "command": "npm run check",
+      "exitCode": 0,
+      "logSha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+    },
+    {
+      "command": "git diff --check; docs/public API comparison; Node syntax; Python fixture compile",
+      "exitCode": 0
+    }
+  ],
+  "coverageCountsOverlap": true,
+  "initialFailure": {
+    "failedTests": 2,
+    "phase": "fixture_setup",
+    "cause": "offline device never registered, update returned 404",
+    "fix": "register synthetic device before simulating offline; no business change",
+    "finalFocusedPassed": 52
+  },
+  "review": "self_review_only",
+  "notVerified": [
+    "full combined platform regression this round",
+    "real Postgres",
+    "native Windows startup/ADB/Poco adapter",
+    "physical phones and recipient delivery",
+    "production version, live D-075 or deployment"
+  ]
+}

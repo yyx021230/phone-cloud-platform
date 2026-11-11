@@ -1,0 +1,41 @@
+{
+  "executedCommit": "a7b07e0177e5d62e29030e1a6acaa29ec012606d",
+  "executedTag": "wecom-v2-claim-pg-20261102-draft.2",
+  "sourceRoot": "/private/tmp/pc-wecom-v2-claim-pg-gr_br461",
+  "copiedOriginalFiles": {
+    "fixture.json": "5efeab6b06fa5ca0aecdd8e2cca95fbbfa0b33e6ccc2655db2b20d12ff5bbc22",
+    "POSTGRES.txt": "3af828c479e1f6accb28a3fad3f2db9c1ed654d462aafe6e88de1c92062b2aa9",
+    "PG_EVIDENCE.json": "ecc83d9c929ec887a6e9e227fc7c51b2b37555d246d2d53804de411b57028661",
+    "CREATEDB.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "INITDB.txt": "373936e6e8dfe4cb26bc22b3e641bd44b16b57f5f113b0b5a7b67fdb34d08b26",
+    "NODE_TEST_OUTPUT.txt": "67830cf382b2c302f20562c0fb1146f94d2c3f4ce7aeb0619eb64801b600c858",
+    "RUN_RECEIPT.json": "b4430b5f759df34231fba35b1c46a95a6a6cc7d08436f54cbd44ec282bcf0d62"
+  },
+  "executedManifestSha256": "dfd5bceff966c57a5d7eb85a5373e17776b21933596c7b93f0113f82c18d8be8",
+  "tap": {
+    "tests": 18,
+    "pass": 17,
+    "fail": 1
+  },
+  "failedGroup": "read-only-reconcile",
+  "failureCode": "23505",
+  "failureConstraint": "phone_cloud_devices_pkey",
+  "failureCause": "synthetic missing-anchor deviceId reused from prior mapping-missing group",
+  "bodyEvidenceNotes": 17,
+  "runnerActualPgCasesDefault0NotExecutionCount": true,
+  "nodeCleanup": {
+    "started": true,
+    "pid": 40971,
+    "exitCode": 1,
+    "groupAbsent": true
+  },
+  "postgresCleanup": {
+    "pid": 40959,
+    "exitCode": 0,
+    "confirmed": true
+  },
+  "failedDataDirectoryRetained": true,
+  "archiveDidNotConnectRestartOrChangeDatabase": true,
+  "phoneOrProductionChanged": false,
+  "rootReviewCommit": "472a861c3dddde5683f9b35302423cc84402038f"
+}

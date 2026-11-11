@@ -1,0 +1,139 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "phones": [
+        "142",
+        "152"
+      ],
+      "ready": false,
+      "apiRoundStopped": true,
+      "businessTasks": 0,
+      "finalCleanup": [
+        {
+          "confirmed": false,
+          "workerRemaining": null
+        },
+        {
+          "confirmed": false,
+          "workerRemaining": null
+        }
+      ],
+      "note": "attempt1 bootstrap/config failure before phone commands"
+    },
+    {
+      "attempt": 2,
+      "phones": [
+        "142",
+        "152"
+      ],
+      "ready": false,
+      "apiRoundStopped": true,
+      "businessTasks": 0,
+      "finalCleanup": [
+        {
+          "confirmed": true,
+          "workerRemaining": false
+        },
+        {
+          "confirmed": true,
+          "workerRemaining": false
+        }
+      ],
+      "note": ""
+    },
+    {
+      "attempt": 3,
+      "phones": [
+        "142",
+        "182"
+      ],
+      "ready": false,
+      "apiRoundStopped": true,
+      "businessTasks": 0,
+      "finalCleanup": [
+        {
+          "confirmed": true,
+          "workerRemaining": false
+        },
+        {
+          "confirmed": true,
+          "workerRemaining": false
+        }
+      ],
+      "note": ""
+    },
+    {
+      "attempt": 4,
+      "phones": [
+        "142",
+        "182"
+      ],
+      "ready": false,
+      "apiRoundStopped": true,
+      "businessTasks": 0,
+      "finalCleanup": [
+        {
+          "confirmed": true,
+          "workerRemaining": false
+        },
+        {
+          "confirmed": true,
+          "workerRemaining": false
+        }
+      ],
+      "note": ""
+    },
+    {
+      "attempt": 5,
+      "phones": [
+        "142",
+        "182"
+      ],
+      "ready": false,
+      "apiRoundStopped": true,
+      "businessTasks": 0,
+      "finalCleanup": [
+        {
+          "confirmed": true,
+          "workerRemaining": false
+        },
+        {
+          "confirmed": true,
+          "workerRemaining": false
+        }
+      ],
+      "note": ""
+    },
+    {
+      "attempt": 6,
+      "phones": [
+        "191",
+        "188"
+      ],
+      "ready": false,
+      "apiRoundStopped": false,
+      "businessTasks": 0,
+      "finalCleanup": [
+        {
+          "confirmed": true,
+          "workerRemaining": false
+        },
+        {
+          "confirmed": true,
+          "workerRemaining": false
+        }
+      ],
+      "note": ""
+    }
+  ],
+  "completeBusinessRecoveryPassed": false,
+  "sharedAgentMainLoopExecuted": false,
+  "sameProductionDriverCodeUsed": false,
+  "notes": [
+    "Local HTTP actual scheduler/task/account policy with staged native worker; production code unchanged.",
+    "Attempts2/3 preflight stubs; attempts4+ real preflights. Wrapper used90s task/40s ready and did not forward cancellation; not full shared Agent equivalence.",
+    "Attempt6 stop poll ended before stop completed. Final native cleanup is independent proof, not API stopped proof.",
+    "188 later diagnostic: description read2016ms timeout; resource-ID read1843ms count1; text read2000ms timeout; cleanup verified."
+  ]
+}

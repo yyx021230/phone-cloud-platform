@@ -1,0 +1,41 @@
+verification/wecom-v1-causal-fix-20261103/INDEX_HOOKS.patch.txt:10: trailing whitespace.
++ 
+verification/wecom-v1-causal-fix-20261103/INDEX_HOOKS.patch.txt:51: trailing whitespace.
++ 
+verification/wecom-v1-causal-fix-20261103/LEGACY_REGRESSIONS_RED.txt:71: trailing whitespace.
++  
+verification/wecom-v1-causal-fix-20261103/LEGACY_REGRESSIONS_RED.txt:73: trailing whitespace.
++  
+verification/wecom-v1-causal-fix-20261103/LEGACY_REGRESSIONS_RED.txt:312: trailing whitespace.
++  
+verification/wecom-v1-causal-fix-20261103/LEGACY_REGRESSIONS_RED.txt:314: trailing whitespace.
++  
+verification/wecom-v1-causal-fix-20261103/LEGACY_REGRESSIONS_RED.txt:423: trailing whitespace.
++  
+verification/wecom-v1-causal-fix-20261103/LEGACY_REGRESSIONS_RED.txt:425: trailing whitespace.
++  
+verification/wecom-v1-causal-fix-20261103/LEGACY_VERIFY_NODE_RED.txt:43: trailing whitespace.
++  
+verification/wecom-v1-causal-fix-20261103/LEGACY_VERIFY_NODE_RED.txt:45: trailing whitespace.
++  
+verification/wecom-v1-causal-fix-20261103/LEGACY_VERIFY_NODE_RED.txt:71: trailing whitespace.
++  
+verification/wecom-v1-causal-fix-20261103/LEGACY_VERIFY_NODE_RED.txt:73: trailing whitespace.
++  
+verification/wecom-v1-causal-fix-20261103/LEGACY_VERIFY_NODE_RED.txt:89: trailing whitespace.
++  
+verification/wecom-v1-causal-fix-20261103/LEGACY_VERIFY_NODE_RED.txt:93: trailing whitespace.
++  
+verification/wecom-v1-causal-fix-20261103/LEGACY_VERIFY_NODE_RED.txt:109: trailing whitespace.
++  
+verification/wecom-v1-causal-fix-20261103/LEGACY_VERIFY_NODE_RED.txt:113: trailing whitespace.
++  
+verification/wecom-v1-causal-fix-20261103/LEGACY_VERIFY_NODE_RED.txt:128: trailing whitespace.
++  
+verification/wecom-v1-causal-fix-20261103/LEGACY_VERIFY_NODE_RED.txt:130: trailing whitespace.
++  
+verification/wecom-v1-causal-fix-20261103/LEGACY_VERIFY_NODE_RED.txt:145: trailing whitespace.
++  
+verification/wecom-v1-causal-fix-20261103/LEGACY_VERIFY_NODE_RED.txt:147: trailing whitespace.
++  
+verification/wecom-v1-causal-fix-20261103/ROOT_CHECK.txt:4: new blank line at EOF.

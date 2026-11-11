@@ -1,0 +1,12 @@
+{
+  "at": "2026-11-03T02:21:59.741Z",
+  "http": 200,
+  "submittedKeys": [
+    "expectedConfigRevision",
+    "concurrency"
+  ],
+  "body": {
+    "ok": true,
+    "configRevision": 177
+  }
+}

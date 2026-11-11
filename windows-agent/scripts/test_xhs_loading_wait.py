@@ -139,8 +139,10 @@ class LoadingWaitTests(unittest.TestCase):
 
     def test_login_and_account_abnormal_are_not_loading(self):
         self.focus.return_value = CURRENT.replace('com.xingin.xywebview.activity.WebViewActivityV2', 'com.xingin.login.device.offline.DeviceOfflineRemindActivity')
-        with self.assertRaisesRegex(RuntimeError, 'logged out'):
-            self.run_wait()
+        # Foreground Activity without native login controls is unproven.
+        with patch.object(sync, 'navigation_capture', return_value=self.missing):
+            with self.assertRaisesRegex(sync.ElementListReadError, 'lacks native element'):
+                self.run_wait()
         self.focus.return_value = CURRENT
         root = copy.deepcopy(self.missing)
         ET.SubElement(root, 'node', {'text':'账号异常', 'bounds':'[0,0][100,100]'})

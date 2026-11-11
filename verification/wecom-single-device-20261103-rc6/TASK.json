@@ -1,0 +1,25 @@
+{
+  "status": "local_candidate_before_next_native_attempt",
+  "base": "faf9bdca9053f96e6c44ee9860270467777a4257",
+  "change": "QA observation errors are not positive proof of owner loss. No cached grant on unknown: use a new complete read and existing bounded current_snapshot; known conflicts remain permanent refusal.",
+  "actualObserved": "rc5 native passed Poco readiness and reached recipient_search; socketPeer remained unrevoked with2 closedForwardCount, but broker returnedHTTP denial. Original broker failed to retain its first observation cause.",
+  "behavior": [
+    "Each background observation owns a new independent reader; a failed read cannot poison all later reads via Reader.failed.",
+    "Transport/read unavailable clears cached authority, logs fixed first reason, and never grants on that error. A new complete matching observation can provide proof.",
+    "Actual owner/device/otherwork/lookup/marker/expiry conflict still revokes and cannot recover the preview.",
+    "Stale cache uses existing current_snapshot synchronous new facts; real read-start and full RTT remain counted, no original TTL/budget renewed.",
+    "Explicit Content-Length; client response socket closure does not invent a device-owner conflict.",
+    "Last revocation/generation checked again before proof. Cleanup uses its fresh purpose/generation only."
+  ],
+  "actualValidation": {
+    "runnerMethods": 11,
+    "existingProofMethods": 6,
+    "realLoopback": "Normal runner test now calls actual broker handler over localhost and checks actual allowed JSON/Content-Length",
+    "transientObservation": "One failed transport followed by full new observation recovers without native replay",
+    "knownConflict": "Late competing job still prevents native/relist"
+  },
+  "productionCodeChanged": false,
+  "stagedWindowsClosure": "unchanged22 fromrc5; only local coordinator/test changed",
+  "review": "Exact diff self-reviewed in this chat; no cross-thread coordination",
+  "liveRemaining": "Fresh real business preview and diagnostic observation still required; not a production release."
+}

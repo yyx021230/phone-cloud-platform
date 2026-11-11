@@ -1,0 +1,25 @@
+{
+  "at": "2026-11-03T06:52:47.036023+00:00",
+  "head": "51bc3b44baa29b67d3cb760d372d9d8fbb96cf92",
+  "branch": "codex/wecom-rpc-errors-20261103",
+  "existingChanges": "",
+  "workflowRevision": "2026-09-30",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "mainDocumentSha256": "fbaba753e218d960b820ade5431c6309a507394c17e57fcd90e47ce9953f3ffb",
+  "files": {
+    "windows-agent/scripts/wecom_rpc_budget.py": "b99f85d3d3ebf3611d21f5aecd34ee651a2a0a33fd71b438feef409163dcd4f2",
+    "windows-agent/scripts/wecom_platform_preview.py": "45148ab6d9357caf25c416b5d6c96cc27bde6f28f4c7cd6e12599cd19c32f0ee",
+    "windows-agent/scripts/wecom_diagnostics.py": "906ca4988f1e332f6bc423f6d230fa42b825294064fb4c8e35aeef8b80284bd2",
+    "windows-agent/src/wecom-preview-task.mjs": "8ea458f39d7cc303ceb3d691c442fde3a1c0e7983735fc7935f5384ba96e1049",
+    "server/wecom-preview.mjs": "b3581f8467c9c62316d9c9ac3a148a31f18f31398a5b9efbfcfa3853ec88a18b",
+    "public/wecom-integration-api.md": "d4d271ddcb1903f16c2ad34f5117f2fb8fd4afc016e4c2d50f33f39347bcb72c",
+    "public/api-docs.html": "322cb59f3281babe976d60ee041fbb78f228758711fe16bc76d7c2297e220c32"
+  },
+  "devices": [
+    "185",
+    "127"
+  ],
+  "customerTail": "6441",
+  "previewOnly": true,
+  "deploy": false
+}

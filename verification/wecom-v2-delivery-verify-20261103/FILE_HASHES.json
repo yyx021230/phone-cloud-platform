@@ -1,0 +1,17 @@
+{
+  "verification/wecom-v2-delivery-verify-20261103/LOCAL_GUARDS.txt": "f245f7ff9e24ed175bab07f54bb26c91d52aad3d875a933dae2f5bef7111e18e",
+  "verification/wecom-v2-delivery-verify-20261103/LOCAL_HELPERS.txt": "00c4a9bcd4a5433c0b441dcfd65d58a8e7a7bcc1e1b5c5d889ed754d3f18daed",
+  "verification/wecom-v2-delivery-verify-20261103/LOCAL_RECEIPT.json": "0a32186ec95210bf80fc64dd9f0acc578fe4ba1c8952a8bc0ed66f60572c0c1c",
+  "verification/wecom-v2-delivery-verify-20261103/LOCAL_SEEDS.txt": "a3b43c8d06f188a77f4a140f4242882e852ad21d79cb63763dab01f117cbd839",
+  "verification/wecom-v2-delivery-verify-20261103/LOCAL_SYNTAX.txt": "679502a0ca0774183fe989587cdb984bde0f40ae666ea336355e2d40f35470a2",
+  "verification/wecom-v2-delivery-verify-20261103/RUNNER_REVIEW.md": "98344b4454960b45595ab97e055f1911ca0d8c2ae533c4418301b0fccc8bd869",
+  "verification/wecom-v2-delivery-verify-20261103/RUNNER_SOURCE_HASHES.json": "d11cf347e5ad770940971812ae39e7f5f3788b647826da4b86e6bf10fb2fa02e",
+  "verification/wecom-v2-delivery-verify-20261103/fixture-names.test.mjs": "00434870f9533282f8af6d47c2a7681240f2b8725439a8a8252f22796061943e",
+  "verification/wecom-v2-delivery-verify-20261103/fixture.mjs": "53663a9e4090d9b30ab8e1001d339c2f1716444b3d5703ae1ff886ab9de6de36",
+  "verification/wecom-v2-delivery-verify-20261103/helpers.test.mjs": "aee272d90f0772b9fbf7041d941ca2fcb150b6f1337a479f0b2069c0a5489beb",
+  "verification/wecom-v2-delivery-verify-20261103/owned-pg.mjs": "7b1d968b07657e48cd6ba964abfbfcf5e087c9f27fc342cec330bf0821495b19",
+  "verification/wecom-v2-delivery-verify-20261103/postgres.integration.mjs": "641126098d31e1cb56fc425e247adc7d0ecc820a99e9d0af89e4818bd1e8e41c",
+  "verification/wecom-v2-delivery-verify-20261103/run-owned-postgres.py": "0827b1992cd754067a16e0380d472cd5d8a49e70e07bd1f85a359d1038c076c0",
+  "verification/wecom-v2-delivery-verify-20261103/test_owned_runner.py": "7efb2b5098b7a0aea8596283ecaa20d55b65a170630996da136d6aabaf506f8c",
+  "docs/PROJECT_DEVELOPMENT.md": "98b0557fb75477f69520dd506632e2b89fd88a667596661f1b367e466059dad9"
+}

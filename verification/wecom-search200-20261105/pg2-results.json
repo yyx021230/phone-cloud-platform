@@ -1,0 +1,33 @@
+[
+  {
+    "log": "pg2-init.txt",
+    "exitCode": 0
+  },
+  {
+    "log": "pg2-start.txt",
+    "exitCode": 0
+  },
+  {
+    "log": "pg2-create-cps_wecom_fixture.txt",
+    "exitCode": 0
+  },
+  {
+    "log": "pg2-create-cps_wecom_client_fixture.txt",
+    "exitCode": 0
+  },
+  {
+    "log": "cps-pg-target-retest.txt",
+    "exitCode": 0
+  },
+  {
+    "log": "cps-long-client-retest.txt",
+    "exitCode": 0
+  },
+  {
+    "longRunElapsedMs": 138066
+  },
+  {
+    "log": "pg2-stop.txt",
+    "exitCode": 0
+  }
+]

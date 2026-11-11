@@ -1,0 +1,15 @@
+{
+  "status": "local_candidate_not_production_loaded",
+  "base": "cc854b70959e93a9373d85be3102198d333ba7f1",
+  "change": "Wake preparation stage budget8\u219220 seconds; action body/lease/overall210s deadline unchanged",
+  "evidence": "Real rc6 screen_prepare exceeded8 seconds with only power_before and one wake response observed; no authority/socket failure and auto cleanup/listing restore succeeded.",
+  "actualValidation": {
+    "before": "Slow two-action wake fails screen_prepare_timeout; original job deadline case passes",
+    "afterCollectedWecom": 503,
+    "cases": "Slow wake/dismiss each sentonce; original job deadline remains enforceable",
+    "network": "synthetic only; new wake budget not yet phone accepted"
+  },
+  "scope": "One-line staged WeCom runner change plus2 behavioral tests; no sharedAgent/screen/media/ADB change",
+  "review": "Exact diff self-reviewed in this chat; no coordination with other windows",
+  "remaining": "Real59pre-send full flow still pending; no invitations"
+}

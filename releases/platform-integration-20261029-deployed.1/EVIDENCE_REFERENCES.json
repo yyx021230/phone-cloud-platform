@@ -1,0 +1,32 @@
+[
+  {
+    "module": "lookup",
+    "privateReceipt": "/private/tmp/pc-lookup-release-preflight-20261029-4rbl761v/LOOKUP_POSTRELEASE_RECEIPT.json",
+    "sha256": "7a46c216f59f8891c64c669ad20965b08e98e58e2ab9883a2177aa51382360ef"
+  },
+  {
+    "module": "wecom-readonly",
+    "privateReceipt": "/private/var/folders/3g/mkl9wbjx4cg1bpc5szj4mg9h0000gn/T/wecom-joint-3a266d71-j4y_rqi4/POST_DEPLOY_RESULT.json",
+    "sha256": "df7e5916c38655dd479aea12d0956dfc86956649876467b65f67b623f5827ccc"
+  },
+  {
+    "module": "xhs-batch-readonly",
+    "privateReceipt": "/Users/yyx/ztqc/phone-cloud-platform/windows-agent/data/xhs-batch-rc2-readonly-20261029/REPORT.json",
+    "sha256": "09182170a8aa01bbe7f0efc9d822f5e6cb9277610fdd0e3ea7f081b23eb55729"
+  },
+  {
+    "module": "xhs-real-131-app1",
+    "privateReceipt": "/Users/yyx/ztqc/phone-cloud-platform/windows-agent/data/xhs-production-131-app1-20261029/REPORT.json",
+    "sha256": "1e2837fe4adadfa8d578463b38ff0eb58a85d121be0a237d45cf93562b966f54"
+  },
+  {
+    "module": "wecom-real43-failed",
+    "privateReceipt": "/private/tmp/pc-wecom-send-20261029-i43vlmbb/FINAL_RECEIPT.json",
+    "sha256": "34ea52a2bea8e2efad7725015676d8baefd8f742a1b20375a1e5ef4ef0180103"
+  },
+  {
+    "module": "wecom-readonly-diagnosis",
+    "privateReceipt": "/private/tmp/pc-wecom-send-20261029-i43vlmbb/READONLY_DIAGNOSIS.json",
+    "sha256": "18294b5b48ae03ab5876965afc728bf802e5abea14c6a1a87e5ecd1f03878c1a"
+  }
+]

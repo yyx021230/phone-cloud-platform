@@ -1,0 +1,216 @@
+2026-11-02 22:03:17.194 CST [40959] LOG:  starting PostgreSQL 16.15 (Homebrew) on aarch64-apple-darwin25.6.0, compiled by Apple clang version 21.0.0 (clang-2100.1.1.101), 64-bit
+2026-11-02 22:03:17.194 CST [40959] LOG:  listening on IPv4 address "127.0.0.1", port 50710
+2026-11-02 22:03:17.194 CST [40959] LOG:  listening on Unix socket "/private/tmp/pc-wecom-v2-claim-pg-gr_br461/.s.PGSQL.50710"
+2026-11-02 22:03:17.196 CST [40963] LOG:  database system was shut down at 2026-11-02 22:03:17 CST
+2026-11-02 22:03:17.197 CST [40959] LOG:  database system is ready to accept connections
+2026-11-02 22:03:17.586 CST [40974] ERROR:  could not obtain lock on row in relation "phone_cloud_wecom_v2_physical_anchors"
+2026-11-02 22:03:17.586 CST [40974] STATEMENT:  SELECT physical_key,device_id,active_obligation_id,active_claim_operation_id,agent_id,mapping_revision,mapping_fingerprint,mapping_state FROM phone_cloud_wecom_v2_physical_anchors WHERE physical_key=$1 FOR UPDATE NOWAIT
+2026-11-02 22:03:17.597 CST [40975] ERROR:  could not obtain lock on row in relation "phone_cloud_wecom_v2_physical_anchors"
+2026-11-02 22:03:17.597 CST [40975] STATEMENT:  SELECT physical_key,device_id,active_obligation_id,active_claim_operation_id,agent_id,mapping_revision,mapping_fingerprint,mapping_state FROM phone_cloud_wecom_v2_physical_anchors WHERE physical_key=$1 FOR UPDATE NOWAIT
+2026-11-02 22:03:17.602 CST [40973] ERROR:  duplicate key value violates unique constraint "phone_cloud_wecom_v2_physical_anchors_pkey"
+2026-11-02 22:03:17.602 CST [40973] DETAIL:  Key (physical_key)=(fixture-case) already exists.
+2026-11-02 22:03:17.602 CST [40973] STATEMENT:  INSERT INTO phone_cloud_wecom_v2_physical_anchors SELECT * FROM phone_cloud_wecom_v2_physical_anchors WHERE physical_key=$1
+2026-11-02 22:03:17.612 CST [40977] ERROR:  could not obtain lock on row in relation "phone_cloud_wecom_v2_physical_anchors"
+2026-11-02 22:03:17.612 CST [40977] STATEMENT:  SELECT physical_key,device_id,active_obligation_id,active_claim_operation_id,agent_id,mapping_revision,mapping_fingerprint,mapping_state FROM phone_cloud_wecom_v2_physical_anchors WHERE physical_key=$1 FOR UPDATE NOWAIT
+2026-11-02 22:03:17.613 CST [40976] WARNING:  there is no transaction in progress
+2026-11-02 22:03:17.633 CST [40976] ERROR:  duplicate key value violates unique constraint "wecom_v2_one_claim_per_task"
+2026-11-02 22:03:17.633 CST [40976] DETAIL:  Key ((claim_data #>> '{binding,originalTaskId}'::text[]))=(task-unique-original) already exists.
+2026-11-02 22:03:17.633 CST [40976] STATEMENT:  INSERT INTO phone_cloud_wecom_cleanup_v2(obligation_id,server_epoch,revision,protocol_state,claim_data) VALUES($1,$2,0,$3::jsonb,$4::jsonb)
+2026-11-02 22:03:17.637 CST [40978] ERROR:  duplicate key value violates unique constraint "wecom_v2_claim_operation_once"
+2026-11-02 22:03:17.637 CST [40978] DETAIL:  Key ((claim_data ->> 'claimOperationId'::text))=(claim-unique-original) already exists.
+2026-11-02 22:03:17.637 CST [40978] STATEMENT:  INSERT INTO phone_cloud_wecom_cleanup_v2(obligation_id,server_epoch,revision,protocol_state,claim_data) VALUES($1,$2,0,$3::jsonb,$4::jsonb)
+2026-11-02 22:03:17.662 CST [40979] ERROR:  claim_fixture_reject
+2026-11-02 22:03:17.662 CST [40979] CONTEXT:  PL/pgSQL function claim_fixture_reject_row() line 2 at RAISE
+2026-11-02 22:03:17.662 CST [40979] STATEMENT:  UPDATE phone_cloud_windows_tasks SET status='running',updated_at=$7,data=$8::jsonb
+	 WHERE task_id=$1 AND agent_id=$2 AND adb_serial=$3 AND status='queued'
+	 AND created_at IS NOT DISTINCT FROM $4::timestamptz AND updated_at IS NOT DISTINCT FROM $5::timestamptz
+	 AND data=$6::jsonb RETURNING task_id,agent_id,adb_serial,status,created_at,updated_at,data
+2026-11-02 22:03:17.667 CST [40980] ERROR:  claim_fixture_reject
+2026-11-02 22:03:17.667 CST [40980] CONTEXT:  PL/pgSQL function claim_fixture_reject_row() line 2 at RAISE
+2026-11-02 22:03:17.667 CST [40980] STATEMENT:  UPDATE phone_cloud_automation_jobs SET status='running',updated_at=$8,data=$9::jsonb
+	 WHERE job_id=$1 AND device_id=$2 AND user_id=$3 AND kind=$4 AND status='queued'
+	 AND created_at IS NOT DISTINCT FROM $5::timestamptz AND updated_at IS NOT DISTINCT FROM $6::timestamptz
+	 AND data=$7::jsonb RETURNING job_id,device_id,user_id,kind,status,created_at,updated_at,data
+2026-11-02 22:03:17.674 CST [40981] ERROR:  claim_fixture_reject
+2026-11-02 22:03:17.674 CST [40981] CONTEXT:  PL/pgSQL function claim_fixture_reject_row() line 2 at RAISE
+2026-11-02 22:03:17.674 CST [40981] STATEMENT:  INSERT INTO phone_cloud_device_locks (lock_id,device_id,status,expires_at,data) VALUES ($1,$2,$3,NULL,$4::jsonb) RETURNING lock_id,device_id,status,expires_at,data
+2026-11-02 22:03:17.679 CST [40982] ERROR:  claim_fixture_reject
+2026-11-02 22:03:17.679 CST [40982] CONTEXT:  PL/pgSQL function claim_fixture_reject_row() line 2 at RAISE
+2026-11-02 22:03:17.679 CST [40982] STATEMENT:  INSERT INTO phone_cloud_wecom_cleanup_v2 (obligation_id,server_epoch,revision,host_operation_id,close_operation_id,protocol_state,claim_data) VALUES ($1,$2,0,NULL,NULL,$3::jsonb,$4::jsonb) RETURNING obligation_id,server_epoch,revision,host_operation_id,close_operation_id,protocol_state,claim_data
+2026-11-02 22:03:17.686 CST [40983] ERROR:  claim_fixture_reject
+2026-11-02 22:03:17.686 CST [40983] CONTEXT:  PL/pgSQL function claim_fixture_reject_row() line 2 at RAISE
+2026-11-02 22:03:17.686 CST [40983] STATEMENT:  UPDATE phone_cloud_wecom_v2_physical_anchors SET active_obligation_id=$2,active_claim_operation_id=$3
+	 WHERE physical_key=$1 AND active_obligation_id IS NULL AND active_claim_operation_id IS NULL
+	 AND mapping_revision=$4::bigint AND mapping_fingerprint=$5 AND mapping_state='ready'
+	 RETURNING physical_key,device_id,active_obligation_id,active_claim_operation_id,agent_id,mapping_revision,mapping_fingerprint,mapping_state
+2026-11-02 22:03:17.717 CST [40987] LOG:  unexpected EOF on client connection with an open transaction
+2026-11-02 22:03:17.758 CST [40989] ERROR:  could not obtain lock on row in relation "phone_cloud_windows_tasks"
+2026-11-02 22:03:17.758 CST [40989] STATEMENT:  SELECT task_id,agent_id,adb_serial,status,created_at,updated_at,data FROM phone_cloud_windows_tasks WHERE task_id=$1 FOR UPDATE NOWAIT
+2026-11-02 22:03:17.770 CST [40990] ERROR:  could not obtain lock on row in relation "phone_cloud_automation_jobs"
+2026-11-02 22:03:17.770 CST [40990] STATEMENT:  SELECT job_id,device_id,user_id,kind,status,created_at,updated_at,data FROM phone_cloud_automation_jobs WHERE job_id=$1 FOR UPDATE NOWAIT
+2026-11-02 22:03:17.780 CST [40984] ERROR:  duplicate key value violates unique constraint "phone_cloud_devices_pkey"
+2026-11-02 22:03:17.780 CST [40984] DETAIL:  Key (device_id)=(adb:fixture-missing-anchor) already exists.
+2026-11-02 22:03:17.780 CST [40984] STATEMENT:  INSERT INTO phone_cloud_devices VALUES ($1,$2::jsonb,NULL)
+2026-11-02 22:03:17.784 CST [40991] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.784 CST [40991] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"binding": {"nonce": "binding-ddl", "serial": "fixture-ddl", "a...).
+2026-11-02 22:03:17.784 CST [40991] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.787 CST [40992] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.787 CST [40992] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "version": 1, "requestId": "fixture_request_...).
+2026-11-02 22:03:17.787 CST [40992] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.789 CST [40993] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.789 CST [40993] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.789 CST [40993] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.791 CST [40994] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.791 CST [40994] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.791 CST [40994] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.793 CST [40995] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.793 CST [40995] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.793 CST [40995] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.795 CST [40996] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.795 CST [40996] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.795 CST [40996] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.797 CST [40997] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.797 CST [40997] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.797 CST [40997] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.799 CST [40998] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.799 CST [40998] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.799 CST [40998] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.801 CST [40999] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.801 CST [40999] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.801 CST [40999] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.802 CST [41000] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.802 CST [41000] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.802 CST [41000] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.804 CST [41001] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.804 CST [41001] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": null, "binding": {"nonce": "binding-ddl", "serial": "fi...).
+2026-11-02 22:03:17.804 CST [41001] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.808 CST [41002] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.808 CST [41002] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": null, "version": 1, "requestId": ...).
+2026-11-02 22:03:17.808 CST [41002] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.810 CST [41003] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.810 CST [41003] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.810 CST [41003] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.812 CST [41004] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.812 CST [41004] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.812 CST [41004] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.814 CST [41005] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.814 CST [41005] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.814 CST [41005] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.816 CST [41006] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.816 CST [41006] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.816 CST [41006] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.818 CST [41007] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.818 CST [41007] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.818 CST [41007] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.820 CST [41008] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.820 CST [41008] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.820 CST [41008] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.821 CST [41009] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.821 CST [41009] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.821 CST [41009] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.823 CST [41010] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.823 CST [41010] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.823 CST [41010] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.825 CST [41011] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.825 CST [41011] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "extra": "forbidden", "binding": {"nonce": "...).
+2026-11-02 22:03:17.825 CST [41011] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.827 CST [41012] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.827 CST [41012] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.827 CST [41012] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.829 CST [41013] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.829 CST [41013] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.829 CST [41013] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.831 CST [41014] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.831 CST [41014] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.831 CST [41014] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.832 CST [41015] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.832 CST [41015] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "other", "binding": {"nonce": "binding-ddl", "serial": ...).
+2026-11-02 22:03:17.832 CST [41015] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.834 CST [41016] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.834 CST [41016] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.834 CST [41016] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.836 CST [41017] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.836 CST [41017] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.836 CST [41017] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.838 CST [41018] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.838 CST [41018] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.838 CST [41018] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.841 CST [41019] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.841 CST [41019] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"serial": "fixture-ddl", "agentI...).
+2026-11-02 22:03:17.841 CST [41019] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.844 CST [41020] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.844 CST [41020] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "agentId...).
+2026-11-02 22:03:17.844 CST [41020] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.848 CST [41021] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.848 CST [41021] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.848 CST [41021] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.851 CST [41022] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.851 CST [41022] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.851 CST [41022] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.854 CST [41023] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.854 CST [41023] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.854 CST [41023] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.858 CST [41024] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.858 CST [41024] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.858 CST [41024] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.866 CST [41025] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.866 CST [41025] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.866 CST [41025] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.869 CST [41026] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.869 CST [41026] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.869 CST [41026] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.873 CST [41027] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.873 CST [41027] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.873 CST [41027] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.876 CST [41028] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.876 CST [41028] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.876 CST [41028] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.879 CST [41030] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.879 CST [41030] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.879 CST [41030] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.883 CST [41031] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.883 CST [41031] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.883 CST [41031] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.886 CST [41032] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.886 CST [41032] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.886 CST [41032] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.890 CST [41033] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.890 CST [41033] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": null, "serial": "fixtur...).
+2026-11-02 22:03:17.890 CST [41033] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb,protocol_state=$3::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.893 CST [41034] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.893 CST [41034] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.893 CST [41034] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb,protocol_state=$3::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.896 CST [41035] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.896 CST [41035] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.896 CST [41035] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb,protocol_state=$3::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.900 CST [41036] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.900 CST [41036] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.900 CST [41036] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb,protocol_state=$3::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.904 CST [41037] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.904 CST [41037] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.904 CST [41037] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb,protocol_state=$3::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.907 CST [41038] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.907 CST [41038] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.907 CST [41038] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb,protocol_state=$3::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.911 CST [41039] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.911 CST [41039] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.911 CST [41039] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb,protocol_state=$3::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.915 CST [41040] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.915 CST [41040] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.915 CST [41040] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb,protocol_state=$3::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.918 CST [41041] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.918 CST [41041] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.918 CST [41041] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb,protocol_state=$3::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.922 CST [41042] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.922 CST [41042] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.922 CST [41042] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb,protocol_state=$3::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.926 CST [41043] ERROR:  new row for relation "phone_cloud_wecom_cleanup_v2" violates check constraint "wecom_v2_claim_shape"
+2026-11-02 22:03:17.926 CST [41043] DETAIL:  Failing row contains (physical-ddl, fixture-server-epoch, 0, null, null, {"fence": "held", "phase": "awaiting_host", "binding": {"nonce":..., {"mode": "preview", "binding": {"nonce": "binding-ddl", "serial"...).
+2026-11-02 22:03:17.926 CST [41043] STATEMENT:  UPDATE phone_cloud_wecom_cleanup_v2 SET claim_data=$2::jsonb,protocol_state=$3::jsonb WHERE obligation_id=$1
+2026-11-02 22:03:17.993 CST [40959] LOG:  received fast shutdown request
+2026-11-02 22:03:17.993 CST [40959] LOG:  aborting any active transactions
+2026-11-02 22:03:17.994 CST [40959] LOG:  background worker "logical replication launcher" (PID 40966) exited with exit code 1
+2026-11-02 22:03:17.994 CST [40961] LOG:  shutting down
+2026-11-02 22:03:17.994 CST [40961] LOG:  checkpoint starting: shutdown immediate
+2026-11-02 22:03:18.034 CST [40961] LOG:  checkpoint complete: wrote 1013 buffers (6.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.032 s, sync=0.007 s, total=0.040 s; sync files=335, longest=0.001 s, average=0.001 s; distance=4860 kB, estimate=4860 kB; lsn=0/19DCC28, redo lsn=0/19DCC28
+2026-11-02 22:03:18.036 CST [40959] LOG:  database system is shut down

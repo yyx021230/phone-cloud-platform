@@ -1,0 +1,12 @@
+{
+  "version": "lookup-recovery-closure-20261030-rc.1",
+  "branch": "codex/lookup-recovery-closure-20261030",
+  "sourceCommit": "f6c0ebbcffe11bd4c4d7d513535fdcf2ab281b81",
+  "baseCommit": "19bfc250a1395a1cefd0fdbeabd01d9617cf04cd",
+  "sourceHashes": "FINAL_SOURCE_HASHES.json",
+  "testResults": "TEST_RESULTS.json",
+  "state": "local_candidate_real_device_pending",
+  "deployed": false,
+  "pushed": false,
+  "rawLogWhitespace": "Original failure output contains whitespace-only lines; syntax command output ends in an empty line. Preserved byte-for-byte; source/docs diff whitespace checked separately."
+}

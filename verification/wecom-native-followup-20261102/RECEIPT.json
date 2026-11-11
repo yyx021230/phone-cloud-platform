@@ -1,0 +1,81 @@
+{
+  "status": "blocked_before_phone_submission",
+  "atUtc": "2026-11-02T09:50:57.678Z",
+  "userScope": "Fresh idle main/clone native preview, stop before invitation; exclude lookup and in-use phones",
+  "businessSourceCommit": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "activeManifestSha256": "a5390dcc93b5f1393e7b95732ca4df679dc5065200f80cf509d96e0f759e2a2f",
+  "platformTotal": 141,
+  "platformOnline": 124,
+  "availableNonLookupMain": [
+    "23",
+    "25",
+    "59",
+    "93",
+    "145"
+  ],
+  "excluded": [
+    {
+      "number": "43",
+      "reason": "\u4f01\u5fae\u6e05\u7406\u5f85\u786e\u8ba4 \u00b7 \u9700\u5355\u673a\u7ef4\u62a4"
+    },
+    {
+      "number": "155",
+      "reason": "enabled_lookup_pool"
+    },
+    {
+      "number": "157",
+      "reason": "enabled_lookup_pool"
+    }
+  ],
+  "cloneCandidatesExcluded": [
+    "155"
+  ],
+  "authPosts": 1,
+  "catalogAndOriginalResultGets": 9,
+  "phoneJobsCreated": 0,
+  "nativeActions": 0,
+  "adbClientCalls": 0,
+  "invitations": 0,
+  "runtimeOrConfigChanges": 0,
+  "windowsHashMatches32c": {
+    "scripts/wecom_invite_preview.py": true,
+    "scripts/wecom_remark_preview.py": true,
+    "scripts/wecom_customer_invitation.py": true,
+    "scripts/wecom_platform_preview.py": true,
+    "src/wecom-preview-task.mjs": true,
+    "src/wecom-cleanup-protocol.mjs": true,
+    "src/index.mjs": true
+  },
+  "cloudHashMatches32c": {
+    "server/index.mjs": true,
+    "server/wecom-preview.mjs": true,
+    "server/wecom-physical-cleanup.mjs": true,
+    "public/wecom-integration-api.md": true
+  },
+  "original43Result": {
+    "taskId": "7b993763-6364-40fb-9599-2af3bb8d9da3",
+    "deviceNumber": "43",
+    "appSlot": "main",
+    "mode": "preview",
+    "status": "failed",
+    "createdAt": "2026-11-02T07:04:07.882Z",
+    "completedAt": "2026-11-02T07:04:08.762Z",
+    "code": "wecom_cleanup_host_unconfirmed",
+    "invitationSent": false,
+    "sendStatus": "not_attempted",
+    "sendClaimed": false,
+    "remarkSaveStatus": "unknown"
+  },
+  "blockers": [
+    "Current SYSTEM listener27912 is confirmed, but original shared daemon exit and implicit-start cause are not resolved. This read does not approve a replacement baseline.",
+    "Production32c still uses cross-machine wall-clock host registration/verification; original43 awaiting-host cleanup duty remains. No new phone is used to gamble against an unresolved guard.",
+    "Only configured clone belongs to155 enabled lookup pool, excluded to avoid affecting lookup."
+  ],
+  "limitations": [
+    "Cached catalog availability is not a phone or OS page reading.",
+    "No full native preflight or preview traversal completed.",
+    "CIM transport had unclassified stderr bytes; valid projected stdout and exact hashes were obtained, not a blanket zero-error Windows audit.",
+    "Generic CLI processes observed via CIM are not counted as shared ADB servers.",
+    "No new runtime version loaded; no claim of native acceptance."
+  ]
+}

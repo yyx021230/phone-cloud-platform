@@ -1,0 +1,13 @@
+test_actual_non_windows_path_never_loads_or_binds (test_survey.BindingTests) ... ok
+test_cli_cannot_select_modules_or_enable_fallback (test_survey.BindingTests) ... ok
+test_contract_load_failure_stops_without_fallback_and_keeps_first_cause (test_survey.BindingTests) ... ok
+test_fake_read_failure_reports_exact_api_without_publishing_exception_text (test_survey.BindingTests) ... ok
+test_fake_successful_read_path_is_still_not_clock_authority (test_survey.BindingTests) ... ok
+test_missing_contract_symbol_is_named_without_trying_kernel (test_survey.BindingTests) ... ok
+test_non_function_export_cannot_be_bound (test_survey.BindingTests) ... ok
+test_old_kernel_only_resolution_fails_while_explicit_contract_binds_without_calls (test_survey.BindingTests) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.002s
+
+OK

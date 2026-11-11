@@ -1,0 +1,46 @@
+{
+  "baseCommit": "4efde08549e9f3d4232a049f7d5eabd7466c753e",
+  "localTime": "2026-11-02T20:08:38.548042+08:00",
+  "scope": "unit lifecycle only; no real PostgreSQL/CAS/network fault validation",
+  "commands": [
+    {
+      "label": "M2_UNIT",
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "server/wecom-cleanup-v2-postgres.test.mjs"
+      ],
+      "exitCode": 0,
+      "outputSha256": "90478055e39bba9bc5963a1d10df820a6394593de7d2dc4e69221734bfb83452"
+    },
+    {
+      "label": "M1_REGRESSION",
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "server/wecom-cleanup-v2-host.test.mjs"
+      ],
+      "exitCode": 0,
+      "outputSha256": "27ea518bb8691d405ba5230a50b9bd7fcfd75e8b841169c208a395ddec6c7a1a"
+    },
+    {
+      "label": "V1_REGRESSION",
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "server/wecom-physical-cleanup.test.mjs",
+        "windows-agent/src/wecom-cleanup-protocol.test.mjs",
+        "windows-agent/src/wecom-physical-readiness.test.mjs"
+      ],
+      "exitCode": 0,
+      "outputSha256": "c563a7a599abb24dc60f82ac32d1a0a96123e715614aa72b11cac1c8fa097eae"
+    }
+  ],
+  "sourceSha256": {
+    "server/wecom-cleanup-v2-postgres.mjs": "573e7363976db447d7950c6a856a16ef910fa747d9a2f0755e995a0d1aa7b143",
+    "server/wecom-cleanup-v2-postgres.test.mjs": "a7108c5ab7f4d37839673e0f6038efe0f5a92d0e3af481db521bfcee05149852"
+  }
+}

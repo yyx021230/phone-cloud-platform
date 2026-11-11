@@ -1,0 +1,14 @@
+{"constructorCalls":27,"expandedSeeds":47,"uniqueCounts":{"device":46,"physical":46,"task":47,"job":47,"business":47,"obligation":47,"execution":47,"claim":47}}
+✔ all fixed constructor calls and expanded seed identities are unique (3.337542ms)
+✔ exact old missing-* loop reproduces duplicate actual device identity (0.498041ms)
+✔ new unregistered constructor expression fails inventory closed (0.31575ms)
+✔ changed numeric loop cannot silently omit new seeds (0.163667ms)
+✔ different slot may share one physical device only as explicit extra (1.2665ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 110.66875

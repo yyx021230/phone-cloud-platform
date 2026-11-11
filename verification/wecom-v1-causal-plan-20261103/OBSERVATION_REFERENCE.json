@@ -1,0 +1,62 @@
+{
+  "source": "root-owned readonly observation, not executed by this owner",
+  "rawPath": "/private/tmp/pc-native-readonly-cloud-20261103-u8ys1gu2/observation-2/stdout.raw",
+  "rawSha256": "28f81fa2e94a7496d4796bd8f277783f3e9307b7e9b4bcf3395fe20d2f636a0d",
+  "status": "observed_not_admitted",
+  "observedAt": "2026-11-02T16:55:56.055Z",
+  "sourceHashesMatched": 10,
+  "fleetApiCount": 141,
+  "candidateDirectoryOnly": [
+    {
+      "number": "155",
+      "available": true,
+      "busy": false
+    },
+    {
+      "number": "93",
+      "available": true,
+      "busy": false
+    },
+    {
+      "number": "59",
+      "available": true,
+      "busy": false
+    },
+    {
+      "number": "145",
+      "available": true,
+      "busy": false
+    },
+    {
+      "number": "25",
+      "available": true,
+      "busy": false
+    },
+    {
+      "number": "23",
+      "available": true,
+      "busy": false
+    },
+    {
+      "number": "43",
+      "available": false,
+      "busy": true
+    },
+    {
+      "number": "157",
+      "available": true,
+      "busy": false
+    }
+  ],
+  "dbNonreleasedLocks": 299,
+  "dbNonterminalTasks": 14,
+  "notAdmissionOrNativeProof": true,
+  "unverifiedSources": [
+    "windows_native_workers",
+    "lookup_outbox",
+    "original_stop_proofs",
+    "cross_api_db_atomicity"
+  ],
+  "collectorSha256": "5e7c70ef85e2f2c3c88d43ef665d368a1d2c3c071cd1ebde05a5810db7b5ad1f",
+  "supervisorSha256": "04057e0a5000b63a976e641b9021c9d3d7d7fd060e2907147c795f9ad39d461d"
+}

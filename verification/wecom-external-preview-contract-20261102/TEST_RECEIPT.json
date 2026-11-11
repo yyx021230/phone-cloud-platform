@@ -1,0 +1,25 @@
+{
+  "atUtc": "2026-11-02T09:16:03.343409+00:00",
+  "baseline": "da8a2c133c92c74894fd28375071092343e8a15b",
+  "exitCode": 0,
+  "sourceSha256": {
+    "verification/wecom-external-preview-contract-20261102/compatibility-counterexample.test.mjs": "f609a14d6fed1ecb29dea1453f4cb48d955de3b448cf0c618fdae7133584b2a3",
+    "server/index.mjs": "4bcecc8702ea577a77e5f17664b7833ced33b681f88e5beedcdc6875b6f047cc",
+    "server/wecom-preview.mjs": "ec9126e6c85d787f80355df8b5c84fb5c525f8ba746847573c9d5b589779cbaf",
+    "server/wecom-diagnostics.mjs": "a134b57bfcad0c5aa510049b605207a6b68c1d2aee05f094f71fc4471c3e213c"
+  },
+  "outputSha256": "e4fe5fa39d03bd2bdf2303fe5107108cd63101b1fd65f17427c44a6b77cff064",
+  "scope": "actual current pre-create source branch and real pure helpers; synthetic state/guards; stops before task creation",
+  "httpCalls": 0,
+  "newTasksCreated": 0,
+  "nativeActions": 0,
+  "productionObserved": false,
+  "crossModeIdAliasHypothesis": "disproved by actual send-only helper",
+  "previewUnknownToExplicitSendPolicy": "undecided; not classified as replay bypass or automatically blocked",
+  "limitations": [
+    "Not a new preview API implementation or full HTTP/PG execution.",
+    "Synthetic absent physical gate is not proof that any real phone is clear.",
+    "Preview has no send capability; a later explicit send is a distinct intent and the policy remains undecided.",
+    "Initial wrong hypothesis and fixture preparation errors retained separately."
+  ]
+}

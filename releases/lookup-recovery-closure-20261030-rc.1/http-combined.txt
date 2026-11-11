@@ -1,0 +1,28 @@
+capacity HTTP task alipay_name_start CAP-52 business
+capacity HTTP task alipay_name_start CAP-51 business
+capacity HTTP task alipay_name_query CAP-51 probe
+capacity HTTP task alipay_name_query CAP-52 probe
+capacity HTTP task alipay_name_query CAP-51 business
+capacity HTTP task alipay_name_query CAP-52 probe
+capacity HTTP task alipay_name_stop CAP-51 business
+capacity HTTP task alipay_name_query CAP-52 business
+capacity HTTP task alipay_name_stop CAP-51 business
+capacity HTTP task alipay_name_stop CAP-51 business
+capacity HTTP task alipay_name_stop CAP-51 business
+capacity HTTP task alipay_name_query CAP-52 business
+capacity HTTP task alipay_name_start CAP-54 business
+capacity HTTP task alipay_name_query CAP-54 probe
+capacity HTTP task alipay_name_query CAP-54 business
+capacity HTTP task alipay_name_stop CAP-54 business
+capacity HTTP task alipay_name_stop CAP-52 business
+capacity HTTP task alipay_name_stop CAP-52 business
+capacity HTTP task alipay_name_stop CAP-54 business
+✔ external HTTP runtime loss and exhausted cleanup preserve ID, recover and accept next business (154806.270042ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 154895.488834

@@ -1,0 +1,13 @@
+{
+  "oldProcessStopped": 18464,
+  "oldProcessCreated": 1793848474.232302,
+  "leadCountPreserved": 12,
+  "recipientsPreserved": 2,
+  "limitsPreserved": 0,
+  "mode": "preview",
+  "ledgerBeforeRestartSha256": "61cb507371dbe3d8039d20c07afbad00d4c298f61075bf576a6d896479cdbd79",
+  "oldHarnessSha256": "9a45e057c771e6f41ac2653558d198e0e4b279fd791b9bbbc5426e9a1c62080e",
+  "newHarnessSha256": "89b8f9581bec06787496c05878a8091c02583e2de7f04032f54ecdf2163567a8",
+  "configUpdated": true,
+  "AgentOrAdbTouched": false
+}

@@ -1,0 +1,57 @@
+{
+  "status": 200,
+  "body": {
+    "task": {
+      "jobId": "51764154-492c-4670-a7e3-c93873efa1a6",
+      "deviceId": "adb:10AEAS224X005FT",
+      "deviceNumber": "59",
+      "mode": "preview",
+      "appSlot": "main",
+      "androidUser": 0,
+      "requestId": "wecom-fleet-a787de5eaeed4e79955b8817e9564492-59",
+      "status": "failed",
+      "createdAt": "2026-11-04T03:03:46.303Z",
+      "updatedAt": "2026-11-04T03:03:47.391Z",
+      "completedAt": "2026-11-04T03:03:47.391Z",
+      "result": {
+        "status": "blocked",
+        "code": "invalid_preview_config",
+        "invitationSent": false,
+        "sendStatus": "not_attempted",
+        "sendClaimed": false,
+        "remarkSaveStatus": "unknown",
+        "execution": {
+          "version": 1,
+          "phase": "configuration",
+          "failurePhase": "configuration",
+          "elapsedMs": 0,
+          "cleanupConfirmed": null,
+          "events": [
+            {
+              "version": 1,
+              "step": 1,
+              "phase": "configuration",
+              "state": "begin",
+              "elapsedMs": 0
+            },
+            {
+              "version": 1,
+              "step": 2,
+              "phase": "configuration",
+              "state": "error",
+              "elapsedMs": 0
+            }
+          ]
+        },
+        "errorInfo": {
+          "category": "internal",
+          "message": "任务执行中止，原因尚未分类",
+          "action": "发送或保存结果尚未确认，请勿重复提交。按任务号和失败阶段交给维护人员核对，不自动重跑。",
+          "phase": "configuration",
+          "phaseLabel": "任务配置",
+          "outcomeUnconfirmed": true
+        }
+      }
+    }
+  }
+}

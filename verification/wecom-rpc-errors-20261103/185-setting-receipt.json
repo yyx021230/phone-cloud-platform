@@ -1,0 +1,15 @@
+{
+  "deviceNumber": "185",
+  "package": "com.netease.open.pocoservice",
+  "setting": "\u5141\u8bb8\u5b8c\u5168\u540e\u53f0\u884c\u4e3a",
+  "before": false,
+  "after": true,
+  "confirmationAccepted": true,
+  "otherSwitchesUnchanged": true,
+  "otherStates": {
+    "wakeForeground": true,
+    "autoStart": false,
+    "relatedStart": false
+  },
+  "rollback": "Return only the same background switch to false and verify other switches unchanged."
+}

@@ -1,0 +1,15 @@
+{
+  "server/lookup-admin-console.mjs": "7490f041e8fe51f3949642f2f08a179392337ef4084bec9f459f489576af5e25",
+  "server/lookup-admin-console.test.mjs": "f33a282639dd7862c658a95a170727c0dd8685b706cec4a1464002c25b7ba2bd",
+  "server/lookup-failure-domain.mjs": "fdcb7e686eadbddf1b156e4e6e2004d080bf57e06e06ea54a5da56373605a1e6",
+  "windows-agent/scripts/alipay_name_lookup.py": "1fa7b571213c53231012950a0fc22acb1df87be803c0fcf72d3db44ac012e400",
+  "windows-agent/scripts/automation_runners_test.py": "fe327362116c0d8511e13dc62b1ff19f520533ab0641be311869cb6acf6dd4d1",
+  "windows-agent/src/alipay-poco-fallback-policy.mjs": "53372e9f22adecb357d1c3a74f055110de2bb5c42d5ab74d77471c8d149a0df6",
+  "windows-agent/src/index.mjs": "f47f89bcb54028f88f791bc319bdfd2389f5dbaa45eab6203664801fe03e99e8",
+  "windows-agent/src/lookup-page-recovery.mjs": "1d0b95976a42752a240668f4caf957122b19ef04247bc40499c677ded1628e36",
+  "windows-agent/src/lookup-page-recovery.test.mjs": "79214d29c2fd95eafc2abf42ab0455faa2322f7870b86f1838074c3366d1b387",
+  "windows-agent/src/lookup-reader-lifecycle.mjs": "5fbf3f43a744560ae1e2ecd03e110abc27905eb06bb9b844748015344bbaa4c2",
+  "windows-agent/src/lookup-reader-lifecycle.test.mjs": "216b3ab38403a3c43afda27458e436fb947c37304b809a8f463e0a976f4f25f9",
+  "docs/PROJECT_DEVELOPMENT.md": "a6f4fcb7d0dce8d547de20464350cf58f0d57486a3355d9b750296b1d986ca08",
+  "docs/LOOKUP_PROBLEM_CLOSURE_LEDGER.md": "3162eebc006d830e1e8ff544bfb981d00d046c8f978dcd35ab2b970106b23479"
+}

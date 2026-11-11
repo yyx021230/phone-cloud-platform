@@ -1,0 +1,22 @@
+{
+  "docs/PROJECT_DEVELOPMENT.md": "7fd9b48bd59a488aa474926c074fff92ebc3adac20f47954e7f489e410983ae7",
+  "docs/WECOM_CLEANUP_V1.md": "3c9b7b52b563912ba320de3037b00e13b5da05892dee9915c5371362dc40cf8e",
+  "server/device-occupancy.mjs": "4f33caecf089118a2b7e4241f21a763dd83f1b37f42c9d378a6a748a6e49d81a",
+  "server/device-occupancy.test.mjs": "08419207b623fc904fd1bf32aa0bfde742dd84f2dc514357265e51dd5384e761",
+  "server/index.mjs": "4bcecc8702ea577a77e5f17664b7833ced33b681f88e5beedcdc6875b6f047cc",
+  "server/lookup-chain-reliability.test.mjs": "67fef223e4d9977d9f8b577ca2ae95d2621837f21410d73cabe0746a3ed22872",
+  "server/lookup-legacy-stop.test.mjs": "58ca853ab9472b2e2664d5eb2a8144eca21af605c01f3d688a2a90102f5826ea",
+  "server/lookup-stop-proof.test.mjs": "15d3451c32b9ad46deedb65d0587468dcaf7dd96ca6de4d3d089e2d607eea15a",
+  "server/postgres-repositories.mjs": "22f7e458bf28e8252639c5bcc5957d56abe8361307baa79432bb869fa34c65ad",
+  "server/postgres-repositories.test.mjs": "7263b19b584e4381263d2a6fcfd33cbe2cc3ba7bb3db5c6b7af3925bade03136",
+  "server/wecom-cleanup-fixture.mjs": "b10519aa77f47a3ef7d3c3d8cf5c4c700ab0d3e00bae25b7497c2fc6eff52c1e",
+  "server/wecom-cleanup-service.mjs": "fb594dd7a191bb37f7a2abdf508298059ca4730814f394c491965f0c46c366a0",
+  "server/wecom-integration.e2e.test.mjs": "64884f387cf78aa96c305b0993405707583bb3594da08ac5bd41afc66f50b450",
+  "server/wecom-physical-cleanup.http.test.mjs": "8d42dcd4b35496eee0aeeca44813ea33cd33bbef304b9ca33cf24167d2a382b2",
+  "server/wecom-physical-cleanup.mjs": "7fea00c14fcd6df20a30b5492c4c52c244b6dec26bbc5169212d0fcd2e15a07b",
+  "server/wecom-physical-cleanup.test.mjs": "60fe6899946c77151f881ab9d2f443cf4d2eb9c600d8d6c99605baf26e010970",
+  "server/wecom-preview.http.test.mjs": "e29bc99891419b56d6cc8dc0286f147596eff00002da425e2daa4e26c89e517b",
+  "server/wecom-preview.test.mjs": "b5583e25276438f9c6ff46b601dcc9631b82a981bf8b09ebe4cbd8e6b13d60ed",
+  "verification/wecom-cleanup-v1/fixtures.json": "2533fcd95a0b431f5b4b77fc3e4e702f5bbb03120e5ab82bf79a1b259b0830f4",
+  "verification/wecom-cleanup-v1/run-postgres.py": "254a61a92995db50c0bc092659a961e5d375ded2893dbbdb02d2ab91e1687c14"
+}

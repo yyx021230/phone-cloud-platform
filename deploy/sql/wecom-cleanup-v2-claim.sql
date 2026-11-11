@@ -1,0 +1,75 @@
+-- Unwired, unapplied migration candidate after M2 schema.
+-- No seeding, enabling, mapping changes or clearing active pointers here.
+CREATE FUNCTION phone_cloud_wecom_v2_claim_valid(c jsonb, s jsonb)
+RETURNS boolean LANGUAGE plpgsql IMMUTABLE AS $$
+DECLARE b jsonb; k text; parsed timestamptz;
+BEGIN
+  IF jsonb_typeof(c) IS DISTINCT FROM 'object' THEN RETURN false; END IF;
+  IF c - ARRAY['version','claimOperationId','originalJobId','originalLockId',
+    'ownerUserId','requestId','mode','businessFingerprint','recordedAt','binding']
+    <> '{}'::jsonb OR c->'version' IS DISTINCT FROM '1'::jsonb THEN RETURN false; END IF;
+  FOREACH k IN ARRAY ARRAY['claimOperationId','originalJobId','originalLockId','ownerUserId'] LOOP
+    IF jsonb_typeof(c->k) IS DISTINCT FROM 'string'
+      OR NOT ((c->>k ~ '^[A-Za-z0-9_-]{1,160}$') IS TRUE) THEN RETURN false; END IF;
+  END LOOP;
+  IF jsonb_typeof(c->'requestId') IS DISTINCT FROM 'string'
+    OR NOT ((c->>'requestId' ~ '^[A-Za-z0-9_-]{8,100}$') IS TRUE)
+    OR jsonb_typeof(c->'mode') IS DISTINCT FROM 'string'
+    OR NOT ((c->>'mode' IN ('preview','send')) IS TRUE)
+    OR jsonb_typeof(c->'businessFingerprint') IS DISTINCT FROM 'string'
+    OR NOT ((c->>'businessFingerprint' ~ '^[a-f0-9]{64}$') IS TRUE)
+    OR jsonb_typeof(c->'recordedAt') IS DISTINCT FROM 'string'
+    OR NOT ((c->>'recordedAt' ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[.][0-9]{3}Z$') IS TRUE)
+    THEN RETURN false; END IF;
+  BEGIN
+    parsed := (c->>'recordedAt')::timestamptz;
+    IF to_char(parsed AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')
+      IS DISTINCT FROM c->>'recordedAt' THEN RETURN false; END IF;
+  EXCEPTION WHEN datetime_field_overflow OR invalid_datetime_format THEN RETURN false;
+  END;
+  b := c->'binding';
+  IF jsonb_typeof(b) IS DISTINCT FROM 'object'
+    OR b IS DISTINCT FROM s->'binding'
+    OR b - ARRAY['version','obligationId','originalTaskId','executionId','deviceId','serial',
+      'agentId','appSlot','androidUser','nonce','serverEpoch','agentInstanceId','handshakeNonce']
+      <> '{}'::jsonb OR b->'version' IS DISTINCT FROM '2'::jsonb THEN RETURN false; END IF;
+  FOREACH k IN ARRAY ARRAY['obligationId','originalTaskId','executionId','agentId',
+    'nonce','serverEpoch','agentInstanceId','handshakeNonce'] LOOP
+    IF jsonb_typeof(b->k) IS DISTINCT FROM 'string'
+      OR NOT ((b->>k ~ '^[A-Za-z0-9_-]{1,160}$') IS TRUE) THEN RETURN false; END IF;
+  END LOOP;
+  IF jsonb_typeof(b->'serial') IS DISTINCT FROM 'string'
+    OR NOT ((b->>'serial' ~ '^[A-Za-z0-9_.:-]{1,128}$') IS TRUE)
+    OR jsonb_typeof(b->'deviceId') IS DISTINCT FROM 'string'
+    OR b->>'deviceId' IS DISTINCT FROM 'adb:' || (b->>'serial')
+    OR jsonb_typeof(b->'appSlot') IS DISTINCT FROM 'string'
+    OR NOT (((b->>'appSlot'='main' AND b->'androidUser'='0'::jsonb)
+      OR (b->>'appSlot'='clone' AND b->'androidUser'='999'::jsonb)) IS TRUE)
+    OR b->>'obligationId'=c->>'originalLockId' THEN RETURN false; END IF;
+  IF c->>'claimOperationId' IN (s->>'hostOperationId',s->>'closeOperationId') THEN RETURN false; END IF;
+  RETURN true;
+END;
+$$;
+ALTER TABLE phone_cloud_wecom_cleanup_v2 ADD COLUMN claim_data jsonb;
+ALTER TABLE phone_cloud_wecom_cleanup_v2 ADD CONSTRAINT wecom_v2_claim_shape
+  CHECK (claim_data IS NULL OR phone_cloud_wecom_v2_claim_valid(claim_data,protocol_state) IS TRUE);
+CREATE UNIQUE INDEX wecom_v2_one_claim_per_task
+  ON phone_cloud_wecom_cleanup_v2 ((claim_data #>> '{binding,originalTaskId}'))
+  WHERE claim_data IS NOT NULL;
+CREATE UNIQUE INDEX wecom_v2_claim_operation_once
+  ON phone_cloud_wecom_cleanup_v2 ((claim_data->>'claimOperationId'))
+  WHERE claim_data IS NOT NULL;
+
+CREATE TABLE phone_cloud_wecom_v2_physical_anchors (
+  physical_key text PRIMARY KEY CHECK (physical_key ~ '^[a-z0-9_.:-]{1,128}$'),
+  device_id text NOT NULL UNIQUE,
+  active_obligation_id text UNIQUE REFERENCES phone_cloud_wecom_cleanup_v2(obligation_id),
+  active_claim_operation_id text UNIQUE,
+  agent_id text NOT NULL CHECK (agent_id ~ '^[A-Za-z0-9_-]{1,160}$'),
+  mapping_revision bigint NOT NULL CHECK (mapping_revision > 0),
+  mapping_fingerprint text NOT NULL CHECK (mapping_fingerprint ~ '^[a-f0-9]{64}$'),
+  mapping_state text NOT NULL DEFAULT 'disabled' CHECK (mapping_state IN ('disabled','ready')),
+  CHECK (lower(device_id) = 'adb:' || physical_key),
+  CHECK ((active_obligation_id IS NULL AND active_claim_operation_id IS NULL)
+    OR (active_obligation_id IS NOT NULL AND active_claim_operation_id IS NOT NULL))
+);

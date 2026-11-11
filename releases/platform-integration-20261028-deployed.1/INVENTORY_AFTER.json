@@ -1,0 +1,13 @@
+{
+  "total": 141,
+  "listed": 134,
+  "adbStateCounts": {
+    "device": 125,
+    "usb_present_mtp_only": 1,
+    "physically_absent": 13,
+    "unauthorized": 1,
+    "adb_interface_ready_transport_missing": 1
+  },
+  "onlineFresh90s": 124,
+  "screen": 1
+}

@@ -1,0 +1,37 @@
+{
+  "artifactType": "documentation_evidence_only",
+  "version": "lookup-postrelease-audit-20261030.1",
+  "branch": "codex/lookup-postrelease-audit-20261030",
+  "baseCommit": "83fd306db99dcc08734f6978240986d46b3ce56a",
+  "annotatedTag": "lookup-postrelease-audit-20261030.1",
+  "files": [
+    {
+      "path": "docs/PROJECT_DEVELOPMENT.md",
+      "bytes": 1204831,
+      "sha256": "912ffba903d708e694b48bbddad5f50773fb69d20b0ba821b572df6bcf0191f5"
+    },
+    {
+      "path": "docs/LOOKUP_POSTRELEASE_ANALYSIS_20261030.md",
+      "bytes": 20892,
+      "sha256": "437632271c92e02eaaa03e161320661bf42baf26dd7f4c332fa2dde717b16c2f"
+    },
+    {
+      "path": "releases/lookup-postrelease-audit-20261030/README.md",
+      "bytes": 1262,
+      "sha256": "d5adadde3e9568f800a8370e1ba5172ff452e95d7756200df95a5af462a8a0b5"
+    },
+    {
+      "path": "releases/lookup-postrelease-audit-20261030/REPORT.json",
+      "bytes": 124263,
+      "sha256": "728e3d68d8fccd588b543cadedeea1ba7b204713f31c552b5b90569909775add"
+    },
+    {
+      "path": "releases/lookup-postrelease-audit-20261030/VERIFICATION.json",
+      "bytes": 6973,
+      "sha256": "86b66578adfe9ec0e2c8634c845bc6e1abc0e5dd083b0f7c691bb83c2809a141"
+    }
+  ],
+  "runtimeChanges": [],
+  "productionReleasePerformed": false,
+  "actualCommit": "resolve annotatedTag^{commit}; no self-referential commit embedded"
+}

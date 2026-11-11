@@ -1,0 +1,13 @@
+{
+  "scope": "actual local adapter before JSON shape fix; no product/native",
+  "tests": 34,
+  "pass": 28,
+  "fail": 6,
+  "sourceSha256": {
+    "clock_probe.py.txt": "534e6eb9bdd31c93777c6c7c1958697a12ed3f32b4442fcdef286b47a4088b31",
+    "authority.test.mjs.txt": "5f4a5de71d36e95cdf704aef574d5bb2ecedc5771fff64e2148b76277780002c",
+    "authority.mjs.txt": "5e37a7825d0ef1a1d03d8b382e23d70c020a8345d8b152d7c76cbba6406cf05e",
+    "fixture-child.mjs.txt": "61693e772552ea999e7244a2a5a07da1d064b6c69b7841259347fcfcd5096dd8"
+  },
+  "outputSha256": "326a651130554bc9692d928560dd7b78588b4822ffe7bf83753faf1be8279a28"
+}

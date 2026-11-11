@@ -1,0 +1,15 @@
+# WeCom cleanup Agent v1 candidate — NOT release-ready
+
+Source: `66abe0fd15d2d4db129bbd957677830e69e3c718`. Requires server `6d2b2717c7fca4bcb2843d8c1838b8bfd349f766`; root owns the combined candidate and three-way merge. This branch is based on an older Agent baseline: copying the whole tree/index would remove newer lookup changes. Only use the WeCom leaves and reviewed WeCom-specific index hunks listed in the manifest.
+
+The actual product Agent now declares protocol 1 and refuses an unbound task before spawn. Its one Python reader reports exact PID/creation token/machine, waits for durable host ACK, and only then receives task configuration. The existing SYSTEM Agent remains alive. Real OS close precedes host-closed; host/close lost responses retry the same original body once within the original deadline. No Node supervisor or second Agent is created.
+
+The new verification task has a dedicated path: no SDK, business query, invitation, failure screenshot or post-task scan. It checks the original SYSTEM Agent entry and ADB listener, original host absence, both Poco packages and every target-serial forward. Any residual—including a legitimate media forward—denies proof; nothing is killed or removed. Two snapshots use conservative first-fact timestamps, not completion/upload time. Actual verification-child close precedes proof POST; only that endpoint commits success. Unknown ACK retries the same proof once and does not report a possibly committed task as failed.
+
+Verified locally: 292 Python, 84 WeCom Node, 16 QA, 183 screen regressions, root syntax check; four real OS readiness/cancellation pipes and one real OS verification pipe. Pipe tests use fixture machine/tool data and are **not** SYSTEM or phone acceptance. A Windows Administrator-only negative test rejected before any socket, preserving the three observed production Agent-file hashes and original Agent/ADB processes.
+
+43's previous full preview is pinned to ea7ff8a, with existing remarks `not_needed` and no invitation. 23's previous `already_contact` stop is not preview readiness. 25 still did not complete: its latest exact-ref run timed out while closing remarks. All older failures remain in `HISTORICAL_NATIVE.json`; none is rewritten as a new-protocol success.
+
+Pending: combined real HTTP/Agent acceptance, positive SYSTEM pipeline, new-protocol phones, 25 full preview and other untested phones. Permanent close communication failure or an Agent restart losing the local OS-close receipt is still maintenance; there is no general outbox or automatic inference of old process exit. Missing legacy identity and actual tool residuals remain isolated. Owned-resource cleanup is a separate phase.
+
+No deployment or push. Rollback cannot silently restore legacy WeCom dispatch: preserve server obligations and disable WeCom delivery before a version that does not understand them. Do not change ADB, SYSTEM, keys, startup entries, USB, Windows, or media to make tests pass. Existing live use remains untouched by this candidate.

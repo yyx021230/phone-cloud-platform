@@ -1,0 +1,27 @@
+{
+  "codeCommit": "0d4f1a29f37db1b4a8f7029d803f8987eb59179d",
+  "scope": "fixed integrated local code; physical facts simulated; no SYSTEM positive acceptance",
+  "productionConnections": 0,
+  "phoneActions": 0,
+  "checks": [
+    {
+      "command": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "exitCode": 0,
+      "summary": "\n> phone-cloud-platform@0.1.0 check\n> node --check server/index.mjs && node --check server/agent-runtime-release.mjs && node --check server/realtime-metrics.mjs && node --check server/postgres-repositories.mjs && node --check server/persistence-policy.mjs && node --check server/screen-gallery-import.mjs && node --check server/screen-relay.mjs && node --check server/screen-backpressure.mjs && node --check server/screen-quality.mjs && node --check scripts/screen-load-test.mjs && node --check scripts/browser-screen-load-test.mjs && node --check scripts/screen-load-report.mjs && node --check windows-agent/src/index.mjs && node --check windows-agent/src/sms-content-query.mjs && node --check windows-agent/src/device-recovery-state.mjs && node --check windows-agent/src/recovery-observability.mjs && node --check windows-agent/src/pnp-recovery-safety.mjs && node --check windows-agent/src/guarded-task-runner.mjs && node --check windows-agent/src/runtime-metrics.mjs && node --check windows-agent/src/device-actor.mjs && node --check windows-agent/src/adb-priority-queue.mjs && node --check windows-agent/src/device-scan-cache.mjs && node --check windows-agent/src/gallery-import.mjs && node --check windows-agent/src/serial-adb-activity.mjs && node --check windows-agent/src/serial-adb-health.mjs && node --check windows-agent/src/serial-delay-scheduler.mjs && node --check windows-agent/src/worker-shutdown.mjs && node --check windows-agent/src/serial-reservation.mjs && node --check windows-agent/src/screen-stream.mjs && node --check windows-agent/src/screen-video-channel.mjs && node --check windows-agent/src/screen-control-queue.mjs && node --check windows-agent/src/screen-backpressure.mjs && node --check screen-client/main.js && node --check screen-client/screen-transport.js && node --check screen-client/control-input.js && node --check screen-client/mse-player.js && node --check public/app.js\n\n"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "test:screen"
+      ],
+      "exitCode": 0,
+      "summary": ")\n\u2714 duplicate serial is not retryable busy (1.106416ms)\n\u2714 wrong name is not retryable busy (1.256917ms)\n\u2714 empty is not retryable busy (1.410375ms)\n\u2714 stale or corrupt cache never grants ownership or busy retry (2.729542ms)\n\u2714 cancellation during waiting is preserved and never reported as retry (2.808417ms)\n\u2714 real abortable timer preserves the Agent cancellation reason (14.8395ms)\n\u2714 actual Agent entry/status path defers with no ADB, Poco, settings, runner or evidence actions (3.764417ms)\n\u2714 Poco selector RPCs have a bounded per-call timeout (0.895958ms)\n\u2714 hierarchy-wide element scans use one frozen snapshot (0.362042ms)\n\u2714 resolved Poco elements never fall back to an unbounded RPC click (0.200583ms)\n\u2714 post-selection confirmation uses bounded XML instead of Poco freeze (0.413666ms)\n\u2714 scanner album recovery handles the exact Android permission activity through XML (0.292ms)\n\u2714 scanner recovery safely dismisses Vivo's exact notification overlay (0.081958ms)\n\u2714 clone resolver compatibility is bounded to proven system surfaces (0.277084ms)\n\u2714 missing scan entry closes the evidenced profile-search surface by element (0.149375ms)\n\u2714 vendor XML clone resolution keeps scanner lookup bounded and element based (0.241625ms)\n\u2714 profile navigation checks its target before expensive focus recovery (0.1495ms)\n\u2714 evidenced XHS business popups use bounded Back recovery in Poco and XML paths (0.1145ms)\n\u2714 unfinished draft recovery covers every Poco scanner navigation boundary (0.196584ms)\n\u2714 slow Android PackageManager is not mislabeled as XHS missing (0.195125ms)\n\u2714 a task rebuilds a missing Poco worker from a fresh successful preflight (0.675916ms)\n\u2714 a cold foreground task probes a worker before running the full preflight (0.120084ms)\n\u2714 a foreground QR task does not wait 60 seconds behind background preflight (0.100375ms)\n\u2714 a new Poco worker clears only its device's stale instrumentation (0.289458ms)\n\u2714 XML runner uses Poco-equivalent popup recovery only after a target is absent (2.537542ms)\n\u2714 XML runner keeps the full XHS confirmation and post-selection permission branches (0.412041ms)\n\u2139 tests 1908\n\u2139 suites 0\n\u2139 pass 1908\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 159055.651417\n"
+    }
+  ],
+  "exitCode": 0
+}

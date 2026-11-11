@@ -1,0 +1,25 @@
+{
+  "baseCommit": "4ed67ae4e1fbb658fc9694ec99150e776ed138ba",
+  "lastVerifiedProductionSource": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "candidateTag": "wecom-v1-causal-20261103-draft.1",
+  "sourceSha256": {
+    "server/wecom-physical-cleanup.mjs": "7fea00c14fcd6df20a30b5492c4c52c244b6dec26bbc5169212d0fcd2e15a07b",
+    "server/wecom-cleanup-service.mjs": "fb594dd7a191bb37f7a2abdf508298059ca4730814f394c491965f0c46c366a0",
+    "server/wecom-preview.mjs": "ec9126e6c85d787f80355df8b5c84fb5c525f8ba746847573c9d5b589779cbaf",
+    "server/index.mjs": "4bcecc8702ea577a77e5f17664b7833ced33b681f88e5beedcdc6875b6f047cc",
+    "windows-agent/src/index.mjs": "85b2b2eea012a345f87b455ebbb994ef6ce9dd70b6e1dddc4769594781c29eff",
+    "windows-agent/src/wecom-preview-task.mjs": "2d5fb3354edde14d2673e7c25bc7e9e25e60e8ba3d1e1e76358b675e20847e24",
+    "windows-agent/src/wecom-cleanup-protocol.mjs": "918dfee2f090e94ad946266d2292fe73d0422a4485e87cdd04cfa522d5dbb9be",
+    "windows-agent/src/wecom-cleanup-verify.mjs": "98213c21acb452458e9a3f06b8abdf6c56abce2a57e2d3fa569f91da69ff9bc2",
+    "windows-agent/scripts/wecom_platform_preview.py": "5cb7e5fc041e5dbe62ec57aed4ddbf938d7f684fbab023f9fb86d67cb7cfa8cc",
+    "windows-agent/scripts/wecom_host_identity.py": "43c95de5f3ecdcc09094fbf2bb8a02aec7e6b1cce5a77eb9fbe954738ec9fc51",
+    "windows-agent/scripts/wecom_cleanup_verify.py": "532d4b0529cf44b65a0a776c2410e3887ed77a785714d56cc7318e2adc7e5494",
+    "windows-agent/scripts/wecom_cleanup_contract.py": "aa6f62a3ce376eb12c634b0dd452d617b4feff24414b227eb4fe7a2a4c2822b3",
+    "windows-agent/scripts/wecom_physical_verify.py": "a0096840632976738d01374c6ac7e6d85bd5d3a764a30855cf793b488f79261b",
+    "windows-agent/scripts/wecom_system_runtime.py": "95e87ed27257eaea55f0be8e9c774cdaa020b2770777586719b782b80118316e",
+    "windows-agent/scripts/wecom_screen_lease.py": "a9defa300a53b50fcc4006acab3655bbe1718a805684bb3a63036a6d1d5f2afe",
+    "scripts/qa/wecom_candidate_live.py": "ee3a3111b6bada90ef1d9153d23e7796c0faf11580a666d0f52dbdae2fdfe7f3"
+  },
+  "proposalOnly": true,
+  "newCodeTestsOrNativeActionsByOwner": false
+}

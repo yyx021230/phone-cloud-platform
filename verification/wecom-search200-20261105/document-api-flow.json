@@ -1,0 +1,71 @@
+{
+  "contract": "CPS-v0.4-single-account",
+  "exchanges": [
+    {
+      "endpoint": "/api/v1/lead/devices/query",
+      "code": 200,
+      "success": true
+    },
+    {
+      "endpoint": "/api/v1/lead/dispatch",
+      "code": 200,
+      "success": true
+    },
+    {
+      "endpoint": "/api/v1/lead/dispatch",
+      "code": 200,
+      "success": true
+    },
+    {
+      "endpoint": "/api/v1/lead/dispatch",
+      "code": 200,
+      "success": true
+    },
+    {
+      "endpoint": "/api/v1/lead/devices/query",
+      "code": 200,
+      "success": true
+    },
+    {
+      "endpoint": "/api/v1/lead/dispatch",
+      "code": 2003,
+      "success": false
+    },
+    {
+      "endpoint": "/api/v1/lead/dispatch",
+      "code": 200,
+      "success": true
+    },
+    {
+      "endpoint": "/api/v1/lead/devices/query",
+      "code": 200,
+      "success": true
+    },
+    {
+      "endpoint": "/api/v1/lead/dispatch",
+      "code": 200,
+      "success": true
+    },
+    {
+      "endpoint": "/api/v1/lead/dispatch",
+      "code": 200,
+      "success": true
+    },
+    {
+      "endpoint": "/api/v1/lead/devices/query",
+      "code": 200,
+      "success": true
+    }
+  ],
+  "executionAccounts": 2,
+  "physicalTasks": 3,
+  "mainAndroidUser": 0,
+  "duplicateDispatchReused": true,
+  "callbackAttempts": 3,
+  "callback500RetriedOnlyNotification": true,
+  "ordinaryFailurePreserved": true,
+  "phoneReleasedAfterFailure": true,
+  "lookupLockPreserved": true,
+  "syntheticAgent": true,
+  "realInvitations": 0
+}

@@ -1,0 +1,14 @@
+{
+  "hashes": {
+    "scripts/wecom_platform_preview.py": "5cb7e5fc041e5dbe62ec57aed4ddbf938d7f684fbab023f9fb86d67cb7cfa8cc",
+    "scripts/wecom_host_identity.py": "43c95de5f3ecdcc09094fbf2bb8a02aec7e6b1cce5a77eb9fbe954738ec9fc51",
+    "scripts/wecom_control_pipe.py": "dc17092ebe7770944e900224657b9e1b9a898a90dc27c48599308fa52543502e",
+    "src/wecom-preview-task.mjs": "2d5fb3354edde14d2673e7c25bc7e9e25e60e8ba3d1e1e76358b675e20847e24",
+    "src/wecom-cleanup-protocol.mjs": "918dfee2f090e94ad946266d2292fe73d0422a4485e87cdd04cfa522d5dbb9be"
+  },
+  "missing": [],
+  "matches": true,
+  "files": 5,
+  "wecomProcesses": [],
+  "unknownPythonProcesses": 0
+}

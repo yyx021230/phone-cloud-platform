@@ -1,0 +1,83 @@
+
+> phone-cloud-platform@0.1.0 test:cps-wecom
+> node --test server/cps-wecom*.test.mjs server/wecom-preview.http.test.mjs
+
+▶ CPS external HTTP lifecycle (short default wait; no real phones)
+  ✔ device status is signed, complete and read-only; real lookup occupancy refuses CPS admission (66.999916ms)
+  ✔ lost client acceptance and lost internal POST response recover the original task once (6913.781459ms)
+  ✔ concurrent repeated dispatch and new lead ID cannot overwrite or repeat held work (79.188583ms)
+  ✔ another phone finishes while the first waits; callback 500 retries notification only (10966.154417ms)
+  ✔ main and clone bind distinct Android users and share one physical busy fence (10982.95075ms)
+  ✔ CPS signature rejection stops callback retries; no second device execution (5017.544792ms)
+  ✔ bridge restart preserves pending original execution, signatures and recipient fences (215.108458ms)
+  ✔ real callback HTTP timeout and bridge restart preserve the outbox without a second send (15117.742208ms)
+  ✔ lookup acquiring a device after CPS acceptance is not preempted; only known non-admission retries (11049.441958ms)
+  ✔ short delay without a result then new-request retry does not create a second execution (3989.949958ms)
+  ✔ unknown delivery cannot become a successful or frequency callback; no replay on new lead (4021.648709ms)
+  ✔ frequency callback isolates only the exact member; its clone still accepts another customer (9992.101792ms)
+  ✔ final accounting: one launch per job, exact callback effects and unchanged lookup (8.511834ms)
+✔ CPS external HTTP lifecycle (short default wait; no real phones) (78895.6675ms)
+ℹ {"store":"temporary_json","physicalJobs":9,"syntheticLaunches":9,"syntheticSendClaims":4,"callbacks":11,"appliedCpsResults":7,"lookupUnchanged":true,"trace":["accepted_dispatch_ack_lost","original_platform_submission_ack_lost","lookup_wins_post_acceptance_race","timeout_retry_elapsed_ms:60346"]}
+✔ journal has one coordinator, durably serializes revisions and refuses an obsolete schema (236.322209ms)
+✔ a stale owner file is never stolen and a failed commit fences all later mutations (21.142875ms)
+✔ Postgres lost acknowledgement, revision conflict and owner disconnect fence execution (0.463041ms)
+﹣ isolated real Postgres SQL, advisory owner, CAS conflict and restart persistence (0.036959ms) # SKIP
+✔ CPS published signature vector is exact; booleans, zero and Chinese participate unchanged (0.984834ms)
+✔ INT64 survives parse, signature and callback serialization; duplicates/arrays/floats are rejected (0.861167ms)
+✔ configuration rejects ambiguous member/slot, invalid callbacks and unknown auth (0.600041ms)
+✔ all devices include offline and unmapped phones; account mapping/availability is explicit and private IDs stay private (92.401375ms)
+✔ nonce, skew and signatures fail before dispatch; one nonce is consumed across both routes (62.673875ms)
+✔ same lead with new nonce returns accepted once; parameter changes and unconfigured members fail closed (161.717875ms)
+✔ lost submission acknowledgement is reconciled by original request, never submitted twice (57.443042ms)
+✔ unknown submission without original task stays held and does not become a fresh invitation (61.506791ms)
+✔ verified duplicate callback retries with new signed nonce, without repeating device work (146.835916ms)
+✔ a native unknown send or unrelated failure cannot be disguised as CPS success or frequency limit (191.386709ms)
+✔ successful callback requires both send confirmation and independent remark phone confirmation (77.484ms)
+✔ preview never calls CPS callback, including verified duplicate; same journal survives graceful restart (70.924541ms)
+✔ real loopback HTTP receives CPS dispatch and queries all status without accepting query/body confusion (73.159208ms)
+✔ platform bridge joins only verified private identities, requests phone proof and never leaks platform credentials (0.884542ms)
+✔ busy before admission may wait; stale physical remapping cannot switch the selected phone (56.956417ms)
+✔ one phone submission hanging does not block a second phone reaching its original task (96.097375ms)
+✔ configured but unverified account cannot execute or be advertised as available (30.230542ms)
+✔ HTTP oversized body is rejected with a defined response before authentication or task creation (14.695708ms)
+✔ lead-only remarks admit nine-digit and maximum INT64 IDs without losing idempotency (153.90125ms)
+✔ signed HTTP preserves maximum INT64 through remark, phone proof request and callback (121.5905ms)
+✔ two-minute timeout, fresh lead ID, restart and phone migration cannot bypass the logical recipient fence (104.131ms)
+✔ concurrent different lead IDs for the same member/customer reserve only one original execution (121.441875ms)
+✔ a completed callback retains the recipient fence after deleting the raw phone (112.63975ms)
+✔ only terminal confirmed non-send with cleanup permits a different lead for the same recipient (177.541458ms)
+✔ confirmed frequency pauses just that official member immediately, persists, and expires at China midnight (195.60875ms)
+✔ missing trustworthy frequency time isolates member without fabricating a callback day (68.956792ms)
+✔ preview journal cannot become a send journal on restart (19.535625ms)
+✔ callback rejection and exhausted retries do not repeat device operations (249.109417ms)
+✔ queued work on one busy phone cannot consume the slot of a second idle phone (110.329083ms)
+✔ future-but-valid timestamp cannot replay after the nominal five-minute nonce interval (25.740708ms)
+✖ preview HTTP covers authentication, eight phones, leases, original-id reuse and restart (1379.686209ms)
+ℹ tests 49
+ℹ suites 0
+ℹ pass 47
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 79018.756
+
+✖ failing tests:
+
+test at server/wecom-preview.http.test.mjs:13:1
+✖ preview HTTP covers authentication, eight phones, leases, original-id reuse and restart (1379.686209ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  200 !== 2003
+
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-preview.http.test.mjs:294:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 200,
+    expected: 2003,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

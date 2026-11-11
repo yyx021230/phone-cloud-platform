@@ -1,0 +1,28 @@
+{
+  "atUtc": "2026-11-02T07:57:11.364547+00:00",
+  "baseline": "af00bac0302d125221e876c9a3a01b0f7fd0b74a",
+  "scope": "model.2 offline mandatory decision sample and synthetic interval/ledger only",
+  "exitCode": 0,
+  "sourceSha256": {
+    "model.mjs": "e3d55547232f4d121da52b542debbd86fc965f7f21146361c16c413348928121",
+    "model.test.mjs": "8eadce86b589882974bd3263c57c5e09c38641b316832abd252f7a8514b5ad89",
+    "decision-freshness.test.mjs": "e3db589767a28053798f8d45567fc905e66a51ee1dd81e48d2e1fc6dda48dda5"
+  },
+  "outputSha256": "41a8b0f47a7697467ac3d2d860822585ef89e6ab6bee1379bc6931f6c1704d00",
+  "syntheticErrorAndRateBounds": true,
+  "freshDecisionSampleRequired": true,
+  "pureSnapshotHelpersAreActionGates": false,
+  "osClockAdaptersCalled": false,
+  "windowsOrLinuxNativeVerified": false,
+  "productionConnected": false,
+  "actualVmPauseGuaranteeEstablished": false,
+  "persistentTransactionOrJournalVerified": false,
+  "productImplementationApproved": false,
+  "limitations": [
+    "Missing or repeated sequence is refused, but a fabricated fresh sequence cannot prove actual OS sampling.",
+    "All-guest-clock VM freeze remains observationally indistinguishable; no real VM detection was added.",
+    "Uncharacterized VM and missing production error bounds still cannot authorize.",
+    "model.1 historical 27 tests and seven red counterexamples are retained separately.",
+    "No actual PG/checkpoint/journal/OS/native implementation is validated."
+  ]
+}

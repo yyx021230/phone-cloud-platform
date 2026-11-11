@@ -1,0 +1,15 @@
+{
+  "pocoForwardCount": 0,
+  "readOnly": true,
+  "wakefulness": "Awake",
+  "foregroundActivity": ".DoubleAppResolverActivity",
+  "pocoProcessPresent": false,
+  "adbClientBinaryExecuted": false,
+  "sampledAt": "2026-10-29T09:28:29.6686256Z",
+  "physicalDevice": 43,
+  "adbPid": 17764,
+  "foregroundPackage": "com.android.intentresolver",
+  "adbOwner": "NT AUTHORITY\\SYSTEM",
+  "pocoTestProcessPresent": false,
+  "noUiInput": true
+}

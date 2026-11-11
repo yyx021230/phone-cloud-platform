@@ -1,0 +1,10 @@
+{
+  "windows-agent/scripts/alipay_name_lookup.py": "8215e0d4486dbd740ab2ea98900ef56f35da5218bca5cdf73c72b72990439490",
+  "windows-agent/scripts/test_lookup_picker_budget.py": "91a03737d3b9c3aa12650e1b7ab8a7ac45d5aed0d2292ac7c4d1481984d69dca",
+  "windows-agent/scripts/test_lookup_gray_compat.py": "190caf85b19f4fccb1d0a7fd353ce5b6839501986d0e146088d6e909db3945bb",
+  "windows-agent/scripts/xhs_airtest_poco.py": "90f78465709fd24223c9cdceccc844c44f5463aab0aeafaa158d2f7aebd538e8",
+  "windows-agent/scripts/test_lookup_reader_boundary.py": "f74c0787d045cde551aa9be42fadb9664631be488c6a5f5e3a10c64f15d0e67e",
+  "windows-agent/src/lookup-reader-lifecycle.mjs": "7c79b496d769e28fbe3d31ea9b5baf0ec87e933a928ea452e3e85ae99b4138c7",
+  "windows-agent/src/lookup-reader-lifecycle.test.mjs": "0fa58ceb7f0a3bbe27fe91140cd49ab90a429a0bbd8d87c72b1f1a60eb583e09",
+  "windows-agent/scripts/automation_runners_test.py": "b3f29c6b771b4600d693fc717045dc2f84dc9579e41be98c8bfdb2e8582da99b"
+}

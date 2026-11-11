@@ -1,3 +1,4 @@
+import {lookupExecutionMetrics,lookupExecutionDuration,lookupRecoverySummary} from './lookup-execution-metrics.mjs';
 import {buildLookupCardStatus} from './device-occupancy.mjs';
 import {publicLookupAccountCooldowns,verifiedSavedAccounts} from './lookup-account-cooldown.mjs';
 const list=v=>Array.isArray(v)?v:[];
@@ -5,6 +6,18 @@ const text=v=>String(v??'').slice(0,240);
 const date=v=>Number.isFinite(Date.parse(v))?new Date(v).toISOString():null;
 const latest=rows=>[...rows].sort((a,b)=>String(b.updatedAt||b.createdAt||'').localeCompare(String(a.updatedAt||a.createdAt||'')))[0];
 export const lookupJob=j=>/^alipay_name_(start|query|switch|stop)$/.test(j?.kind||'');
+// Older preflight failures contain only an error/message, not runnerReason.
+// Never expose that raw command (serial, paths, or account data) as a fallback.
+function failureReason(job,task){
+ for(const result of [job?.result,task?.result]){
+  const reason=result?.diagnostic?.runnerReason||result?.diagnostic?.reason;
+  if(reason)return text(reason);
+  const raw=String(result?.error||result?.message||'');
+  const marker=raw.match(/(?:^|[\s:])(package_manager_unresponsive|lookup_reader_cleanup_unconfirmed|lookup_old_worker_exit_unconfirmed|poco_service_not_installed)(?=$|[\s:])/);
+  if(marker)return marker[1];
+ }
+ return '';
+}
 export function requestSummary(r){return {lookupId:r.lookupId,clientId:r.clientId,phoneNumber:text(r.phoneNumber),status:r.status,name:['succeeded','not_found'].includes(r.status)?text(r.name):null,code:text(r.code),createdAt:r.createdAt,completedAt:r.completedAt||null,attemptCount:list(r.attempts).length};}
 export function buildLookupAdminOverview({pool,state,isReady=()=>false,now=Date.now()}){
  const jobs=list(state.automationJobs).filter(lookupJob),sessions=list(state.automationSessions);
@@ -25,7 +38,7 @@ export function buildLookupAdminOverview({pool,state,isReady=()=>false,now=Date.
     jobId:text(block.jobId),at:Number.isFinite(block.at)?new Date(block.at).toISOString():null,
     domain:text(block.domain),code:text(block.code),detailsAvailable:Boolean(blockingJob),
     hasScreenshot:Boolean(blockingJob&&jobEvidence(state,blockingJob).length),
-    reason:text(blockingJob?.result?.diagnostic?.runnerReason||'')
+    reason:failureReason(blockingJob)
   }:null;
   const accounts=labels.map(account=>{
    const cooldown=cooldowns.find(c=>c.account===account),isCurrent=Boolean(current?.accountIdentityVerified&&current.currentAccount===account);
@@ -61,11 +74,12 @@ export function jobEvidence(state,job){
 }
 export function jobDetail(state,job){
  const task=list(state.windowsTasks).find(t=>t.taskId===job.windowsTaskId&&t.deviceId===job.deviceId);
- return {jobId:job.jobId,sessionId:job.sessionId,deviceId:job.deviceId,deviceNumber:list(state.devices).find(d=>d.deviceId===job.deviceId)?.deviceName||'',kind:job.kind,status:job.status,createdAt:job.createdAt,completedAt:job.completedAt||null,account:text(job.result?.currentAccount||job.result?.diagnostic?.currentAccount),code:text(job.result?.errorCode),reason:text(job.result?.diagnostic?.runnerReason||job.result?.diagnostic?.reason),evidence:jobEvidence(state,job),events:list(task?.events).slice(-100).map(e=>({at:e.createdAt||e.at||null,step:text(e.stepId),phase:text(e.phase),message:text(e.message)}))};
+ return {jobId:job.jobId,sessionId:job.sessionId,deviceId:job.deviceId,deviceNumber:list(state.devices).find(d=>d.deviceId===job.deviceId)?.deviceName||'',kind:job.kind,status:job.status,createdAt:job.createdAt,completedAt:job.completedAt||null,account:text(job.result?.currentAccount||job.result?.diagnostic?.currentAccount),executionDurationMs:lookupExecutionDuration(job.result||task?.result),execution:lookupExecutionMetrics(job.result||task?.result),code:text(job.result?.errorCode||task?.result?.errorCode),reason:failureReason(job,task),evidence:jobEvidence(state,job),events:list(task?.events).slice(-100).map(e=>({at:e.createdAt||e.at||null,step:text(e.stepId),phase:text(e.phase),message:text(e.message)}))};
 }
 export function requestDetail(state,r){
  const attempts=list(r.attempts).map(a=>({deviceId:a.deviceId,deviceNumber:list(state.devices).find(d=>d.deviceId===a.deviceId)?.deviceName||'',sessionId:a.sessionId,at:a.at,jobs:list(state.automationJobs).filter(j=>lookupJob(j)&&j.deviceId===a.deviceId&&j.sessionId===a.sessionId&&j.clientReference===r.lookupId).map(j=>jobDetail(state,j))}));
- return {...requestSummary(r),attempts};
+ const jobs=list(state.automationJobs).filter(j=>lookupJob(j)&&j.clientReference===r.lookupId);
+ return {...requestSummary(r),recovery:lookupRecoverySummary(jobs,list(r.attempts)),attempts};
 }
 export function parseLookupCursor(raw){
  if(!raw)return null;
@@ -76,4 +90,20 @@ export function lookupRequestPage(rows,cursor,limit=30){
  const unique=[...new Map(eligible.map(r=>[r.lookupId,r])).values()].sort((a,b)=>b.createdAt.localeCompare(a.createdAt)||(a.lookupId<b.lookupId?1:a.lookupId>b.lookupId?-1:0));
  const page=unique.slice(0,limit),last=page.at(-1);
  return {requests:page.map(requestSummary),nextCursor:unique.length>limit?Buffer.from(JSON.stringify({createdAt:last.createdAt,lookupId:last.lookupId})).toString('base64url'):null};
+}
+
+// Archived rows are a private read projection, never added to the scheduler state.
+export async function lookupJobContext(state, jobId, readArchive) {
+ if(!/^[A-Za-z0-9-]{1,80}$/.test(String(jobId)))return null;
+ let job=list(state.automationJobs).find(j=>j.jobId===jobId);
+ if(job&&!lookupJob(job))return null;
+ let task=job&&list(state.windowsTasks).find(t=>t.taskId===job.windowsTaskId&&t.deviceId===job.deviceId);
+ if((!job||!task)&&readArchive){
+  const archived=await readArchive(jobId);
+  if(!job&&archived?.job?.jobId===jobId&&lookupJob(archived.job))job=archived.job;
+  const candidate=archived?.task;
+  if(job&&!task&&candidate?.taskId===job.windowsTaskId&&candidate.deviceId===job.deviceId)task=candidate;
+ }
+ if(!job)return null;
+ return {job,state:{devices:state.devices,evidenceAssets:state.evidenceAssets,windowsTasks:task?[task]:[]}};
 }

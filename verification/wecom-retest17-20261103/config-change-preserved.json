@@ -1,0 +1,12 @@
+{
+  "at": "2026-11-03T06:47:52.052479+00:00",
+  "expectedOwnTemporaryConcurrency": 11,
+  "expectedOwnTemporaryRevision": 181,
+  "observedConcurrency": 8,
+  "observedRevision": 183,
+  "restoreWritePerformed": false,
+  "reason": "later_configuration_change_preserved",
+  "ownQaNativeWorkers": 0,
+  "ownActiveDeviceLocks": 0,
+  "all17OriginalListingsRestored": true
+}

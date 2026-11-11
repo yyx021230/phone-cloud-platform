@@ -1,0 +1,18 @@
+{
+  "windows-agent/scripts/wecom_rpc_budget.py": "fe1ebece8e25c57d1e29dab04eb60bdd1a523ff261d91483ff5b376f6d994871",
+  "windows-agent/scripts/wecom_rpc_evidence.py": "a3ebf1b11a9fdbd68c64b3c1c434105c37f6522f92e48b182b8eb9ad6b5f7df7",
+  "windows-agent/scripts/wecom_diagnostics.py": "701a47ebfb6324fd067f8f1f07da568f3059e8749e1508bfb03fb7bb8fbf035d",
+  "windows-agent/scripts/wecom_platform_preview.py": "f11739329eba201a146cad8a97de0e3e6543aed6625f08f56cccaec2a5197077",
+  "windows-agent/scripts/wecom_standalone_peer_preview.py": "0662c731dd63d9c59888ab1a3a970810ffc3aa4b53d145635c424247d4fe10b2",
+  "windows-agent/scripts/wecom_screen_lease.py": "b257e513b827e5cc1a3b16fc4b26044c45b669a327bb40fcc0280f0a02cbeeb8",
+  "windows-agent/src/wecom-diagnostics.mjs": "893bd3fc10d3c471b82f4286be6ef58909d7771220b97dff47679f6cbe93ab94",
+  "server/wecom-preview.mjs": "a9760abed85fdc6f23d31de3b1744efac0f3e12c806d677213e3f7994b5f48ab",
+  "server/wecom-errors.mjs": "79ab077b058042c7f4f7e3dd4ed4caab4d5f0d3ff62737da90e093b6881a375e",
+  "server/wecom-diagnostics.mjs": "893bd3fc10d3c471b82f4286be6ef58909d7771220b97dff47679f6cbe93ab94",
+  "public/wecom-automation-ui.js": "7ab09d2825f6852a567e0d468a870c2e86bcf6a78654eb320142ec71ca612529",
+  "public/wecom-preview.js": "8120c3472bc4dd8895ae82b78ae96c0d089c336983e69d033c9f71004fa920e0",
+  "public/app.js": "292c0186e68aa05acda7a30cb12ecae08b414087aadd15fc1881ebeed8b98c41",
+  "public/index.html": "4e4435feef422b7d27e904e13b2de0077aecb849d62b12e860c0ce01c32ce8d9",
+  "public/wecom-preview.html": "07f5402e0e27dce382d2ab694845344e7f986ea42c5d68d837d30fd70287876f",
+  "public/wecom-integration-api.md": "cff17261419f699d866d9a8975533ed29d7efeb8f80bfaa85da933bae3a56cd0"
+}

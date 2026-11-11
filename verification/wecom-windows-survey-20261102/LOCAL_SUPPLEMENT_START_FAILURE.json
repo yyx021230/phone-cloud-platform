@@ -1,0 +1,12 @@
+{
+  "stage": "local_collector_import_before_main",
+  "exception": "ModuleNotFoundError",
+  "module": "collect_reviewed",
+  "cause": "local -I excludes the script directory from sys.path",
+  "windowsCommandsExecuted": 0,
+  "clockSupplementBudgetUsed": 0,
+  "supplementMarkerExists": false,
+  "originalReceiptSha256": "44c78fcc1bd60728d31c7a8363f385a76f534ef146ecbc041259b7705e1d6f9d",
+  "reviewedCollectorSourceSha256": "34636da46680ae150f153cfa57003a1bada53c577c2c06279f8445ad2f1d8813",
+  "proposedFix": "isolated bootstrap adds only the reviewed directory, then runpy.run_path; no remote command change"
+}

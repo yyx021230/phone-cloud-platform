@@ -1,0 +1,31 @@
+{
+  "rows": [
+    {
+      "number": "23",
+      "pocoMainCount": 0,
+      "pocoTestCount": 0,
+      "forwardCount": 0
+    },
+    {
+      "number": "43",
+      "pocoMainCount": 0,
+      "pocoTestCount": 0,
+      "forwardCount": 0
+    },
+    {
+      "number": "59",
+      "pocoMainCount": 0,
+      "pocoTestCount": 0,
+      "forwardCount": 0
+    },
+    {
+      "number": "155",
+      "pocoMainCount": 0,
+      "pocoTestCount": 0,
+      "forwardCount": 0
+    }
+  ],
+  "elapsedMs": 3047.000000020489,
+  "readonlyOnly": true,
+  "notSystemAgentProof": true
+}

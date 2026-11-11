@@ -1,0 +1,8 @@
+{
+  "baseCommit": "3647e5f26ee098bc3d47fba8703ff634f51ef49f",
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "b5995d63f918505317712974726f55af70541272d2ca456fabcfdd02ba425975",
+    "verification/wecom-v2-claim-bundle-20261102/DB_NEXT_PLAN.md": "fa1774d45a5d0585d645fb84aad54a7e46115502e6245734d01259e136a955c2",
+    "verification/wecom-v2-claim-bundle-20261102/DB_PLAN2_BASELINE.json": "773df6142b79b67acddc0cde5b65a6e21ff5500683918a434eb61bc0dfd23f24"
+  }
+}

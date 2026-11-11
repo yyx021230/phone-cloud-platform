@@ -1,0 +1,15 @@
+{
+  "baseCommit": "9bf9bde951f0fd79fe6be1e4573ef899e3d157fb",
+  "candidateTag": "wecom-v2-projection-policy-20261102-rc.1",
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "60a5b3b14f395edb99d9622775dc926d43238d16987c40f62f0b7736dab50c74",
+    "server/wecom-v2-projection-policy.mjs": "3eb362a8922d7d5a190053d9fa0caca5eedf48553151c7ffc570cd4896c4cf62",
+    "server/wecom-v2-projection-policy.test.mjs": "3820c9307d5f0dd435d7f7fc6966e4d93fa6cce5f7ffac2febef875276679e5c",
+    "verification/wecom-v2-projection-policy-20261102/INITIAL_OUTPUT.txt": "6e78f24337371b25354961c5f6e2aaeba22ab8b7da50c5e392f758d3596b5195",
+    "verification/wecom-v2-projection-policy-20261102/INITIAL_RECEIPT.json": "6dca5a6175abee4b5d7842e276c6ec4466cb7d5af4cf9455beb15341dd228a62",
+    "verification/wecom-v2-projection-policy-20261102/SCHEMA.md": "679943baf8b9240c71091fb6ef10882e4e1562e4b818efb4d0572ae2dcc5c76e",
+    "verification/wecom-v2-projection-policy-20261102/SOURCE_BASELINE.json": "1bcdc4724c6a3bb3947148c79c2fd14df884b07ae81fb8f378c8a6ddad306aa4",
+    "verification/wecom-v2-projection-policy-20261102/SYNTAX_RECEIPT.json": "95dc982b1fad144600b331d71d19cdc1b03c1cd97259b939d24a7634d794c1c6",
+    "verification/wecom-v2-projection-policy-20261102/fixture.mjs": "a5ccc25833ba6510b9d07a6c2c9c02aa5a6692cd2bfb7f3309bec94b22c0b938"
+  }
+}

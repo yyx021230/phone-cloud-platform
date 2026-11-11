@@ -1,0 +1,17 @@
+{
+  "atUtc": "2026-10-28T07:39:28.990Z",
+  "queue": {
+    "xhsActive": 0,
+    "xhsQueued": 0,
+    "xhsRunning": 0,
+    "xhsStalled": 0,
+    "windowsQueued": 0,
+    "windowsRunning": 9,
+    "windowsStalled": 0
+  },
+  "activeControlLocks": 3,
+  "onlineAgents": 1,
+  "lookupEnabled": true,
+  "lookupChannels": 10,
+  "lookupConfigRevision": 122
+}

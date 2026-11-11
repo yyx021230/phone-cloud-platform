@@ -1,0 +1,8 @@
+{
+  "status": "validated_not_activated",
+  "composeOnlyImageChanged": true,
+  "runtimeEnvironmentMatchesCurrent": true,
+  "existingXhsReferencesReused": true,
+  "credentialValuesPersisted": false,
+  "serviceReloaded": false
+}

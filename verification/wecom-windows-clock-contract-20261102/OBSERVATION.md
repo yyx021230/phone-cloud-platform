@@ -1,0 +1,13 @@
+# 19:08显式API-set一次真实只读采样
+
+root实际独立8项后统一执行唯一一次ab835/deef98源，企微owner没有发Windows命令，只读复制root指定本地BODY/receipt。分支codex/wecom-windows-clock-contract-observed-20261102，干净起点ab8359c8b1f53cf82e8073db3b7d9e525f2e7dfd。无并行采集入口、无第二次调查。
+
+19:08:19北京时间，SSH89ms/exit0/stderr0、stdout5413字节。typed BODY按源的JSON编码重建，恰5413字节且SHA `141673f06d82daaacedd88d3d6b6cfb414f13d66f575df8547c12f7417d8b50b` 精确匹配原传输。16组sequence1..16，anomalies[]；Win10.19045、Python3.9.13/64位，QPC frequency10000000。QueryUnbiasedInterruptTimePrecise已按单一契约在此进程完成解析和调用，另外7仍Kernel32；这次调查绑定兼容点已实测，不是仅据文档推断。
+
+root当前receipt的实际command含重复反斜杠分隔符，按原字节复制保留，commandRepresentation记录其ntpath规范化与既定解释器路径一致，不把实际argv伪写成另一字符串。没有换解释器二进制/用户、回退库或加API；不是对既有ADB/Agent的改动。上一导出receipt是记录字段文本更正，本次是实际命令分隔符表示，两个事实不混同。
+
+范围仅当前Administrator进程的只读API兼容与当时16组观察。anomalies[]只指源代码在括号内定义的回退/循环上限检查未触发；QPC括号min/max是已观测耗时，不是采样误差、速率或最坏等待界。没有SYSTEM reader、手机、休眠/VM迁移、Linux时钟源、peer绑定、PG或跨重启journal验证。所有authority/native/physical flags仍false，生产v1和clock工厂没有接入或放行。
+
+新原件/摘要/来源hash单独保存，原208、首次371遗失、b343失败、15b导出及全部旧receipt保持；不能回填旧原因。原43/147/52、155查名排除与27912来源未知不核销。root随后串行安排lookup隔离fixture，本owner不并发Windows；本轮只本地归档。
+
+下一步按现有生产v1代码提出最小兼容协议/持久绑定的具体文件与调用差异计划，先审后做；不能用本次读数直接开启模型或宣称真机验收。原8本地fake测试/root独立复跑与本次采样分列，不混成新全量计数。

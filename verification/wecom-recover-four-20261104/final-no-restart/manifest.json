@@ -1,0 +1,29 @@
+{
+  "version": "wecom-recover-four-20261104-deployed.2",
+  "branch": "codex/wecom-recover-four-20261104",
+  "cloudSourceCommit": "a73318151cc0872f6012bc2d4cf3222afc5b2901",
+  "nativeSourceCommit": "f6b8ebda929cf97b57a2df16ac45e300cab079ee",
+  "runtimeToolCommit": "6602d70ea35d29ae53db30075c4ea9cc0e49a8b6",
+  "runningImage": "sha256:50a1fafcf13f739a0a4173048ed9065e470484eef95f2381ca2ed94cf29a86b6",
+  "runtimeFiles": {
+    "server/wecom-cleanup-service.mjs": "26839ec25cbe47960e5dea136ef502cd43d1e6a54e4c3c536a397f8f1780b40d",
+    "server/wecom-preinput-recovery.mjs": "c6ce123dc7e4e647e84f2101bc359221216b4f1b7ef25f5a2528214dceae6a71",
+    "windows-agent/scripts/wecom_preinput_recovery.py": "b8b15ee5d2c79598c39ccc1c5131bbac8338f5ff3c1c18c7ae1ee302164b7241"
+  },
+  "nextStartImage": "sha256:afb66834c491c35864fb24230a29ca567dd644b9aed63ba3eb21f9258aa0c88b",
+  "evidenceSha256": {
+    "four-final-verified.json": "7a43d8c149d4cdb494623e3e5a8aed673a38342f9670c2f69e7f8be27050535c",
+    "four-native-final-duration.json": "0b7800d23f0581ace76cb1692c60e2bfb080c9e735d8992160f9c4004aabb07c",
+    "hotpatch-deployed-unbound.json": "f71cdda87766573a87550ec050170ad4a80d37be898945b2d4e20d17781b8e5c",
+    "hotpatch-challenged-synchronized.json": "4e310479ed2c51d3f8fa4051d10df4b9ea5c16c2eb1f5ab8a21d5014e802f64d",
+    "runtime-hotpatch-challenged-retry-dryrun.json": "9629c984f73b9430c519ad0c16537e7904b73a0c6bf85baa777a395256af3080",
+    "runtime-hotpatch-challenged-retry-apply.json": "a409cd0279207bdbc91f93294dc8d42639c160f767c0a4f3e71743f0ae081074",
+    "hotpatch-node22-binding-proof.json": "d73fa4161bd967f91a9bce8329c51455e6cb2edc8a0a24d6462eb31424360eb9",
+    "native-boundary-final-tests.txt": "105b0fa9b664a33aab1d8b5c51ce3e8f5250c9d316d9810c77a5005ca81fc295",
+    "final-server-recovery-tests.txt": "fe8188cada60ff1689778b5f5b17485192f878d2d7c40eb057e7d2dfc9fc2876",
+    "final-check.txt": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe",
+    "final-screen-guard-tests.txt": "453dc0bb4414c09b1fd3f25cb64656d19102fcf1554f5c99388dbbfb7a29e61c"
+  },
+  "additionalRestart": false,
+  "remotePush": false
+}

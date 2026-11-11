@@ -1,0 +1,123 @@
+{
+  "version": "platform-integration-20261028-deployed.1",
+  "status": "deployed",
+  "receiptTag": "platform-integration-20261028-deployed.1-receipt.1",
+  "runtimeCandidateTag": "platform-integration-20261028-rc.2",
+  "runtimeCandidateCommit": "5327172d8f31618b9abfb7118e5450720a47dcac",
+  "runtimeSourceCommit": "baca5721214658b46f24c974c9147490b0bafada",
+  "configurationTag": "platform-integration-20261028-rc.3",
+  "configurationCommit": "44580fc",
+  "imageId": "sha256:fca45ec32e72b0787e4375fd6812a5ac97d3aebec4b830b6393b03117554b45e",
+  "files": [
+    {
+      "path": "ACTIVE_CHECKPOINT.json",
+      "sha256": "7cfebbde83943087b877e976799085bcfb09acbef8f85ae6d4b43cedb223edad"
+    },
+    {
+      "path": "BACKUP.json",
+      "sha256": "661223fc8d7eb0f83f243d793e0eb55f6e7199ca50b4398d1de583f2d0651ead"
+    },
+    {
+      "path": "BATCH_ACCEPTANCE.json",
+      "sha256": "00ab6ac44e0051ffde7be9c92ce6831051aed66962a32a7645dd0ed4ad540c87"
+    },
+    {
+      "path": "BATCH_INSTALLED.json",
+      "sha256": "94a1327c51f21883f5a4ae70764f94e334764034529c2f749c3192eaf509e46a"
+    },
+    {
+      "path": "CLOUD_DIFF.json",
+      "sha256": "c12c75beae21f96438cefc01e76c574c9ceefac4723bd826b3430687714abcae"
+    },
+    {
+      "path": "CLOUD_HASHES.json",
+      "sha256": "aa3c0fd8326848d03783f73bd577e051d8516687b231f3005faade1f5112c55e"
+    },
+    {
+      "path": "CLOUD_INSTALLED.json",
+      "sha256": "883ee734764cdad9c949545662a0d768a5fdb005f82e1dc51139c9accb792bcf"
+    },
+    {
+      "path": "IDENTITY_AFTER.json",
+      "sha256": "d3a1ecd9f66c0c7fac3d4993fa2d6a43cb5d7dd4ea0427c7077313d1a5a9d96e"
+    },
+    {
+      "path": "INVENTORY_AFTER.json",
+      "sha256": "e9fb139b4fc928300952b637c12dc930d213ad4ed38c78d8dab5fd99db4cf95c"
+    },
+    {
+      "path": "LOOKUP_NEW_ROUND_READY.json",
+      "sha256": "97a52724e1c5456fb3156467ace7cb2ee746b0223584665e08455d0e08128791"
+    },
+    {
+      "path": "LOOKUP_PARTNER_RESUMED.json",
+      "sha256": "2ff7b407b7e0f26cb9b6015b89ead26f98cbf78b11aeae9ddeb7686c5ef1e7b9"
+    },
+    {
+      "path": "LOOKUP_ROUND_STOP.json",
+      "sha256": "dc8ed9ac198c3d2ed7a3011c41f9276c41aa8c235c77479d20b1578eb17849a7"
+    },
+    {
+      "path": "MEDIA_AFTER.json",
+      "sha256": "1ddfb508b383f3dac6588dde2dedd06f927a930b967db68262bbffc6d3dbf41f"
+    },
+    {
+      "path": "NGINX_INSTALLED.json",
+      "sha256": "eb404af4bb8433915fc765f33869db16ed47dcdd3416169f86d43430b9376113"
+    },
+    {
+      "path": "POSTFLIGHT.json",
+      "sha256": "ef76ae63fa2a505bc4600210bafa9ba09bca4a8d505a141a9d3172e41817350e"
+    },
+    {
+      "path": "PUBLIC_HTTP.json",
+      "sha256": "6937c1a3b245d41e54e163d032191e986980f7198efc00657b25ef8d7519275a"
+    },
+    {
+      "path": "README.md",
+      "sha256": "6c64bb53972a164eb0003238686a113f044a469853b80f590343f6f69486328e"
+    },
+    {
+      "path": "SCHEDULE_ENABLED.json",
+      "sha256": "8a73e077d37e73b5bcdae781d5a8e2411027feb0e3f4a3c6cecf4436b9e86724"
+    },
+    {
+      "path": "WINDOWS_HASHES.json",
+      "sha256": "e574c7331468a348557486a6d4a4f9153011345e20c4a228c9498800c92944d7"
+    },
+    {
+      "path": "WINDOWS_INSTALLED.json",
+      "sha256": "746f1918900364966cf32c5f77bc0aa691bdb119dd3a53c5e877bb3959f55748"
+    },
+    {
+      "path": "batch-preflight.json",
+      "sha256": "97e0a16239e08b97efc7359906f79f99306073f934877a1efd6a3c86230284cb"
+    },
+    {
+      "path": "compose-preflight.json",
+      "sha256": "c62f0b63ede907615de7ab0324dca296459985cb1316e2757af2a06d9d6a2f2f"
+    },
+    {
+      "path": "media-before.json",
+      "sha256": "759604aadb3b74b98e8858611b863671c60f159d235b0804a32b0e0d56a52991"
+    },
+    {
+      "path": "staged-files.json",
+      "sha256": "8660df2d7e6c2f1cb4cdf9ddb75db714dab5e15ec0bc8c58cb11dfadd1147e5d"
+    },
+    {
+      "path": "windows-identity-before.json",
+      "sha256": "00579150f91526e0ad4aad89e13d2e7c57e7748a73574d66e54b919bc7dcae4b"
+    },
+    {
+      "path": "windows-stage.json",
+      "sha256": "c3179fcb07e0fef269696c0a0b73f40abb0e586b95d722f4ed25a1b68d241206"
+    },
+    {
+      "path": "xhs-target-preflight.json",
+      "sha256": "3f511559265efb1ac408eee99b0af7ab80311e460a522565a6ee635e8688299f"
+    }
+  ],
+  "naturalScheduleVerified": false,
+  "allDevicesAccepted": false
+}

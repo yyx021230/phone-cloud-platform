@@ -1,0 +1,23 @@
+{
+  "restoredAt": "2026-11-02T06:15:18.514Z",
+  "enabled": true,
+  "configRevisionBefore": 172,
+  "configRevisionAfter": 173,
+  "activeRequests": 0,
+  "channels": 0,
+  "newPrepareAt": "2026-11-02T06:15:54.317Z",
+  "newPreparationId": "0f7e29d8-8fea-442e-991d-ec4c58496926",
+  "http": 200,
+  "initialReady": false,
+  "initialAcceptingRequests": false,
+  "initialCode": "lookup_no_available_device",
+  "phonesSubmitted": 0,
+  "oldRoundNotRevived": true,
+  "agentFreshRuntime": "489cb3a2-7211-4cf7-b364-70e65d7a0d6c",
+  "actualCapacityProtocol": 1,
+  "actualNumericCapacity": 12,
+  "oldRuntimeZipUpdated": false,
+  "oldRuntimeZipSha256": "58a4f3007953dd0b91cd0160b0079441bbc0cf1ccabe63a779fb12a9bb389d1b",
+  "capacityObservedAt": "2026-11-02T06:15:34.621Z",
+  "capacityEvidence": "Windows actual Agent admission response, lookup_reader_report_valid"
+}

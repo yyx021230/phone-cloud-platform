@@ -1,0 +1,18 @@
+{
+  "status": "corrected_batch_started",
+  "imageId": "sha256:be21335b016bf17e24cd0e0580f9e536944401c89f64506536d980edd7c75608",
+  "imageTag": "phone-cloud-platform:platform-integration-20261029-rc.2",
+  "businessSource": "3a266d71ba861f8e81d6ec3a173d7efc12d5b245",
+  "sourceHashesUnchanged": true,
+  "files": 29,
+  "mode": "0644",
+  "nodeUserArtifactLoad": {
+    "nodeUserFilesReadable": 29,
+    "engineImported": true
+  },
+  "mainCloudNotRecreated": true,
+  "stage": "/opt/phone-cloud-platform/staging/platform-integration-20261029-rc.2",
+  "atUtc": "2026-10-29T08:55:03Z",
+  "mainPidUnchanged": 3184375,
+  "composeOverride": "/opt/phone-cloud-platform/staging/platform-integration-20261029-rc.2/compose.batch-permissions.json"
+}

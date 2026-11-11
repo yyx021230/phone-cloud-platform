@@ -1,0 +1,12 @@
+{
+  "baseCommit": "b3433e1087a9b8eb553e46c15c4163cc623cb3b3",
+  "scope": "local export-inspection plan only; no Windows execution",
+  "sha256": {
+    "docs/PROJECT_DEVELOPMENT.md": "3ff338a08a526a453ae31a8cdbdb72e71c123ff013684b7ebf437de80ab1516a",
+    "verification/wecom-windows-exports-20261102/PLAN.md": "488865e52d5f213891d0fbb0154cbd4fb1cc0fa328749e09001f1e87a37a0e57",
+    "verification/wecom-windows-exports-20261102/TEST_OUTPUT.txt": "72babdcb57a6149fe13ea438250d0a14ba3d39a059b02f9ef71580fad8e68db9",
+    "verification/wecom-windows-exports-20261102/TEST_RECEIPT.json": "bed38234775a84fcddfa05d4f14c62bf0e2217d75d59396a30d6584eeaba7164",
+    "verification/wecom-windows-exports-20261102/test_windows_exports.py": "374ffd6a7b4f1887b08df220ae6fe718acf2c5689d9bd26e603c16b2166867d3",
+    "verification/wecom-windows-exports-20261102/windows_exports.py": "e6f5ec370458eb45573ff52ab546f584f6591e7c5008100a27c44628cb3200c4"
+  }
+}

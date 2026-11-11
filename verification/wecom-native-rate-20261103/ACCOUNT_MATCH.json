@@ -1,0 +1,3921 @@
+{
+  "at": "2026-11-03T01:05:12.425Z",
+  "sourceFiles": [
+    {
+      "source": 1,
+      "sha256": "624d4511422408f640540bbbc6e132e76e32e98b6f00314fb83313b8070309ba",
+      "accountRows": 25,
+      "headers": [
+        {
+          "record": 1,
+          "phoneColumn": 1,
+          "loginColumn": 3
+        }
+      ]
+    },
+    {
+      "source": 2,
+      "sha256": "42aced078ad214a825bed080e72fce121986393579c38f6d71ca0b1f39f82d59",
+      "accountRows": 59,
+      "headers": [
+        {
+          "record": 1,
+          "phoneColumn": 0,
+          "loginColumn": 3
+        },
+        {
+          "record": 39,
+          "phoneColumn": 0,
+          "loginColumn": 5
+        }
+      ]
+    },
+    {
+      "source": 3,
+      "sha256": "923f280e82825762ad60b25c0cc09b1cc48d72f0725ad801049868eb47c78822",
+      "accountRows": 24,
+      "headers": [
+        {
+          "record": 1,
+          "phoneColumn": 0,
+          "loginColumn": 5
+        }
+      ]
+    },
+    {
+      "source": 4,
+      "sha256": "deae8b9bd203d046092e70c01fa041c7f5bf60f486479bfd2d0bcf9dbaf16290",
+      "accountRows": 56,
+      "headers": [
+        {
+          "record": 1,
+          "phoneColumn": 1,
+          "loginColumn": 3
+        }
+      ]
+    }
+  ],
+  "inputAccountRows": 164,
+  "uniqueAccountNumbers": 131,
+  "distinctExplicitPhones": 61,
+  "phones": [
+    {
+      "deviceNumber": "10",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "19",
+      "status": "平台未找到",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "23",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": true
+    },
+    {
+      "deviceNumber": "25",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": true
+    },
+    {
+      "deviceNumber": "39",
+      "status": "平台未找到",
+      "accounts": 1,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "43",
+      "status": "在线",
+      "accounts": 4,
+      "scriptConfigured": true
+    },
+    {
+      "deviceNumber": "59",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": true
+    },
+    {
+      "deviceNumber": "61",
+      "status": "离线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "63",
+      "status": "离线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "65",
+      "status": "平台未找到",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "66",
+      "status": "平台未找到",
+      "accounts": 1,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "69",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "71",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "73",
+      "status": "平台未找到",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "75",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "78",
+      "status": "在线",
+      "accounts": 1,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "79",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "80",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "81",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "82",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "83",
+      "status": "平台未找到",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "86",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "87",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "91",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "92",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "93",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": true
+    },
+    {
+      "deviceNumber": "95",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "97",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "98",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "101",
+      "status": "在线",
+      "accounts": 1,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "102",
+      "status": "在线",
+      "accounts": 4,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "106",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "112",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "113",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "114",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "116",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "123",
+      "status": "在线",
+      "accounts": 3,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "124",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "125",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "126",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "127",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "138",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "142",
+      "status": "在线",
+      "accounts": 1,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "143",
+      "status": "在线",
+      "accounts": 1,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "144",
+      "status": "在线",
+      "accounts": 1,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "145",
+      "status": "在线",
+      "accounts": 1,
+      "scriptConfigured": true
+    },
+    {
+      "deviceNumber": "148",
+      "status": "平台未找到",
+      "accounts": 1,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "152",
+      "status": "在线",
+      "accounts": 1,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "155",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": true
+    },
+    {
+      "deviceNumber": "157",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": true
+    },
+    {
+      "deviceNumber": "159",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "160",
+      "status": "离线",
+      "accounts": 1,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "162",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "163",
+      "status": "在线",
+      "accounts": 1,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "173",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "180",
+      "status": "离线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "183",
+      "status": "在线",
+      "accounts": 1,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "184",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "185",
+      "status": "在线",
+      "accounts": 1,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "186",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    },
+    {
+      "deviceNumber": "191",
+      "status": "在线",
+      "accounts": 2,
+      "scriptConfigured": false
+    }
+  ],
+  "accountStatusCounts": {
+    "在线": 95,
+    "离线": 7,
+    "平台未找到": 11,
+    "待确认编号": 18
+  },
+  "accounts": [
+    {
+      "accountId": "A001",
+      "phoneTail": "2061",
+      "rows": [
+        {
+          "source": 1,
+          "record": 2,
+          "deviceNumber": "157",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 4,
+          "record": 37,
+          "deviceNumber": "157",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "157"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "157",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A002",
+      "phoneTail": "2904",
+      "rows": [
+        {
+          "source": 1,
+          "record": 3,
+          "deviceNumber": "157",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 4,
+          "record": 36,
+          "deviceNumber": "157",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "157"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "157",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A003",
+      "phoneTail": "8692",
+      "rows": [
+        {
+          "source": 1,
+          "record": 4,
+          "deviceNumber": "101",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "101"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "101",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A004",
+      "phoneTail": "6796",
+      "rows": [
+        {
+          "source": 1,
+          "record": 5,
+          "deviceNumber": "61",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "61"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "61",
+          "status": "离线",
+          "platformPresent": true,
+          "platformOnline": false
+        }
+      ],
+      "status": "离线"
+    },
+    {
+      "accountId": "A005",
+      "phoneTail": "3954",
+      "rows": [
+        {
+          "source": 1,
+          "record": 6,
+          "deviceNumber": "61",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "61"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "61",
+          "status": "离线",
+          "platformPresent": true,
+          "platformOnline": false
+        }
+      ],
+      "status": "离线"
+    },
+    {
+      "accountId": "A006",
+      "phoneTail": "4059",
+      "rows": [
+        {
+          "source": 1,
+          "record": 7,
+          "deviceNumber": "163",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 2,
+          "record": 25,
+          "deviceNumber": "163",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "163"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "163",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A007",
+      "phoneTail": "2530",
+      "rows": [
+        {
+          "source": 1,
+          "record": 8,
+          "deviceNumber": "155",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "155"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "155",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A008",
+      "phoneTail": "7274",
+      "rows": [
+        {
+          "source": 1,
+          "record": 9,
+          "deviceNumber": "155",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "155"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "155",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A009",
+      "phoneTail": "0523",
+      "rows": [
+        {
+          "source": 1,
+          "record": 10,
+          "deviceNumber": "148",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 2,
+          "record": 12,
+          "deviceNumber": "148",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "148"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "148",
+          "status": "平台未找到",
+          "platformPresent": false,
+          "platformOnline": null
+        }
+      ],
+      "status": "平台未找到"
+    },
+    {
+      "accountId": "A010",
+      "phoneTail": "6505",
+      "rows": [
+        {
+          "source": 1,
+          "record": 11,
+          "deviceNumber": "143",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 2,
+          "record": 34,
+          "deviceNumber": "143",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "143"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "143",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A011",
+      "phoneTail": "5590",
+      "rows": [
+        {
+          "source": 1,
+          "record": 12,
+          "deviceNumber": "138",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "138"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "138",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A012",
+      "phoneTail": "5026",
+      "rows": [
+        {
+          "source": 1,
+          "record": 13,
+          "deviceNumber": "138",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "138"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "138",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A013",
+      "phoneTail": "1004",
+      "rows": [
+        {
+          "source": 1,
+          "record": 14,
+          "deviceNumber": "152",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "152"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "152",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A014",
+      "phoneTail": "8639",
+      "rows": [
+        {
+          "source": 1,
+          "record": 15,
+          "deviceNumber": "173",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "173"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "173",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A015",
+      "phoneTail": "6630",
+      "rows": [
+        {
+          "source": 1,
+          "record": 16,
+          "deviceNumber": "173",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "173"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "173",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A016",
+      "phoneTail": "1097",
+      "rows": [
+        {
+          "source": 1,
+          "record": 17,
+          "deviceNumber": "78",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "78"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "78",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A017",
+      "phoneTail": "1572",
+      "rows": [
+        {
+          "source": 1,
+          "record": 18,
+          "deviceNumber": "142",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "142"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "142",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A018",
+      "phoneTail": "8489",
+      "rows": [
+        {
+          "source": 1,
+          "record": 19,
+          "deviceNumber": "112",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "112"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "112",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A019",
+      "phoneTail": "6939",
+      "rows": [
+        {
+          "source": 1,
+          "record": 20,
+          "deviceNumber": "112",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "112"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "112",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A020",
+      "phoneTail": "7040",
+      "rows": [
+        {
+          "source": 1,
+          "record": 21,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "未填登录手机"
+        }
+      ],
+      "deviceNumbers": [],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [],
+      "status": "待确认编号"
+    },
+    {
+      "accountId": "A021",
+      "phoneTail": "5283",
+      "rows": [
+        {
+          "source": 1,
+          "record": 22,
+          "deviceNumber": "145",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "145"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "145",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A022",
+      "phoneTail": "1130",
+      "rows": [
+        {
+          "source": 1,
+          "record": 23,
+          "deviceNumber": "43",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "43"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "43",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A023",
+      "phoneTail": "7510",
+      "rows": [
+        {
+          "source": 1,
+          "record": 24,
+          "deviceNumber": "43",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "43"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "43",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A024",
+      "phoneTail": "7892",
+      "rows": [
+        {
+          "source": 1,
+          "record": 25,
+          "deviceNumber": "124",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 2,
+          "record": 23,
+          "deviceNumber": "124",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "124"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "124",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A025",
+      "phoneTail": "2105",
+      "rows": [
+        {
+          "source": 1,
+          "record": 26,
+          "deviceNumber": "124",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 2,
+          "record": 22,
+          "deviceNumber": "124",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "124"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "124",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A026",
+      "phoneTail": "4497",
+      "rows": [
+        {
+          "source": 2,
+          "record": 2,
+          "deviceNumber": "69",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "69"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "69",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A027",
+      "phoneTail": "6354",
+      "rows": [
+        {
+          "source": 2,
+          "record": 3,
+          "deviceNumber": "69",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "69"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "69",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A028",
+      "phoneTail": "9265",
+      "rows": [
+        {
+          "source": 2,
+          "record": 4,
+          "deviceNumber": "75",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "75"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "75",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A029",
+      "phoneTail": "7504",
+      "rows": [
+        {
+          "source": 2,
+          "record": 5,
+          "deviceNumber": "75",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "75"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "75",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A030",
+      "phoneTail": "2143",
+      "rows": [
+        {
+          "source": 2,
+          "record": 6,
+          "deviceNumber": "91",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "91"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "91",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A031",
+      "phoneTail": "4794",
+      "rows": [
+        {
+          "source": 2,
+          "record": 7,
+          "deviceNumber": "91",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "91"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "91",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A032",
+      "phoneTail": "0542",
+      "rows": [
+        {
+          "source": 2,
+          "record": 8,
+          "deviceNumber": "93",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "93"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "93",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A033",
+      "phoneTail": "3074",
+      "rows": [
+        {
+          "source": 2,
+          "record": 9,
+          "deviceNumber": "93",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "93"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "93",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A034",
+      "phoneTail": "2144",
+      "rows": [
+        {
+          "source": 2,
+          "record": 10,
+          "deviceNumber": "159",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "159"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "159",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A035",
+      "phoneTail": "2790",
+      "rows": [
+        {
+          "source": 2,
+          "record": 11,
+          "deviceNumber": "159",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "159"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "159",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A036",
+      "phoneTail": "5337",
+      "rows": [
+        {
+          "source": 2,
+          "record": 13,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "本人手机未给编号"
+        }
+      ],
+      "deviceNumbers": [],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [],
+      "status": "待确认编号"
+    },
+    {
+      "accountId": "A037",
+      "phoneTail": "3836",
+      "rows": [
+        {
+          "source": 2,
+          "record": 14,
+          "deviceNumber": "114",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "114"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "114",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A038",
+      "phoneTail": "7939",
+      "rows": [
+        {
+          "source": 2,
+          "record": 15,
+          "deviceNumber": "114",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "114"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "114",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A039",
+      "phoneTail": "9356",
+      "rows": [
+        {
+          "source": 2,
+          "record": 16,
+          "deviceNumber": "126",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "126"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "126",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A040",
+      "phoneTail": "2670",
+      "rows": [
+        {
+          "source": 2,
+          "record": 17,
+          "deviceNumber": "113",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "113"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "113",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A041",
+      "phoneTail": "0698",
+      "rows": [
+        {
+          "source": 2,
+          "record": 18,
+          "deviceNumber": "113",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "113"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "113",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A042",
+      "phoneTail": "7379",
+      "rows": [
+        {
+          "source": 2,
+          "record": 19,
+          "deviceNumber": "144",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "144"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "144",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A043",
+      "phoneTail": "7564",
+      "rows": [
+        {
+          "source": 2,
+          "record": 20,
+          "deviceNumber": "98",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "98"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "98",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A044",
+      "phoneTail": "5374",
+      "rows": [
+        {
+          "source": 2,
+          "record": 21,
+          "deviceNumber": "98",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "98"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "98",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A045",
+      "phoneTail": "0879",
+      "rows": [
+        {
+          "source": 2,
+          "record": 24,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "本人手机未给编号"
+        }
+      ],
+      "deviceNumbers": [],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [],
+      "status": "待确认编号"
+    },
+    {
+      "accountId": "A046",
+      "phoneTail": "9042",
+      "rows": [
+        {
+          "source": 2,
+          "record": 26,
+          "deviceNumber": "95",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "95"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "95",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A047",
+      "phoneTail": "1952",
+      "rows": [
+        {
+          "source": 2,
+          "record": 27,
+          "deviceNumber": "95",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "95"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "95",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A048",
+      "phoneTail": "5975",
+      "rows": [
+        {
+          "source": 2,
+          "record": 28,
+          "deviceNumber": "126",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "126"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "126",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A049",
+      "phoneTail": "2168",
+      "rows": [
+        {
+          "source": 2,
+          "record": 29,
+          "deviceNumber": "127",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "127"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "127",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A050",
+      "phoneTail": "2168",
+      "rows": [
+        {
+          "source": 2,
+          "record": 30,
+          "deviceNumber": "127",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "127"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "127",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A051",
+      "phoneTail": "5229",
+      "rows": [
+        {
+          "source": 2,
+          "record": 31,
+          "deviceNumber": "125",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "125"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "125",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A052",
+      "phoneTail": "5597",
+      "rows": [
+        {
+          "source": 2,
+          "record": 32,
+          "deviceNumber": "125",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "125"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "125",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A053",
+      "phoneTail": "5258",
+      "rows": [
+        {
+          "source": 2,
+          "record": 33,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "本人手机未给编号"
+        }
+      ],
+      "deviceNumbers": [],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [],
+      "status": "待确认编号"
+    },
+    {
+      "accountId": "A054",
+      "phoneTail": "7869",
+      "rows": [
+        {
+          "source": 2,
+          "record": 35,
+          "deviceNumber": "116",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 4,
+          "record": 34,
+          "deviceNumber": "116",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "116"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "116",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A055",
+      "phoneTail": "9665",
+      "rows": [
+        {
+          "source": 2,
+          "record": 36,
+          "deviceNumber": "116",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 4,
+          "record": 35,
+          "deviceNumber": "116",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "116"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "116",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A056",
+      "phoneTail": "3082",
+      "rows": [
+        {
+          "source": 2,
+          "record": 40,
+          "deviceNumber": "123",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 3,
+          "record": 2,
+          "deviceNumber": "123",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "123"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "123",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A057",
+      "phoneTail": "8625",
+      "rows": [
+        {
+          "source": 2,
+          "record": 41,
+          "deviceNumber": "123",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 3,
+          "record": 3,
+          "deviceNumber": "123",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "123"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "123",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A058",
+      "phoneTail": "6579",
+      "rows": [
+        {
+          "source": 2,
+          "record": 42,
+          "deviceNumber": "23",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 3,
+          "record": 4,
+          "deviceNumber": "23",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "23"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "23",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A059",
+      "phoneTail": "5673",
+      "rows": [
+        {
+          "source": 2,
+          "record": 43,
+          "deviceNumber": "23",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 3,
+          "record": 5,
+          "deviceNumber": "23",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "23"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "23",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A060",
+      "phoneTail": "4230",
+      "rows": [
+        {
+          "source": 2,
+          "record": 44,
+          "deviceNumber": "59",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 3,
+          "record": 6,
+          "deviceNumber": "59",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "59"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "59",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A061",
+      "phoneTail": "0137",
+      "rows": [
+        {
+          "source": 2,
+          "record": 45,
+          "deviceNumber": "59",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 3,
+          "record": 7,
+          "deviceNumber": "59",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "59"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "59",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A062",
+      "phoneTail": "9056",
+      "rows": [
+        {
+          "source": 2,
+          "record": 46,
+          "deviceNumber": "102",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 3,
+          "record": 8,
+          "deviceNumber": "102",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "102"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "102",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A063",
+      "phoneTail": "1720",
+      "rows": [
+        {
+          "source": 2,
+          "record": 47,
+          "deviceNumber": "102",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 3,
+          "record": 9,
+          "deviceNumber": "102",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "102"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "102",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A064",
+      "phoneTail": "5323",
+      "rows": [
+        {
+          "source": 2,
+          "record": 48,
+          "deviceNumber": "25",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 3,
+          "record": 10,
+          "deviceNumber": "25",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "25"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "25",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A065",
+      "phoneTail": "8965",
+      "rows": [
+        {
+          "source": 2,
+          "record": 49,
+          "deviceNumber": "25",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 3,
+          "record": 11,
+          "deviceNumber": "25",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "25"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "25",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A066",
+      "phoneTail": "5244",
+      "rows": [
+        {
+          "source": 2,
+          "record": 52,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "已退出"
+        },
+        {
+          "source": 3,
+          "record": 14,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "已退出"
+        }
+      ],
+      "deviceNumbers": [],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [],
+      "status": "待确认编号"
+    },
+    {
+      "accountId": "A067",
+      "phoneTail": "2142",
+      "rows": [
+        {
+          "source": 2,
+          "record": 53,
+          "deviceNumber": "123",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 3,
+          "record": 15,
+          "deviceNumber": "123",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "123"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "123",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A068",
+      "phoneTail": "9404",
+      "rows": [
+        {
+          "source": 2,
+          "record": 54,
+          "deviceNumber": "66",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 3,
+          "record": 16,
+          "deviceNumber": "66",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "66"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "66",
+          "status": "平台未找到",
+          "platformPresent": false,
+          "platformOnline": null
+        }
+      ],
+      "status": "平台未找到"
+    },
+    {
+      "accountId": "A069",
+      "phoneTail": "8409",
+      "rows": [
+        {
+          "source": 2,
+          "record": 55,
+          "deviceNumber": "73",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 3,
+          "record": 17,
+          "deviceNumber": "73",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "73"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "73",
+          "status": "平台未找到",
+          "platformPresent": false,
+          "platformOnline": null
+        }
+      ],
+      "status": "平台未找到"
+    },
+    {
+      "accountId": "A070",
+      "phoneTail": "9207",
+      "rows": [
+        {
+          "source": 2,
+          "record": 56,
+          "deviceNumber": "73",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 3,
+          "record": 18,
+          "deviceNumber": "73",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "73"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "73",
+          "status": "平台未找到",
+          "platformPresent": false,
+          "platformOnline": null
+        }
+      ],
+      "status": "平台未找到"
+    },
+    {
+      "accountId": "A071",
+      "phoneTail": "5943",
+      "rows": [
+        {
+          "source": 2,
+          "record": 57,
+          "deviceNumber": "102",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 3,
+          "record": 19,
+          "deviceNumber": "102",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "102"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "102",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A072",
+      "phoneTail": "2802",
+      "rows": [
+        {
+          "source": 2,
+          "record": 58,
+          "deviceNumber": "102",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        },
+        {
+          "source": 3,
+          "record": 20,
+          "deviceNumber": "102",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "102"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "102",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A073",
+      "phoneTail": "9420",
+      "rows": [
+        {
+          "source": 2,
+          "record": 59,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "未填登录手机"
+        },
+        {
+          "source": 3,
+          "record": 21,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "未填登录手机"
+        }
+      ],
+      "deviceNumbers": [],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [],
+      "status": "待确认编号"
+    },
+    {
+      "accountId": "A074",
+      "phoneTail": "9674",
+      "rows": [
+        {
+          "source": 2,
+          "record": 60,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "未填登录手机"
+        },
+        {
+          "source": 3,
+          "record": 22,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "未填登录手机"
+        }
+      ],
+      "deviceNumbers": [],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [],
+      "status": "待确认编号"
+    },
+    {
+      "accountId": "A075",
+      "phoneTail": "9594",
+      "rows": [
+        {
+          "source": 2,
+          "record": 61,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "未填登录手机"
+        },
+        {
+          "source": 3,
+          "record": 23,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "未填登录手机"
+        }
+      ],
+      "deviceNumbers": [],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [],
+      "status": "待确认编号"
+    },
+    {
+      "accountId": "A076",
+      "phoneTail": "9184",
+      "rows": [
+        {
+          "source": 2,
+          "record": 62,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "未填登录手机"
+        },
+        {
+          "source": 3,
+          "record": 24,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "未填登录手机"
+        }
+      ],
+      "deviceNumbers": [],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [],
+      "status": "待确认编号"
+    },
+    {
+      "accountId": "A077",
+      "phoneTail": "6473",
+      "rows": [
+        {
+          "source": 2,
+          "record": 63,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "未填登录手机"
+        },
+        {
+          "source": 3,
+          "record": 25,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "未填登录手机"
+        }
+      ],
+      "deviceNumbers": [],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [],
+      "status": "待确认编号"
+    },
+    {
+      "accountId": "A078",
+      "phoneTail": "5454",
+      "rows": [
+        {
+          "source": 2,
+          "record": 64,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "未填登录手机"
+        },
+        {
+          "source": 3,
+          "record": 26,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "未填登录手机"
+        }
+      ],
+      "deviceNumbers": [],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [],
+      "status": "待确认编号"
+    },
+    {
+      "accountId": "A079",
+      "phoneTail": "7127",
+      "rows": [
+        {
+          "source": 2,
+          "record": 65,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "需原设备验证"
+        },
+        {
+          "source": 3,
+          "record": 27,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "需原设备验证"
+        }
+      ],
+      "deviceNumbers": [],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [],
+      "status": "待确认编号"
+    },
+    {
+      "accountId": "A080",
+      "phoneTail": "4696",
+      "rows": [
+        {
+          "source": 4,
+          "record": 2,
+          "deviceNumber": "63",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "63"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "63",
+          "status": "离线",
+          "platformPresent": true,
+          "platformOnline": false
+        }
+      ],
+      "status": "离线"
+    },
+    {
+      "accountId": "A081",
+      "phoneTail": "5325",
+      "rows": [
+        {
+          "source": 4,
+          "record": 3,
+          "deviceNumber": "63",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "63"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "63",
+          "status": "离线",
+          "platformPresent": true,
+          "platformOnline": false
+        }
+      ],
+      "status": "离线"
+    },
+    {
+      "accountId": "A082",
+      "phoneTail": "2817",
+      "rows": [
+        {
+          "source": 4,
+          "record": 4,
+          "deviceNumber": "65",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "65"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "65",
+          "status": "平台未找到",
+          "platformPresent": false,
+          "platformOnline": null
+        }
+      ],
+      "status": "平台未找到"
+    },
+    {
+      "accountId": "A083",
+      "phoneTail": "2054",
+      "rows": [
+        {
+          "source": 4,
+          "record": 5,
+          "deviceNumber": "65",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "65"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "65",
+          "status": "平台未找到",
+          "platformPresent": false,
+          "platformOnline": null
+        }
+      ],
+      "status": "平台未找到"
+    },
+    {
+      "accountId": "A084",
+      "phoneTail": "4793",
+      "rows": [
+        {
+          "source": 4,
+          "record": 6,
+          "deviceNumber": "43",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "43"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "43",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A085",
+      "phoneTail": "0860",
+      "rows": [
+        {
+          "source": 4,
+          "record": 7,
+          "deviceNumber": "43",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "43"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "43",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A086",
+      "phoneTail": "5475",
+      "rows": [
+        {
+          "source": 4,
+          "record": 8,
+          "deviceNumber": "86",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "86"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "86",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A087",
+      "phoneTail": "1693",
+      "rows": [
+        {
+          "source": 4,
+          "record": 9,
+          "deviceNumber": "86",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "86"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "86",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A088",
+      "phoneTail": "4603",
+      "rows": [
+        {
+          "source": 4,
+          "record": 10,
+          "deviceNumber": "10",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "10"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "10",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A089",
+      "phoneTail": "9204",
+      "rows": [
+        {
+          "source": 4,
+          "record": 11,
+          "deviceNumber": "10",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "10"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "10",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A090",
+      "phoneTail": "0623",
+      "rows": [
+        {
+          "source": 4,
+          "record": 12,
+          "deviceNumber": "80",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "80"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "80",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A091",
+      "phoneTail": "4776",
+      "rows": [
+        {
+          "source": 4,
+          "record": 13,
+          "deviceNumber": "80",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "80"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "80",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A092",
+      "phoneTail": "3814",
+      "rows": [
+        {
+          "source": 4,
+          "record": 14,
+          "deviceNumber": "71",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "71"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "71",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A093",
+      "phoneTail": "1506",
+      "rows": [
+        {
+          "source": 4,
+          "record": 15,
+          "deviceNumber": "71",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "71"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "71",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A094",
+      "phoneTail": "4063",
+      "rows": [
+        {
+          "source": 4,
+          "record": 16,
+          "deviceNumber": "81",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "81"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "81",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A095",
+      "phoneTail": "6487",
+      "rows": [
+        {
+          "source": 4,
+          "record": 17,
+          "deviceNumber": "81",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "81"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "81",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A096",
+      "phoneTail": "4990",
+      "rows": [
+        {
+          "source": 4,
+          "record": 18,
+          "deviceNumber": "79",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "79"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "79",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A097",
+      "phoneTail": "5637",
+      "rows": [
+        {
+          "source": 4,
+          "record": 19,
+          "deviceNumber": "79",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "79"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "79",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A098",
+      "phoneTail": "3832",
+      "rows": [
+        {
+          "source": 4,
+          "record": 20,
+          "deviceNumber": "160",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "160"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "160",
+          "status": "离线",
+          "platformPresent": true,
+          "platformOnline": false
+        }
+      ],
+      "status": "离线"
+    },
+    {
+      "accountId": "A099",
+      "phoneTail": "5484",
+      "rows": [
+        {
+          "source": 4,
+          "record": 21,
+          "deviceNumber": "92",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "92"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "92",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A100",
+      "phoneTail": "9247",
+      "rows": [
+        {
+          "source": 4,
+          "record": 22,
+          "deviceNumber": "92",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "92"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "92",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A101",
+      "phoneTail": "8564",
+      "rows": [
+        {
+          "source": 4,
+          "record": 23,
+          "deviceNumber": "82",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "82"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "82",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A102",
+      "phoneTail": "3627",
+      "rows": [
+        {
+          "source": 4,
+          "record": 24,
+          "deviceNumber": "82",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "82"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "82",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A103",
+      "phoneTail": "4294",
+      "rows": [
+        {
+          "source": 4,
+          "record": 25,
+          "deviceNumber": "106",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "106"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "106",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A104",
+      "phoneTail": "6034",
+      "rows": [
+        {
+          "source": 4,
+          "record": 26,
+          "deviceNumber": "106",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "106"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "106",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A105",
+      "phoneTail": "4265",
+      "rows": [
+        {
+          "source": 4,
+          "record": 27,
+          "deviceNumber": "83",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "83"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "83",
+          "status": "平台未找到",
+          "platformPresent": false,
+          "platformOnline": null
+        }
+      ],
+      "status": "平台未找到"
+    },
+    {
+      "accountId": "A106",
+      "phoneTail": "3542",
+      "rows": [
+        {
+          "source": 4,
+          "record": 28,
+          "deviceNumber": "83",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "83"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "83",
+          "status": "平台未找到",
+          "platformPresent": false,
+          "platformOnline": null
+        }
+      ],
+      "status": "平台未找到"
+    },
+    {
+      "accountId": "A107",
+      "phoneTail": "2473",
+      "rows": [
+        {
+          "source": 4,
+          "record": 29,
+          "deviceNumber": "97",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "97"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "97",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A108",
+      "phoneTail": "1464",
+      "rows": [
+        {
+          "source": 4,
+          "record": 30,
+          "deviceNumber": "97",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "97"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "97",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A109",
+      "phoneTail": "7315",
+      "rows": [
+        {
+          "source": 4,
+          "record": 31,
+          "deviceNumber": "87",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "87"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "87",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A110",
+      "phoneTail": "5745",
+      "rows": [
+        {
+          "source": 4,
+          "record": 32,
+          "deviceNumber": "87",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "87"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "87",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A111",
+      "phoneTail": "5837",
+      "rows": [
+        {
+          "source": 4,
+          "record": 33,
+          "deviceNumber": "39",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "39"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "39",
+          "status": "平台未找到",
+          "platformPresent": false,
+          "platformOnline": null
+        }
+      ],
+      "status": "平台未找到"
+    },
+    {
+      "accountId": "A112",
+      "phoneTail": "4548",
+      "rows": [
+        {
+          "source": 4,
+          "record": 38,
+          "deviceNumber": "162",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "162"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "162",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A113",
+      "phoneTail": "1709",
+      "rows": [
+        {
+          "source": 4,
+          "record": 39,
+          "deviceNumber": "162",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "162"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "162",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A114",
+      "phoneTail": "1410",
+      "rows": [
+        {
+          "source": 4,
+          "record": 40,
+          "deviceNumber": "180",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "180"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "180",
+          "status": "离线",
+          "platformPresent": true,
+          "platformOnline": false
+        }
+      ],
+      "status": "离线"
+    },
+    {
+      "accountId": "A115",
+      "phoneTail": "5463",
+      "rows": [
+        {
+          "source": 4,
+          "record": 41,
+          "deviceNumber": "180",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "180"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "180",
+          "status": "离线",
+          "platformPresent": true,
+          "platformOnline": false
+        }
+      ],
+      "status": "离线"
+    },
+    {
+      "accountId": "A116",
+      "phoneTail": "3154",
+      "rows": [
+        {
+          "source": 4,
+          "record": 42,
+          "deviceNumber": "184",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "184"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "184",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A117",
+      "phoneTail": "8519",
+      "rows": [
+        {
+          "source": 4,
+          "record": 43,
+          "deviceNumber": "184",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "184"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "184",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A118",
+      "phoneTail": "4674",
+      "rows": [
+        {
+          "source": 4,
+          "record": 44,
+          "deviceNumber": "183",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "183"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "183",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A119",
+      "phoneTail": "8063",
+      "rows": [
+        {
+          "source": 4,
+          "record": 45,
+          "deviceNumber": "185",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "185"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "185",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A120",
+      "phoneTail": "9463",
+      "rows": [
+        {
+          "source": 4,
+          "record": 46,
+          "deviceNumber": "186",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "186"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "186",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A121",
+      "phoneTail": "0450",
+      "rows": [
+        {
+          "source": 4,
+          "record": 47,
+          "deviceNumber": "186",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "186"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "186",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A122",
+      "phoneTail": "3857",
+      "rows": [
+        {
+          "source": 4,
+          "record": 48,
+          "deviceNumber": "191",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "191"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "191",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A123",
+      "phoneTail": "5734",
+      "rows": [
+        {
+          "source": 4,
+          "record": 49,
+          "deviceNumber": "191",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "191"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "191",
+          "status": "在线",
+          "platformPresent": true,
+          "platformOnline": true
+        }
+      ],
+      "status": "在线"
+    },
+    {
+      "accountId": "A124",
+      "phoneTail": "8645",
+      "rows": [
+        {
+          "source": 4,
+          "record": 50,
+          "deviceNumber": "19",
+          "accountLabel": "表标第二企微",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "19"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "19",
+          "status": "平台未找到",
+          "platformPresent": false,
+          "platformOnline": null
+        }
+      ],
+      "status": "平台未找到"
+    },
+    {
+      "accountId": "A125",
+      "phoneTail": "7796",
+      "rows": [
+        {
+          "source": 4,
+          "record": 51,
+          "deviceNumber": "19",
+          "accountLabel": "表未明确槽位",
+          "mappingReason": null
+        }
+      ],
+      "deviceNumbers": [
+        "19"
+      ],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [
+        {
+          "deviceNumber": "19",
+          "status": "平台未找到",
+          "platformPresent": false,
+          "platformOnline": null
+        }
+      ],
+      "status": "平台未找到"
+    },
+    {
+      "accountId": "A126",
+      "phoneTail": "3653",
+      "rows": [
+        {
+          "source": 4,
+          "record": 53,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "未填登录手机"
+        }
+      ],
+      "deviceNumbers": [],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [],
+      "status": "待确认编号"
+    },
+    {
+      "accountId": "A127",
+      "phoneTail": "0755",
+      "rows": [
+        {
+          "source": 4,
+          "record": 54,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "未填登录手机"
+        }
+      ],
+      "deviceNumbers": [],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [],
+      "status": "待确认编号"
+    },
+    {
+      "accountId": "A128",
+      "phoneTail": "9714",
+      "rows": [
+        {
+          "source": 4,
+          "record": 55,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "未填登录手机"
+        }
+      ],
+      "deviceNumbers": [],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [],
+      "status": "待确认编号"
+    },
+    {
+      "accountId": "A129",
+      "phoneTail": "6962",
+      "rows": [
+        {
+          "source": 4,
+          "record": 56,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "未填登录手机"
+        }
+      ],
+      "deviceNumbers": [],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [],
+      "status": "待确认编号"
+    },
+    {
+      "accountId": "A130",
+      "phoneTail": "4632",
+      "rows": [
+        {
+          "source": 4,
+          "record": 57,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "未填登录手机"
+        }
+      ],
+      "deviceNumbers": [],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [],
+      "status": "待确认编号"
+    },
+    {
+      "accountId": "A131",
+      "phoneTail": "7927",
+      "rows": [
+        {
+          "source": 4,
+          "record": 58,
+          "deviceNumber": null,
+          "accountLabel": null,
+          "mappingReason": "未填登录手机"
+        }
+      ],
+      "deviceNumbers": [],
+      "conflictingDeviceNumbers": false,
+      "platformMatches": [],
+      "status": "待确认编号"
+    }
+  ],
+  "limitations": [
+    "online means platform-reported device/Agent availability, not WeCom login or account verification",
+    "only login-phone columns used; SIM installation phone never filled a blank login phone",
+    "second-WeCom labels do not establish Android app/user mapping",
+    "phone-account rows deduplicated by full account number in memory; only pseudonym/tail persisted",
+    "no phone was queried, opened or sent an invitation for this reconciliation"
+  ],
+  "initialObservationAt": "2026-11-03T00:58:36.052Z",
+  "inventoryRefreshReceipt": "inventory-refresh.receipt.json"
+}

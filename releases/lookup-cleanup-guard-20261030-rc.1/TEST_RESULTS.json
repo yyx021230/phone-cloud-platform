@@ -1,0 +1,16 @@
+{
+  "node": "v25.9.0",
+  "results": [
+    {
+      "command": "npm run check",
+      "exitCode": 0,
+      "log": "final-root-check.log"
+    },
+    {
+      "command": "npm run test:screen",
+      "exitCode": 0,
+      "log": "final-screen-regression.log"
+    }
+  ],
+  "runtimeSourcesStable": true
+}

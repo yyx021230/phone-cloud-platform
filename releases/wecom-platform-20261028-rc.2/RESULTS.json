@@ -1,0 +1,62 @@
+{
+  "node": {
+    "passed": 1603,
+    "failed": 0,
+    "skippedPostgresOptIn": 2,
+    "newPreview11Included": true
+  },
+  "python": {
+    "allGroupsPassed": 1280,
+    "primaryGroupPassed": 1034,
+    "otherGroupsPassed": 246,
+    "previewLocalIncluded": 120,
+    "windowsPreviewNativeRepeatedCoverage": 120,
+    "failed": 0
+  },
+  "rootSyntax": true,
+  "jsonPlatformSmoke": true,
+  "imageHttpJsonAndPostgres": true,
+  "mediaLive": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "frozenProductionFilesMatched": 33,
+  "review": "self review, no independent reviewer",
+  "productionApiRealPhoneAcceptance": false,
+  "logs": {
+    "v2-all-node.log": {
+      "sha256": "7cfa37102c22fd0f487f638cdf844e49965e33ddf21ed4bfb9d3278e65fb8a0b"
+    },
+    "v2-extra-node.log": {
+      "sha256": "459570ab7eaa6a626c932c90459c2a4c1a5a76c9a8cc5cbd55d5f45c2ba81772"
+    },
+    "v2-python-other.log": {
+      "sha256": "519211d00b78019f334a37fbc74ea3923528070879e62efd8fbb23e9afbff5ef"
+    },
+    "v2-release-final-python.log": {
+      "sha256": "576b8117dcdf830d778ee88196f0e808ec2b8eb849014ca48c7bbd902a790f3f"
+    },
+    "v2-current-wecom.log": {
+      "sha256": "41d53578b4add328cc35c90f2a81a51232bac8c419865b760e30b1ba6b20e607"
+    },
+    "v2-smoke.log": {
+      "sha256": "a917e1a72233ca45562168e6d43183ba6b5a2ada4fb720884a1a54c0f0305bca"
+    },
+    "v2-check.log": {
+      "sha256": "b970ebc730689679dd6f2a648b0f694c4297715d81f5de7ba3a3de95be682afe"
+    }
+  },
+  "isolatedAdapterPhonesPassed": [
+    "25",
+    "155"
+  ],
+  "remainingAcceptance": [
+    "maintenance approval and production activation",
+    "new API to Agent to child stdin main to phone acceptance",
+    "remaining six phones when idle"
+  ]
+}

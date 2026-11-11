@@ -1,0 +1,18 @@
+{
+  "windows-agent/src/wecom-cleanup-verify.test.mjs": {
+    "snapshot": "verification/wecom-v1-causal-fix-20261103/legacy-inputs/wecom-cleanup-verify.test.mjs.txt",
+    "sha256": "0c8bb47c43f16f80f0132dabe676ec17285bcc43b6d66b1f485ab56aa23d5493"
+  },
+  "windows-agent/scripts/test_wecom_cleanup_verify.py": {
+    "snapshot": "verification/wecom-v1-causal-fix-20261103/legacy-inputs/test_wecom_cleanup_verify.py.txt",
+    "sha256": "407b2507086d7dab987f2ca4f88d1836da28f732a9926ff772335179a4a7fafc"
+  },
+  "windows-agent/src/wecom-cleanup-verify.mjs": {
+    "snapshot": "verification/wecom-v1-causal-fix-20261103/legacy-inputs/wecom-cleanup-verify.mjs.txt",
+    "sha256": "207df67be3357f894e49c225ebf681174b46a34a35f0dce44163db336ce65e91"
+  },
+  "windows-agent/scripts/wecom_cleanup_verify.py": {
+    "snapshot": "verification/wecom-v1-causal-fix-20261103/legacy-inputs/wecom_cleanup_verify.py.txt",
+    "sha256": "8994310828f9ec9542c2ef3c85af79608ae22476510358e42ee1c019a255644f"
+  }
+}

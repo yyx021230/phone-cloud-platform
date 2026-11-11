@@ -135,6 +135,7 @@ test("public models bound histories and expose session progress", () => {
 test("first-query unconfirmed evidence preserves recovery instead of a terminal retryable failure", () => {
   for (const result of [
     { errorCode: "alipay_lookup_result_unconfirmed" },
+    { errorCode: "alipay_person_result_not_found", diagnostic: { runnerReason: "alipay_lookup_failed_after_recovery:alipay_person_result_not_found:texts=[]" } },
     { errorCode: "alipay_lookup_failed", diagnostic: { runnerReason: "local_lookup_result_unconfirmed:visual_card_not_proven" } }
   ]) {
     const job = { kind: "alipay_name_query", result };

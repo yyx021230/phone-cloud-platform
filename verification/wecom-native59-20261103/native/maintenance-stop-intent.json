@@ -1,0 +1,26 @@
+{
+  "operationId": "maintenance59-fd0e6e42543c4745880662df389c50a4",
+  "purpose": "cleanup_only_observed_residue",
+  "originalQaScope": "qa-a3ab4264db934d158e2eb0c3965a729f",
+  "originalPid": "27405",
+  "originalStartToken": "34062869",
+  "observedPid": "8061",
+  "observedStartToken": "36793965",
+  "androidUser": 0,
+  "package": "com.netease.open.pocoservice",
+  "singleForceStopAllowed": true,
+  "originalHosts": [
+    {
+      "pid": 20436,
+      "createdAt": 1793671566.9582727
+    },
+    {
+      "pid": 22728,
+      "createdAt": 1793671567.0479963
+    }
+  ],
+  "unlistedAt": "2026-11-03T02:06:02.975Z",
+  "sessionId": "6b993d40-210e-4ebe-a1dc-3132b2089f44",
+  "newPreviewPermission": false,
+  "at": 1793672118.7983732
+}

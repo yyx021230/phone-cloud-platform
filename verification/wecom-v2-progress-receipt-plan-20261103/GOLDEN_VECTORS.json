@@ -1,0 +1,226 @@
+{
+  "kind": "normative-data-not-executed-encoder-tests",
+  "version": "WCMUT1",
+  "domainPrefixHex": "57434d55543100",
+  "accepted": [
+    {
+      "name": "null",
+      "value": null,
+      "canonicalHex": "57434d5554310000",
+      "sha256": "dbb9bc332d6c724202e9e6e054dcb24fa29680ef673eec4a631b6644cc6b2c7a"
+    },
+    {
+      "name": "false",
+      "value": false,
+      "canonicalHex": "57434d5554310001",
+      "sha256": "26f8583a208d736a731db6fcbd799200d654b06d6832afd9ad3ca8c601aca9cf"
+    },
+    {
+      "name": "true",
+      "value": true,
+      "canonicalHex": "57434d5554310002",
+      "sha256": "3688fed314f9883ff932fe4351d80e60a9aee63bb7338a5070b83fea940add76"
+    },
+    {
+      "name": "positive-zero",
+      "value": 0,
+      "canonicalHex": "57434d55543100040000000000000000",
+      "sha256": "c6c7fdc70456d07b3e7f5972d0b5845e9dcca48f183dc6fdb83f36c981c33453"
+    },
+    {
+      "name": "one",
+      "value": 1,
+      "canonicalHex": "57434d55543100043ff0000000000000",
+      "sha256": "dbc44f7c454a1d474859b4c89372aaf17593690261ee564c3f61da6bc0e23458"
+    },
+    {
+      "name": "minus-one",
+      "value": -1,
+      "canonicalHex": "57434d5554310004bff0000000000000",
+      "sha256": "218b632f3afb5bf8efcc8eb31fad94d14c7a40ef8ae97a8135414eacfbe2b20f"
+    },
+    {
+      "name": "binary64-one-tenth",
+      "value": 0.1,
+      "canonicalHex": "57434d55543100043fb999999999999a",
+      "sha256": "d526e4fce6287c1a9b298f9409ec99921522bce53c4f8bd96735bf7edfe35570"
+    },
+    {
+      "name": "empty-string",
+      "value": "",
+      "canonicalHex": "57434d555431000300000000",
+      "sha256": "85d90d090aad33679982bc3e8de2a80673436df6658b22cee457846689e8f6d8"
+    },
+    {
+      "name": "chinese",
+      "value": "中",
+      "canonicalHex": "57434d555431000300000003e4b8ad",
+      "sha256": "7d2a5a68e28910046f70d55ec178b0e52a5fe3956b0ebdfe13902aab00d564dd"
+    },
+    {
+      "name": "emoji",
+      "value": "😀",
+      "canonicalHex": "57434d555431000300000004f09f9880",
+      "sha256": "8aeef9910199d73b041c2e60d47dfdddafd4d36ca6d4fc7a4b6c99f10442c618"
+    },
+    {
+      "name": "literal-controls",
+      "value": "a\n\"\\",
+      "canonicalHex": "57434d555431000300000004610a225c",
+      "sha256": "1d530c0f7f3dd18ee32d6219ebbca0b792e264bdec98f2477eb6a331bee00dc1"
+    },
+    {
+      "name": "empty-array",
+      "value": [],
+      "canonicalHex": "57434d555431000500000000",
+      "sha256": "9b0f64791c4cba739caee0da9d34881046153a6baea4d5120f955306681bf961"
+    },
+    {
+      "name": "empty-object",
+      "value": {},
+      "canonicalHex": "57434d555431000600000000",
+      "sha256": "361767b4a1210ec631a46b45483b10c5231b6c5e34324e4f84724c6ace6661fa"
+    },
+    {
+      "name": "ordered-array",
+      "value": [
+        true,
+        null,
+        1
+      ],
+      "canonicalHex": "57434d5554310005000000030200043ff0000000000000",
+      "sha256": "c2c46fd6d6dc771a7ba47376b412e7d04c45ccc7fdad92cb680994cf405efc1a"
+    },
+    {
+      "name": "reordered-array",
+      "value": [
+        null,
+        true,
+        1
+      ],
+      "canonicalHex": "57434d5554310005000000030002043ff0000000000000",
+      "sha256": "f0faae7f8456fb77c4612a56c20c1a4dfd937cc8c588f9f052ab3f57674a75d6"
+    },
+    {
+      "name": "object-insertion-ba",
+      "value": {
+        "b": false,
+        "a": 1
+      },
+      "canonicalHex": "57434d555431000600000002030000000161043ff000000000000003000000016201",
+      "sha256": "d11efd25adfad681c84952a88859b386d9e6a8086a3505bb6d29c80b162a57bc"
+    },
+    {
+      "name": "object-insertion-ab",
+      "value": {
+        "a": 1,
+        "b": false
+      },
+      "canonicalHex": "57434d555431000600000002030000000161043ff000000000000003000000016201",
+      "sha256": "d11efd25adfad681c84952a88859b386d9e6a8086a3505bb6d29c80b162a57bc"
+    },
+    {
+      "name": "scalar-key-order-not-utf16",
+      "value": {
+        "𐀀": 1,
+        "": 2
+      },
+      "canonicalHex": "57434d5554310006000000020300000003ee80800440000000000000000300000004f0908080043ff0000000000000",
+      "sha256": "d84539f651dc30c682555497bc27235a3fce9425c814618ebd0979e3ff5f84be"
+    },
+    {
+      "name": "composed-unicode",
+      "value": "é",
+      "canonicalHex": "57434d555431000300000002c3a9",
+      "sha256": "8a447d114d5a542c9cea0e3b98193a69856e56bbe835fa272976dc71ac6edefe"
+    },
+    {
+      "name": "decomposed-unicode",
+      "value": "é",
+      "canonicalHex": "57434d55543100030000000365cc81",
+      "sha256": "63ee216f8cbdfeb10eba02e373851a8d462a9ab5476e0767ee0499f9a5db9e13"
+    }
+  ],
+  "rejected": [
+    {
+      "name": "negative-zero",
+      "rawJson": "-0",
+      "reason": "negative-zero"
+    },
+    {
+      "name": "unsafe-integer",
+      "rawJson": "9007199254740992",
+      "reason": "unsafe-integer"
+    },
+    {
+      "name": "infinite-number",
+      "rawJson": "1e999",
+      "reason": "non-finite"
+    },
+    {
+      "name": "unpaired-surrogate",
+      "rawJson": "\"\\ud800\"",
+      "reason": "invalid-unicode"
+    },
+    {
+      "name": "duplicate-key",
+      "rawJson": "{\"a\":1,\"a\":2}",
+      "reason": "duplicate-key-before-ordinary-parse"
+    },
+    {
+      "name": "accessor-no-invocation",
+      "constructionRequired": true,
+      "reason": "strict-tree-or-budget"
+    },
+    {
+      "name": "array-hole",
+      "constructionRequired": true,
+      "reason": "strict-tree-or-budget"
+    },
+    {
+      "name": "undefined",
+      "constructionRequired": true,
+      "reason": "strict-tree-or-budget"
+    },
+    {
+      "name": "symbol-key",
+      "constructionRequired": true,
+      "reason": "strict-tree-or-budget"
+    },
+    {
+      "name": "bigint",
+      "constructionRequired": true,
+      "reason": "strict-tree-or-budget"
+    },
+    {
+      "name": "cycle",
+      "constructionRequired": true,
+      "reason": "strict-tree-or-budget"
+    },
+    {
+      "name": "custom-prototype",
+      "constructionRequired": true,
+      "reason": "strict-tree-or-budget"
+    },
+    {
+      "name": "nonenumerable-extra",
+      "constructionRequired": true,
+      "reason": "strict-tree-or-budget"
+    },
+    {
+      "name": "depth-25",
+      "constructionRequired": true,
+      "reason": "strict-tree-or-budget"
+    },
+    {
+      "name": "node-count-50001",
+      "constructionRequired": true,
+      "reason": "strict-tree-or-budget"
+    },
+    {
+      "name": "encoded-bytes-262145",
+      "constructionRequired": true,
+      "reason": "strict-tree-or-budget"
+    }
+  ]
+}

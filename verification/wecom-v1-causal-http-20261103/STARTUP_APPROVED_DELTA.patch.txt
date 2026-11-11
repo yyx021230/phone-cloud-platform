@@ -1,0 +1,25 @@
+--- a/server/index.mjs
++++ b/server/index.mjs
+@@ -4550,6 +4550,11 @@
+   let changed = false;
+   for (const lock of state.deviceLocks) {
+     if (lock.status !== "active") continue;
++    if (!wecomCleanup && lock.lockType === WECOM_PREVIEW_KIND) {
++      const job = state.automationJobs.find(j => j.jobId === lock.taskId && j.lockId === lock.lockId);
++      const task = state.windowsTasks.find(t => t.taskId === job?.windowsTaskId);
++      if (job?.wecomCausalLease || task?.payload?.wecomCausalLease) continue;
++    }
+     const causalBudget = wecomCleanup?.businessLockState(lock);
+     if (causalBudget && (!causalBudget.known || causalBudget.remainingMs > 0)) continue;
+     if (lock.managedLookupGeneration && managedLookup?.reserved(lock.deviceId)) continue;
+@@ -7249,7 +7254,9 @@
+   let changed = false;
+   for (const task of state.windowsTasks) {
+     if (!["queued", "running", "stalled"].includes(task.status)) continue;
+-    if (wecomCleanup.causalTask(task)) {
++    if (!wecomCleanup && [WECOM_PREVIEW_KIND, WECOM_CLEANUP_KIND].includes(task.type)
++        && (task.payload?.wecomCausalLease || task.payload?.causalLease)) continue;
++    if (wecomCleanup?.causalTask(task)) {
+       changed = wecomCleanup.expireTask(task) || changed;
+       continue;
+     }

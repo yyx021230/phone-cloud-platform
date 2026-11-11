@@ -1,0 +1,117 @@
+// Actual loopback authentication/JSON/process restart. All Android/host facts are synthetic.
+// The pre-causal archive/PG opt-in test is preserved verbatim in this candidate's legacy-inputs.
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import {spawn} from 'node:child_process';
+import {once} from 'node:events';
+import http from 'node:http';
+import fs from 'node:fs/promises';
+import net from 'node:net';
+import os from 'node:os';
+import path from 'node:path';
+import {WECOM_PREVIEW_DEVICES as pool} from './wecom-preview.mjs';
+import {WECOM_PACKAGES} from './wecom-physical-cleanup.mjs';
+import {syntheticHostTime} from './wecom-cleanup-fixture.mjs';
+const pause=ms=>new Promise(r=>setTimeout(r,ms));
+const capability='?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1&wecomCausalProtocol=wecom-causal-v1';
+async function fixture(t){
+  assert.equal(process.env.WECOM_CLEANUP_TEST_DATABASE_URL||'','','causal fixture is isolated JSON only; no PG acceptance claim');
+  const data=await fs.mkdtemp(path.join(os.tmpdir(),'pc-wecom-causal-http-'));
+  const reservation=net.createServer().listen(0,'127.0.0.1');await once(reservation,'listening');const port=reservation.address().port;await new Promise(r=>reservation.close(r));
+  const upstream=`http://127.0.0.1:${port}`,root=path.resolve(import.meta.dirname,'..');let child,logs='',drop=null;
+  const gateway=http.createServer(async(req,res)=>{
+    try{
+      const chunks=[];for await(const chunk of req)chunks.push(chunk);
+      const response=await fetch(upstream+req.url,{method:req.method,redirect:'error',headers:{authorization:req.headers.authorization||'','content-type':'application/json'},...(['POST','PUT'].includes(req.method)?{body:Buffer.concat(chunks)}:{})});
+      const bytes=Buffer.from(await response.arrayBuffer());
+      if(drop===req.url){drop=null;res.destroy();return;} // Actual committed upstream reply lost on this owned socket.
+      res.writeHead(response.status,{'content-type':'application/json'});res.end(bytes);
+    }catch{if(!res.destroyed){res.writeHead(502,{'content-type':'application/json'});res.end('{"error":"fixture_gateway_failure"}');}}
+  });gateway.listen(0,'127.0.0.1');await once(gateway,'listening');const base=`http://127.0.0.1:${gateway.address().port}`;
+  async function start(){
+    child=spawn(process.execPath,['server/index.mjs'],{cwd:root,env:{PATH:process.env.PATH,HOST:'127.0.0.1',PORT:String(port),DATA_DIR:data,DATABASE_URL:'',REDIS_URL:'',STORAGE_BACKEND:'json',STRUCTURED_WRITES:'true',PUBLIC_BASE_URL:upstream,ADMIN_USERNAME:'fixture_admin',ADMIN_PASSWORD:'fixture-only-password',SCREEN_MEDIA_AUTH_SECRET:'fixture-only-secret',WINDOWS_AGENT_ONLINE_SECONDS:'300',MANAGED_NAME_LOOKUP_ENABLED:'false',LOOKUP_AI_VISION_ENABLED:'false'},stdio:['ignore','pipe','pipe']});
+    child.stdout.on('data',b=>{logs=(logs+b).slice(-2000);});child.stderr.on('data',b=>{logs=(logs+b).slice(-2000);});
+    for(let i=0;i<150;i++){try{if((await fetch(upstream+'/readyz')).ok)return;}catch{}if(child.exitCode!==null)assert.fail('isolated service failed '+logs);await pause(20);}assert.fail('isolated service readiness timeout '+logs);
+  }
+  async function stop(){if(child&&child.exitCode===null){const exited=once(child,'exit'),timer=setTimeout(()=>child.kill('SIGKILL'),2000);child.kill('SIGTERM');await exited;clearTimeout(timer);}}
+  t.after(async()=>{await stop();gateway.closeAllConnections();await new Promise(r=>gateway.close(r));await fs.rm(data,{recursive:true,force:true});});
+  async function req(method,route,token,body,expected=200){assert.ok(route.startsWith('/api/v1/'));const response=await fetch(base+route,{method,redirect:'error',headers:{'content-type':'application/json',...(token?{authorization:'Bearer '+token}:{})},...(body===undefined?{}:{body:JSON.stringify(body)})});const value=await response.json();assert.equal(response.status,expected,`${method} ${route}: ${value.error||response.status}`);return value;}
+  await start();
+  const admin=(await req('POST','/api/v1/auth/login','',{username:'fixture_admin',password:'fixture-only-password'})).session.token;
+  const agent=(await req('POST','/api/v1/windows-agents',admin,{agentId:'fixture-agent',agentName:'Synthetic'},201)).token;
+  const other=(await req('POST','/api/v1/windows-agents',admin,{agentId:'other-agent',agentName:'Synthetic other'},201)).token;
+  await req('POST','/api/v1/windows-agents/fixture-agent/devices/sync',agent,{agent:{agentId:'fixture-agent'},devices:['59','155','25'].map(n=>({adbSerial:pool[n].serial,state:'device',model:'Synthetic'}))});
+  for(const n of ['59','155','25'])await req('PUT','/api/v1/devices/'+encodeURIComponent('adb:'+pool[n].serial),admin,{listingStatus:'listed',deviceName:n});
+  const submit='/api/v1/user/automation/wecom-preview-tasks',next='/api/v1/windows-agents/fixture-agent/tasks/next';let sequence=0;
+  async function create(number='59',appSlot='main'){
+    const input={deviceId:'adb:'+pool[number].serial,appSlot,phoneNumber:'13900000000',requestId:'fixture_causal_'+(++sequence)};
+    const result=await req('POST',submit,admin,input,201);return {input,job:result.task};
+  }
+  async function pick(){return(await req('GET',next+capability,agent)).task;}
+  async function registered(created,loss=false){
+    const task=await pick();assert.equal(task.payload.automationJobId,created.job.jobId);assert.equal(task.payload.wecomCausalLease.protocol,'wecom-causal-v1');
+    const binding=task.payload.physicalCleanup,prefix=`/api/v1/windows-agents/fixture-agent/wecom-cleanup/${binding.obligationId}/`;
+    const bootstrap={protocol:'wecom-causal-v1',bindingNonce:binding.nonce,pipeNonce:'d'.repeat(48)},hosts=[{role:'reader',pid:123,...syntheticHostTime(Date.now()+300000),machineId:'a'.repeat(64)}];
+    const body={binding,hosts,bootstrap},lease=`/api/v1/windows-agents/fixture-agent/wecom-preview-tasks/${task.taskId}/lease`;
+    assert.equal((await req('GET',lease,agent)).valid,false);
+    await req('POST',prefix+'host',other,body,401);
+    await req('POST',prefix+'host',agent,{...body,bootstrap:{...bootstrap,bindingNonce:'wrong'}},409);
+    if(loss){drop=prefix+'host';await assert.rejects(req('POST',prefix+'host',agent,body));}
+    await req('POST',prefix+'host',agent,body);
+    const live=await req('GET',lease,agent);assert.equal(live.valid,true);assert.deepEqual(live.causalLease,task.payload.wecomCausalLease);assert.ok(live.remainingMs>3000&&live.remainingMs<=300000);
+    return {...created,task,binding,prefix,bootstrap,hosts,body,lease};
+  }
+  async function ready(r){
+    await req('POST',`/api/v1/windows-agent-tasks/${r.task.taskId}/status`,agent,{status:'failed',result:{previewStatus:'blocked',previewCode:'fixture_no_invitation',invitationSent:false}});
+    const closed={binding:r.binding,hosts:r.hosts,bootstrap:r.bootstrap,observedAt:new Date(Date.now()-300000).toISOString(),exited:true,observerMachineId:r.hosts[0].machineId};
+    await req('POST',r.prefix+'host-closed',agent,closed);
+    const v=await req('POST',r.prefix+'verify',agent,{binding:r.binding}),task=await pick();assert.equal(task.taskId,v.taskId);
+    const fields={verificationId:task.payload.verificationId,verificationNonce:task.payload.verificationNonce,verificationTaskId:task.taskId};
+    return {...r,verifyTask:task,fields};
+  }
+  async function challenge(r){const started=performance.now(),result=await req('POST',r.prefix+'challenge',agent,{binding:r.binding,...r.fields});return {...r,challenge:result.challenge,started};}
+  function proof(r){return {binding:r.binding,...r.fields,challenge:r.challenge,snapshots:[1,2].map(i=>({sequence:i,elapsedMs:performance.now()-r.started+i,observedAt:new Date(Date.now()-300000).toISOString(),packagesAbsent:true,packageNames:[...WECOM_PACKAGES],serialForwardCount:0}))};}
+  const snapshot=async()=>JSON.parse(await fs.readFile(path.join(data,'state.json'),'utf8'));
+  return {req,admin,agent,other,submit,next,create,pick,registered,ready,challenge,proof,snapshot,file:path.join(data,'state.json'),restart:async()=>{await stop();await start();},dropReply:route=>{drop=route;}};
+}
+
+test('authenticated JSON: new capability, main/clone, wrong scope and lost ACK retain original identity', {timeout:20000},async t=>{
+  const f=await fixture(t),created=await f.create();
+  for(const suffix of ['','?wecomPreview=wecom-invitation-v4','?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1','?wecomPreview=wecom-invitation-v4&wecomCleanupProtocol=1&wecomCausalProtocol=old'])assert.equal((await f.req('GET',f.next+suffix,f.agent)).task,null);
+  let r=await f.registered(created,true);r=await f.ready(r);r=await f.challenge(r);const p=f.proof(r);
+  const wrong=structuredClone(p);wrong.binding.appSlot='clone';wrong.binding.androidUser=999;await f.req('POST',r.prefix+'proof',f.agent,wrong,409);
+  await f.req('POST',`/api/v1/windows-agent-tasks/${r.verifyTask.taskId}/status`,f.agent,{status:'succeeded'},409);
+  const busy=await f.req('POST',f.submit,f.admin,{...created.input,requestId:'fixture_blocked_original'},409);assert.equal(busy.error,'wecom_cleanup_pending');
+  f.dropReply(r.prefix+'proof');await assert.rejects(f.req('POST',r.prefix+'proof',f.agent,p));
+  const stored=await f.snapshot();assert.equal(stored.deviceLocks.find(l=>l.lockId===r.binding.obligationId).status,'released');
+  assert.equal((await f.req('POST',r.prefix+'proof',f.agent,p)).reused,true);
+  await f.restart();assert.equal((await f.req('POST',r.prefix+'proof',f.agent,p)).reused,true);
+  assert.equal(await f.pick(),null,'known proof ACK never enqueues another worker');
+  const clone=await f.create('155','clone'),c=await f.registered(clone);assert.equal(c.task.payload.androidUser,999);assert.equal(c.task.payload.appSlot,'clone');
+});
+
+test('authenticated JSON: real write failure rolls back proof and keeps physical duty until same original proof commits', {timeout:15000},async t=>{
+  const f=await fixture(t),r=await f.challenge(await f.ready(await f.registered(await f.create()))),p=f.proof(r);
+  await fs.rename(f.file,f.file+'.before-failure');await fs.mkdir(f.file);
+  try{await f.req('POST',r.prefix+'proof',f.agent,p,503);}finally{await fs.rm(f.file,{recursive:true,force:true});await fs.rename(f.file+'.before-failure',f.file);}
+  assert.equal((await f.req('POST',r.prefix+'lease?'+new URLSearchParams(r.fields),f.agent)).valid,true);
+  await f.req('POST',f.submit,f.admin,{...r.input,requestId:'fixture_after_unknown_persist'},409);
+  assert.equal((await f.snapshot()).deviceLocks.find(l=>l.lockId===r.binding.obligationId).status,'cleanup_pending');
+  assert.equal((await f.req('POST',r.prefix+'proof',f.agent,p)).verified,true);
+});
+
+test('authenticated JSON: restart keeps original duty and rejects old epoch instead of issuing new verification', {timeout:15000},async t=>{
+  const f=await fixture(t),r=await f.challenge(await f.ready(await f.registered(await f.create()))),p=f.proof(r);
+  await f.restart();await f.req('POST',r.prefix+'verify',f.agent,{binding:r.binding},409);await f.req('POST',r.prefix+'proof',f.agent,p,409);
+  assert.equal((await f.req('POST',f.submit,f.admin,{...r.input,requestId:'fixture_after_epoch_loss'},409)).error,'wecom_cleanup_pending');
+  const disk=await f.snapshot();assert.equal(disk.deviceLocks.find(l=>l.lockId===r.binding.obligationId).status,'cleanup_pending');
+  assert.equal(disk.windowsTasks.filter(x=>x.type==='wecom_cleanup_verify').length,1,'no replacement verification generation');
+  const unrelated=await f.create('25'),task=await f.pick();assert.equal(task.payload.automationJobId,unrelated.job.jobId);
+});
+
+test('authenticated JSON: repeated challenge cannot renew expired3s and another phone still dispatches', {timeout:12000},async t=>{
+  const f=await fixture(t),r=await f.challenge(await f.ready(await f.registered(await f.create()))),p=f.proof(r);
+  await pause(3100);const again=await f.req('POST',r.prefix+'challenge',f.agent,{binding:r.binding,...r.fields});assert.deepEqual(again.challenge,r.challenge);
+  await f.req('POST',r.prefix+'proof',f.agent,p,409);assert.equal((await f.snapshot()).deviceLocks.find(l=>l.lockId===r.binding.obligationId).status,'cleanup_pending');
+  const other=await f.create('155','clone');assert.equal((await f.pick()).payload.automationJobId,other.job.jobId);
+});

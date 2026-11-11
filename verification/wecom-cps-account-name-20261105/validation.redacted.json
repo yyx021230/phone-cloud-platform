@@ -1,0 +1,399 @@
+{
+  "appId": "PRi5GUYYuW",
+  "checks": [
+    {
+      "check": "health",
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.10.119:8797/healthz",
+        "body": null
+      },
+      "response": {
+        "http_status": 200,
+        "body": {
+          "result": null,
+          "timestamp": 1793859739248,
+          "ok": true
+        }
+      }
+    },
+    {
+      "check": "all registered account names",
+      "request": {
+        "method": "POST",
+        "url": "http://192.168.10.119:8797/api/v1/lead/devices/query",
+        "body": {
+          "online_only": false,
+          "app_id": "PRi5GUYYuW",
+          "timestamp": 1793859739249,
+          "nonce": "bd09a315553e85d04fc77289",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "http_status": 200,
+        "body": {
+          "result": {
+            "devices": [
+              {
+                "device_number": "200",
+                "device_name": "200号本地测试手机",
+                "online": true,
+                "adb_online": true,
+                "agent_online": true,
+                "listed": true,
+                "busy": false,
+                "busy_reason": "",
+                "occupancy": null,
+                "accounts": [
+                  {
+                    "app_slot": "main",
+                    "binding_verified": true,
+                    "enabled": true,
+                    "wecom_phone": "17508437040",
+                    "wecom_name": "小文",
+                    "available": true,
+                    "unavailable_reason": ""
+                  }
+                ],
+                "available": true,
+                "unavailable_reason": "",
+                "last_seen_at": "2026-11-05T06:22:19.365Z",
+                "adb_last_seen_at": "2026-11-05T06:22:19.365Z"
+              },
+              {
+                "device_number": "201",
+                "device_name": "201号（未接入本地测试）",
+                "online": false,
+                "adb_online": false,
+                "agent_online": false,
+                "listed": true,
+                "busy": false,
+                "busy_reason": "",
+                "occupancy": null,
+                "accounts": [
+                  {
+                    "app_slot": "main",
+                    "binding_verified": true,
+                    "enabled": true,
+                    "wecom_phone": "17514026939",
+                    "wecom_name": "小文",
+                    "available": false,
+                    "unavailable_reason": "adb_offline"
+                  }
+                ],
+                "available": false,
+                "unavailable_reason": "adb_offline",
+                "last_seen_at": null,
+                "adb_last_seen_at": null
+              },
+              {
+                "device_number": "202",
+                "device_name": "202号本地测试手机",
+                "online": true,
+                "adb_online": true,
+                "agent_online": true,
+                "listed": true,
+                "busy": false,
+                "busy_reason": "",
+                "occupancy": null,
+                "accounts": [
+                  {
+                    "app_slot": "main",
+                    "binding_verified": true,
+                    "enabled": true,
+                    "wecom_phone": "13067238489",
+                    "wecom_name": "小文",
+                    "available": true,
+                    "unavailable_reason": ""
+                  }
+                ],
+                "available": true,
+                "unavailable_reason": "",
+                "last_seen_at": "2026-11-05T06:22:19.365Z",
+                "adb_last_seen_at": "2026-11-05T06:22:19.365Z"
+              },
+              {
+                "device_number": "203",
+                "device_name": "203号（未接入本地测试）",
+                "online": false,
+                "adb_online": false,
+                "agent_online": false,
+                "listed": true,
+                "busy": false,
+                "busy_reason": "",
+                "occupancy": null,
+                "accounts": [
+                  {
+                    "app_slot": "main",
+                    "binding_verified": true,
+                    "enabled": true,
+                    "wecom_phone": "18627591004",
+                    "wecom_name": "小珍",
+                    "available": false,
+                    "unavailable_reason": "adb_offline"
+                  }
+                ],
+                "available": false,
+                "unavailable_reason": "adb_offline",
+                "last_seen_at": null,
+                "adb_last_seen_at": null
+              },
+              {
+                "device_number": "204",
+                "device_name": "204号（未接入本地测试）",
+                "online": false,
+                "adb_online": false,
+                "agent_online": false,
+                "listed": true,
+                "busy": false,
+                "busy_reason": "",
+                "occupancy": null,
+                "accounts": [
+                  {
+                    "app_slot": "main",
+                    "binding_verified": true,
+                    "enabled": true,
+                    "wecom_phone": "18613985590",
+                    "wecom_name": "珍珍",
+                    "available": false,
+                    "unavailable_reason": "adb_offline"
+                  }
+                ],
+                "available": false,
+                "unavailable_reason": "adb_offline",
+                "last_seen_at": null,
+                "adb_last_seen_at": null
+              }
+            ],
+            "total": 5,
+            "updated_at": "2026-11-05T06:22:19.365Z",
+            "capacity": {
+              "limit": 2,
+              "active": 0,
+              "remaining": 2
+            }
+          },
+          "timestamp": 1793859739365,
+          "success": true,
+          "code": 200,
+          "message": "查询成功"
+        }
+      }
+    },
+    {
+      "check": "online-only excludes registry-only devices",
+      "request": {
+        "method": "POST",
+        "url": "http://192.168.10.119:8797/api/v1/lead/devices/query",
+        "body": {
+          "online_only": true,
+          "app_id": "PRi5GUYYuW",
+          "timestamp": 1793859739366,
+          "nonce": "0b084e360506779d04be9c1c",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "http_status": 200,
+        "body": {
+          "result": {
+            "devices": [
+              {
+                "device_number": "200",
+                "device_name": "200号本地测试手机",
+                "online": true,
+                "adb_online": true,
+                "agent_online": true,
+                "listed": true,
+                "busy": false,
+                "busy_reason": "",
+                "occupancy": null,
+                "accounts": [
+                  {
+                    "app_slot": "main",
+                    "binding_verified": true,
+                    "enabled": true,
+                    "wecom_phone": "17508437040",
+                    "wecom_name": "小文",
+                    "available": true,
+                    "unavailable_reason": ""
+                  }
+                ],
+                "available": true,
+                "unavailable_reason": "",
+                "last_seen_at": "2026-11-05T06:22:19.426Z",
+                "adb_last_seen_at": "2026-11-05T06:22:19.426Z"
+              },
+              {
+                "device_number": "202",
+                "device_name": "202号本地测试手机",
+                "online": true,
+                "adb_online": true,
+                "agent_online": true,
+                "listed": true,
+                "busy": false,
+                "busy_reason": "",
+                "occupancy": null,
+                "accounts": [
+                  {
+                    "app_slot": "main",
+                    "binding_verified": true,
+                    "enabled": true,
+                    "wecom_phone": "13067238489",
+                    "wecom_name": "小文",
+                    "available": true,
+                    "unavailable_reason": ""
+                  }
+                ],
+                "available": true,
+                "unavailable_reason": "",
+                "last_seen_at": "2026-11-05T06:22:19.426Z",
+                "adb_last_seen_at": "2026-11-05T06:22:19.426Z"
+              }
+            ],
+            "total": 2,
+            "updated_at": "2026-11-05T06:22:19.426Z",
+            "capacity": {
+              "limit": 2,
+              "active": 0,
+              "remaining": 2
+            }
+          },
+          "timestamp": 1793859739426,
+          "success": true,
+          "code": 200,
+          "message": "查询成功"
+        }
+      }
+    },
+    {
+      "check": "offline device cannot execute: 201",
+      "request": {
+        "method": "POST",
+        "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+        "body": {
+          "lead_id": 61120201,
+          "phone": "136****6441",
+          "wecom_phone": "17514026939",
+          "wecom_corp_id": "local_test_corp",
+          "wecom_userid": "local_test_member_201",
+          "app_id": "PRi5GUYYuW",
+          "timestamp": 1793859739426,
+          "nonce": "ed45091aeef5235ba19d1bd6",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "http_status": 200,
+        "body": {
+          "result": null,
+          "timestamp": 1793859739488,
+          "success": false,
+          "code": 2003,
+          "message": "指定成员的手机连接离线"
+        }
+      }
+    },
+    {
+      "check": "offline device cannot execute: 203",
+      "request": {
+        "method": "POST",
+        "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+        "body": {
+          "lead_id": 61120203,
+          "phone": "136****6441",
+          "wecom_phone": "18627591004",
+          "wecom_corp_id": "local_test_corp",
+          "wecom_userid": "local_test_member_203",
+          "app_id": "PRi5GUYYuW",
+          "timestamp": 1793859739488,
+          "nonce": "ad3389ed857aa19e98dc32b1",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "http_status": 200,
+        "body": {
+          "result": null,
+          "timestamp": 1793859739551,
+          "success": false,
+          "code": 2003,
+          "message": "指定成员的手机连接离线"
+        }
+      }
+    },
+    {
+      "check": "offline device cannot execute: 204",
+      "request": {
+        "method": "POST",
+        "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+        "body": {
+          "lead_id": 61120204,
+          "phone": "136****6441",
+          "wecom_phone": "18613985590",
+          "wecom_corp_id": "local_test_corp",
+          "wecom_userid": "local_test_member_204",
+          "app_id": "PRi5GUYYuW",
+          "timestamp": 1793859739552,
+          "nonce": "ef30a99553e5896d19b1d298",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "http_status": 200,
+        "body": {
+          "result": null,
+          "timestamp": 1793859739614,
+          "success": false,
+          "code": 2003,
+          "message": "指定成员的手机连接离线"
+        }
+      }
+    },
+    {
+      "check": "nickname stays out of dispatch fields",
+      "request": {
+        "method": "POST",
+        "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+        "body": {
+          "lead_id": 61120200,
+          "phone": "136****6441",
+          "wecom_name": "小文",
+          "wecom_phone": "17508437040",
+          "wecom_corp_id": "local_test_corp",
+          "wecom_userid": "local_test_member_200",
+          "app_id": "PRi5GUYYuW",
+          "timestamp": 1793859739615,
+          "nonce": "0bbf24a06046e853fa3868b6",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "http_status": 200,
+        "body": {
+          "result": null,
+          "timestamp": 1793859739625,
+          "success": false,
+          "code": 2003,
+          "message": "包含未约定的下发字段"
+        }
+      }
+    }
+  ],
+  "registeredAccounts": 5,
+  "physicalOnlineDevices": [
+    "200",
+    "202"
+  ],
+  "registryOnlyOffline": [
+    "201",
+    "203",
+    "204"
+  ],
+  "requestContractUnchanged": true,
+  "originalLeadsPreserved": 12,
+  "mode": "preview",
+  "newPhoneTasks": 0,
+  "productionTouched": false
+}

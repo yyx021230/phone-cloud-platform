@@ -1,0 +1,107 @@
+{
+  "at": "2026-11-04T03:04:09.305Z",
+  "job": {
+    "jobId": "51764154-492c-4670-a7e3-c93873efa1a6",
+    "status": "failed",
+    "mode": "preview",
+    "sendClaimed": false,
+    "result": {
+      "previewStatus": "blocked",
+      "previewCode": "invalid_preview_config",
+      "errorCode": "",
+      "sendStatus": "not_attempted",
+      "invitationSent": false,
+      "remarkSaveStatus": "unknown",
+      "diagnostic": {
+        "wecomExecution": {
+          "phase": "configuration",
+          "events": [
+            {
+              "step": 1,
+              "phase": "configuration",
+              "state": "begin",
+              "version": 1,
+              "elapsedMs": 0
+            },
+            {
+              "step": 2,
+              "phase": "configuration",
+              "state": "error",
+              "version": 1,
+              "elapsedMs": 0
+            }
+          ],
+          "version": 1,
+          "elapsedMs": 0,
+          "failurePhase": "configuration",
+          "cleanupConfirmed": null
+        }
+      }
+    }
+  },
+  "task": {
+    "taskId": "a96959f8-91d1-43cb-ae37-84650ae6bd04",
+    "status": "failed",
+    "previewOnly": true,
+    "result": {
+      "previewStatus": "blocked",
+      "previewCode": "invalid_preview_config",
+      "errorCode": "",
+      "sendStatus": "not_attempted",
+      "invitationSent": false,
+      "remarkSaveStatus": "unknown",
+      "diagnostic": {
+        "wecomExecution": {
+          "phase": "configuration",
+          "events": [
+            {
+              "step": 1,
+              "phase": "configuration",
+              "state": "begin",
+              "version": 1,
+              "elapsedMs": 0
+            },
+            {
+              "step": 2,
+              "phase": "configuration",
+              "state": "error",
+              "version": 1,
+              "elapsedMs": 0
+            }
+          ],
+          "version": 1,
+          "elapsedMs": 0,
+          "failurePhase": "configuration",
+          "cleanupConfirmed": null
+        }
+      }
+    }
+  },
+  "physical": {
+    "obligationId": "bca54f78-f4ac-4944-870f-2a5512e4071a",
+    "status": "cleanup_pending",
+    "phase": "awaiting_verification",
+    "hostRegistered": true,
+    "hostCount": 1,
+    "hostClosed": true,
+    "causalProtocol": "wecom-causal-v1",
+    "proofPresent": false
+  },
+  "originalLockStatus": "released",
+  "verificationTask": {
+    "taskId": "1984121a-055a-4108-9abc-5b2333929ff1",
+    "status": "failed",
+    "result": {
+      "errorCode": "wecom_cleanup_verify_timeout"
+    },
+    "events": [
+      {
+        "level": "info"
+      },
+      {
+        "level": "warn",
+        "message": "wecom_cleanup_verify_timeout"
+      }
+    ]
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "version": "wecom-xhs-joint-20261111-rc.1",
+  "status": "candidate_only",
+  "baseSourceCommit": "eae35000770da2d13458da746e2a99f2e82a49cf",
+  "xhsSourceCommit": "860512e47f020a1552c3c2e9e5b82fd64e987375",
+  "xhsLiveBaseOverlaySource": "xhs-daily-monitor-20261110-preflight.1",
+  "productionBaseVersion": "wecom-cps-20261110-platform-deployed.1",
+  "productionBaseActiveSha256": "6290918bcc8029695916be11a076ffa824f0b27dabe8e5e756b5f8b1e08b0dd9",
+  "productionBaseImage": "sha256:ad60e030143f0fdd8dcbdc9920186cdf2383b2271c038d028b80794e9991b073",
+  "cloud": {
+    "public/app.js": {
+      "before": "946d396cd2846d3a5e7d18e80d8bdfa685c2bb53fbdf95bef0182435cdba66f9",
+      "after": "33f930c2661395e90e9f5fa08f465b4f6415b57647e8ae5a14ca87cea7f98ea4"
+    },
+    "public/index.html": {
+      "before": "63bd54b052795277a8725d60934753c721daa4db93dc5f5c460338889fcd7b71",
+      "after": "d53d78e4e7900a656186848e4dcbd9769e95e42f4e77c1a3e8b49782c2ed1ca1"
+    },
+    "public/xhs-daily-admin.css": {
+      "before": null,
+      "after": "190f0afd65026fef45d6a42e323747879f0cea7807ba68fd22248a4ca72d493e"
+    },
+    "public/xhs-daily-admin.js": {
+      "before": null,
+      "after": "00eb4e016bfcc3986d4721081b88e16c159db57717e2299fc14fcd2c16beb0c7"
+    },
+    "server/index.mjs": {
+      "before": "e65c591b962056b5a03460c9b41fc127add40b5e42ba88355f9f6c6db3303754",
+      "after": "8ef05e6ab142fea4aef4137c3550243d0fb00b7a839d1bbc3ba63efd4f1ace60"
+    },
+    "server/xhs-batch/admin-history.mjs": {
+      "before": null,
+      "after": "2e7616650e2a66193b830c6f00a2d09c8f10563630dd1edf1e156003884621d8"
+    },
+    "server/wecom-preinput-recovery.mjs": {
+      "before": "c6ce123dc7e4e647e84f2101bc359221216b4f1b7ef25f5a2528214dceae6a71",
+      "after": "de5de848afa9e9e04ec13d6efc2614e019ec33345b4339b82c9a48130c0fbb2c"
+    }
+  },
+  "windows": {
+    "scripts/wecom_system_runtime.py": {
+      "before": "95e87ed27257eaea55f0be8e9c774cdaa020b2770777586719b782b80118316e",
+      "after": "1c609927302bc8bca9b82404665ab7679682b9f609d5ddd11baba7c7bb4b623c"
+    },
+    "scripts/wecom_qa_tcp_runtime.py": {
+      "requiredUnchanged": "4f9202e1dd14cab5775d5d22143844b85a854c61ab16ff0e2ee8dffb6d036a7a"
+    }
+  },
+  "preserveCloud": {
+    "server/wecom-cleanup-service.mjs": "26839ec25cbe47960e5dea136ef502cd43d1e6a54e4c3c536a397f8f1780b40d"
+  },
+  "xhsExistingNotifier": {
+    "name": "phone-cloud-platform-xhs-feishu-notifier",
+    "observedRunning": true,
+    "startedAtUtc": "2026-11-11T01:06:32.80135251Z",
+    "files": {
+      "server/xhs-batch/admin-history.mjs": "2e7616650e2a66193b830c6f00a2d09c8f10563630dd1edf1e156003884621d8",
+      "server/xhs-batch/feishu-login-worker.mjs": "ca7cb3153c9e027dbaf8c2e2845ac117e85dc763ee743e7d35e87e583c7f181b",
+      "server/xhs-batch/feishu-login-notifier.mjs": "d2784d3b2fa3de372af12090950c2d760cf9d62dab7a85d796c01a14b9f30991"
+    }
+  },
+  "tests": {
+    "jointXhsSuiteIsolatedPostgresPassed": 47,
+    "jointWecomCleanupPassed": 77,
+    "rootSyntaxPassed": true,
+    "d075RepositoryCheckPassed": true
+  },
+  "outstanding": [
+    "joint production switch",
+    "read-only physical proof for 200 and 202",
+    "both preview outcomes",
+    "real CPS dispatch and business callback"
+  ],
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b"
+}

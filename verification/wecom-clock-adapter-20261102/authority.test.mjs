@@ -1,0 +1,189 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createServer} from 'node:http';
+import {once} from 'node:events';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {spawn} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+import {openProductionAuthority,openFixtureAuthority,openFixtureReader} from './authority.mjs';
+import {createWecomCleanupObligation,recordWecomHosts} from '../../server/wecom-physical-cleanup.mjs';
+import {physicalHosts} from '../../windows-agent/src/wecom-cleanup-protocol.mjs';
+
+async function setup(t,options){
+  const a=await openFixtureAuthority(options),r=await openFixtureReader();
+  t.after(async()=>{await r.dispose();await a.dispose();});return{a,r};
+}
+async function closed(t,options){const state=await setup(t,options);await state.a.register(state.r);
+  await state.r.stop();await state.a.close(state.r);return state;}
+async function challenged(t,options){const state=await closed(t,options);await state.a.challenge(state.r);return state;}
+
+test('production factory rejects UI/env/profile/continuity instead of enabling fixtures',()=>{
+  for(const value of [undefined,{continuity:true},{scope:'fixture'},{platform:'windows',profile:{supported:true}}]){
+    assert.throws(()=>openProductionAuthority(value),/production_clock_unsupported/);
+  }
+});
+
+test('actual local OS probe cannot turn nominal clock observations into authority',async()=>{
+  const proc=spawn('python3',[fileURLToPath(new URL('./clock_probe.py',import.meta.url)),'--observe-only'],{
+    env:{PATH:process.env.PATH},stdio:['ignore','pipe','pipe']});
+  let data='';proc.stdout.on('data',chunk=>{data+=chunk;assert.ok(data.length<4096);});
+  const [code]=await once(proc,'close');assert.equal(code,0);
+  const value=JSON.parse(data);assert.equal(value.authoritySupported,false);assert.equal(value.nativeExecutionPermitted,false);
+  assert.match(value.reason,/uncharacterized|unsupported/);
+});
+
+test('local HTTP + actual child close + fsync journal qualifies fixture timing only',async t=>{
+  const dir=await fs.mkdtemp(path.join(os.tmpdir(),'wecom-clock-adapter-'));
+  t.after(()=>fs.rm(dir,{recursive:true,force:true}));
+  const filename=path.join(dir,'fixture-journal.jsonl');
+  const {a,r}=await setup(t,{persist:async row=>{const file=await fs.open(filename,'a');try{await file.write(JSON.stringify(row)+'\n');await file.sync();}finally{await file.close();}}});
+  const stored=new Map();
+  const server=createServer(async(req,res)=>{
+    try{
+      let value;
+      if(req.method!=='POST')throw Error('fixture_post_only');
+      if(req.url==='/register')value=await a.register(r);
+      else if(req.url==='/close'){await r.stop();value=await a.close(r);}
+      else if(req.url==='/challenge')value=await a.challenge(r);
+      else if(req.url==='/frame'){value=await a.frame(r);stored.set(value.id,value);}
+      else if(req.url==='/proof')value=await a.proof(r,[...stored.values()]);
+      else throw Error('fixture_route_denied');
+      res.setHeader('content-type','application/json');res.end(JSON.stringify(value));
+    }catch(error){res.statusCode=409;res.end(JSON.stringify({error:error.message}));}
+  });
+  server.listen(0,'127.0.0.1');await once(server,'listening');
+  t.after(async()=>{server.closeAllConnections();await new Promise(resolve=>server.close(resolve));});
+  const origin='http://127.0.0.1:'+server.address().port;
+  for(const route of ['/register','/close','/challenge','/frame','/frame','/proof']){
+    const response=await fetch(origin+route,{method:'POST',signal:AbortSignal.timeout(3000)});
+    assert.equal(response.status,200);const value=await response.json();
+    assert.equal(value.nativeExecutionPermitted,false);assert.equal(value.physicalCleanupVerified,false);
+    if(route==='/proof')assert.equal(value.timingWithinThreeSeconds,true);
+  }
+  const rows=(await fs.readFile(filename,'utf8')).trim().split('\n').map(JSON.parse);
+  assert.deepEqual(rows.map(row=>row.stage),['registered','closed','challenge','timing_proof']);
+  assert.ok(rows.every(row=>row.fixtureOnly===true));
+});
+
+test('registered is not closed until the actual owned child closes',async t=>{
+  const {a,r}=await setup(t);await a.register(r);
+  await assert.rejects(a.close(r),/actual_child_close_missing/);
+  await r.stop();await assert.rejects(a.challenge(r),/actual_child_close_missing/);
+});
+
+test('forged child, fake frames, reversed frames and repeated frames cannot qualify',async t=>{
+  const {a}=await setup(t);await assert.rejects(a.register({pid:1,closed:true}),/reader_not_current/);
+  for(const variant of ['forged','reversed','repeated']){
+    const {a,r}=await challenged(t),one=await a.frame(r),two=await a.frame(r);
+    const pair=variant==='forged'?[{...one},two]:variant==='reversed'?[two,one]:[one,one];
+    await assert.rejects(a.proof(r,pair),/proof_not_current/);
+  }
+});
+
+test('stale sample replay is rejected even with a fresh pipe request nonce',async t=>{
+  const {a,r}=await setup(t);await a.register(r);await a.replayFixtureSample();
+  await r.stop();await assert.rejects(a.close(r),/sample_sequence_changed/);
+  await assert.rejects(a.challenge(r),/sample_sequence_changed/);
+});
+
+const faults={nonce:/response_not_current/,'foreign-child':/foreign_child/,duplicate:/response_not_current/,
+  partial:/response_incomplete/,oversized:/response_oversized/,silent:/sample_timeout/,exit:/child_closed/,
+  malformed:/response_invalid/,'out-of-order':/sample_sequence_changed/,delayed:/sample_timeout/};
+for(const type of ['null','array','bool','number','string','missing'])faults['json-'+type]=/response_invalid/;
+for(const [fault,pattern] of Object.entries(faults)){
+  test('child pipe rejects '+fault+' without replacing child or rearming',async t=>{
+    const {a,r}=await setup(t);await a.faultFixture(fault);
+    let original;await assert.rejects(a.register(r),error=>{original=error;return pattern.test(error.message);});
+    if(fault==='delayed')await new Promise(resolve=>setTimeout(resolve,350));
+    await assert.rejects(a.register(r),error=>error===original);
+  });
+}
+
+test('unknown registration cannot get a fresh epoch by moving the same reader to a new authority',async t=>{
+  const {a,r}=await setup(t,{persist:async()=>{throw Error('fixture_failed');}});
+  await assert.rejects(a.register(r),/persistence_unknown/);
+  const other=await openFixtureAuthority();t.after(()=>other.dispose());
+  await assert.rejects(other.register(r),/reader_not_current/);
+});
+
+test('concurrent action during journal wait poisons both attempts with the first error',async t=>{
+  let entered,release;
+  const started=new Promise(resolve=>{entered=resolve;}),waiting=new Promise(resolve=>{release=resolve;});
+  const {a,r}=await setup(t,{persist:async()=>{entered();await waiting;}});
+  const first=a.register(r);await started;
+  let original;await assert.rejects(a.register(r),error=>{original=error;return /concurrent_action/.test(error.message);});
+  release();await assert.rejects(first,error=>error===original);
+});
+
+test('successful fixture timing result consumes its challenge exactly once',async t=>{
+  const {a,r}=await challenged(t),pair=[await a.frame(r),await a.frame(r)];
+  const value=await a.proof(r,pair);assert.equal(value.timingWithinThreeSeconds,true);
+  assert.equal(value.nativeExecutionPermitted,false);
+  await assert.rejects(a.proof(r,pair),/proof_not_current/);
+  await assert.rejects(a.challenge(r),/proof_not_current/);
+});
+
+test('persistence failure keeps the first cause and cannot re-register the same child',async t=>{
+  const cause=Error('fixture_disk_failed');const {a,r}=await setup(t,{persist:async()=>{throw cause;}});
+  let original;await assert.rejects(a.register(r),error=>{original=error;return error.cause===cause;});
+  await assert.rejects(a.register(r),error=>error===original);
+});
+
+test('actual local filesystem ENOENT prevents registration and preserves durable failure cause',async t=>{
+  const dir=await fs.mkdtemp(path.join(os.tmpdir(),'wecom-clock-failed-journal-'));
+  t.after(()=>fs.rm(dir,{recursive:true,force:true}));
+  const {a,r}=await setup(t,{persist:async()=>{await fs.open(path.join(dir,'absent','journal'),'a');}});
+  await assert.rejects(a.register(r),error=>/persistence_unknown/.test(error.message)&&error.cause?.code==='ENOENT');
+  await assert.rejects(a.register(r),error=>error.cause?.code==='ENOENT');
+});
+
+for(const phase of ['registered','closed','challenge','timing_proof']){
+  test('fresh sample after '+phase+' persistence rejects delayed queued result',async t=>{
+    let a;({a}=await setup(t,{persist:async row=>{if(row.stage===phase)await a.advanceFixture(600_000n);}}));
+    const r=await openFixtureReader();t.after(()=>r.dispose());
+    if(phase==='registered'){await assert.rejects(a.register(r),/monitor_gap_unknown/);return;}
+    await a.register(r);await r.stop();
+    if(phase==='closed'){await assert.rejects(a.close(r),/monitor_gap_unknown/);return;}
+    await a.close(r);
+    if(phase==='challenge'){await assert.rejects(a.challenge(r),/monitor_gap_unknown/);return;}
+    await a.challenge(r);const frames=[await a.frame(r),await a.frame(r)];
+    await assert.rejects(a.proof(r,frames),/monitor_gap_unknown/);
+    await assert.rejects(a.proof(r,frames),/monitor_gap_unknown/);
+  });
+}
+
+test('OS pause, local wall jump and missing monitor cadence poison the same epoch',async t=>{
+  for(const change of [[400_000n,0n,0n],[1000n,1000n,1_000_000n],[600_000n,600_000n,0n]]){
+    const {a,r}=await challenged(t);await a.advanceFixture(...change);
+    await assert.rejects(a.frame(r),/os_pause_observed|local_wall_discontinuity|monitor_gap_unknown/);
+    await assert.rejects(a.challenge(r),/os_pause_observed|local_wall_discontinuity|monitor_gap_unknown/);
+  }
+});
+
+test('synthetic three-second window counts injected intervals without reissue',async t=>{
+  const {a,r}=await challenged(t);const first=await a.frame(r);
+  for(let i=0;i<7;i++){await a.advanceFixture(450_000n);await a.frame(r);}
+  const second=await a.frame(r);await assert.rejects(a.proof(r,[first,second]),/proof_expired/);
+  await assert.rejects(a.challenge(r),/proof_expired/);
+});
+
+test('real Agent schema accepts matching token before server v1 rejects synthetic 200ms skew',async t=>{
+  const r=await openFixtureReader();t.after(()=>r.dispose());
+  const device={deviceId:'fixture-device',adb:{agentId:'fixture-agent',serial:'fixture-serial'}};
+  const task={type:'wecom_customer_preview',taskId:'fixture-task',status:'running',deviceId:device.deviceId,
+    agentId:device.adb.agentId,adbSerial:device.adb.serial,payload:{automationJobId:'fixture-job'}};
+  const job={jobId:'fixture-job',deviceId:device.deviceId,wecomAndroidUser:0,wecomAppSlot:'main'};
+  const now=1_790_000_000_000;
+  const bits=new DataView(new ArrayBuffer(8));bits.setFloat64(0,(now-200)/1000);
+  const word=bits.getBigUint64(0),fraction=(word&((1n<<52n)-1n)).toString(16).padStart(13,'0');
+  const exponent=Number((word>>52n)&2047n)-1023;
+  const creationToken=`0x1.${fraction}p+${exponent}`;
+  const lock=createWecomCleanupObligation(task,job,device,{now});
+  const body={binding:lock.physicalCleanup.binding,hosts:[{role:'reader',pid:r.pid,
+    createdAt:new Date(now-200).toISOString(),creationToken,machineId:'a'.repeat(64)}]};
+  assert.deepEqual(physicalHosts(body.hosts),body.hosts);
+  assert.throws(()=>recordWecomHosts(lock,body,task,now+100),/host_unconfirmed/);
+  assert.equal(lock.physicalCleanup.phase,'awaiting_host');
+});

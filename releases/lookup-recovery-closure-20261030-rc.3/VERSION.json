@@ -1,0 +1,11 @@
+{
+  "candidate": "lookup-recovery-closure-20261030-rc.3",
+  "branch": "codex/lookup-recovery-closure-20261030",
+  "baseCommit": "c390e317cf4fc886ef49ab9224f91fc0e96bb8d4",
+  "previousCodeCandidate": "lookup-recovery-closure-20261030-rc.2",
+  "productionBaseline": "platform-integration-20261029-deployed.1",
+  "productionSource": "3a266d71ba861f8e81d6ec3a173d7efc12d5b245",
+  "productionImagePrefix": "a4db69c8",
+  "deployed": false,
+  "pushed": false
+}

@@ -1,0 +1,21 @@
+{
+  "fullCommand": [
+    "git",
+    "diff",
+    "--cached",
+    "--check"
+  ],
+  "fullExitCode": 2,
+  "fullOutput": "verification/wecom-v2-original-lock-observed-20261103/INITDB.txt:24: new blank line at EOF.\n",
+  "narrowCommand": [
+    "git",
+    "diff",
+    "--cached",
+    "--check",
+    "--",
+    ".",
+    ":(exclude)verification/wecom-v2-original-lock-observed-20261103/INITDB.txt"
+  ],
+  "narrowExitCode": 0,
+  "rawNotTrimmed": true
+}

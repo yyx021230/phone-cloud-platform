@@ -1,0 +1,24 @@
+{
+  "baseCommit": "4efde08549e9f3d4232a049f7d5eabd7466c753e",
+  "realPostgresVerified": false,
+  "existing14ProductSourcesUnchanged": true,
+  "files": {
+    "server/wecom-cleanup-v2-postgres.mjs": "573e7363976db447d7950c6a856a16ef910fa747d9a2f0755e995a0d1aa7b143",
+    "server/wecom-cleanup-v2-postgres.test.mjs": "a7108c5ab7f4d37839673e0f6038efe0f5a92d0e3af481db521bfcee05149852",
+    "docs/PROJECT_DEVELOPMENT.md": "69cc5c6905ec3b7e2396fca0b6c360f45c3f455884363eebc7cc486698c7b8a6",
+    "verification/wecom-v2-cas-m2-context-20261102/M1_REGRESSION_OUTPUT.txt": "27ea518bb8691d405ba5230a50b9bd7fcfd75e8b841169c208a395ddec6c7a1a",
+    "verification/wecom-v2-cas-m2-context-20261102/M2_UNIT_OUTPUT.txt": "90478055e39bba9bc5963a1d10df820a6394593de7d2dc4e69221734bfb83452",
+    "verification/wecom-v2-cas-m2-context-20261102/RED_OUTPUT.txt": "45c132aa74eb8e2a26a20353366644117d238761f77070d67f6ee6494f588ac9",
+    "verification/wecom-v2-cas-m2-context-20261102/RED_RECEIPT.json": "2475da1f5cac295cb5f251608729dea3507835825ee1e87dad09a7e84da6710c",
+    "verification/wecom-v2-cas-m2-context-20261102/ROOT_FIXED_RC1/OUTPUT.txt": "9a06594f6bdd5fc29294ae8a9f8d140ec7bc47aa351fd45c748800eaf3c56d0b",
+    "verification/wecom-v2-cas-m2-context-20261102/ROOT_FIXED_RC1/server/counterexamples.mjs.txt": "55f64b268ba34badbc11f011645ea046550dffa3840e077389b1a587a2641016",
+    "verification/wecom-v2-cas-m2-context-20261102/ROOT_FIXED_RC1/server/wecom-cleanup-v2-host.mjs.txt": "6caf31175e62002476f37d0785ef3b5d3c3de87581cd117320ce6695c98be397",
+    "verification/wecom-v2-cas-m2-context-20261102/ROOT_FIXED_RC1/server/wecom-cleanup-v2-postgres.mjs.txt": "48a99b1bdfada76c32e57df91dff8844e99f44acab62bab315957bb155ded34b",
+    "verification/wecom-v2-cas-m2-context-20261102/ROOT_FIXED_RC1/verification/wecom-v2-cas-m2-20261102/fixture.mjs.txt": "ac6e39ce28dd4a9625e9f03e3d648022768c7e10096ef91e9109df2e31681965",
+    "verification/wecom-v2-cas-m2-context-20261102/TASK.md": "6f1e18bda6bbc1512e0bfcd32806766b9056ca1798003771746825b46f5ac89c",
+    "verification/wecom-v2-cas-m2-context-20261102/TEST_RECEIPT.json": "d7ace7715cde06e6d4a6486ef9d0b2cfc9a2ecba02a3ac8c6f59082b034a776b",
+    "verification/wecom-v2-cas-m2-context-20261102/V1_REGRESSION_OUTPUT.txt": "c563a7a599abb24dc60f82ac32d1a0a96123e715614aa72b11cac1c8fa097eae",
+    "verification/wecom-v2-cas-m2-context-20261102/wecom-cleanup-v2-postgres.mjs.red.txt": "48a99b1bdfada76c32e57df91dff8844e99f44acab62bab315957bb155ded34b",
+    "verification/wecom-v2-cas-m2-context-20261102/wecom-cleanup-v2-postgres.test.mjs.red.txt": "3bc320502eb5c0973993f54705ffde169b45b553c7a09d9cf64453464dd31468"
+  }
+}

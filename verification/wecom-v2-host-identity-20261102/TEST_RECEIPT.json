@@ -1,0 +1,38 @@
+{
+  "localTime": "2026-11-02T19:43:15.009564+08:00",
+  "baseline": "2bae48b706b4d2742c74a6c1624605e2c9908fab",
+  "node": "v25.9.0",
+  "commands": [
+    {
+      "label": "M1",
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "server/wecom-cleanup-v2-host.test.mjs"
+      ],
+      "exitCode": 0,
+      "output": "verification/wecom-v2-host-identity-20261102/M1_OUTPUT.txt",
+      "outputSha256": "6f8f408a544a14f464a3578fde2b0ecdc55ff0f02a8e4e20c09f9bd6714e1f8f"
+    },
+    {
+      "label": "V1_REGRESSION",
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "server/wecom-physical-cleanup.test.mjs",
+        "windows-agent/src/wecom-cleanup-protocol.test.mjs",
+        "windows-agent/src/wecom-physical-readiness.test.mjs"
+      ],
+      "exitCode": 0,
+      "output": "verification/wecom-v2-host-identity-20261102/V1_REGRESSION_OUTPUT.txt",
+      "outputSha256": "d7b93d8399bbce1face1797df0e07dc9afe42d3edd1b7f40498f45c4b64625eb"
+    }
+  ],
+  "sourceSha256": {
+    "server/wecom-cleanup-v2-host.mjs": "c409a9e660e6098e9ef72ba70c659d23047a0b93f7c7007bedc8a79539102f70",
+    "server/wecom-cleanup-v2-host.test.mjs": "f356448724d42dd721b27d4b11638372ae6ca215ce35ac559b729e02decfcb74"
+  },
+  "scope": "same-host strict schema local only; no storage/OS authority/runtime wiring/native acceptance"
+}

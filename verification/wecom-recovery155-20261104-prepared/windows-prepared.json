@@ -1,0 +1,11 @@
+{
+  "status": "staged_not_loaded",
+  "stage": "D:\\PhoneCloud\\staging\\wecom-recovery155-20261104-rc.1",
+  "pythonMockTestsPassed": true,
+  "pythonMockTestCount": 12,
+  "nodeSyntaxChecked": 6,
+  "nativeSystemRecoveryExecuted": false,
+  "agentReloaded": false,
+  "payloadSha256": "1a7b45fbc71ddecee35d3d1b8e81a7404e770fe5c9608661f80924e608c3401b",
+  "verificationSha256": "f9e781dea4ef4bcfaa5fb212711a7e8db8ca98b5696b59f9a7571276fd4c93bd"
+}

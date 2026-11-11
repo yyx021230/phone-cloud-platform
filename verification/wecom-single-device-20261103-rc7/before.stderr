@@ -1,0 +1,23 @@
+E.
+======================================================================
+ERROR: test_slow_single_wake_and_dismiss_complete_without_repeating_actions (test_wecom_wake_budget.WakeBudgetTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_wake_budget.py", line 27, in test_slow_single_wake_and_dismiss_complete_without_repeating_actions
+    result,commands=self.run_wake()
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/test_wecom_wake_budget.py", line 23, in run_wake
+    result=host.prepare_screen_before_poco()
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/wecom_platform_preview.py", line 65, in observed
+    return fn(*args, **kwargs)
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/wecom_platform_preview.py", line 396, in prepare_screen_before_poco
+    startup.confirm_awake(lambda:observe_startup_state('power_after',shell('dumpsys power')),
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/wecom_startup_guards.py", line 129, in confirm_awake
+    check_budget()
+  File "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/scripts/wecom_platform_preview.py", line 151, in budget
+    if time.monotonic() >= limit: raise SafeStop(code)
+wecom_platform_preview.SafeStop: screen_prepare_timeout
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.002s
+
+FAILED (errors=1)

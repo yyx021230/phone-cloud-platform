@@ -1,0 +1,56 @@
+{
+  "status": "local_credentials_switched_and_verified_preview_only",
+  "branch": "codex/wecom-search200-20261105",
+  "baselineHead": "f03f607e71617de7924c37e06a66c006409e1e99",
+  "appId": "PRi5GUYYuW",
+  "oldAppId": "cps_local_dev_20261105",
+  "baseUrl": "http://192.168.10.119:8797",
+  "oldCredentialsRejected": true,
+  "mode": "preview",
+  "runtimeComponent": "local Mac QA API only; no Windows Agent or production restart",
+  "newLocalApiPid": 44710,
+  "newLocalApiCreated": 1793858193.609274,
+  "adbInstanceUnchanged": {
+    "pid": 5057,
+    "created": 1793843355.335422
+  },
+  "preserved": {
+    "leads": 12,
+    "recipients": 2,
+    "limits": 0,
+    "executionMode": "preview",
+    "originalLeadAndRecipientObjectsEqual": true
+  },
+  "historyMigration": "none; original app identity, request IDs and fingerprints retained",
+  "legacyIdsRejectedAcrossAppSwitch": true,
+  "reservedIdsUnused": [
+    61120200,
+    61120202
+  ],
+  "HTTPChecksPassed": 8,
+  "embeddedClientChecksPassed": 2,
+  "newPhoneTasks": 0,
+  "realInvitations": 0,
+  "productionTouched": false,
+  "handoffFile": "/Users/yyx/.codex/private/wecom-cps-credential-switch-20261105/CPS企微本地联调交接单-20261105-新凭据.md",
+  "handoffFileSha256": "a6f53e37e073d8931a57fa663fc4f53e6ce20e374a412f7a1f4b467d3892ccc2",
+  "handoffFileMode": "0o600",
+  "privateDirectoryMode": "0o700",
+  "credentials": "Only restricted private configuration and requested handoff; no secret in tracked material or command arguments. Old artifacts retained as history.",
+  "CPSReceiver": "not provided; no actual callback sent",
+  "rollback": "Drain only local QA API, restore backed-up private config and harness, keep the current ledger; no old ledger restore, owner deletion, Agent/ADB or production operation.",
+  "artifactSha256": {
+    "switch-prestart.json": "fb38741709e88b124e8ea9a32bc8bdb9fdbfcb3e9c7dad1fdc315c08907f1b27",
+    "validation.redacted.json": "cb2aef1224e0e3b60b40dbcff240a11e268c00a083c4b0bf55efadbcbfcd0f9f",
+    "local-history-guard.patch": "712952442420734f1754bfbd3edb9a58e147b70f188ce7a1be2ded02bb6c9953",
+    "embedded-client-validation.redacted.json": "d9f324e01ee3b4889c30aed4103a8795688fdc2c164b0299d51118517732a714"
+  },
+  "sourceFilesSha256": {
+    "docs/PROJECT_DEVELOPMENT.md": "95a5dfc4e779578801f78e30299c439ee229545066070f716ed07fa4621a7092",
+    "docs/CPS本地开发联调.md": "898295227b207c0ab46ff5b84510353a70d4e6a248463efff6cc99363d427441"
+  },
+  "privateHarnessSha256": {
+    "before": "9a45e057c771e6f41ac2653558d198e0e4b279fd791b9bbbc5426e9a1c62080e",
+    "after": "89b8f9581bec06787496c05878a8091c02583e2de7f04032f54ecdf2163567a8"
+  }
+}

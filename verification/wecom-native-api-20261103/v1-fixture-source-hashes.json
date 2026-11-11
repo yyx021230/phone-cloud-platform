@@ -1,0 +1,14 @@
+{
+  "productionRef": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "moduleHashes": {
+    "windows-agent/src/wecom-preview-task.mjs": "2d5fb3354edde14d2673e7c25bc7e9e25e60e8ba3d1e1e76358b675e20847e24",
+    "windows-agent/src/wecom-cleanup-protocol.mjs": "918dfee2f090e94ad946266d2292fe73d0422a4485e87cdd04cfa522d5dbb9be",
+    "windows-agent/src/wecom-diagnostics.mjs": "a134b57bfcad0c5aa510049b605207a6b68c1d2aee05f094f71fc4471c3e213c",
+    "server/wecom-cleanup-fixture.mjs": "dba8629992d02cd08fd36b7543ac98ec59a8ee480f6b5bf882119b75e5ffb910",
+    "server/wecom-physical-cleanup.mjs": "7fea00c14fcd6df20a30b5492c4c52c244b6dec26bbc5169212d0fcd2e15a07b"
+  },
+  "testHashes": {
+    "verification/wecom-api-native-20261102/clock-domain.test.mjs": "433a0efcb6706ded31492393ef3cd0689a816b8d5f55b5e0e6325f819f28f068",
+    "verification/wecom-api-native-20261102/preview-client.test.mjs": "0b702ca1014a1945320b729be8277d71a4ef5cf8ebb503c04d975e8575c69f12"
+  }
+}

@@ -1,0 +1,361 @@
+[
+  {
+    "attempt": 1,
+    "at": "2026-11-02T01:10:52.093Z",
+    "sourceStage": "baseline-rc4",
+    "background149Enabled": false,
+    "ready": false,
+    "businessSubmitted": 0,
+    "externalStopped": true,
+    "tasks": [
+      {
+        "device": "152",
+        "purpose": "account_preparation",
+        "startedAt": "2026-11-02T01:10:52.929Z",
+        "endedAt": "2026-11-02T01:12:13.847Z",
+        "status": "succeeded",
+        "execution": {
+          "version": 1,
+          "scope": "agent_command",
+          "durationMs": 80909,
+          "readerRebuildAttempts": 0,
+          "appRestartAttempts": 0,
+          "resultResumeAttempts": 0
+        }
+      },
+      {
+        "device": "149",
+        "purpose": "account_preparation",
+        "startedAt": "2026-11-02T01:10:53.435Z",
+        "endedAt": "2026-11-02T01:12:38.700Z",
+        "status": "succeeded",
+        "execution": {
+          "version": 1,
+          "scope": "agent_command",
+          "durationMs": 105258,
+          "readerRebuildAttempts": 0,
+          "appRestartAttempts": 0,
+          "resultResumeAttempts": 0
+        }
+      },
+      {
+        "device": "152",
+        "purpose": "probe",
+        "startedAt": "2026-11-02T01:12:14.581Z",
+        "endedAt": "2026-11-02T01:13:10.113Z",
+        "status": "failed",
+        "code": "alipay_human_verification_required",
+        "execution": {
+          "version": 1,
+          "scope": "agent_command",
+          "durationMs": 55502,
+          "readerRebuildAttempts": 0,
+          "appRestartAttempts": 0,
+          "resultResumeAttempts": 0
+        }
+      },
+      {
+        "device": "149",
+        "purpose": "probe",
+        "startedAt": "2026-11-02T01:12:39.290Z",
+        "endedAt": "2026-11-02T01:16:22.164Z",
+        "status": "failed",
+        "code": "alipay_lookup_failed",
+        "execution": {
+          "version": 1,
+          "scope": "agent_command",
+          "durationMs": 222837,
+          "readerRebuildAttempts": 4,
+          "appRestartAttempts": 1,
+          "resultResumeAttempts": 0
+        }
+      },
+      {
+        "device": "152",
+        "purpose": "cleanup",
+        "startedAt": "2026-11-02T01:16:22.698Z",
+        "endedAt": "2026-11-02T01:16:31.266Z",
+        "status": "succeeded",
+        "execution": {
+          "version": 1,
+          "scope": "agent_command",
+          "durationMs": 8535,
+          "readerRebuildAttempts": 0,
+          "appRestartAttempts": 0,
+          "resultResumeAttempts": 0
+        }
+      },
+      {
+        "device": "149",
+        "purpose": "cleanup",
+        "startedAt": "2026-11-02T01:16:23.217Z",
+        "endedAt": "2026-11-02T01:16:32.219Z",
+        "status": "succeeded",
+        "execution": {
+          "version": 1,
+          "scope": "agent_command",
+          "durationMs": 8957,
+          "readerRebuildAttempts": 0,
+          "appRestartAttempts": 0,
+          "resultResumeAttempts": 0
+        }
+      }
+    ],
+    "finalCleanup": [
+      {
+        "cleanupConfirmed": true,
+        "workerRemaining": false
+      },
+      {
+        "cleanupConfirmed": true,
+        "workerRemaining": false
+      }
+    ],
+    "hasBusinessResult": false
+  },
+  {
+    "attempt": 2,
+    "at": "2026-11-02T01:23:41.921Z",
+    "sourceStage": "lookup-reader-root-20261102-rc2",
+    "background149Enabled": false,
+    "ready": false,
+    "businessSubmitted": 0,
+    "externalStopped": true,
+    "tasks": [
+      {
+        "device": "152",
+        "purpose": "account_preparation",
+        "startedAt": "2026-11-02T01:23:42.757Z",
+        "endedAt": "2026-11-02T01:25:08.105Z",
+        "status": "succeeded",
+        "execution": {
+          "version": 1,
+          "scope": "agent_command",
+          "durationMs": 85339,
+          "readerRebuildAttempts": 0,
+          "appRestartAttempts": 0,
+          "resultResumeAttempts": 0
+        }
+      },
+      {
+        "device": "149",
+        "purpose": "account_preparation",
+        "startedAt": "2026-11-02T01:23:43.261Z",
+        "endedAt": "2026-11-02T01:25:14.916Z",
+        "status": "succeeded",
+        "execution": {
+          "version": 1,
+          "scope": "agent_command",
+          "durationMs": 91648,
+          "readerRebuildAttempts": 0,
+          "appRestartAttempts": 0,
+          "resultResumeAttempts": 0
+        }
+      },
+      {
+        "device": "152",
+        "purpose": "probe",
+        "startedAt": "2026-11-02T01:25:08.209Z",
+        "endedAt": "2026-11-02T01:27:35.512Z",
+        "status": "failed",
+        "code": "alipay_lookup_failed",
+        "execution": {
+          "version": 1,
+          "scope": "agent_command",
+          "durationMs": 147269,
+          "readerRebuildAttempts": 2,
+          "appRestartAttempts": 0,
+          "resultResumeAttempts": 1
+        }
+      },
+      {
+        "device": "149",
+        "purpose": "probe",
+        "startedAt": "2026-11-02T01:25:15.280Z",
+        "endedAt": "2026-11-02T01:28:12.930Z",
+        "status": "failed",
+        "code": "alipay_lookup_failed",
+        "execution": {
+          "version": 1,
+          "scope": "agent_command",
+          "durationMs": 177623,
+          "readerRebuildAttempts": 3,
+          "appRestartAttempts": 1,
+          "resultResumeAttempts": 0
+        }
+      },
+      {
+        "device": "152",
+        "purpose": "cleanup",
+        "startedAt": "2026-11-02T01:27:35.797Z",
+        "endedAt": "2026-11-02T01:27:50.104Z",
+        "status": "failed",
+        "code": "lookup_reader_cleanup_unconfirmed",
+        "execution": {
+          "version": 1,
+          "scope": "agent_command",
+          "durationMs": 14292,
+          "readerRebuildAttempts": 0,
+          "appRestartAttempts": 0,
+          "resultResumeAttempts": 0
+        }
+      },
+      {
+        "device": "149",
+        "purpose": "cleanup",
+        "startedAt": "2026-11-02T01:28:13.475Z",
+        "endedAt": "2026-11-02T01:28:21.264Z",
+        "status": "succeeded",
+        "execution": {
+          "version": 1,
+          "scope": "agent_command",
+          "durationMs": 7762,
+          "readerRebuildAttempts": 0,
+          "appRestartAttempts": 0,
+          "resultResumeAttempts": 0
+        }
+      },
+      {
+        "device": "152",
+        "purpose": "cleanup",
+        "startedAt": "2026-11-02T01:28:20.539Z",
+        "endedAt": "2026-11-02T01:28:29.142Z",
+        "status": "succeeded",
+        "execution": {
+          "version": 1,
+          "scope": "agent_command",
+          "durationMs": 8570,
+          "readerRebuildAttempts": 0,
+          "appRestartAttempts": 0,
+          "resultResumeAttempts": 0
+        }
+      }
+    ],
+    "finalCleanup": [
+      {
+        "cleanupConfirmed": true,
+        "workerRemaining": false
+      },
+      {
+        "cleanupConfirmed": true,
+        "workerRemaining": false
+      }
+    ],
+    "hasBusinessResult": false
+  },
+  {
+    "attempt": 3,
+    "at": "2026-11-02T01:35:03.093Z",
+    "sourceStage": "lookup-reader-root-20261102-rc2",
+    "background149Enabled": true,
+    "ready": false,
+    "businessSubmitted": 0,
+    "externalStopped": true,
+    "tasks": [
+      {
+        "device": "152",
+        "purpose": "account_preparation",
+        "startedAt": "2026-11-02T01:35:03.982Z",
+        "endedAt": "2026-11-02T01:36:22.900Z",
+        "status": "succeeded",
+        "execution": {
+          "version": 1,
+          "scope": "agent_command",
+          "durationMs": 78906,
+          "readerRebuildAttempts": 0,
+          "appRestartAttempts": 0,
+          "resultResumeAttempts": 0
+        }
+      },
+      {
+        "device": "149",
+        "purpose": "account_preparation",
+        "startedAt": "2026-11-02T01:35:04.487Z",
+        "endedAt": "2026-11-02T01:36:29.926Z",
+        "status": "succeeded",
+        "execution": {
+          "version": 1,
+          "scope": "agent_command",
+          "durationMs": 85430,
+          "readerRebuildAttempts": 0,
+          "appRestartAttempts": 0,
+          "resultResumeAttempts": 0
+        }
+      },
+      {
+        "device": "152",
+        "purpose": "probe",
+        "startedAt": "2026-11-02T01:36:23.142Z",
+        "endedAt": "2026-11-02T01:38:04.724Z",
+        "status": "failed",
+        "code": "alipay_lookup_failed",
+        "execution": {
+          "version": 1,
+          "scope": "agent_command",
+          "durationMs": 101556,
+          "readerRebuildAttempts": 1,
+          "appRestartAttempts": 0,
+          "resultResumeAttempts": 0
+        }
+      },
+      {
+        "device": "149",
+        "purpose": "probe",
+        "startedAt": "2026-11-02T01:36:30.289Z",
+        "endedAt": "2026-11-02T01:37:22.884Z",
+        "status": "failed",
+        "code": "alipay_human_verification_required",
+        "execution": {
+          "version": 1,
+          "scope": "agent_command",
+          "durationMs": 52534,
+          "readerRebuildAttempts": 0,
+          "appRestartAttempts": 0,
+          "resultResumeAttempts": 0
+        }
+      },
+      {
+        "device": "152",
+        "purpose": "cleanup",
+        "startedAt": "2026-11-02T01:38:04.908Z",
+        "endedAt": "2026-11-02T01:38:24.262Z",
+        "status": "failed",
+        "code": "lookup_reader_cleanup_unconfirmed",
+        "execution": {
+          "version": 1,
+          "scope": "agent_command",
+          "durationMs": 19335,
+          "readerRebuildAttempts": 0,
+          "appRestartAttempts": 0,
+          "resultResumeAttempts": 0
+        }
+      },
+      {
+        "device": "149",
+        "purpose": "cleanup",
+        "startedAt": "2026-11-02T01:38:05.428Z",
+        "endedAt": "2026-11-02T01:38:23.143Z",
+        "status": "succeeded",
+        "execution": {
+          "version": 1,
+          "scope": "agent_command",
+          "durationMs": 17683,
+          "readerRebuildAttempts": 0,
+          "appRestartAttempts": 0,
+          "resultResumeAttempts": 0
+        }
+      }
+    ],
+    "finalCleanup": [
+      {
+        "cleanupConfirmed": false,
+        "workerRemaining": false
+      },
+      {
+        "cleanupConfirmed": true,
+        "workerRemaining": false
+      }
+    ],
+    "hasBusinessResult": false
+  }
+]

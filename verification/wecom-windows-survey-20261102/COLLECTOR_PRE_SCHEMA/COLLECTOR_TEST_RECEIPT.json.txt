@@ -1,0 +1,12 @@
+{
+  "scope": "offline classification only; no Windows/SSH",
+  "tests": 8,
+  "failures": 0,
+  "errors": 0,
+  "nativeAcceptance": false,
+  "sha256": {
+    "verification/wecom-windows-survey-20261102/collect_clock_supplement.py": "a9742a8426bb76470a99d91e8fbe7619c7c523c3d5645fc35222040ee360822e",
+    "verification/wecom-windows-survey-20261102/test_collect_classification.py": "6a725b81651d6c5734c281ad40ccdaac64326d41356e05b19495a0013c5e504a",
+    "verification/wecom-windows-survey-20261102/COLLECTOR_TEST_OUTPUT.txt": "c75bd368578051c139d4f7b1bfb89e6e8cbf2aefd30d253da57e7f088728470d"
+  }
+}

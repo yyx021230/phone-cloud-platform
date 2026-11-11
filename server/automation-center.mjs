@@ -1,3 +1,4 @@
+import {lookupLegacyResultMissing,lookupFailureDomain} from './lookup-failure-domain.mjs';
 const ACTIVE_STATUSES = new Set(["queued", "running", "stalled"]);
 const LOOKUP_RESTRICTION_REASONS = new Set([
   "access_denied",
@@ -12,7 +13,7 @@ export function isActiveAutomationStatus(status) {
 
 export function normalizeAutomationKind(kind) {
   const value = String(kind || "").trim();
-  if (["xhs_publish", "xhs_data_collect", "kuaishou_lead", "alipay_name_start", "alipay_name_query", "alipay_name_switch", "alipay_name_stop"].includes(value)) return value;
+  if (["wecom_customer_preview", "xhs_publish", "xhs_data_collect", "kuaishou_lead", "alipay_name_start", "alipay_name_query", "alipay_name_switch", "alipay_name_stop"].includes(value)) return value;
   throw new TypeError("unsupported_automation_kind");
 }
 
@@ -68,6 +69,8 @@ export function lookupHumanRecoveryUnresolved(job = {}, status = "", options = {
     && options.limitReached !== true
     && (job.resumeAfterHumanVerification === true
       || lookupPageRecoveryExhausted(job)
+      || job.kind === "alipay_name_query" && lookupFailureDomain(job) === 'capacity'
+      || lookupLegacyResultMissing(job)
       || job.kind === "alipay_name_query" && (
         job.result?.errorCode === "alipay_lookup_result_unconfirmed"
         || /^local_lookup_result_unconfirmed:/.test(String(job.result?.diagnostic?.runnerReason || ""))
@@ -99,6 +102,7 @@ export function hasVerifiedAllSavedAccountsRestricted(diagnostic = {}) {
 }
 
 export function automationLockType(kind) {
+  if (kind === "wecom_customer_preview") return kind;
   if (String(kind || "") === "kuaishou_lead") return "kuaishou_lead";
   if (kind === "xhs_data_collect") return "xhs_data_collect";
   return String(kind || "").startsWith("alipay_name_") ? "alipay_name_lookup" : "xhs_publish";

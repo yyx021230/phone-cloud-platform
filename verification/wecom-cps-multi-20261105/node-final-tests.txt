@@ -1,0 +1,14 @@
+✔ two main accounts process multiple customers independently; retries never repeat execution (1189.461833ms)
+ℹ {"boundary":"synthetic phones/results and virtual time only","customers":12,"jobs":12,"burstCustomers":6,"callbackAttempts":12,"completed":11,"needsAttention":1,"blockedPhoneDidNotBlockOtherPhone":true,"realInvitations":0}
+✔ classifies root cause separately from unknown side effects without authorizing retries (1.014208ms)
+✔ validated transport cause reaches internal UI and integration result without raw diagnostics (1.073167ms)
+✔ active/safe pre-send tasks do not acquire error labels and unknown sends retain original status (0.116541ms)
+✔ element transport distinguishes rejected geometry from unknown click delivery without retry permission (0.065208ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1300.261875

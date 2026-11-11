@@ -1,0 +1,27 @@
+{
+  "sampledAt": "2026-10-30T04:09:51.1319599Z",
+  "agentPid": 22668,
+  "agentCreated": "2026-10-30T01:21:28.0335510Z",
+  "agentOwner": "NT AUTHORITY\\SYSTEM",
+  "adbPid": 8148,
+  "adbCreated": "2026-10-30T04:06:25.4916290Z",
+  "adbOwner": "NT AUTHORITY\\SYSTEM",
+  "adbPath": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+  "settings": {
+    "heartbeatIntervalSeconds": 30,
+    "maxConcurrentAdbTasks": 15,
+    "logDir": "D:\\PhoneCloud\\agent\\logs",
+    "taskPollIntervalSeconds": 0.5,
+    "deviceTaskConcurrency": 1,
+    "scanIntervalSeconds": 30,
+    "airtestMaxResidentWorkers": 12
+  },
+  "runtimeHashes": {
+    "src\\index.mjs": "c309d1f6dd0bda9530ec6ff8dccc874509aa7cd57e8ef6bdea77a64b7a1c5a67",
+    "scripts\\alipay_name_lookup.py": "8c60bb140a4e2bcf07ee29ccd85591b210f20365dc6638cd3f62451444fd4a63",
+    "scripts\\alipay_visual_result.py": "e5159fe17b3509fdd7accd997b3af03fc35071d5ae557181ed22f32fa140bd81",
+    "src\\lookup-page-recovery.mjs": "6ac3f752e52db13667b9f0d6a42380c4e3807bbe33c95777e823ef107d8f48b0",
+    "src\\lookup-reader-lifecycle.mjs": "d957d51ff0cba4bb1c504e979fb61eadf1fd4b7113c804882e62456210d70168",
+    "src\\lookup-reader-capacity-report.mjs": "feb2f97e05ad631f4ece7a6e49491d8204d3118b7bfaa6322094afcc10b33900"
+  }
+}

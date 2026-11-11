@@ -1,0 +1,21 @@
+{
+  "kind": "diagnostic_reproduction_not_fix",
+  "scope": "existing functions, synthetic state and clock; no HTTP, Agent, ADB, database, model or phone actions",
+  "observations": {
+    "runtimeChangedWhileAgentOnline": "running",
+    "afterQueryInactivityTtl": "stalled",
+    "afterNextOnlineRecovery": "queued",
+    "originalTaskCanReceiveNewLease": true,
+    "oldUnexecutedRunningTasksStillClaimReaderBudget": 6,
+    "sixOldClaimsPlusSixPinnedReadersDenyAnother": true,
+    "afterSyntheticNewAck": "running",
+    "originalOperationStillQuery": true,
+    "queryResumeFlagsPresent": false
+  },
+  "limitations": [
+    "Does not execute the complete tasks/next filter, coordinator or Agent runner",
+    "Proves metadata requeue and lease path, not that production duplicate input has occurred",
+    "Other timing, cancellation, capacity and generation gates may affect actual delivery"
+  ],
+  "productionFixed": false
+}

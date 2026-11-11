@@ -1,6 +1,52 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { createHash } from "node:crypto";
+import { setTimeout as sleep } from "node:timers/promises";
+
+// Cache-only preflight. Wait for the server's reservation to reach this Agent
+// before any phone command; never manufacture ownership from a stale snapshot.
+export async function waitForXhsDataReservation(task, { deviceCachePath, signal,
+  timeoutMs = 30_000, clock = () => performance.now(), wait = ms => sleep(ms, undefined, { signal }) }) {
+  const jobId = task.payload?.automationJobId, appSlot = task.payload?.xhsAppSlot;
+  const failure = (code, reason) => ({ action: "小红书数据采集", errorCode: code,
+    message: code === "xhs_data_reservation_pending" ? "等待手机空闲及本次占用同步，尚未操作手机" : "采集前库存检查未通过，尚未操作手机",
+    diagnostic: { code, version: 1, phase: "before_device_actions", collectionStarted: false,
+      jobId, appSlot, reason } });
+  if (!jobId || !task.adbSerial || !task.payload?.deviceName || !["app1", "app2"].includes(appSlot)) {
+    return failure("invalid_xhs_data_collection_task", "invalid_task");
+  }
+  const deadline = clock() + timeoutMs;
+  for (;;) {
+    if (signal?.aborted) throw signal.reason || new Error("automation_task_cancelled");
+    let handle, devices;
+    try {
+      // stat the opened file: an atomic replacement must not renew old content.
+      handle = await fs.open(deviceCachePath, "r");
+      const stat = await handle.stat();
+      const age = Date.now() - stat.mtimeMs;
+      if (age > 90_000 || age < -5000) return failure("xhs_data_inventory_unavailable", "cache_not_fresh");
+      const payload = JSON.parse((await handle.readFile("utf8")).replace(/^\uFEFF/, ""));
+      if (Date.now() - stat.mtimeMs > 90_000) return failure("xhs_data_inventory_unavailable", "cache_not_fresh");
+      devices = Array.isArray(payload) ? payload : payload?.devices;
+    } catch { return failure("xhs_data_inventory_unavailable", "cache_unreadable"); }
+    finally { await handle?.close(); }
+    if (signal?.aborted) throw signal.reason || new Error("automation_task_cancelled");
+    const matches = Array.isArray(devices) ? devices.filter(d => String(d?.adb?.serial || "").toLowerCase() === String(task.adbSerial).toLowerCase()) : [];
+    if (matches.length !== 1 || String(matches[0].deviceName) !== String(task.payload.deviceName)) {
+      return failure("xhs_data_inventory_mismatch", "target_not_unique_or_name_mismatch");
+    }
+    const device = matches[0], occupancy = device.occupancy;
+    if (device.adb?.state !== "device") return failure("xhs_data_device_offline", "adb_not_online");
+    if (occupancy?.kind === "xhs_data_collect" && occupancy.taskId === jobId && occupancy.appSlot === appSlot) return null;
+    const remaining = deadline - clock();
+    if (remaining <= 0) return failure("xhs_data_reservation_pending", occupancy ? "other_occupancy" : "reservation_not_visible");
+    try { await wait(Math.min(500, remaining)); }
+    catch (error) {
+      if (signal?.aborted) throw signal.reason || new Error("automation_task_cancelled");
+      throw error;
+    }
+  }
+}
 
 // Only this task's subprocess is added. Existing scan, screen and ADB scheduling
 // continue to own device exclusion and task cancellation.

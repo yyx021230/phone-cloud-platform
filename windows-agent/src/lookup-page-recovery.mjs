@@ -1,3 +1,6 @@
+import {lookupReaderCleanupFailure} from './lookup-cleanup-policy.mjs';
+import {isLookupReaderDependencyMissing} from './lookup-reader-lifecycle.mjs';
+
 // Unexpected lookup failures may restart this app once, never a device or ADB.
 // Business/verification/identity states are not execution failures to replay.
 const PROTECTED_STATES = [
@@ -5,11 +8,11 @@ const PROTECTED_STATES = [
   "frequent_or_abnormal_access", "account_restriction", "account_switch",
   "login_required", "invalid_phone_number", "device_not_online", "alipay_not_installed",
   "person_result_not_found", "local_lookup_", "cancel", "screen_control", "capacity_reached",
-  "poco_query_page_recovery_failed:"
+  "poco_query_page_recovery_failed:", "worker_exit_unconfirmed", "lookup_reader_cleanup_unconfirmed"
 ];
 
 export function canRestartLookupAfterFailure(operation, error) {
-  if (operation !== "query") return false;
+  if (operation !== "query" || lookupReaderCleanupFailure(error) || isLookupReaderDependencyMissing(error)) return false;
   const message = `${String(error?.code || "")} ${String(error?.message || error || "")}`.trim();
   return Boolean(message) && !PROTECTED_STATES.some((token) => message.includes(token));
 }
@@ -27,6 +30,25 @@ function canReattachBeforeInput(error) {
 export async function restartLookupQueryOnce({ operation, error, payload, submitted = false, resultRecoveryAttempted = false, stopWorker, runWorker, onRecovery, assertAllowed = () => {} }) {
   if (!canRestartLookupAfterFailure(operation, error)) return null;
   assertAllowed();
+  // A pre-input recovery can itself enter input before its result transport
+  // fails (188 native trace). Its new boundary must not be flattened into
+  // "page recovery failed", nor replay the query. Observe the original page
+  // once after proven cleanup; ambiguous/empty input never permits retyping.
+  const settleRecoveredAttempt = async (result) => {
+    const failure = String(result?.error?.message || result?.error || "");
+    if (result?.ok || resultRecoveryAttempted
+      || !failure.startsWith("poco_query_result_channel_timeout_after_input:")
+      || !canRestartLookupAfterFailure("query", failure)
+      || !/ReadTimeout|read timed out|HTTPConnectionPool/i.test(failure)) return result;
+    resultRecoveryAttempted = true;
+    assertAllowed();
+    await onRecovery({ mode: "reattach_result_only" });
+    if (await stopWorker() !== true) throw new Error("lookup_old_worker_exit_unconfirmed");
+    assertAllowed();
+    return runWorker({ ...payload, operation: "query_resume", recoverUnexpectedPage: false,
+      pageRecoveryStage: "reattach_result_only", observationOnlyResume: true,
+      allowEmptyInputRecovery: false });
+  };
   // A completed submit event belongs to this task, not to a previous query.
   // Reattach only its reader and observe the original page. Never restart the
   // app or type again after a submitted query merely because RPC died.
@@ -55,7 +77,7 @@ export async function restartLookupQueryOnce({ operation, error, payload, submit
     }
     // A result, protected page or post-input failure belongs to that attempt.
     // Only another proven pre-input read timeout may use the old app recovery.
-    if (attached?.ok || !canReattachBeforeInput(attached?.error)) return attached;
+    if (attached?.ok || !canReattachBeforeInput(attached?.error)) return settleRecoveredAttempt(attached);
     assertAllowed();
   }
   await onRecovery({ mode: "restart_app" });
@@ -89,8 +111,8 @@ export async function restartLookupQueryOnce({ operation, error, payload, submit
     if (!canReattach(error)) throw error;
     result = { ok: false, error };
   }
-  if (result?.ok || !canReattach(result?.error)) return result;
+  if (result?.ok || !canReattach(result?.error)) return settleRecoveredAttempt(result);
   if (await stopWorker() !== true) throw new Error("lookup_prepare_worker_exit_unconfirmed");
   assertAllowed();
-  return runWorker(continuedPayload);
+  return settleRecoveredAttempt(await runWorker(continuedPayload));
 }

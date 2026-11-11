@@ -1,0 +1,65 @@
+{
+  "state": "local_candidate_real_device_pending",
+  "version": "lookup-recovery-closure-20261030-rc.1",
+  "base": "19bfc250a1395a1cefd0fdbeabd01d9617cf04cd",
+  "branch": "codex/lookup-recovery-closure-20261030",
+  "node": "v25.9.0",
+  "tests": [
+    {
+      "command": "npm run check",
+      "exit": 0,
+      "evidence": "syntax-check.txt"
+    },
+    {
+      "command": "npm run test:screen",
+      "exit": 0,
+      "pass": 1788,
+      "fail": 0,
+      "durationMs": 157893.533708,
+      "evidence": "full-regression.txt"
+    },
+    {
+      "command": "node --test server/lookup-recovery-closure.test.mjs server/lookup-offline-fence.test.mjs",
+      "exit": 0,
+      "pass": 25,
+      "fail": 0,
+      "evidence": "adapter-and-recovery.txt"
+    },
+    {
+      "command": "node --test server/lookup-recovery-closure.http.test.mjs",
+      "exit": 0,
+      "pass": 1,
+      "fail": 0,
+      "durationMs": 154895.488834,
+      "evidence": "http-combined.txt"
+    }
+  ],
+  "earlierFailure": {
+    "pass": 1780,
+    "fail": 1,
+    "reason": "actual WeCom recovery function fixture missing new isManagedLookupTask dependency; import/VM binding corrected, no WeCom product change",
+    "evidence": "full-with-fixture-dependency-failure.txt"
+  },
+  "baselineCounterexamples": {
+    "pass": 5,
+    "fail": 4,
+    "evidence": "before-fix-counterexamples.txt"
+  },
+  "sourceHashesUnchangedAfterFinalTests": true,
+  "frozenTrackedPathsUnchangedFromBase": [
+    "windows-agent",
+    "screen-client",
+    "public",
+    "deploy/mediamtx-pacing"
+  ],
+  "noProductionMutations": true,
+  "noAdbClientsOrPhoneOperations": true,
+  "realDeviceTest": "not_run_ADB_process_changed_outside_this_task_origin_unconfirmed",
+  "notProven": [
+    "initial_reader_transport_stall_root_cause",
+    "shared_Agent_real_restart_and_native_recovery_next_business",
+    "new_Postgres_fault_integration",
+    "permanent_physical_cleanup_failure_resolution",
+    "legacy_ACK_tasks_without_runtime_binding"
+  ]
+}

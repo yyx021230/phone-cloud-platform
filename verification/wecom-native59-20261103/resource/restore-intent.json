@@ -1,0 +1,9 @@
+{
+  "body": {
+    "expectedConfigRevision": 175,
+    "concurrency": 12
+  },
+  "previousChangeRevision": 175,
+  "ownPhysicalCleanupConfirmed": true,
+  "ownListingRestored": true
+}

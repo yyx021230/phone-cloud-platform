@@ -1,0 +1,10 @@
+{
+  "executionOwnerThread": "01a185b7-7928-70e1-a092-f4fdf6c23876",
+  "ownerRepeatedWindowsCommands": 0,
+  "sourceCommit": "ab8359c8b1f53cf82e8073db3b7d9e525f2e7dfd",
+  "sourceSha256": "deef98f246309e69b76fdc3a6f5106727e550249b9f87aa71dbcd4bdb0d9a116",
+  "typedBodyReconstructedBytes": 5413,
+  "typedBodyReconstructedSha256": "141673f06d82daaacedd88d3d6b6cfb414f13d66f575df8547c12f7417d8b50b",
+  "scope": "actual Administrator read-only invocation only; not SYSTEM/phone/clock authority",
+  "originalReceiptCopiedByteForByte": true
+}

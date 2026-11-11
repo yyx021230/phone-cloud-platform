@@ -1,0 +1,31 @@
+{
+  "records": [
+    {
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exitCode": 2,
+      "output": "verification/wecom-v2-pg-observed2-20261102/INITDB.txt:24: new blank line at EOF.\n"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        ".",
+        ":(exclude)verification/wecom-v2-pg-observed2-20261102/INITDB.txt"
+      ],
+      "exitCode": 0,
+      "output": ""
+    }
+  ],
+  "rawOriginalPreserved": "verification/wecom-v2-pg-observed2-20261102/INITDB.txt",
+  "rawSha256": "8e75689aa5712fc173750ed5a6d9898938e1a4dbcb01d62e3be747e31cae9357",
+  "fullDiffCheckPassed": false,
+  "narrowerDocsEvidenceCheckPassed": true
+}

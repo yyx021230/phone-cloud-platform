@@ -1,0 +1,10 @@
+{
+  "stagedFiles": {
+    "schema.sql": "4e7fbdbd9c3e3d95ea401b221ec64a348860601f773e97839cde3cc75fdb9bcf",
+    "nginx-location.conf": "4ab6c38208bfb4d5d67448b08c860237db0782b554bf2b8eec6bbdbd13271079",
+    "compose.override.yml": "761950db9b1460867e93788f86c8f006092170ebe372a625643e9aa50fd3f78d",
+    "nginx-site.candidate.conf": "ba11eabc40b46e38af71d4dfe698425a1ba48d7155c6460e831d8ca3e1bb06fc"
+  },
+  "schemaExecuted": false,
+  "nginxReloaded": false
+}

@@ -1,0 +1,94 @@
+TAP version 13
+# Subtest: actual PG: initialization/dedup/close/late host replay retains exact original operation
+ok 1 - actual PG: initialization/dedup/close/late host replay retains exact original operation
+  ---
+  duration_ms: 15.226
+  type: 'test'
+  ...
+# Subtest: actual PG: independent concurrent same-ID transactions increment revision once
+ok 2 - actual PG: independent concurrent same-ID transactions increment revision once
+  ---
+  duration_ms: 3.9585
+  type: 'test'
+  ...
+# Subtest: actual PG: concurrent different IDs at same revision have one winner
+ok 3 - actual PG: concurrent different IDs at same revision have one winner
+  ---
+  duration_ms: 2.694792
+  type: 'test'
+  ...
+# Subtest: actual PG: fixture UPDATE trigger failure preserves original revision
+ok 4 - actual PG: fixture UPDATE trigger failure preserves original revision
+  ---
+  duration_ms: 3.305125
+  type: 'test'
+  ...
+# Subtest: actual PG: missing JSON field and duplicate operation slots fail SQL constraints
+ok 5 - actual PG: missing JSON field and duplicate operation slots fail SQL constraints
+  ---
+  duration_ms: 4.972458
+  type: 'test'
+  ...
+# Subtest: actual PG: one row lock times out while another obligation commits
+ok 6 - actual PG: one row lock times out while another obligation commits
+  ---
+  duration_ms: 2009.151792
+  type: 'test'
+  ...
+# Subtest: actual PG: COMMIT success bytes dropped then independent max1 read reconciles
+ok 7 - actual PG: COMMIT success bytes dropped then independent max1 read reconciles
+  ---
+  duration_ms: 14.248417
+  type: 'test'
+  ...
+# Subtest: actual PG: COMMIT dropped before backend is unknown, no write replay
+ok 8 - actual PG: COMMIT dropped before backend is unknown, no write replay
+  ---
+  duration_ms: 8.569959
+  type: 'test'
+  ...
+# Subtest: actual PG: initialization COMMIT response lost preserves original row
+ok 9 - actual PG: initialization COMMIT response lost preserves original row
+  ---
+  duration_ms: 6.649916
+  type: 'test'
+  ...
+# Subtest: actual PG: unknown COMMIT with operation epoch retains structured uncertainty
+ok 10 - actual PG: unknown COMMIT with operation epoch retains structured uncertainty
+  ---
+  duration_ms: 4.6735
+  type: 'test'
+  ...
+# Subtest: actual PG: unknown COMMIT with operation malformed retains structured uncertainty
+ok 11 - actual PG: unknown COMMIT with operation malformed retains structured uncertainty
+  ---
+  duration_ms: 4.36075
+  type: 'test'
+  ...
+# Subtest: actual PG: unknown COMMIT with init epoch retains structured uncertainty
+ok 12 - actual PG: unknown COMMIT with init epoch retains structured uncertainty
+  ---
+  duration_ms: 3.308917
+  type: 'test'
+  ...
+# Subtest: actual PG: unknown COMMIT with init malformed retains structured uncertainty
+ok 13 - actual PG: unknown COMMIT with init malformed retains structured uncertainty
+  ---
+  duration_ms: 3.327333
+  type: 'test'
+  ...
+# Subtest: actual PG: fresh Node child sees persisted row but cannot reuse old epoch
+ok 14 - actual PG: fresh Node child sees persisted row but cannot reuse old epoch
+  ---
+  duration_ms: 72.708334
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2241.403042

@@ -1,0 +1,59 @@
+{
+  "image": "sha256:fca45ec32e72b0787e4375fd6812a5ac97d3aebec4b830b6393b03117554b45e",
+  "newOverlay": "/opt/phone-cloud-platform/staging/platform-integration-20261028-rc.2/compose.platform.json",
+  "overlaySha256": "c38598a990dfd64e0b0c9bb39eb72206900a1897a48a4dbbbb8348f0f95daf9a",
+  "platformChangedKeys": [
+    "image",
+    "labels"
+  ],
+  "otherServicesUnchanged": true,
+  "environmentUnchanged": true,
+  "volumesAndNetworksUnchanged": true,
+  "nginxBeforeSha256": "8b0b5016fe08bdaac338e65cf8b6dfa61843e7496d9703728b21fd98d920c4b3",
+  "nginxDirectoryMetadata": [
+    {
+      "path": "/var/lib/nginx",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o40755",
+      "inode": 1325977
+    },
+    {
+      "path": "/var/lib/nginx/body",
+      "uid": 33,
+      "gid": 0,
+      "mode": "0o40700",
+      "inode": 1326060
+    },
+    {
+      "path": "/var/lib/nginx/proxy",
+      "uid": 33,
+      "gid": 0,
+      "mode": "0o40700",
+      "inode": 1326061
+    },
+    {
+      "path": "/var/lib/nginx/fastcgi",
+      "uid": 33,
+      "gid": 0,
+      "mode": "0o40700",
+      "inode": 1326062
+    },
+    {
+      "path": "/var/lib/nginx/uwsgi",
+      "uid": 33,
+      "gid": 0,
+      "mode": "0o40700",
+      "inode": 1326136
+    },
+    {
+      "path": "/var/lib/nginx/scgi",
+      "uid": 33,
+      "gid": 0,
+      "mode": "0o40700",
+      "inode": 1326138
+    }
+  ],
+  "oldComposeCount": 30,
+  "switched": false
+}

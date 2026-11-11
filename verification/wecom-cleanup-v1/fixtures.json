@@ -1,0 +1,172 @@
+{
+  "version": 1,
+  "serverNow": "2026-11-02T05:00:05.500Z",
+  "binding": {
+    "version": 1,
+    "obligationId": "fixture-obligation",
+    "originalTaskId": "fixture-original",
+    "executionId": "fixture-execution",
+    "deviceId": "adb:fixture",
+    "serial": "fixture",
+    "agentId": "fixture-agent",
+    "appSlot": "main",
+    "androidUser": 0,
+    "nonce": "fixture-execution-nonce"
+  },
+  "host": {
+    "binding": {
+      "version": 1,
+      "obligationId": "fixture-obligation",
+      "originalTaskId": "fixture-original",
+      "executionId": "fixture-execution",
+      "deviceId": "adb:fixture",
+      "serial": "fixture",
+      "agentId": "fixture-agent",
+      "appSlot": "main",
+      "androidUser": 0,
+      "nonce": "fixture-execution-nonce"
+    },
+    "hosts": [
+      {
+        "role": "reader",
+        "pid": 124,
+        "createdAt": "2026-11-02T05:00:01.000Z",
+        "creationToken": "0x1.aba0634400000p+30",
+        "machineId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ]
+  },
+  "hostClosed": {
+    "binding": {
+      "version": 1,
+      "obligationId": "fixture-obligation",
+      "originalTaskId": "fixture-original",
+      "executionId": "fixture-execution",
+      "deviceId": "adb:fixture",
+      "serial": "fixture",
+      "agentId": "fixture-agent",
+      "appSlot": "main",
+      "androidUser": 0,
+      "nonce": "fixture-execution-nonce"
+    },
+    "hosts": [
+      {
+        "role": "reader",
+        "pid": 124,
+        "createdAt": "2026-11-02T05:00:01.000Z",
+        "creationToken": "0x1.aba0634400000p+30",
+        "machineId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "observedAt": "2026-11-02T05:00:02.000Z",
+    "exited": true,
+    "observerMachineId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "verify": {
+    "binding": {
+      "version": 1,
+      "obligationId": "fixture-obligation",
+      "originalTaskId": "fixture-original",
+      "executionId": "fixture-execution",
+      "deviceId": "adb:fixture",
+      "serial": "fixture",
+      "agentId": "fixture-agent",
+      "appSlot": "main",
+      "androidUser": 0,
+      "nonce": "fixture-execution-nonce"
+    }
+  },
+  "verificationPayload": {
+    "physicalCleanup": {
+      "version": 1,
+      "obligationId": "fixture-obligation",
+      "originalTaskId": "fixture-original",
+      "executionId": "fixture-execution",
+      "deviceId": "adb:fixture",
+      "serial": "fixture",
+      "agentId": "fixture-agent",
+      "appSlot": "main",
+      "androidUser": 0,
+      "nonce": "fixture-execution-nonce"
+    },
+    "verificationId": "fixture-verification",
+    "verificationNonce": "fixture-verification-nonce",
+    "verificationTaskId": "fixture-verify-task",
+    "issuedAt": "2026-11-02T05:00:02.500Z",
+    "expiresAt": "2026-11-02T05:02:02.500Z",
+    "pickedAt": "",
+    "hosts": [
+      {
+        "role": "reader",
+        "pid": 124,
+        "createdAt": "2026-11-02T05:00:01.000Z",
+        "creationToken": "0x1.aba0634400000p+30",
+        "machineId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ]
+  },
+  "verificationPickedAt": "2026-11-02T05:00:03.000Z",
+  "proof": {
+    "binding": {
+      "version": 1,
+      "obligationId": "fixture-obligation",
+      "originalTaskId": "fixture-original",
+      "executionId": "fixture-execution",
+      "deviceId": "adb:fixture",
+      "serial": "fixture",
+      "agentId": "fixture-agent",
+      "appSlot": "main",
+      "androidUser": 0,
+      "nonce": "fixture-execution-nonce"
+    },
+    "verificationId": "fixture-verification",
+    "verificationNonce": "fixture-verification-nonce",
+    "verificationTaskId": "fixture-verify-task",
+    "snapshots": [
+      {
+        "observedAt": "2026-11-02T05:00:04.000Z",
+        "packagesAbsent": true,
+        "packageNames": [
+          "com.netease.open.pocoservice",
+          "com.netease.open.pocoservice.test"
+        ],
+        "serialForwardCount": 0
+      },
+      {
+        "observedAt": "2026-11-02T05:00:05.000Z",
+        "packagesAbsent": true,
+        "packageNames": [
+          "com.netease.open.pocoservice",
+          "com.netease.open.pocoservice.test"
+        ],
+        "serialForwardCount": 0
+      }
+    ]
+  },
+  "rejections": [
+    {
+      "case": "other_machine",
+      "field": "hostClosed.observerMachineId",
+      "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "error": "wecom_cleanup_host_unconfirmed"
+    },
+    {
+      "case": "residual_scrcpy_forward",
+      "field": "proof.snapshots[1].serialForwardCount",
+      "value": 1,
+      "error": "wecom_cleanup_proof_invalid"
+    },
+    {
+      "case": "old_nonce",
+      "field": "proof.verificationNonce",
+      "value": "old",
+      "error": "wecom_cleanup_proof_invalid"
+    },
+    {
+      "case": "legacy_no_creation_token",
+      "field": "host.hosts[0].creationToken",
+      "value": null,
+      "error": "wecom_cleanup_host_invalid"
+    }
+  ]
+}

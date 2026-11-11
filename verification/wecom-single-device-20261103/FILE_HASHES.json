@@ -1,0 +1,12 @@
+{
+  "verification/wecom-single-device-20261103/NODE_FINAL.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "verification/wecom-single-device-20261103/TASK.json": "e1035f4191a03ad4ecda69be48cc0ac770f2331f3ac33c27b75a1e696fd1acf1",
+  "verification/wecom-single-device-20261103/STAGED_CLOSURE.json": "1dd95d61639570e702e8c92f3441c59b74838715eb9a0d33ae5588590cfac404",
+  "verification/wecom-single-device-20261103/NODE_FINAL.stdout": "ff5ca6de44248ddc8783c933a0bdc90cfa33987c0b41a2d67459fbed4a23aaa2",
+  "verification/wecom-single-device-20261103/RUNNER_FINAL.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "verification/wecom-single-device-20261103/PYTHON_FINAL.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "verification/wecom-single-device-20261103/SOURCE_BEFORE.json": "4d907afe36652044200ac2e2dd440063d62091125e532c453260522937083870",
+  "verification/wecom-single-device-20261103/SOURCE_HASHES.json": "3cd1a8cc3207dcd02d3b253be4b40f952236ec0a360722c4cc77f2a9ac1e714e",
+  "verification/wecom-single-device-20261103/PYTHON_FINAL.stderr": "2941ee8c07918415e7d1e2aae0e8d01584c49d9adc1420983a05e4e3de6f2f0a",
+  "verification/wecom-single-device-20261103/RUNNER_FINAL.stderr": "7d6aa752d5da0b13ec4cdfc6c817db2fcafdd6f35f3964ec16b59799ebe5112e"
+}

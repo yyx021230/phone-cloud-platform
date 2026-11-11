@@ -1,0 +1,3 @@
+exit=0
+isolated_loopback=true
+cluster_removed_on_exit=true

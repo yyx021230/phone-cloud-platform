@@ -1,0 +1,2 @@
+4b49f9512d353363248b38e262124a5dbde176079aa9ac800b77550f12a5d895  windows-agent/scripts/wecom_platform_preview.py
+8d8cd49d7c9c06bc1f535f2ff537746c553fc82358c0437f2325b516efc0cff3  windows-agent/scripts/test_wecom_selector_budget.py

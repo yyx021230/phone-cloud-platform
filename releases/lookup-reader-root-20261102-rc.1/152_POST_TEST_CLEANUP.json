@@ -1,0 +1,15 @@
+{
+  "at": "2026-11-02T01:40:25.614Z",
+  "device": 152,
+  "first": {
+    "cleanupConfirmed": true,
+    "workerRemaining": false
+  },
+  "final": [
+    {
+      "cleanupConfirmed": true,
+      "workerRemaining": false
+    }
+  ],
+  "confirmed": true
+}

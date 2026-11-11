@@ -1,3 +1,6 @@
+import { WECOM_CLEANUP_KIND } from "./wecom-physical-cleanup.mjs";
+import { WECOM_PREVIEW_KIND } from "./wecom-preview.mjs";
+import {buildLookupReaderCapacityReport} from '../windows-agent/src/lookup-reader-capacity-report.mjs';
 import {isHumanLookupResume} from "./device-occupancy.mjs";
 import fs from 'node:fs/promises';
 import vm from 'node:vm';
@@ -26,7 +29,7 @@ function syncHarness(kind='alipay_name_query') {
  const job={jobId:'original-job',resultId:'original-result',kind,status:'running',sessionId:'session',resumeAfterHumanVerification:true,phoneNumber:'13800000000',events:[]};
  const session={sessionId:'session',deviceId:'device',userId:'owner',source:'open-api',clientId:'client',status:'querying',pendingJobId:job.jobId,successfulCount:0,results:[{resultId:'original-result',status:'running'}]};
  const state={automationJobs:[job],automationSessions:[session],windowsTasks:[],deviceLocks:[]};
- const context=vm.createContext({isHumanLookupResume,...automation,verifiedSavedAccounts,isPreparedLookupLimitConfirmed,state,nowIso,isTerminalStatus:terminal,sanitizeTaskResult:x=>x,
+ const context=vm.createContext({WECOM_CLEANUP_KIND,WECOM_PREVIEW_KIND,wecomCleanup:null,isHumanLookupResume,...automation,verifiedSavedAccounts,isPreparedLookupLimitConfirmed,state,nowIso,isTerminalStatus:terminal,sanitizeTaskResult:x=>x,
  repos:{devices:{findById:()=>({deviceId:'device'})}},allSavedAccountsCooling:()=>false,
  screenSessions:{activeForDevice:()=>null},isAdbOnline:()=>true,
  releaseAutomationLock:()=>null,
@@ -37,7 +40,7 @@ function syncHarness(kind='alipay_name_query') {
 }
 test('successful lookup is never downgraded by a reporting transport error',async()=>{
  const statuses=[];
- const context=vm.createContext({log:()=>{},taskEvent:async()=>{},lookupStatusOutbox:{isAvailable:()=>true},
+ const context=vm.createContext({WECOM_CLEANUP_KIND,WECOM_PREVIEW_KIND,wecomCleanup:null,log:()=>{},taskEvent:async()=>{},lookupStatusOutbox:{isAvailable:()=>true},
  taskAlipayNameLookupWithAccounts:async()=>({realNameTailCharacter:'甲',currentAccount:'account-a'}),
  compactTaskResultForEvent:x=>x,
  taskStatus:async(_t,status,result)=>{statuses.push({status,hasName:!!result.realNameTailCharacter});if(status==='succeeded')throw new Error('synthetic transport timeout');},
@@ -50,7 +53,7 @@ test('successful lookup is never downgraded by a reporting transport error',asyn
 test('terminal retry ACK follows persistence after failed first write',async()=>{
  const task={taskId:'synthetic',status:'running',events:[]};let writes=0;
  const persistencePolicy=createPersistencePolicy({structuredWritesEnabled:false,saveSnapshot:async()=>{writes++;if(writes===1)throw new Error('synthetic disk failure');},scheduleCheckpoint:()=>{}});
- const context=vm.createContext({isManagedLookupTask,req:{method:'POST'},res:{},url:{pathname:'/api/v1/windows-agent-tasks/synthetic/status'},
+ const context=vm.createContext({WECOM_CLEANUP_KIND,WECOM_PREVIEW_KIND,wecomCleanup:null,isManagedLookupTask,req:{method:'POST'},res:{},url:{pathname:'/api/v1/windows-agent-tasks/synthetic/status'},
  requireWindowsAgent:()=>({}),requireWindowsScope:()=>{},readJson:async()=>({status:'succeeded',result:{realNameTailCharacter:'甲'}}),
  repos:{windowsTasks:{findById:()=>task}},windowsCtxCanAccessTask:()=>true,isTerminalStatus:terminal,
  publicWindowsTask:t=>({status:t.status}),json:(_r,status,body)=>({status,body}),
@@ -121,7 +124,7 @@ test("late evidence materialization cannot overwrite a winning terminal result",
   const task = { taskId: "race", status: "running" };
   let releaseFirst, materializations = 0, syncs = 0;
   const inputs = [ { status: "succeeded", result: { marker: "late" } }, { status: "succeeded", result: { marker: "winner" } } ];
-  const context = vm.createContext({ isManagedLookupTask,req: { method: "POST" }, res: {}, url: { pathname: "/api/v1/windows-agent-tasks/race/status" },
+  const context = vm.createContext({WECOM_CLEANUP_KIND,WECOM_PREVIEW_KIND,wecomCleanup:null, isManagedLookupTask,req: { method: "POST" }, res: {}, url: { pathname: "/api/v1/windows-agent-tasks/race/status" },
     requireWindowsAgent: () => ({}), requireWindowsScope: () => {}, readJson: async () => inputs.shift(),
     repos: { windowsTasks: { findById: () => task } }, windowsCtxCanAccessTask: () => true, isTerminalStatus: terminal,
     publicWindowsTask: (t) => ({ status: t.status }), json: (_r, status, body) => ({ status, body }),
@@ -139,15 +142,19 @@ test("late evidence materialization cannot overwrite a winning terminal result",
 
 test("pending lookup reports reserve only their serial while retaining screen polling parameters", async () => {
   let params;
-  const context = vm.createContext({ URLSearchParams, encodeURIComponent, config: { maxConcurrentAdbTasks: 1, agentId: "a" },
+  const report=buildLookupReaderCapacityReport({runtimeId:'3f2ba500-8c87-451b-a0ba-9c5e245b6ad3',limit:8,workers:new Map([['ACTIVE',{pending:{}}]])});
+  const context = vm.createContext({WECOM_CLEANUP_KIND,WECOM_PREVIEW_KIND,wecomCleanup:null, URLSearchParams, encodeURIComponent, config: { maxConcurrentAdbTasks: 1, agentId: "a" },
     activeTasksById: new Map([["active", {}]]), activeTaskSerials: new Set(["ACTIVE"]), screenControlledSerials: new Set(["SCREEN"]),
     lookupStatusOutbox: { pendingTasks: () => [{ taskId: "pending", adbSerial: "LOOKUP" }] },
+    lookupReaderCapacityReport: () => report, observeLookupReaderAdmission: () => {},
     canDeliverManagedLookupTask,MANAGED_LOOKUP_PROTOCOL:"managed_lookup_v1",SCREEN_GALLERY_DELIVERY_PROTOCOL: "gallery", XHS_PUBLISH_DELIVERY_PROTOCOL: "publish",
     api: async (url) => { params = new URL("http://local" + url).searchParams; return { task: null, cancelledTaskIds: [] }; },
     abortCancelledAutomationTasks: () => {}, log: () => {} });
   vm.runInContext(fn(agent, "pollTask"), context); await context.pollTask();
   assert.deepEqual(new Set(params.get("excludeSerials").split(",")), new Set(["ACTIVE", "SCREEN", "LOOKUP"]));
   assert.equal(params.get("screenGallerySerials"), "SCREEN");
+  assert.equal(params.get("lookupReaderCapacityProtocol"), "1");
+  assert.deepEqual(JSON.parse(params.get("lookupReaderCapacity")),report);
   assert.deepEqual(new Set(params.get("activeTaskIds").split(",")), new Set(["active", "pending"]));
 });
 
@@ -155,7 +162,7 @@ test("pending lookup reports reserve only their serial while retaining screen po
 test("unavailable lookup storage stops only lookup execution and preserves unrelated task behavior", async () => {
   let lookups = 0, gallery = 0, evidence = 0;
   const reports = [];
-  const context = vm.createContext({ log: () => {}, taskEvent: async () => {},
+  const context = vm.createContext({WECOM_CLEANUP_KIND,WECOM_PREVIEW_KIND,wecomCleanup:null, log: () => {}, taskEvent: async () => {},
     lookupStatusOutbox: { isAvailable: () => false },
     taskAlipayNameLookupWithAccounts: async () => { lookups++; },
     taskScreenGalleryImport: async () => { gallery++; return {}; },

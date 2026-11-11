@@ -1,0 +1,39 @@
+{
+  "version": "lookup-throughput-20261028-rc.3",
+  "status": "candidate-not-deployed-acceptance-blocked",
+  "baseCommit": "9a3b6b1464032bab4ef7350f043e75f2c43e10e2",
+  "productionSource": "baca5721214658b46f24c974c9147490b0bafada",
+  "productionImage": "sha256:fca45ec32e72b0787e4375fd6812a5ac97d3aebec4b830b6393b03117554b45e",
+  "sharedWorkflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "files": {
+    "docs/PROJECT_DEVELOPMENT.md": "a3f47d9a119f23f0987d94f3253b853fef37394255342d62de7118ff96672c61",
+    "public/lookup-admin.js": "e38320fdf1a4588cf6694adda0f59966c7f55cd6f3c5880d211766ab7d2cc052",
+    "releases/lookup-throughput-20261028-rc.3/API_EVIDENCE.json": "5bde11a3095ee0e6a4ac8cb473e00329217d2607a81feee86ea45fc42ce3e37a",
+    "releases/lookup-throughput-20261028-rc.3/README.md": "6092c8cdb862c5a55973d829cf6a13e907b1700a81b10201c48a4b8d8c42ebf9",
+    "server/index.mjs": "dc94efcb0e48295d5907aaf904d4fd5f2c10fa173afc8d1cad60adda8f771313",
+    "server/lookup-admin-console.mjs": "cea31d0d57045b8ade36921d9e9ef44e3d4a2d45e86855a02478f738b79c193b",
+    "server/lookup-admin-console.test.mjs": "d03110e2d1c8b9eaaf540ea546a6eb6db1b713beb18a60211ed0b55fc2409128",
+    "server/postgres-repositories.mjs": "cc8e9dc791635004c62acf1f6e69bc1f381d84b3963e63f1b36537ab48f35d90",
+    "server/postgres-repositories.test.mjs": "3e6dffb75f4c389cb52376ee4d81ac4f1c5e7ce38b555772588164972c94423c",
+    "windows-agent/scripts/alipay_name_lookup.py": "0647b0531937007590e58028edad45ce845678867881fd3b33476346541723d2",
+    "windows-agent/scripts/test_lookup_picker_budget.py": "36aa3ea7acc35ea14b67416fa7b16007c7b3cd46263f6588ed662c6fb73821a9",
+    "windows-agent/src/index.mjs": "9f03a9276cda864775fce10bfc38a04d754898a77e47980a1c9d8a37b9fb7078",
+    "windows-agent/src/lookup-reader-lifecycle.mjs": "d957d51ff0cba4bb1c504e979fb61eadf1fd4b7113c804882e62456210d70168",
+    "windows-agent/src/lookup-reader-lifecycle.test.mjs": "06f41b93ae4f7757ac39e384101073c2ec883ef551b5fdd9821be32d08468048"
+  },
+  "tests": {
+    "pythonComplete": 1172,
+    "serverAgentScreenSerial": 1448,
+    "scriptsSerial": 53,
+    "finalFocused": 44,
+    "adminUnitHttp": 21
+  },
+  "productionAcceptanceComplete": false,
+  "notVerified": [
+    "initial RPC/ADB shell failure root cause",
+    "business API native recovery/changed-key dedup",
+    "Postgres archive full HTTP integration",
+    "ten-device throughput/paired speed",
+    "media host live verification"
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "stage": "lookup-fleet-audit-20261029-rc.1",
+  "status": "investigation_local_not_deployed",
+  "branch": "codex/lookup-fleet-audit-20261029",
+  "baseCommit": "73de8ba87d3f75ff3d9e32da4821b57784b69200",
+  "workflowRevision": "2026-09-30",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "scope": {
+    "sampledAt": "2026-10-29T06:33:28.836526+00:00",
+    "from24h": "2026-10-28T06:33:28.836526+00:00",
+    "from7d": "2026-10-22T06:33:28.836526+00:00",
+    "queryMode": "read-only grouped + 100-row failure pages; no device commands",
+    "failedPages": 28,
+    "initialLargeExport": "7-day JSON metadata export hit 15-second transport timeout; discarded and not retried"
+  },
+  "healthAsOf": "2026-10-29T06:38:43.930Z",
+  "productionChanges": false,
+  "deviceCommands": false,
+  "businessCodeChanges": false,
+  "privateEvidenceHashes": {
+    "inventory.json": "52049a06566fbcd2543e6c4887777119bd8b719730bfccd1501b8f8602a6413a",
+    "managed.json": "c04ca85c8ed6de32fa9f091f3a7abf8d6879a5b9ac095f9b100dfb58c8864ed7",
+    "scope.json": "c819a47dff328591a3e62f841b8f830a68cc8c9c6c942bf94cdadc6573be30ab",
+    "job-summary-7d.json": "a57d97a28dc817c839dca23b720c556a3bd63534f4d2a0c10039640786eae3d0",
+    "job-summary-24h.json": "bcf96bd98b58115a40b090411818231b74c234ef7d4a4343d2027ddbc8769390",
+    "failed-jobs-24h.json": "d66ed57971e9e9a35991f70a07184a0218374912155809924dfd2a305dda40bd",
+    "canonical-terminal-24h.json": "2e3ef9fabfab6b0463f104c01c9f59ef830d4a3ec0895796401eae8b9816338c",
+    "canonical-terminal-device-24h.json": "c72744c89288f9d4c83b34a18be2a9864703c7fd7e3929d90664d337dbb47f76",
+    "linked-requests.json": "94994a8e390ab0659b916c7a64f1ff12412f9620db32fea1839f0c1dd074d8db",
+    "current-api-health.json": "50a1cf2487cb16acd1ea577ed2a89a10bbf61067a1850e97387aaaae9e154af6",
+    "canonical-invariants.json": "e5a37109b0d00d20685b540dabdb44e3598a4397c281a2096bb39b4434298e67",
+    "LEGACY_OFFLINE_RECEIPT.json": "4b8e43fd3aa4d0c3a2c078f7721004c3bd5cf7083c73a64eb9eed6c358130067",
+    "targeted-tests.txt": "4720b825e345b6fb9d6f27c3305c72981e8ea12feb3964701e11670188f23b47"
+  },
+  "artifacts": {
+    "FLEET_AUDIT.md": "c9256d4fc5be69b67aa7b64458077c3cda54b901ebea140b642e4cd8b71a3c04",
+    "MATRIX.json": "7f2bdbdf65182f14ae9de3f67a41e689f203bf0e5fc134aae8a2964cb7fec2ab",
+    "LEGACY_OFFLINE_RECEIPT.json": "f2d9cf1237a7f1fc7a4d4a3a828adb1408b1100bb1deb271f5ec41ab8f9d13ef",
+    "INDEPENDENT_LEGACY_REPLAY.json": "3e501efa05ecc13e5fd2dbe7d5f3633ca8a1338517687b3287cb7edb571f6fba"
+  },
+  "validation": {
+    "failedCountMatchesAggregate": true,
+    "failedJobIdsUnique": 2708,
+    "linkedRequestsFound": 2003,
+    "linkedRequestsRequested": 2003,
+    "poolRows": 48,
+    "inventoryRows": 141,
+    "healthRows": 48,
+    "candidateBusinessAcceptance": "not_completed",
+    "fullApplicationTests": "not_run_this_document_only_stage",
+    "independentClassificationReplay": 220,
+    "targetedTests": {
+      "command": "node --test server/lookup-ai-adapter.test.mjs server/lookup-technical-domain.test.mjs",
+      "passed": 81,
+      "failed": 0,
+      "skipped": 0
+    },
+    "historicalImageSample": {
+      "selectedFinalFailedCases": 19,
+      "http200": 17,
+      "http404": 2,
+      "visibleRegularPersonCard": 8,
+      "visibleCompactPersonCard": 8,
+      "noPersonCardVisible": 3,
+      "all19RetrievedViaAuthenticatedAssetRoute": true,
+      "historicalJobRoute404": 2,
+      "historyFailureCause": "job absent from live memory-only production lookup; exact DB job/task and stored image still exist, authenticated evidence route returns 200"
+    },
+    "unauthorizedStderrClassification": "4 real cases remain unknown in rc.9; fix requested, not accepted",
+    "matrixConsistencyChecks": "passed: row/identity counts; 2708 unique failures match aggregate; 10906 jobs; 2003 exact lookup links; 6769 terminal ownership; 100 failed IDs across19 phones; relative links; public identity/phone scan; evidence/artifact SHA256"
+  },
+  "documentationSha256": "56f8dad75a757a6cd207ffaa3156220f44a16ab47a1e6e6ec9cb9a588618edba"
+}

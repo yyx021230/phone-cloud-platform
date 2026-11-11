@@ -821,14 +821,13 @@ class OverlayRecoveryTests(unittest.TestCase):
                 sync.ensure_creator_list("adb", "serial", root, "app1", lambda: None, [])
         adb.assert_not_called()
 
-    def test_empty_dump_on_logged_out_activity_reports_login_without_tapping(self):
+    def test_empty_dump_on_login_activity_does_not_classify_logout(self):
         with patch.object(sync, "adb", return_value="ERROR: could not get idle state.") as adb, \
                 patch.object(sync, "focus", return_value="mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.login.device.offline.DeviceOfflineRemindActivity}"), \
                 patch.object(sync.time, "sleep"):
-            with self.assertRaisesRegex(RuntimeError, "manual login is required"):
+            with self.assertRaisesRegex(RuntimeError, "did not return an XML hierarchy"):
                 sync.capture("adb", "serial")
-        self.assertEqual(adb.call_count, 2)
-        self.assertTrue(all(call.args[2:4] == ("exec-out", "uiautomator") for call in adb.call_args_list))
+        self.assertFalse(any(c.args[2:4] == ("shell", "input") for c in adb.call_args_list))
 
     def test_empty_dump_in_other_activity_keeps_the_original_failure(self):
         with patch.object(sync, "adb", return_value="ERROR: could not get idle state."), \
@@ -877,7 +876,7 @@ class OverlayRecoveryTests(unittest.TestCase):
         with patch.object(sync, "wake_if_asleep", return_value=False), \
                 patch.object(sync, "focus", return_value="mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.login.device.offline.DeviceOfflineRemindActivity}"), \
                 patch.object(sync, "adb") as adb, patch.object(sync, "tap_label") as tap:
-            with self.assertRaisesRegex(RuntimeError, "manual login is required"):
+            with self.assertRaisesRegex(sync.ElementListReadError, "lacks native element evidence"):
                 sync.ensure_creator_list("adb", "serial", xml(), "app1", lambda: None, ["collection_slot_requested:app1"])
         adb.assert_not_called()
         tap.assert_not_called()

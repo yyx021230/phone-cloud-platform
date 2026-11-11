@@ -1,0 +1,29 @@
+{
+  "startedAtUtc": "2026-11-02T10:51:24.711256+00:00",
+  "sourceCommit": "2ee4c71748a9e8d42c7d5f62e025773cd43b205c",
+  "sourceSha256": "e6f5ec370458eb45573ff52ab546f584f6591e7c5008100a27c44628cb3200c4",
+  "boundedHelperSha256": "22cfe2028b99147f6fbf99bc0198bc7dcc71ece6be7faa16dad55d7d21009778",
+  "remoteCommand": "D:\\PhoneCloud\\tools\\python39\\python.exe -I -B - --inspect-exports",
+  "remoteBudget": 1,
+  "phoneActions": 0,
+  "adbCalls": 0,
+  "configChanges": 0,
+  "nativeAcceptance": false,
+  "exitCode": 0,
+  "failure": "",
+  "remoteCompletion": "ssh_exit_reported",
+  "elapsedMs": 102,
+  "stdoutBytes": 1024,
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "rawStderrStored": false,
+  "stdoutSha256": "66cb9b577a9153995af81d02be0c1ec5fa70ccb1dc543cbda8a8b2c0a949f188",
+  "classification": "exports_observed_not_authority",
+  "finishedAtUtc": "2026-11-02T10:51:24.815045+00:00",
+  "receiptFieldCorrection": {
+    "field": "remoteCommand",
+    "issue": "Original receipt string doubled path separators; actual bounded call used single separators",
+    "originalReceiptSha256": "29880630b9cee227704e1e1fbe4bd90b683d496d554e24a5b90d3c296a9b9a3c",
+    "transportOrBodyChanged": false
+  }
+}

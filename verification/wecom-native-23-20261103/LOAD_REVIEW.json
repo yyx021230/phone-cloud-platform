@@ -1,0 +1,39 @@
+{
+  "status": "review_only_not_loaded",
+  "candidateCommit": "0e2ace845d8deaeaea09b437a87e8128716649a8",
+  "upstreamCommit": "fcabecf393ad267830e3f2c904b55e6944906878",
+  "candidateTag": "wecom-causal-integrated-20261103-rc.1",
+  "runtimeFiles": {
+    "server/index.mjs": "c656382f7815a660bc046ef17f50758d19d532aa7595c604debde2c464c1b382",
+    "server/wecom-causal-clock.mjs": "4510e6a7af21d7ad47a7e253ccffd90fa08c5b6ef5a08b069cb27d6a12720609",
+    "server/wecom-cleanup-service.mjs": "7676470a04c81acf9a3a152f672507a2d04edd264e5e4b1b0479d653640062fc",
+    "server/wecom-physical-cleanup.mjs": "3644c11a1df149b725313de72f53966182386d44950e8cef2082a9db249c9c4f",
+    "server/wecom-preview.mjs": "b3581f8467c9c62316d9c9ac3a148a31f18f31398a5b9efbfcfa3853ec88a18b",
+    "windows-agent/scripts/wecom_cleanup_contract.py": "8ebf3423886d64080cb42a3cb11b0b81ac004bddc442bf5b200bd9e07570d92c",
+    "windows-agent/scripts/wecom_cleanup_verify.py": "8994310828f9ec9542c2ef3c85af79608ae22476510358e42ee1c019a255644f",
+    "windows-agent/scripts/wecom_host_identity.py": "1f834669b4acd6224b8998f05ee958a728e7cf58bf25dd62ba11f0f79ec75d7f",
+    "windows-agent/scripts/wecom_platform_preview.py": "7c4c3855a133c011f798373c698c963a71e7591ec8525d9b41b98cd607ff20de",
+    "windows-agent/src/index.mjs": "dd50f6f8e0cbbab45a36871326ef5285a332eb2377c19730e856e368dc076ace",
+    "windows-agent/src/wecom-cleanup-protocol.mjs": "b8df4ee810b2080c122dc8abd232b0bf63ae7de22a1a7fb3b19e3ebd9dcecb34",
+    "windows-agent/src/wecom-cleanup-verify.mjs": "207df67be3357f894e49c225ebf681174b46a34a35f0dce44163db336ce65e91",
+    "windows-agent/src/wecom-preview-task.mjs": "8ea458f39d7cc303ceb3d691c442fde3a1c0e7983735fc7935f5384ba96e1049"
+  },
+  "scope": {
+    "cloudRuntimeFiles": 5,
+    "agentRuntimeFiles": 8,
+    "newPackages": false,
+    "newDatabaseSchema": false,
+    "adbOrIdentityChanges": false,
+    "sharedAgentReloadRequired": true,
+    "cloudProcessReloadRequired": true
+  },
+  "loadReason": "Current Agent ESM must advertise and execute new WeCom causal protocol; cloud and worker must load matching original-binding/monotonic-budget implementation. Copying Python alone is incompatible.",
+  "deploymentAuthorization": "Not included in phone-preview authorization; root coordinating concrete version and interruption decision.",
+  "rootReviewRequired": [
+    "Compare entire candidate to actual production32c and preserve lookup changes from5cc; this file list is WeCom runtime scope, not permission to overwrite full index files.",
+    "Fresh active work and control inventory, exact component backup and D075 actual-host live checks before/after any later approved release.",
+    "Actual SYSTEM/socket peer binding, Windows3s and PostgreSQL not covered by existing local test results."
+  ],
+  "rollback": "Preserve old43 and new23 durable duties and original IDs. Never delete or expire them to obtain admission. App rollback does not prove physical cleanup.",
+  "noSafeAlternativeLoadedEntry": "Old standalone does not prove durable cross-restart isolation/socket-peer binding; no alternate SYSTEM launcher created."
+}

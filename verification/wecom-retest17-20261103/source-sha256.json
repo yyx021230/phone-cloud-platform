@@ -1,0 +1,12 @@
+{
+  "branch": "codex/wecom-single-device-transport-20261103",
+  "codeCommit": "39a2a03a1b4d5b3170f8eeff1336ac53d119efbe",
+  "baseline": "5813982cfd9b1445d2c2139b9d9630e89d7a1d35",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "files": {
+    "windows-agent/scripts/wecom_platform_preview.py": "45148ab6d9357caf25c416b5d6c96cc27bde6f28f4c7cd6e12599cd19c32f0ee",
+    "windows-agent/scripts/wecom_screen_lease.py": "60e7386015a39dc8a967d151e037ae2c48af18e170481c2a1af001bcd8aef213",
+    "windows-agent/scripts/test_wecom_platform_preview.py": "4be5002c8ee868ffb68ab724c12a1144d6a5abb7de5cd107c6af4d63b313a5f7",
+    "windows-agent/scripts/test_wecom_screen_lease.py": "8d99d50d5a1d9303f3fa3b0d0b505e9f354ab83e3b1e24f0edaf3a5217bf5560"
+  }
+}

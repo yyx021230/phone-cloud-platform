@@ -1,0 +1,22 @@
+{
+  "devices": [
+    {
+      "number": "200",
+      "readerAbsent": true,
+      "testReaderAbsent": true,
+      "serialForwardCount": 0,
+      "adbOriginalProcessValid": true
+    },
+    {
+      "number": "202",
+      "readerAbsent": true,
+      "testReaderAbsent": true,
+      "serialForwardCount": 0,
+      "adbOriginalProcessValid": true
+    }
+  ],
+  "localAgentPid": 44042,
+  "localAgentOriginalBirth": true,
+  "localAgentResumed": true,
+  "productionOperationPerformed": false
+}

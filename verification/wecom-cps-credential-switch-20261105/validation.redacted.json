@@ -1,0 +1,266 @@
+{
+  "appId": "PRi5GUYYuW",
+  "checks": [
+    {
+      "check": "health",
+      "request": {
+        "method": "GET",
+        "url": "http://192.168.10.119:8797/healthz",
+        "body": null
+      },
+      "response": {
+        "http_status": 200,
+        "body": {
+          "result": null,
+          "timestamp": 1793858271607,
+          "ok": true
+        }
+      }
+    },
+    {
+      "check": "new credentials query devices",
+      "request": {
+        "method": "POST",
+        "url": "http://192.168.10.119:8797/api/v1/lead/devices/query",
+        "body": {
+          "online_only": false,
+          "app_id": "PRi5GUYYuW",
+          "timestamp": 1793858271608,
+          "nonce": "6030ab20db6adc005d4ec880",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "http_status": 200,
+        "body": {
+          "result": {
+            "devices": [
+              {
+                "device_number": "200",
+                "device_name": "200号本地测试手机",
+                "online": true,
+                "adb_online": true,
+                "agent_online": true,
+                "listed": true,
+                "busy": false,
+                "busy_reason": "",
+                "occupancy": null,
+                "accounts": [
+                  {
+                    "app_slot": "main",
+                    "binding_verified": true,
+                    "enabled": true,
+                    "wecom_phone": "17508437040",
+                    "available": true,
+                    "unavailable_reason": ""
+                  }
+                ],
+                "available": true,
+                "unavailable_reason": "",
+                "last_seen_at": "2026-11-05T05:57:51.727Z",
+                "adb_last_seen_at": "2026-11-05T05:57:51.727Z"
+              },
+              {
+                "device_number": "202",
+                "device_name": "202号本地测试手机",
+                "online": true,
+                "adb_online": true,
+                "agent_online": true,
+                "listed": true,
+                "busy": false,
+                "busy_reason": "",
+                "occupancy": null,
+                "accounts": [
+                  {
+                    "app_slot": "main",
+                    "binding_verified": true,
+                    "enabled": true,
+                    "wecom_phone": "13067238489",
+                    "available": true,
+                    "unavailable_reason": ""
+                  }
+                ],
+                "available": true,
+                "unavailable_reason": "",
+                "last_seen_at": "2026-11-05T05:57:51.727Z",
+                "adb_last_seen_at": "2026-11-05T05:57:51.727Z"
+              }
+            ],
+            "total": 2,
+            "updated_at": "2026-11-05T05:57:51.727Z",
+            "capacity": {
+              "limit": 2,
+              "active": 0,
+              "remaining": 2
+            }
+          },
+          "timestamp": 1793858271727,
+          "success": true,
+          "code": 200,
+          "message": "查询成功"
+        }
+      }
+    },
+    {
+      "check": "nonce replay rejected",
+      "request": {
+        "method": "POST",
+        "url": "http://192.168.10.119:8797/api/v1/lead/devices/query",
+        "body": {
+          "online_only": false,
+          "app_id": "PRi5GUYYuW",
+          "timestamp": 1793858271608,
+          "nonce": "6030ab20db6adc005d4ec880",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "http_status": 401,
+        "body": {
+          "result": null,
+          "timestamp": 1793858271730,
+          "success": false,
+          "code": 1003,
+          "message": "nonce重复"
+        }
+      }
+    },
+    {
+      "check": "old app and secret rejected",
+      "request": {
+        "method": "POST",
+        "url": "http://192.168.10.119:8797/api/v1/lead/devices/query",
+        "body": {
+          "online_only": false,
+          "app_id": "cps_local_dev_20261105",
+          "timestamp": 1793858271730,
+          "nonce": "a73deda6df41651801a14385",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "http_status": 401,
+        "body": {
+          "result": null,
+          "timestamp": 1793858271731,
+          "success": false,
+          "code": 1001,
+          "message": "签名验证失败"
+        }
+      }
+    },
+    {
+      "check": "new app with old secret rejected",
+      "request": {
+        "method": "POST",
+        "url": "http://192.168.10.119:8797/api/v1/lead/devices/query",
+        "body": {
+          "online_only": false,
+          "app_id": "PRi5GUYYuW",
+          "timestamp": 1793858271731,
+          "nonce": "fdfe632aa05ac54193363c12",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "http_status": 401,
+        "body": {
+          "result": null,
+          "timestamp": 1793858271731,
+          "success": false,
+          "code": 1001,
+          "message": "签名验证失败"
+        }
+      }
+    },
+    {
+      "check": "old app with new secret rejected",
+      "request": {
+        "method": "POST",
+        "url": "http://192.168.10.119:8797/api/v1/lead/devices/query",
+        "body": {
+          "online_only": false,
+          "app_id": "cps_local_dev_20261105",
+          "timestamp": 1793858271731,
+          "nonce": "d36f3bfd87684813cb21f00d",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "http_status": 401,
+        "body": {
+          "result": null,
+          "timestamp": 1793858271732,
+          "success": false,
+          "code": 1001,
+          "message": "签名验证失败"
+        }
+      }
+    },
+    {
+      "check": "legacy ID cannot restart under new app",
+      "request": {
+        "method": "POST",
+        "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+        "body": {
+          "lead_id": 61110200,
+          "phone": "136****6441",
+          "wecom_phone": "17508437040",
+          "wecom_corp_id": "local_test_corp",
+          "wecom_userid": "local_test_member_200",
+          "app_id": "PRi5GUYYuW",
+          "timestamp": 1793858271732,
+          "nonce": "9ba2fdd51d188e261a712746",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "http_status": 200,
+        "body": {
+          "result": null,
+          "timestamp": 1793858271733,
+          "success": false,
+          "code": 2003,
+          "message": "该测试线索ID已有旧接入记录，请核对原任务；更换凭据不会重新执行历史测试任务"
+        }
+      }
+    },
+    {
+      "check": "caller cannot enable send mode",
+      "request": {
+        "method": "POST",
+        "url": "http://192.168.10.119:8797/api/v1/lead/dispatch",
+        "body": {
+          "lead_id": 61120200,
+          "phone": "136****6441",
+          "wecom_phone": "17508437040",
+          "wecom_corp_id": "local_test_corp",
+          "wecom_userid": "local_test_member_200",
+          "mode": "send",
+          "app_id": "PRi5GUYYuW",
+          "timestamp": 1793858271733,
+          "nonce": "e7c92ad20d8b42d24734e8fa",
+          "sign": "<已脱敏>"
+        }
+      },
+      "response": {
+        "http_status": 200,
+        "body": {
+          "result": null,
+          "timestamp": 1793858271744,
+          "success": false,
+          "code": 2003,
+          "message": "包含未约定的下发字段"
+        }
+      }
+    }
+  ],
+  "oldCredentialsRejected": true,
+  "mode": "preview",
+  "existingLeadsPreserved": 12,
+  "recipientsAndLimitsPreserved": true,
+  "legacyReplayBlocked": true,
+  "reservedIdsStillUnused": true,
+  "newPhoneTasks": 0,
+  "productionTouched": false
+}

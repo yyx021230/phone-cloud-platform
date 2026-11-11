@@ -1,0 +1,76 @@
+TAP version 13
+# Subtest: only eight fixed physical identities and the verified Android users are allowed
+ok 1 - only eight fixed physical identities and the verified Android users are allowed
+  ---
+  duration_ms: 1.500292
+  type: 'test'
+  ...
+# Subtest: API requires explicit known execution mode and rejects arbitrary flags or slots
+ok 2 - API requires explicit known execution mode and rejects arbitrary flags or slots
+  ---
+  duration_ms: 0.227042
+  type: 'test'
+  ...
+# Subtest: custom remarks normalize blanks and newlines; bounds and controls fail before submission
+ok 3 - custom remarks normalize blanks and newlines; bounds and controls fail before submission
+  ---
+  duration_ms: 0.159375
+  type: 'test'
+  ...
+# Subtest: configured slots bind Android user; an unconfigured clone never falls back to main
+ok 4 - configured slots bind Android user; an unconfigured clone never falls back to main
+  ---
+  duration_ms: 0.073833
+  type: 'test'
+  ...
+# Subtest: live lease must agree with task, job, owner, physical phone, clone and lock expiry
+ok 5 - live lease must agree with task, job, owner, physical phone, clone and lock expiry
+  ---
+  duration_ms: 0.892667
+  type: 'test'
+  ...
+# Subtest: duplicate submission waits for persistence; a blocked phone does not block another key
+ok 6 - duplicate submission waits for persistence; a blocked phone does not block another key
+  ---
+  duration_ms: 0.103625
+  type: 'test'
+  ...
+# Subtest: actual offline recovery never requeues a preview with uncertain UI writes; other kinds retain their policy
+ok 7 - actual offline recovery never requeues a preview with uncertain UI writes; other kinds retain their policy
+  ---
+  duration_ms: 2.354208
+  type: 'test'
+  ...
+# Subtest: integration facade accepts four business fields and resolves public number without trusting an ADB serial
+ok 8 - integration facade accepts four business fields and resolves public number without trusting an ADB serial
+  ---
+  duration_ms: 0.215583
+  type: 'test'
+  ...
+# Subtest: integration status never turns a native click or unknown persistence into confirmed customer delivery
+ok 9 - integration status never turns a native click or unknown persistence into confirmed customer delivery
+  ---
+  duration_ms: 0.140334
+  type: 'test'
+  ...
+# Subtest: integration inventory separates online/busy/WeCom eligibility and never exposes private device data
+ok 10 - integration inventory separates online/busy/WeCom eligibility and never exposes private device data
+  ---
+  duration_ms: 0.244584
+  type: 'test'
+  ...
+# Subtest: integration occupancy reads do not expire locks or invoke device recovery
+ok 11 - integration occupancy reads do not expire locks or invoke device recovery
+  ---
+  duration_ms: 0.849042
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 74.439084

@@ -1,0 +1,28 @@
+{
+  "failedLocalArgv": [
+    "python3",
+    "-I",
+    "-B",
+    "verification/wecom-windows-survey-20261102/collect_clock_supplement.py",
+    "--execute-reviewed-clock-once"
+  ],
+  "failedStage": "import collect_reviewed before __main__",
+  "failedRemoteCommands": 0,
+  "correctedLocalFlags": [
+    "-I",
+    "-B",
+    "-c"
+  ],
+  "fixedTrustedBase": "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-windows-survey-20261102",
+  "correctedSysArgv": [
+    "/Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/verification/wecom-windows-survey-20261102/collect_clock_supplement.py",
+    "--execute-reviewed-clock-once"
+  ],
+  "correctedRunner": "sys.path.insert(0, base); runpy.run_path(sys.argv[0], run_name='__main__')",
+  "sourceHashGuard": "four exact reviewed source hashes verified before import and execution",
+  "remoteCommandUnchanged": "D:\\PhoneCloud\\tools\\python39\\python.exe -I -B - --observe",
+  "remoteSourceCommit": "20882a65c5787948dc0eb9a30837c5f3a0d32d43",
+  "remoteSourceSha256": "153c7a6ed6fda7eb1b8a0c910826e14618ad5a495dd6ca78c1047251c317bae7",
+  "remoteClockSupplementsExecuted": 1,
+  "noFurtherRetries": true
+}

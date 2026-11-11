@@ -1,0 +1,8 @@
+{
+  "server/wecom-cleanup-fixture.mjs": "dba8629992d02cd08fd36b7543ac98ec59a8ee480f6b5bf882119b75e5ffb910",
+  "server/wecom-preview.http.test.mjs": "e29bc99891419b56d6cc8dc0286f147596eff00002da425e2daa4e26c89e517b",
+  "server/wecom-physical-cleanup.http.test.mjs": "8d42dcd4b35496eee0aeeca44813ea33cd33bbef304b9ca33cf24167d2a382b2",
+  "server/wecom-status-transport.http.test.mjs": "24f097dcbf831fab765361ce5112c250397b54dabbce635d495f0862b70c73e1",
+  "server/wecom-integration.e2e.test.mjs": "200037da1655fd1470b766ae55845f3f7dd7c0d331eb33b8a08d4198ab6eda74",
+  "verification/wecom-external-api-20261029/simulated_worker.py": "57a59fd8cb7c7e17d5c2fdc1e170b9e6bffad16a6d586b828c37f57d977a432e"
+}

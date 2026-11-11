@@ -1,0 +1,22 @@
+{
+  "status": "local_candidate_before_next_native_attempt",
+  "base": "7e03499f09b981a74119276c98008e6be80de687",
+  "actualObservedRejection": "second59native firstDenial connection_owner/connect/forward/ownerCount0; no customersearch or send",
+  "change": "Wait at most250ms for the original forward server owner row before any send; process birth/path/user remain checked. A zero-byte peek proving EOF/reset rejects only that closed connection via StopPreview, without revoking unrelated original lease. No missing/alive/wrong-owner connection is permitted to send.",
+  "safety": [
+    "ADB5037 policy unchanged; wrongPID/missinglive owner still fatal.",
+    "Closed connection returns StopPreview, never OSError/TransportDisconnected, so it cannot authorize SDK UI/RPC replay.",
+    "No business action is retried; existing bounded Poco health readiness loop may open a new read-only health connection.",
+    "Broker scope/nonce/physical identity and all production gates unchanged."
+  ],
+  "actualValidation": {
+    "wecomCollected": 501,
+    "socketIncluded": 15,
+    "runnerMethods": 9,
+    "realLocalTcp": "forward FIN before first byte denied without globalrevocation; missingliveowner emits no bytes; delayed valid owner can be discovered boundedly; wrongPID still revokes",
+    "realWindowsLoopback": "EOF peek correctly detects closed peer for blocking/finite-timeout sockets and restores timeout;0ADB/0phone",
+    "productionDeploy": false
+  },
+  "uncertain": "Whether the failed real missing-owner connection was early-closed vs OS-table publication delay was not captured then. New attempt must confirm closedForwardCount/outcome.",
+  "review": "Self-review of exact diff within this chat; no cross-thread coordination."
+}

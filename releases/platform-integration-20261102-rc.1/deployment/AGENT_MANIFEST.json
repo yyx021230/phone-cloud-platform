@@ -1,0 +1,1272 @@
+{
+  "version": "platform-integration-20261102-rc.1",
+  "sourceCommit": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "tag": "platform-integration-20261102-rc.1",
+  "state": "prepared_not_activated",
+  "agentRoot": "D:\\PhoneCloud\\agent",
+  "taskName": "PhoneCloud Windows Agent",
+  "taskPath": "\\",
+  "expectedTaskXmlSha256": "028ae6770471643a3ad0f913330ce043a5ce3e897f8370ea5e37af1cfadc23e7",
+  "expectedAgent": {
+    "pid": 22668,
+    "createdAt": "2026-10-30T01:21:28.0335510Z",
+    "path": "D:\\PhoneCloud\\tools\\node\\node.exe",
+    "owner": "NT AUTHORITY\\SYSTEM"
+  },
+  "expectedAdb": {
+    "pid": 8148,
+    "createdAt": "2026-10-30T04:06:25.4916290Z",
+    "path": "D:\\PhoneCloud\\tools\\android-sdk\\platform-tools\\adb.exe",
+    "owner": "NT AUTHORITY\\SYSTEM"
+  },
+  "files": [
+    {
+      "path": "scripts/alipay_name_lookup.py",
+      "candidateSha256": "d13f48f5c81acc5e8e74675dc677d720c217c68baf3df4ac0f5165fe216dbdb2",
+      "beforeSha256": "8c60bb140a4e2bcf07ee29ccd85591b210f20365dc6638cd3f62451444fd4a63",
+      "action": "update",
+      "expectedAfterSha256": "d13f48f5c81acc5e8e74675dc677d720c217c68baf3df4ac0f5165fe216dbdb2"
+    },
+    {
+      "path": "scripts/alipay_post_human_state.py",
+      "candidateSha256": "8e0290dfa7c0ac2b28efbcebd1e056259a5e311243cebdce121015562e224efc",
+      "beforeSha256": "8e0290dfa7c0ac2b28efbcebd1e056259a5e311243cebdce121015562e224efc",
+      "action": "unchanged",
+      "expectedAfterSha256": "8e0290dfa7c0ac2b28efbcebd1e056259a5e311243cebdce121015562e224efc"
+    },
+    {
+      "path": "scripts/alipay_visual_result.py",
+      "candidateSha256": "e5159fe17b3509fdd7accd997b3af03fc35071d5ae557181ed22f32fa140bd81",
+      "beforeSha256": "e5159fe17b3509fdd7accd997b3af03fc35071d5ae557181ed22f32fa140bd81",
+      "action": "unchanged",
+      "expectedAfterSha256": "e5159fe17b3509fdd7accd997b3af03fc35071d5ae557181ed22f32fa140bd81"
+    },
+    {
+      "path": "scripts/feishu-kuaishou-lead.mjs",
+      "candidateSha256": "2ac1f28489ac6a130d4a06da29a41cc0e69543fbdd9ad5606f6a4d55506adcc4",
+      "beforeSha256": "2ac1f28489ac6a130d4a06da29a41cc0e69543fbdd9ad5606f6a4d55506adcc4",
+      "action": "unchanged",
+      "expectedAfterSha256": "2ac1f28489ac6a130d4a06da29a41cc0e69543fbdd9ad5606f6a4d55506adcc4"
+    },
+    {
+      "path": "scripts/kuaishou_vehicle_lead.py",
+      "candidateSha256": "d12ec654560d3115254fb2025132c8f32e60544b9523772ee951b891bb3ea3e3",
+      "beforeSha256": "d12ec654560d3115254fb2025132c8f32e60544b9523772ee951b891bb3ea3e3",
+      "action": "unchanged",
+      "expectedAfterSha256": "d12ec654560d3115254fb2025132c8f32e60544b9523772ee951b891bb3ea3e3"
+    },
+    {
+      "path": "scripts/lookup_home_modal.py",
+      "candidateSha256": "17955787340edbc8558269199812ffa93b8fda5ec61ecee65e90b0dc3a8bce84",
+      "beforeSha256": "17955787340edbc8558269199812ffa93b8fda5ec61ecee65e90b0dc3a8bce84",
+      "action": "unchanged",
+      "expectedAfterSha256": "17955787340edbc8558269199812ffa93b8fda5ec61ecee65e90b0dc3a8bce84"
+    },
+    {
+      "path": "scripts/lookup_ocr_runtime.py",
+      "candidateSha256": "786aa196b75fc9401c7d7b721f4c21a67cd527a429fe757605bc7bbcebb171ae",
+      "beforeSha256": "786aa196b75fc9401c7d7b721f4c21a67cd527a429fe757605bc7bbcebb171ae",
+      "action": "unchanged",
+      "expectedAfterSha256": "786aa196b75fc9401c7d7b721f4c21a67cd527a429fe757605bc7bbcebb171ae"
+    },
+    {
+      "path": "scripts/lookup_ocr_worker.py",
+      "candidateSha256": "4243c4da4582c1259198842fa3c577ba9ddce8a47e687611b2dec824d9304ccd",
+      "beforeSha256": "4243c4da4582c1259198842fa3c577ba9ddce8a47e687611b2dec824d9304ccd",
+      "action": "unchanged",
+      "expectedAfterSha256": "4243c4da4582c1259198842fa3c577ba9ddce8a47e687611b2dec824d9304ccd"
+    },
+    {
+      "path": "scripts/lookup_page_actions.py",
+      "candidateSha256": "e281eaf4d7396a8f4ba4a6f18bee47131005ddfa8db90cc94c46cb2f3c4811cc",
+      "beforeSha256": "e281eaf4d7396a8f4ba4a6f18bee47131005ddfa8db90cc94c46cb2f3c4811cc",
+      "action": "unchanged",
+      "expectedAfterSha256": "e281eaf4d7396a8f4ba4a6f18bee47131005ddfa8db90cc94c46cb2f3c4811cc"
+    },
+    {
+      "path": "scripts/native/xhs-native-navigation.jar",
+      "candidateSha256": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754",
+      "beforeSha256": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754",
+      "action": "unchanged",
+      "expectedAfterSha256": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754"
+    },
+    {
+      "path": "scripts/native/xhs-native-pair.jar",
+      "candidateSha256": "9e696792b37dd269803d230ef1e97754bf895b1d2b852e8d23ae838c757cbed3",
+      "beforeSha256": "9e696792b37dd269803d230ef1e97754bf895b1d2b852e8d23ae838c757cbed3",
+      "action": "unchanged",
+      "expectedAfterSha256": "9e696792b37dd269803d230ef1e97754bf895b1d2b852e8d23ae838c757cbed3"
+    },
+    {
+      "path": "scripts/native/xhs-native-window.jar",
+      "candidateSha256": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7",
+      "beforeSha256": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7",
+      "action": "unchanged",
+      "expectedAfterSha256": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7"
+    },
+    {
+      "path": "scripts/wecom_call_trace.py",
+      "candidateSha256": "966af961c178fe3a6073d29548e62268a5de9459ec76aaf4fa46ad50fbc24355",
+      "beforeSha256": null,
+      "action": "add",
+      "expectedAfterSha256": "966af961c178fe3a6073d29548e62268a5de9459ec76aaf4fa46ad50fbc24355"
+    },
+    {
+      "path": "scripts/wecom_cleanup.py",
+      "candidateSha256": "0e6ea92f0cd738492a8e9599bebe08f56e6095d93764ea773d2926fc64a30922",
+      "beforeSha256": null,
+      "action": "add",
+      "expectedAfterSha256": "0e6ea92f0cd738492a8e9599bebe08f56e6095d93764ea773d2926fc64a30922"
+    },
+    {
+      "path": "scripts/wecom_cleanup_contract.py",
+      "candidateSha256": "aa6f62a3ce376eb12c634b0dd452d617b4feff24414b227eb4fe7a2a4c2822b3",
+      "beforeSha256": null,
+      "action": "add",
+      "expectedAfterSha256": "aa6f62a3ce376eb12c634b0dd452d617b4feff24414b227eb4fe7a2a4c2822b3"
+    },
+    {
+      "path": "scripts/wecom_cleanup_verify.py",
+      "candidateSha256": "532d4b0529cf44b65a0a776c2410e3887ed77a785714d56cc7318e2adc7e5494",
+      "beforeSha256": null,
+      "action": "add",
+      "expectedAfterSha256": "532d4b0529cf44b65a0a776c2410e3887ed77a785714d56cc7318e2adc7e5494"
+    },
+    {
+      "path": "scripts/wecom_control_pipe.py",
+      "candidateSha256": "dc17092ebe7770944e900224657b9e1b9a898a90dc27c48599308fa52543502e",
+      "beforeSha256": null,
+      "action": "add",
+      "expectedAfterSha256": "dc17092ebe7770944e900224657b9e1b9a898a90dc27c48599308fa52543502e"
+    },
+    {
+      "path": "scripts/wecom_customer_invitation.py",
+      "candidateSha256": "5c8a4438318cb10dba2b3ddc0017aff9294aead36e3c99ad5878d0f3465cbd24",
+      "beforeSha256": "5c8a4438318cb10dba2b3ddc0017aff9294aead36e3c99ad5878d0f3465cbd24",
+      "action": "unchanged",
+      "expectedAfterSha256": "5c8a4438318cb10dba2b3ddc0017aff9294aead36e3c99ad5878d0f3465cbd24"
+    },
+    {
+      "path": "scripts/wecom_diagnostics.py",
+      "candidateSha256": "906ca4988f1e332f6bc423f6d230fa42b825294064fb4c8e35aeef8b80284bd2",
+      "beforeSha256": null,
+      "action": "add",
+      "expectedAfterSha256": "906ca4988f1e332f6bc423f6d230fa42b825294064fb4c8e35aeef8b80284bd2"
+    },
+    {
+      "path": "scripts/wecom_host_identity.py",
+      "candidateSha256": "43c95de5f3ecdcc09094fbf2bb8a02aec7e6b1cce5a77eb9fbe954738ec9fc51",
+      "beforeSha256": null,
+      "action": "add",
+      "expectedAfterSha256": "43c95de5f3ecdcc09094fbf2bb8a02aec7e6b1cce5a77eb9fbe954738ec9fc51"
+    },
+    {
+      "path": "scripts/wecom_invite_preview.py",
+      "candidateSha256": "f77bc50419eaee27aa46c372132f07eae5ed63dd1d69645778f3b3062a87059c",
+      "beforeSha256": "f7329cf01b0d9c7f750b730d570826099abba4df6581931eb395f74527ae8692",
+      "action": "update",
+      "expectedAfterSha256": "f77bc50419eaee27aa46c372132f07eae5ed63dd1d69645778f3b3062a87059c"
+    },
+    {
+      "path": "scripts/wecom_physical_verify.py",
+      "candidateSha256": "a0096840632976738d01374c6ac7e6d85bd5d3a764a30855cf793b488f79261b",
+      "beforeSha256": null,
+      "action": "add",
+      "expectedAfterSha256": "a0096840632976738d01374c6ac7e6d85bd5d3a764a30855cf793b488f79261b"
+    },
+    {
+      "path": "scripts/wecom_platform_preview.py",
+      "candidateSha256": "5cb7e5fc041e5dbe62ec57aed4ddbf938d7f684fbab023f9fb86d67cb7cfa8cc",
+      "beforeSha256": "2211bc1afb3f3019cec5f5e0020bf7bbf64e287cb80f3633db10ee0ffff87cc6",
+      "action": "update",
+      "expectedAfterSha256": "5cb7e5fc041e5dbe62ec57aed4ddbf938d7f684fbab023f9fb86d67cb7cfa8cc"
+    },
+    {
+      "path": "scripts/wecom_preview_devices.json",
+      "candidateSha256": "2eab0e0415e7db2f7c00c8ccf8e55f36cb3987a22c03bdc5aee4b05f6167bc88",
+      "beforeSha256": "2eab0e0415e7db2f7c00c8ccf8e55f36cb3987a22c03bdc5aee4b05f6167bc88",
+      "action": "unchanged",
+      "expectedAfterSha256": "2eab0e0415e7db2f7c00c8ccf8e55f36cb3987a22c03bdc5aee4b05f6167bc88"
+    },
+    {
+      "path": "scripts/wecom_remark_preview.py",
+      "candidateSha256": "444023f34654ad73642eb5b9ca592b7a60aea06756cf0ca3a4b890e56f2371ea",
+      "beforeSha256": "cffc8c9a60ace1a4cbf2d000965db79af9919f2966733fd4c070e7d27b307860",
+      "action": "update",
+      "expectedAfterSha256": "444023f34654ad73642eb5b9ca592b7a60aea06756cf0ca3a4b890e56f2371ea"
+    },
+    {
+      "path": "scripts/wecom_rpc_budget.py",
+      "candidateSha256": "b99f85d3d3ebf3611d21f5aecd34ee651a2a0a33fd71b438feef409163dcd4f2",
+      "beforeSha256": "60aab705ab8b1a5282da225ac5e7f3ac27c90c01749e4637e0dfe732e906bff6",
+      "action": "update",
+      "expectedAfterSha256": "b99f85d3d3ebf3611d21f5aecd34ee651a2a0a33fd71b438feef409163dcd4f2"
+    },
+    {
+      "path": "scripts/wecom_startup_guards.py",
+      "candidateSha256": "4c0c76df4c1435b64bd7d7ab627ac007da89c454bfcb5cfa3b90a891fe42be76",
+      "beforeSha256": "82fcf0d5ccc3d8aceab9901ac663725fcc9bf6b5f072715d18892036652f6d25",
+      "action": "update",
+      "expectedAfterSha256": "4c0c76df4c1435b64bd7d7ab627ac007da89c454bfcb5cfa3b90a891fe42be76"
+    },
+    {
+      "path": "scripts/wecom_system_runtime.py",
+      "candidateSha256": "95e87ed27257eaea55f0be8e9c774cdaa020b2770777586719b782b80118316e",
+      "beforeSha256": null,
+      "action": "add",
+      "expectedAfterSha256": "95e87ed27257eaea55f0be8e9c774cdaa020b2770777586719b782b80118316e"
+    },
+    {
+      "path": "scripts/xhs_airtest_poco.py",
+      "candidateSha256": "90f78465709fd24223c9cdceccc844c44f5463aab0aeafaa158d2f7aebd538e8",
+      "beforeSha256": "8abb00385d12ce99dc5995ae1424f226a5e9f887461c920594e68d27f44fd4e1",
+      "action": "update",
+      "expectedAfterSha256": "90f78465709fd24223c9cdceccc844c44f5463aab0aeafaa158d2f7aebd538e8"
+    },
+    {
+      "path": "scripts/xhs_list_ocr.py",
+      "candidateSha256": "4cc3d8ae042c6951b65ec93cc755e57cbed0440393b4c841bda20f76def3a516",
+      "beforeSha256": "4cc3d8ae042c6951b65ec93cc755e57cbed0440393b4c841bda20f76def3a516",
+      "action": "unchanged",
+      "expectedAfterSha256": "4cc3d8ae042c6951b65ec93cc755e57cbed0440393b4c841bda20f76def3a516"
+    },
+    {
+      "path": "scripts/xhs_native_elements.py",
+      "candidateSha256": "e94f3066cb9e99c50ed3f7f18ae6c56a32c543774fefa863d125df08f173d46e",
+      "beforeSha256": "e94f3066cb9e99c50ed3f7f18ae6c56a32c543774fefa863d125df08f173d46e",
+      "action": "unchanged",
+      "expectedAfterSha256": "e94f3066cb9e99c50ed3f7f18ae6c56a32c543774fefa863d125df08f173d46e"
+    },
+    {
+      "path": "scripts/xhs_native_navigation.py",
+      "candidateSha256": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c",
+      "beforeSha256": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c",
+      "action": "unchanged",
+      "expectedAfterSha256": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c"
+    },
+    {
+      "path": "scripts/xhs_native_ocr.ps1",
+      "candidateSha256": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "beforeSha256": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21",
+      "action": "unchanged",
+      "expectedAfterSha256": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21"
+    },
+    {
+      "path": "scripts/xhs_native_window.py",
+      "candidateSha256": "1b15e62ccad9e1d3fc4b81bbe8b5a1adb57f7f913b57472ba54283415e0ba772",
+      "beforeSha256": "1b15e62ccad9e1d3fc4b81bbe8b5a1adb57f7f913b57472ba54283415e0ba772",
+      "action": "unchanged",
+      "expectedAfterSha256": "1b15e62ccad9e1d3fc4b81bbe8b5a1adb57f7f913b57472ba54283415e0ba772"
+    },
+    {
+      "path": "scripts/xhs_ocr_digits.png",
+      "candidateSha256": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f",
+      "beforeSha256": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f",
+      "action": "unchanged",
+      "expectedAfterSha256": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f"
+    },
+    {
+      "path": "scripts/xhs_publish_poco.py",
+      "candidateSha256": "8411a66b4b7dd8adab0cee528c66ec775842bfc7d854d4ecd44e7319732ca4d9",
+      "beforeSha256": "8411a66b4b7dd8adab0cee528c66ec775842bfc7d854d4ecd44e7319732ca4d9",
+      "action": "unchanged",
+      "expectedAfterSha256": "8411a66b4b7dd8adab0cee528c66ec775842bfc7d854d4ecd44e7319732ca4d9"
+    },
+    {
+      "path": "scripts/xhs_xml_uiautomator.py",
+      "candidateSha256": "3b27f4c309df6ab095d676ea43316091477792ec11e7634ccb52b70afe117dfb",
+      "beforeSha256": "3b27f4c309df6ab095d676ea43316091477792ec11e7634ccb52b70afe117dfb",
+      "action": "unchanged",
+      "expectedAfterSha256": "3b27f4c309df6ab095d676ea43316091477792ec11e7634ccb52b70afe117dfb"
+    },
+    {
+      "path": "scripts/小红书数据同步.py",
+      "candidateSha256": "c4f0fd8cb50bd87085de18d781d52c52bb49cf9537abf11094e9592cafb3a179",
+      "beforeSha256": "9a95226108c70ed8830dd322bdbd32c9d932f163ebbc509ff371703888b1fddf",
+      "action": "update",
+      "expectedAfterSha256": "c4f0fd8cb50bd87085de18d781d52c52bb49cf9537abf11094e9592cafb3a179"
+    },
+    {
+      "path": "src/adb-priority-queue.mjs",
+      "candidateSha256": "0bb8cfd86baaddc8a32d040e5835452f06e1ae5e3b78cbe2aeb0a67a24e5495d",
+      "beforeSha256": "0bb8cfd86baaddc8a32d040e5835452f06e1ae5e3b78cbe2aeb0a67a24e5495d",
+      "action": "unchanged",
+      "expectedAfterSha256": "0bb8cfd86baaddc8a32d040e5835452f06e1ae5e3b78cbe2aeb0a67a24e5495d"
+    },
+    {
+      "path": "src/adb-serial-identity.mjs",
+      "candidateSha256": "9474bf4c3db8d144eda0eaa6c40a1ba912a0c0c53460747b8e638d79d79ba09f",
+      "beforeSha256": "9474bf4c3db8d144eda0eaa6c40a1ba912a0c0c53460747b8e638d79d79ba09f",
+      "action": "unchanged",
+      "expectedAfterSha256": "9474bf4c3db8d144eda0eaa6c40a1ba912a0c0c53460747b8e638d79d79ba09f"
+    },
+    {
+      "path": "src/adb-server-recovery.mjs",
+      "candidateSha256": "693535b4379089e33b7badeaac2e2665c1b2efb797adba1264e8c431d356fb2f",
+      "beforeSha256": "693535b4379089e33b7badeaac2e2665c1b2efb797adba1264e8c431d356fb2f",
+      "action": "unchanged",
+      "expectedAfterSha256": "693535b4379089e33b7badeaac2e2665c1b2efb797adba1264e8c431d356fb2f"
+    },
+    {
+      "path": "src/agent-instance-lock.mjs",
+      "candidateSha256": "c18e716c1295931d8aad73c3e2df6c4cd10562c52938b1749eff2f47f3e9d0ac",
+      "beforeSha256": "c18e716c1295931d8aad73c3e2df6c4cd10562c52938b1749eff2f47f3e9d0ac",
+      "action": "unchanged",
+      "expectedAfterSha256": "c18e716c1295931d8aad73c3e2df6c4cd10562c52938b1749eff2f47f3e9d0ac"
+    },
+    {
+      "path": "src/airtest-worker-lifecycle.mjs",
+      "candidateSha256": "af10fa43a5d7982b590b44f432ab206d15adf285fe3b617f8b286e13b3d2b374",
+      "beforeSha256": "af10fa43a5d7982b590b44f432ab206d15adf285fe3b617f8b286e13b3d2b374",
+      "action": "unchanged",
+      "expectedAfterSha256": "af10fa43a5d7982b590b44f432ab206d15adf285fe3b617f8b286e13b3d2b374"
+    },
+    {
+      "path": "src/alipay-poco-fallback-policy.mjs",
+      "candidateSha256": "53372e9f22adecb357d1c3a74f055110de2bb5c42d5ab74d77471c8d149a0df6",
+      "beforeSha256": "d9cca5a6ce0e97f0d6145306f4322d5a8873aaa5e71c2a5441707a46d349f917",
+      "action": "update",
+      "expectedAfterSha256": "53372e9f22adecb357d1c3a74f055110de2bb5c42d5ab74d77471c8d149a0df6"
+    },
+    {
+      "path": "src/atomic-json-writer.mjs",
+      "candidateSha256": "c7aeda35d9fffed03eca35cfb290456e54d0f96e7078fbda858a4906d22f2294",
+      "beforeSha256": "c7aeda35d9fffed03eca35cfb290456e54d0f96e7078fbda858a4906d22f2294",
+      "action": "unchanged",
+      "expectedAfterSha256": "c7aeda35d9fffed03eca35cfb290456e54d0f96e7078fbda858a4906d22f2294"
+    },
+    {
+      "path": "src/config.mjs",
+      "candidateSha256": "b233775c589ab22e6662a23bb82e507c9a3f635f1112709bfdae24d854a5d254",
+      "beforeSha256": "b233775c589ab22e6662a23bb82e507c9a3f635f1112709bfdae24d854a5d254",
+      "action": "unchanged",
+      "expectedAfterSha256": "b233775c589ab22e6662a23bb82e507c9a3f635f1112709bfdae24d854a5d254"
+    },
+    {
+      "path": "src/device-actor.mjs",
+      "candidateSha256": "b1d97b76ce1d71d0fa3fd70757311e78f76255661288e9cd5199b6c3cba2a2cf",
+      "beforeSha256": "b1d97b76ce1d71d0fa3fd70757311e78f76255661288e9cd5199b6c3cba2a2cf",
+      "action": "unchanged",
+      "expectedAfterSha256": "b1d97b76ce1d71d0fa3fd70757311e78f76255661288e9cd5199b6c3cba2a2cf"
+    },
+    {
+      "path": "src/device-recovery-state.mjs",
+      "candidateSha256": "6315883802f283291f4eab489c6c2975e9dfaee2d035143732a2214f4e723293",
+      "beforeSha256": "6315883802f283291f4eab489c6c2975e9dfaee2d035143732a2214f4e723293",
+      "action": "unchanged",
+      "expectedAfterSha256": "6315883802f283291f4eab489c6c2975e9dfaee2d035143732a2214f4e723293"
+    },
+    {
+      "path": "src/device-scan-cache.mjs",
+      "candidateSha256": "1526782cd19841841535a790d78c350103aa50f12ae4e0ac5557828afd09e1a5",
+      "beforeSha256": "1526782cd19841841535a790d78c350103aa50f12ae4e0ac5557828afd09e1a5",
+      "action": "unchanged",
+      "expectedAfterSha256": "1526782cd19841841535a790d78c350103aa50f12ae4e0ac5557828afd09e1a5"
+    },
+    {
+      "path": "src/device-scan-pipeline.mjs",
+      "candidateSha256": "8ef31ead50d4b1bec3bc648d72d6cbe64fe4cc102c04a5c0d269240295a5a6c4",
+      "beforeSha256": "8ef31ead50d4b1bec3bc648d72d6cbe64fe4cc102c04a5c0d269240295a5a6c4",
+      "action": "unchanged",
+      "expectedAfterSha256": "8ef31ead50d4b1bec3bc648d72d6cbe64fe4cc102c04a5c0d269240295a5a6c4"
+    },
+    {
+      "path": "src/gallery-import.mjs",
+      "candidateSha256": "d0e64f21c1c3e85ca89929f08c7739c6e5ba21600a70b74e2318ba388a425d74",
+      "beforeSha256": "d0e64f21c1c3e85ca89929f08c7739c6e5ba21600a70b74e2318ba388a425d74",
+      "action": "unchanged",
+      "expectedAfterSha256": "d0e64f21c1c3e85ca89929f08c7739c6e5ba21600a70b74e2318ba388a425d74"
+    },
+    {
+      "path": "src/gallery-task-delivery.mjs",
+      "candidateSha256": "382c1e5b1519600e60405dae813687d4499c3770356969c0878c5dd934656a71",
+      "beforeSha256": "382c1e5b1519600e60405dae813687d4499c3770356969c0878c5dd934656a71",
+      "action": "unchanged",
+      "expectedAfterSha256": "382c1e5b1519600e60405dae813687d4499c3770356969c0878c5dd934656a71"
+    },
+    {
+      "path": "src/guarded-task-runner.mjs",
+      "candidateSha256": "150e14ea6fcdd6b0bb117d771bce084347cb26442a7674b0963cf9887df1d25f",
+      "beforeSha256": "150e14ea6fcdd6b0bb117d771bce084347cb26442a7674b0963cf9887df1d25f",
+      "action": "unchanged",
+      "expectedAfterSha256": "150e14ea6fcdd6b0bb117d771bce084347cb26442a7674b0963cf9887df1d25f"
+    },
+    {
+      "path": "src/index.mjs",
+      "candidateSha256": "85b2b2eea012a345f87b455ebbb994ef6ce9dd70b6e1dddc4769594781c29eff",
+      "beforeSha256": "c309d1f6dd0bda9530ec6ff8dccc874509aa7cd57e8ef6bdea77a64b7a1c5a67",
+      "action": "update",
+      "expectedAfterSha256": "85b2b2eea012a345f87b455ebbb994ef6ce9dd70b6e1dddc4769594781c29eff"
+    },
+    {
+      "path": "src/lookup-account-policy.mjs",
+      "candidateSha256": "51f9a5a3368554efbd8d07e2e420f70da7086e1b592c5959cada4752c9301c98",
+      "beforeSha256": "51f9a5a3368554efbd8d07e2e420f70da7086e1b592c5959cada4752c9301c98",
+      "action": "unchanged",
+      "expectedAfterSha256": "51f9a5a3368554efbd8d07e2e420f70da7086e1b592c5959cada4752c9301c98"
+    },
+    {
+      "path": "src/lookup-cleanup-policy.mjs",
+      "candidateSha256": "a48d1d0ada71bbbc504e436f2fb0aff5beb963ff42dff23a21815bb304d08912",
+      "beforeSha256": null,
+      "action": "add",
+      "expectedAfterSha256": "a48d1d0ada71bbbc504e436f2fb0aff5beb963ff42dff23a21815bb304d08912"
+    },
+    {
+      "path": "src/lookup-execution-metrics.mjs",
+      "candidateSha256": "880adc6afe1c2ae60a973bab7ed6aa375b77167966256df19737cb1c1cafae31",
+      "beforeSha256": "880adc6afe1c2ae60a973bab7ed6aa375b77167966256df19737cb1c1cafae31",
+      "action": "unchanged",
+      "expectedAfterSha256": "880adc6afe1c2ae60a973bab7ed6aa375b77167966256df19737cb1c1cafae31"
+    },
+    {
+      "path": "src/lookup-human-observer.mjs",
+      "candidateSha256": "dbd77ffb69215d26610a814d1c4013e89a3d1a7b81ea509c9570d7035808a8a5",
+      "beforeSha256": "dbd77ffb69215d26610a814d1c4013e89a3d1a7b81ea509c9570d7035808a8a5",
+      "action": "unchanged",
+      "expectedAfterSha256": "dbd77ffb69215d26610a814d1c4013e89a3d1a7b81ea509c9570d7035808a8a5"
+    },
+    {
+      "path": "src/lookup-page-recovery.mjs",
+      "candidateSha256": "1d0b95976a42752a240668f4caf957122b19ef04247bc40499c677ded1628e36",
+      "beforeSha256": "6ac3f752e52db13667b9f0d6a42380c4e3807bbe33c95777e823ef107d8f48b0",
+      "action": "update",
+      "expectedAfterSha256": "1d0b95976a42752a240668f4caf957122b19ef04247bc40499c677ded1628e36"
+    },
+    {
+      "path": "src/lookup-post-human-state.mjs",
+      "candidateSha256": "11be7e62af4193387a0ebeef09f8130abb9577d94d1ddef8c816513c7e3a0580",
+      "beforeSha256": "11be7e62af4193387a0ebeef09f8130abb9577d94d1ddef8c816513c7e3a0580",
+      "action": "unchanged",
+      "expectedAfterSha256": "11be7e62af4193387a0ebeef09f8130abb9577d94d1ddef8c816513c7e3a0580"
+    },
+    {
+      "path": "src/lookup-reader-admission-log.mjs",
+      "candidateSha256": "4ebddfa2371e85841745d8a8c1bab9e9fffcfb2622d44c32465adce319c6dd7d",
+      "beforeSha256": "4ebddfa2371e85841745d8a8c1bab9e9fffcfb2622d44c32465adce319c6dd7d",
+      "action": "unchanged",
+      "expectedAfterSha256": "4ebddfa2371e85841745d8a8c1bab9e9fffcfb2622d44c32465adce319c6dd7d"
+    },
+    {
+      "path": "src/lookup-reader-capacity-report.mjs",
+      "candidateSha256": "feb2f97e05ad631f4ece7a6e49491d8204d3118b7bfaa6322094afcc10b33900",
+      "beforeSha256": "feb2f97e05ad631f4ece7a6e49491d8204d3118b7bfaa6322094afcc10b33900",
+      "action": "unchanged",
+      "expectedAfterSha256": "feb2f97e05ad631f4ece7a6e49491d8204d3118b7bfaa6322094afcc10b33900"
+    },
+    {
+      "path": "src/lookup-reader-lifecycle.mjs",
+      "candidateSha256": "5fbf3f43a744560ae1e2ecd03e110abc27905eb06bb9b844748015344bbaa4c2",
+      "beforeSha256": "d957d51ff0cba4bb1c504e979fb61eadf1fd4b7113c804882e62456210d70168",
+      "action": "update",
+      "expectedAfterSha256": "5fbf3f43a744560ae1e2ecd03e110abc27905eb06bb9b844748015344bbaa4c2"
+    },
+    {
+      "path": "src/lookup-recovery-trace.mjs",
+      "candidateSha256": "7d9a1e353564327df4129a4f600a265e5e86dc26a0970d6b96f3b47d9d8b49c7",
+      "beforeSha256": "7d9a1e353564327df4129a4f600a265e5e86dc26a0970d6b96f3b47d9d8b49c7",
+      "action": "unchanged",
+      "expectedAfterSha256": "7d9a1e353564327df4129a4f600a265e5e86dc26a0970d6b96f3b47d9d8b49c7"
+    },
+    {
+      "path": "src/lookup-status-outbox.mjs",
+      "candidateSha256": "43c10101e982b3a6881a2a1d5b7ae691553833d4548bf5f11f5ea51fc49b4dc1",
+      "beforeSha256": "43c10101e982b3a6881a2a1d5b7ae691553833d4548bf5f11f5ea51fc49b4dc1",
+      "action": "unchanged",
+      "expectedAfterSha256": "43c10101e982b3a6881a2a1d5b7ae691553833d4548bf5f11f5ea51fc49b4dc1"
+    },
+    {
+      "path": "src/lookup-xml-failure.mjs",
+      "candidateSha256": "2e6097bbe3aa23c433e68d8bdb414137a1a12fa349447364de90dbb13a852539",
+      "beforeSha256": "2e6097bbe3aa23c433e68d8bdb414137a1a12fa349447364de90dbb13a852539",
+      "action": "unchanged",
+      "expectedAfterSha256": "2e6097bbe3aa23c433e68d8bdb414137a1a12fa349447364de90dbb13a852539"
+    },
+    {
+      "path": "src/managed-lookup-delivery.mjs",
+      "candidateSha256": "cfdc56ea307bf82fac3965a75b3d0a2115826e3ebeb1f3c2bfc48e2a74a8bce6",
+      "beforeSha256": "cfdc56ea307bf82fac3965a75b3d0a2115826e3ebeb1f3c2bfc48e2a74a8bce6",
+      "action": "unchanged",
+      "expectedAfterSha256": "cfdc56ea307bf82fac3965a75b3d0a2115826e3ebeb1f3c2bfc48e2a74a8bce6"
+    },
+    {
+      "path": "src/pnp-exact-actions.mjs",
+      "candidateSha256": "2e67e3fb1612ac79499055878caa042fd91c4e42caa28df4621d4cabf7172cab",
+      "beforeSha256": "2e67e3fb1612ac79499055878caa042fd91c4e42caa28df4621d4cabf7172cab",
+      "action": "unchanged",
+      "expectedAfterSha256": "2e67e3fb1612ac79499055878caa042fd91c4e42caa28df4621d4cabf7172cab"
+    },
+    {
+      "path": "src/pnp-missing-device-recovery.mjs",
+      "candidateSha256": "eddfcf36dd904bf2ca834fb8958d21c55fa62c45139d880399d565b1006825f6",
+      "beforeSha256": "eddfcf36dd904bf2ca834fb8958d21c55fa62c45139d880399d565b1006825f6",
+      "action": "unchanged",
+      "expectedAfterSha256": "eddfcf36dd904bf2ca834fb8958d21c55fa62c45139d880399d565b1006825f6"
+    },
+    {
+      "path": "src/pnp-recovery-admission.mjs",
+      "candidateSha256": "dede33101b9765342ffa50121a8edadf066d519c047646fcca82635ab6cc236f",
+      "beforeSha256": "dede33101b9765342ffa50121a8edadf066d519c047646fcca82635ab6cc236f",
+      "action": "unchanged",
+      "expectedAfterSha256": "dede33101b9765342ffa50121a8edadf066d519c047646fcca82635ab6cc236f"
+    },
+    {
+      "path": "src/pnp-recovery-control.mjs",
+      "candidateSha256": "92e2bcc37d7bc8b9d3e61d4385116db7181530d5fe125c6c2a3210c5142fde0f",
+      "beforeSha256": "92e2bcc37d7bc8b9d3e61d4385116db7181530d5fe125c6c2a3210c5142fde0f",
+      "action": "unchanged",
+      "expectedAfterSha256": "92e2bcc37d7bc8b9d3e61d4385116db7181530d5fe125c6c2a3210c5142fde0f"
+    },
+    {
+      "path": "src/pnp-recovery-policy.mjs",
+      "candidateSha256": "5a66a8ccb4defbf837c58cb473fd884ffe1763c17256ed6642d91dfe1be4e850",
+      "beforeSha256": "5a66a8ccb4defbf837c58cb473fd884ffe1763c17256ed6642d91dfe1be4e850",
+      "action": "unchanged",
+      "expectedAfterSha256": "5a66a8ccb4defbf837c58cb473fd884ffe1763c17256ed6642d91dfe1be4e850"
+    },
+    {
+      "path": "src/pnp-recovery-safety.mjs",
+      "candidateSha256": "ad7de7d0575476cb807201e88b1c12842d12af0d9864e54809f4b98913c6d355",
+      "beforeSha256": "ad7de7d0575476cb807201e88b1c12842d12af0d9864e54809f4b98913c6d355",
+      "action": "unchanged",
+      "expectedAfterSha256": "ad7de7d0575476cb807201e88b1c12842d12af0d9864e54809f4b98913c6d355"
+    },
+    {
+      "path": "src/pnp-recovery-verification.mjs",
+      "candidateSha256": "0658e51af5e109fa3d78588860f64face9f15c7062b97e575e0201b7c1f2915a",
+      "beforeSha256": "0658e51af5e109fa3d78588860f64face9f15c7062b97e575e0201b7c1f2915a",
+      "action": "unchanged",
+      "expectedAfterSha256": "0658e51af5e109fa3d78588860f64face9f15c7062b97e575e0201b7c1f2915a"
+    },
+    {
+      "path": "src/pnp-recovery-wake-scheduler.mjs",
+      "candidateSha256": "c0f98f5dac1454eba52317dda13f991cc1d765387b5256c67e892b599be678af",
+      "beforeSha256": "c0f98f5dac1454eba52317dda13f991cc1d765387b5256c67e892b599be678af",
+      "action": "unchanged",
+      "expectedAfterSha256": "c0f98f5dac1454eba52317dda13f991cc1d765387b5256c67e892b599be678af"
+    },
+    {
+      "path": "src/pnp-recovery-wave.mjs",
+      "candidateSha256": "cc9a01d0f80cf72f1de0b09288fee61d9c91919b8d59b60ec66aa6fde4b7d83c",
+      "beforeSha256": "cc9a01d0f80cf72f1de0b09288fee61d9c91919b8d59b60ec66aa6fde4b7d83c",
+      "action": "unchanged",
+      "expectedAfterSha256": "cc9a01d0f80cf72f1de0b09288fee61d9c91919b8d59b60ec66aa6fde4b7d83c"
+    },
+    {
+      "path": "src/pnp-screen-coordinator.mjs",
+      "candidateSha256": "5eb1551e7dedbef4eed8d941733fa20b4780a362196338c51db4651b78ab9003",
+      "beforeSha256": "5eb1551e7dedbef4eed8d941733fa20b4780a362196338c51db4651b78ab9003",
+      "action": "unchanged",
+      "expectedAfterSha256": "5eb1551e7dedbef4eed8d941733fa20b4780a362196338c51db4651b78ab9003"
+    },
+    {
+      "path": "src/pnp-windows-inventory.mjs",
+      "candidateSha256": "7fef1564a5159238064d207905326f1d8cd9b5f39274fe85ddcd951fdc3cef5d",
+      "beforeSha256": "7fef1564a5159238064d207905326f1d8cd9b5f39274fe85ddcd951fdc3cef5d",
+      "action": "unchanged",
+      "expectedAfterSha256": "7fef1564a5159238064d207905326f1d8cd9b5f39274fe85ddcd951fdc3cef5d"
+    },
+    {
+      "path": "src/post-task-scan-policy.mjs",
+      "candidateSha256": "a5bd899c70a9d1707fdaddc70b1adf1965260a7ce9d8bb10cccdc2de45842ec1",
+      "beforeSha256": "a5bd899c70a9d1707fdaddc70b1adf1965260a7ce9d8bb10cccdc2de45842ec1",
+      "action": "unchanged",
+      "expectedAfterSha256": "a5bd899c70a9d1707fdaddc70b1adf1965260a7ce9d8bb10cccdc2de45842ec1"
+    },
+    {
+      "path": "src/recovery-isolation.mjs",
+      "candidateSha256": "2fe4305e6ca9afabb72b0406a224786659d88f2d8f3a1351e4a8b2aa475e312f",
+      "beforeSha256": "2fe4305e6ca9afabb72b0406a224786659d88f2d8f3a1351e4a8b2aa475e312f",
+      "action": "unchanged",
+      "expectedAfterSha256": "2fe4305e6ca9afabb72b0406a224786659d88f2d8f3a1351e4a8b2aa475e312f"
+    },
+    {
+      "path": "src/recovery-observability.mjs",
+      "candidateSha256": "72ff0b2a548d78b323cf10d75184d69f51326b6343eb40b49c4d793b514675eb",
+      "beforeSha256": "72ff0b2a548d78b323cf10d75184d69f51326b6343eb40b49c4d793b514675eb",
+      "action": "unchanged",
+      "expectedAfterSha256": "72ff0b2a548d78b323cf10d75184d69f51326b6343eb40b49c4d793b514675eb"
+    },
+    {
+      "path": "src/runtime-metrics.mjs",
+      "candidateSha256": "78eab1cba502ade21ee3de1e686b207c3124562e2b67b7d85121c1918255b4d8",
+      "beforeSha256": "78eab1cba502ade21ee3de1e686b207c3124562e2b67b7d85121c1918255b4d8",
+      "action": "unchanged",
+      "expectedAfterSha256": "78eab1cba502ade21ee3de1e686b207c3124562e2b67b7d85121c1918255b4d8"
+    },
+    {
+      "path": "src/screen-backpressure.mjs",
+      "candidateSha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4",
+      "beforeSha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4",
+      "action": "unchanged",
+      "expectedAfterSha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4"
+    },
+    {
+      "path": "src/screen-control-queue.mjs",
+      "candidateSha256": "27e6e5e39364817b2ee6a8ced3ecae8cee522904a7d4d3b0321bacd697212879",
+      "beforeSha256": "27e6e5e39364817b2ee6a8ced3ecae8cee522904a7d4d3b0321bacd697212879",
+      "action": "unchanged",
+      "expectedAfterSha256": "27e6e5e39364817b2ee6a8ced3ecae8cee522904a7d4d3b0321bacd697212879"
+    },
+    {
+      "path": "src/screen-stream.mjs",
+      "candidateSha256": "2a2dc815a6b9068b4ca9f234102fdb97eb8785474f587bb31eaf4b2707dbb569",
+      "beforeSha256": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232",
+      "action": "preserve_production",
+      "expectedAfterSha256": "0a226c4707c18fd0dbc2faa555e8542788628a9ad460abb1f2d5e7cfff74b232"
+    },
+    {
+      "path": "src/screen-stream.verify.mjs",
+      "candidateSha256": "cc2678e743981d65d16d54eac928bce407275f5244921e67d56fb4808251beb1",
+      "beforeSha256": "cc2678e743981d65d16d54eac928bce407275f5244921e67d56fb4808251beb1",
+      "action": "unchanged",
+      "expectedAfterSha256": "cc2678e743981d65d16d54eac928bce407275f5244921e67d56fb4808251beb1"
+    },
+    {
+      "path": "src/screen-video-channel.mjs",
+      "candidateSha256": "9e8c1ccd1439568beca2e99595764aa598893cee576109c514ae503486c1ca25",
+      "beforeSha256": "9e8c1ccd1439568beca2e99595764aa598893cee576109c514ae503486c1ca25",
+      "action": "unchanged",
+      "expectedAfterSha256": "9e8c1ccd1439568beca2e99595764aa598893cee576109c514ae503486c1ca25"
+    },
+    {
+      "path": "src/screen-webrtc-publisher.mjs",
+      "candidateSha256": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04",
+      "beforeSha256": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04",
+      "action": "unchanged",
+      "expectedAfterSha256": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    {
+      "path": "src/serial-adb-activity.mjs",
+      "candidateSha256": "4668e7a416feac9860289d1d903849970645f45544eec77c77f26859b67132d9",
+      "beforeSha256": "4668e7a416feac9860289d1d903849970645f45544eec77c77f26859b67132d9",
+      "action": "unchanged",
+      "expectedAfterSha256": "4668e7a416feac9860289d1d903849970645f45544eec77c77f26859b67132d9"
+    },
+    {
+      "path": "src/serial-adb-health.mjs",
+      "candidateSha256": "ea6066d526ce12c6a1fd7d4e15b19f012ace259dbf7461549d951c40afb46334",
+      "beforeSha256": "efb0f36c5b73511f5366704b30a10c5e0e6caf4fe13a23c328b60dec14c77c0d",
+      "action": "preserve_production",
+      "expectedAfterSha256": "efb0f36c5b73511f5366704b30a10c5e0e6caf4fe13a23c328b60dec14c77c0d"
+    },
+    {
+      "path": "src/serial-delay-scheduler.mjs",
+      "candidateSha256": "ee71bc11573cb0880f6017a4ef1c3ca186bf2441c6e7e167be4c2d3f14ab7ea1",
+      "beforeSha256": "ee71bc11573cb0880f6017a4ef1c3ca186bf2441c6e7e167be4c2d3f14ab7ea1",
+      "action": "unchanged",
+      "expectedAfterSha256": "ee71bc11573cb0880f6017a4ef1c3ca186bf2441c6e7e167be4c2d3f14ab7ea1"
+    },
+    {
+      "path": "src/serial-reservation.mjs",
+      "candidateSha256": "97fe332bc4877dc4ac70d613fc8c27f8c86a84072e90b95a277ca108e7895802",
+      "beforeSha256": "97fe332bc4877dc4ac70d613fc8c27f8c86a84072e90b95a277ca108e7895802",
+      "action": "unchanged",
+      "expectedAfterSha256": "97fe332bc4877dc4ac70d613fc8c27f8c86a84072e90b95a277ca108e7895802"
+    },
+    {
+      "path": "src/single-flight.mjs",
+      "candidateSha256": "59f57777a082c0b8ec10786788151eadfec78d99445dd80f5297b2f974b1f6fe",
+      "beforeSha256": "59f57777a082c0b8ec10786788151eadfec78d99445dd80f5297b2f974b1f6fe",
+      "action": "unchanged",
+      "expectedAfterSha256": "59f57777a082c0b8ec10786788151eadfec78d99445dd80f5297b2f974b1f6fe"
+    },
+    {
+      "path": "src/sms-content-query.mjs",
+      "candidateSha256": "2ec02795c765aea39edb18f4b4210c765a43297386973c38eb2dfba97958980f",
+      "beforeSha256": "2ec02795c765aea39edb18f4b4210c765a43297386973c38eb2dfba97958980f",
+      "action": "unchanged",
+      "expectedAfterSha256": "2ec02795c765aea39edb18f4b4210c765a43297386973c38eb2dfba97958980f"
+    },
+    {
+      "path": "src/sms-notification-source.mjs",
+      "candidateSha256": "c1a9af263945e376ed94e92163794e7f2349e40de2c27371e59d34336df972d2",
+      "beforeSha256": "c1a9af263945e376ed94e92163794e7f2349e40de2c27371e59d34336df972d2",
+      "action": "unchanged",
+      "expectedAfterSha256": "c1a9af263945e376ed94e92163794e7f2349e40de2c27371e59d34336df972d2"
+    },
+    {
+      "path": "src/sms-relay-health.mjs",
+      "candidateSha256": "5f6128ff30906093fceb294fdb25839d0f36e69bbd7c091d80d743af4e6a98c2",
+      "beforeSha256": "5f6128ff30906093fceb294fdb25839d0f36e69bbd7c091d80d743af4e6a98c2",
+      "action": "unchanged",
+      "expectedAfterSha256": "5f6128ff30906093fceb294fdb25839d0f36e69bbd7c091d80d743af4e6a98c2"
+    },
+    {
+      "path": "src/sms-subscription-map.mjs",
+      "candidateSha256": "f7581e9170a22d0a662a448172db8f46d39c15a2ca55c517bd9ed0a84fabd040",
+      "beforeSha256": "f7581e9170a22d0a662a448172db8f46d39c15a2ca55c517bd9ed0a84fabd040",
+      "action": "unchanged",
+      "expectedAfterSha256": "f7581e9170a22d0a662a448172db8f46d39c15a2ca55c517bd9ed0a84fabd040"
+    },
+    {
+      "path": "src/wecom-cleanup-protocol.mjs",
+      "candidateSha256": "918dfee2f090e94ad946266d2292fe73d0422a4485e87cdd04cfa522d5dbb9be",
+      "beforeSha256": null,
+      "action": "add",
+      "expectedAfterSha256": "918dfee2f090e94ad946266d2292fe73d0422a4485e87cdd04cfa522d5dbb9be"
+    },
+    {
+      "path": "src/wecom-cleanup-verify.mjs",
+      "candidateSha256": "98213c21acb452458e9a3f06b8abdf6c56abce2a57e2d3fa569f91da69ff9bc2",
+      "beforeSha256": null,
+      "action": "add",
+      "expectedAfterSha256": "98213c21acb452458e9a3f06b8abdf6c56abce2a57e2d3fa569f91da69ff9bc2"
+    },
+    {
+      "path": "src/wecom-diagnostics.mjs",
+      "candidateSha256": "a134b57bfcad0c5aa510049b605207a6b68c1d2aee05f094f71fc4471c3e213c",
+      "beforeSha256": null,
+      "action": "add",
+      "expectedAfterSha256": "a134b57bfcad0c5aa510049b605207a6b68c1d2aee05f094f71fc4471c3e213c"
+    },
+    {
+      "path": "src/wecom-preview-task.mjs",
+      "candidateSha256": "2d5fb3354edde14d2673e7c25bc7e9e25e60e8ba3d1e1e76358b675e20847e24",
+      "beforeSha256": "f9f45f5b346f52c48b4f3c2c5bff7e19fd9dc0682adc55583cdf9a44138b8dde",
+      "action": "update",
+      "expectedAfterSha256": "2d5fb3354edde14d2673e7c25bc7e9e25e60e8ba3d1e1e76358b675e20847e24"
+    },
+    {
+      "path": "src/windows-device-install-probe.mjs",
+      "candidateSha256": "c360457e2bcf820fb697a514627fc1c7c1761afe51935d464eb8240719f9401c",
+      "beforeSha256": "c360457e2bcf820fb697a514627fc1c7c1761afe51935d464eb8240719f9401c",
+      "action": "unchanged",
+      "expectedAfterSha256": "c360457e2bcf820fb697a514627fc1c7c1761afe51935d464eb8240719f9401c"
+    },
+    {
+      "path": "src/worker-shutdown.mjs",
+      "candidateSha256": "a685d487bbaff8f110bcef00629bdb830ede0fcc70807429b45ea4a4e6829b56",
+      "beforeSha256": "a685d487bbaff8f110bcef00629bdb830ede0fcc70807429b45ea4a4e6829b56",
+      "action": "unchanged",
+      "expectedAfterSha256": "a685d487bbaff8f110bcef00629bdb830ede0fcc70807429b45ea4a4e6829b56"
+    },
+    {
+      "path": "src/xhs-data-collection.mjs",
+      "candidateSha256": "e1c6812a079ff078492797fb5d928b731675cf68ef20f87e93ad768733c79ffe",
+      "beforeSha256": "e1c6812a079ff078492797fb5d928b731675cf68ef20f87e93ad768733c79ffe",
+      "action": "unchanged",
+      "expectedAfterSha256": "e1c6812a079ff078492797fb5d928b731675cf68ef20f87e93ad768733c79ffe"
+    }
+  ],
+  "frozen": [
+    "config.json",
+    "adb-auth-env.cjs",
+    "data/",
+    "tools/",
+    "ADB_VENDOR_KEYS",
+    "SYSTEM task actions"
+  ],
+  "noDeletes": true,
+  "noAutomaticRollback": true,
+  "runtimePathCount": 104,
+  "payloadFileCount": 26,
+  "mustInclude": {
+    "scripts/小红书数据同步.py": "c4f0fd8cb50bd87085de18d781d52c52bb49cf9537abf11094e9592cafb3a179"
+  },
+  "inventoryTool": "deploy/scripts/runtime-file-manifest.py@32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "inventoryToolSha256": "9724a555e616f59b17babad595d5382979e695e08ba93bb5c957ef78c0c2fb47",
+  "sourceInventorySha256": "e2dc1f2d81aa9f6c72cc128d3aec7bd701895ef15841db9ace4ecb929b6c30b1",
+  "sourceInventoryDisposition": {
+    "windows-agent/scripts/alipay_name_lookup.py": {
+      "action": "runtime",
+      "candidateSha256": "d13f48f5c81acc5e8e74675dc677d720c217c68baf3df4ac0f5165fe216dbdb2"
+    },
+    "windows-agent/scripts/alipay_post_human_state.py": {
+      "action": "runtime",
+      "candidateSha256": "8e0290dfa7c0ac2b28efbcebd1e056259a5e311243cebdce121015562e224efc"
+    },
+    "windows-agent/scripts/alipay_visual_result.py": {
+      "action": "runtime",
+      "candidateSha256": "e5159fe17b3509fdd7accd997b3af03fc35071d5ae557181ed22f32fa140bd81"
+    },
+    "windows-agent/scripts/feishu-kuaishou-lead.mjs": {
+      "action": "runtime",
+      "reason": "Configured kuaishouLeadRunnerPath; existing production bytes equal source, preserved without payload update",
+      "candidateSha256": "2ac1f28489ac6a130d4a06da29a41cc0e69543fbdd9ad5606f6a4d55506adcc4"
+    },
+    "windows-agent/scripts/install_lookup_ocr.py": {
+      "action": "exclude",
+      "reason": "Manual installer, not executed or replaced for this release; preserve installed OCR runtime",
+      "candidateSha256": "14f389ad55b0d976f50a2524d7888c1fd19b4a31ebeee7d3670f52216b83934c"
+    },
+    "windows-agent/scripts/kuaishou_vehicle_lead.py": {
+      "action": "runtime",
+      "candidateSha256": "d12ec654560d3115254fb2025132c8f32e60544b9523772ee951b891bb3ea3e3"
+    },
+    "windows-agent/scripts/lookup-native-double-card.fixture.json": {
+      "action": "exclude",
+      "reason": "Fixture or standalone diagnostic, not deployed",
+      "candidateSha256": "f78e67a7375b9e0a1efeecc2625ad65b9a8e64e1ff8ab83b0596494790687228"
+    },
+    "windows-agent/scripts/lookup_home_modal.py": {
+      "action": "runtime",
+      "candidateSha256": "17955787340edbc8558269199812ffa93b8fda5ec61ecee65e90b0dc3a8bce84"
+    },
+    "windows-agent/scripts/lookup_ocr_runtime.py": {
+      "action": "runtime",
+      "candidateSha256": "786aa196b75fc9401c7d7b721f4c21a67cd527a429fe757605bc7bbcebb171ae"
+    },
+    "windows-agent/scripts/lookup_ocr_worker.py": {
+      "action": "runtime",
+      "candidateSha256": "4243c4da4582c1259198842fa3c577ba9ddce8a47e687611b2dec824d9304ccd"
+    },
+    "windows-agent/scripts/lookup_page_actions.py": {
+      "action": "runtime",
+      "candidateSha256": "e281eaf4d7396a8f4ba4a6f18bee47131005ddfa8db90cc94c46cb2f3c4811cc"
+    },
+    "windows-agent/scripts/native/xhs-native-navigation.jar": {
+      "action": "runtime",
+      "candidateSha256": "910f03a9c4cd6963b89ce1dd4bf4a6ad21b6f888029970401134fdcf820af754"
+    },
+    "windows-agent/scripts/native/xhs-native-pair.jar": {
+      "action": "runtime",
+      "candidateSha256": "9e696792b37dd269803d230ef1e97754bf895b1d2b852e8d23ae838c757cbed3"
+    },
+    "windows-agent/scripts/native/xhs-native-window.jar": {
+      "action": "runtime",
+      "candidateSha256": "15b043f5f78c17855b08d354dc5af4004216bc7ce14b5d03fa9e05f72e8d57c7"
+    },
+    "windows-agent/scripts/probe-douyin-qr-flow.mjs": {
+      "action": "exclude",
+      "reason": "Experimental standalone probe, not an Agent task runner",
+      "candidateSha256": "3f78b4148d3331e7127c776a311af4bdfc0159c38bfb125da3294ec301e4630d"
+    },
+    "windows-agent/scripts/probes/build-native-pair.py": {
+      "action": "exclude",
+      "reason": "Fixture or standalone diagnostic, not deployed",
+      "candidateSha256": "2b79e551f76a86cbf9d1c7697e234990f06cca585111a2c73701256bcad92b1e"
+    },
+    "windows-agent/scripts/scrcpy-source-probe.mjs": {
+      "action": "exclude",
+      "reason": "Standalone media diagnostic, frozen and not executed",
+      "candidateSha256": "e38a77ecf12a839fca97aab31af10acdeef8a21455fb2c76aa82ad97001725aa"
+    },
+    "windows-agent/scripts/set-runtime-config.mjs": {
+      "action": "exclude",
+      "reason": "Manual configuration maintenance CLI, configuration frozen",
+      "candidateSha256": "2e2b183daeb36d69d3216ba8ad64a447d92e848444ee4a145dae2fe17839bf7f"
+    },
+    "windows-agent/scripts/smsrelay_fleet_preflight.mjs": {
+      "action": "exclude",
+      "reason": "Fixture or standalone diagnostic, not deployed",
+      "candidateSha256": "a5f8d93fa863b19dfb0302a538b5409d042bf885eb45122e4f04288c4f456c98"
+    },
+    "windows-agent/scripts/wecom_call_trace.py": {
+      "action": "runtime",
+      "candidateSha256": "966af961c178fe3a6073d29548e62268a5de9459ec76aaf4fa46ad50fbc24355"
+    },
+    "windows-agent/scripts/wecom_cleanup.py": {
+      "action": "runtime",
+      "candidateSha256": "0e6ea92f0cd738492a8e9599bebe08f56e6095d93764ea773d2926fc64a30922"
+    },
+    "windows-agent/scripts/wecom_cleanup_contract.py": {
+      "action": "runtime",
+      "candidateSha256": "aa6f62a3ce376eb12c634b0dd452d617b4feff24414b227eb4fe7a2a4c2822b3"
+    },
+    "windows-agent/scripts/wecom_cleanup_verify.py": {
+      "action": "runtime",
+      "candidateSha256": "532d4b0529cf44b65a0a776c2410e3887ed77a785714d56cc7318e2adc7e5494"
+    },
+    "windows-agent/scripts/wecom_control_pipe.py": {
+      "action": "runtime",
+      "candidateSha256": "dc17092ebe7770944e900224657b9e1b9a898a90dc27c48599308fa52543502e"
+    },
+    "windows-agent/scripts/wecom_customer_invitation.py": {
+      "action": "runtime",
+      "candidateSha256": "5c8a4438318cb10dba2b3ddc0017aff9294aead36e3c99ad5878d0f3465cbd24"
+    },
+    "windows-agent/scripts/wecom_diagnostics.py": {
+      "action": "runtime",
+      "candidateSha256": "906ca4988f1e332f6bc423f6d230fa42b825294064fb4c8e35aeef8b80284bd2"
+    },
+    "windows-agent/scripts/wecom_host_identity.py": {
+      "action": "runtime",
+      "candidateSha256": "43c95de5f3ecdcc09094fbf2bb8a02aec7e6b1cce5a77eb9fbe954738ec9fc51"
+    },
+    "windows-agent/scripts/wecom_invite_preview.py": {
+      "action": "runtime",
+      "candidateSha256": "f77bc50419eaee27aa46c372132f07eae5ed63dd1d69645778f3b3062a87059c"
+    },
+    "windows-agent/scripts/wecom_physical_verify.py": {
+      "action": "runtime",
+      "candidateSha256": "a0096840632976738d01374c6ac7e6d85bd5d3a764a30855cf793b488f79261b"
+    },
+    "windows-agent/scripts/wecom_platform_preview.py": {
+      "action": "runtime",
+      "candidateSha256": "5cb7e5fc041e5dbe62ec57aed4ddbf938d7f684fbab023f9fb86d67cb7cfa8cc"
+    },
+    "windows-agent/scripts/wecom_preview_devices.json": {
+      "action": "runtime",
+      "candidateSha256": "2eab0e0415e7db2f7c00c8ccf8e55f36cb3987a22c03bdc5aee4b05f6167bc88"
+    },
+    "windows-agent/scripts/wecom_private_observation.py": {
+      "action": "exclude",
+      "reason": "QA-only helper, never deployed",
+      "candidateSha256": "cd1b680687d40cf4ae38ae9c30931b92c8b4ca4a767a2925e497d678e8575574"
+    },
+    "windows-agent/scripts/wecom_remark_preview.py": {
+      "action": "runtime",
+      "candidateSha256": "444023f34654ad73642eb5b9ca592b7a60aea06756cf0ca3a4b890e56f2371ea"
+    },
+    "windows-agent/scripts/wecom_rpc_budget.py": {
+      "action": "runtime",
+      "candidateSha256": "b99f85d3d3ebf3611d21f5aecd34ee651a2a0a33fd71b438feef409163dcd4f2"
+    },
+    "windows-agent/scripts/wecom_screen_lease.py": {
+      "action": "exclude",
+      "reason": "QA-only helper, never deployed",
+      "candidateSha256": "a9defa300a53b50fcc4006acab3655bbe1718a805684bb3a63036a6d1d5f2afe"
+    },
+    "windows-agent/scripts/wecom_standalone_cleanup.py": {
+      "action": "exclude",
+      "reason": "QA-only helper, never deployed",
+      "candidateSha256": "9774440cfbc9802866d489d3405d55456c4dac7dd570712c76614abdf0abb460"
+    },
+    "windows-agent/scripts/wecom_standalone_preview.py": {
+      "action": "exclude",
+      "reason": "QA-only helper, never deployed",
+      "candidateSha256": "42acefbf982dacd5a8c4646ccc3cc28c0720790b30e4e941e62521e7c23b8e3f"
+    },
+    "windows-agent/scripts/wecom_startup_guards.py": {
+      "action": "runtime",
+      "candidateSha256": "4c0c76df4c1435b64bd7d7ab627ac007da89c454bfcb5cfa3b90a891fe42be76"
+    },
+    "windows-agent/scripts/wecom_system_runtime.py": {
+      "action": "runtime",
+      "candidateSha256": "95e87ed27257eaea55f0be8e9c774cdaa020b2770777586719b782b80118316e"
+    },
+    "windows-agent/scripts/xhs_airtest_poco.py": {
+      "action": "runtime",
+      "candidateSha256": "90f78465709fd24223c9cdceccc844c44f5463aab0aeafaa158d2f7aebd538e8"
+    },
+    "windows-agent/scripts/xhs_list_ocr.py": {
+      "action": "runtime",
+      "candidateSha256": "4cc3d8ae042c6951b65ec93cc755e57cbed0440393b4c841bda20f76def3a516"
+    },
+    "windows-agent/scripts/xhs_native_elements.py": {
+      "action": "runtime",
+      "candidateSha256": "e94f3066cb9e99c50ed3f7f18ae6c56a32c543774fefa863d125df08f173d46e"
+    },
+    "windows-agent/scripts/xhs_native_navigation.py": {
+      "action": "runtime",
+      "candidateSha256": "a1e04af69daf72371591b8238c5de17320a514471f8a13499257e03d748e7a3c"
+    },
+    "windows-agent/scripts/xhs_native_window.py": {
+      "action": "runtime",
+      "candidateSha256": "1b15e62ccad9e1d3fc4b81bbe8b5a1adb57f7f913b57472ba54283415e0ba772"
+    },
+    "windows-agent/scripts/xhs_publish_poco.py": {
+      "action": "runtime",
+      "candidateSha256": "8411a66b4b7dd8adab0cee528c66ec775842bfc7d854d4ecd44e7319732ca4d9"
+    },
+    "windows-agent/scripts/xhs_xml_uiautomator.py": {
+      "action": "runtime",
+      "candidateSha256": "3b27f4c309df6ab095d676ea43316091477792ec11e7634ccb52b70afe117dfb"
+    },
+    "windows-agent/scripts/小红书数据同步.py": {
+      "action": "runtime",
+      "candidateSha256": "c4f0fd8cb50bd87085de18d781d52c52bb49cf9537abf11094e9592cafb3a179"
+    },
+    "windows-agent/src/adb-priority-queue.mjs": {
+      "action": "runtime",
+      "candidateSha256": "0bb8cfd86baaddc8a32d040e5835452f06e1ae5e3b78cbe2aeb0a67a24e5495d"
+    },
+    "windows-agent/src/adb-serial-identity.mjs": {
+      "action": "runtime",
+      "candidateSha256": "9474bf4c3db8d144eda0eaa6c40a1ba912a0c0c53460747b8e638d79d79ba09f"
+    },
+    "windows-agent/src/adb-server-recovery.mjs": {
+      "action": "runtime",
+      "candidateSha256": "693535b4379089e33b7badeaac2e2665c1b2efb797adba1264e8c431d356fb2f"
+    },
+    "windows-agent/src/agent-instance-lock.mjs": {
+      "action": "runtime",
+      "candidateSha256": "c18e716c1295931d8aad73c3e2df6c4cd10562c52938b1749eff2f47f3e9d0ac"
+    },
+    "windows-agent/src/airtest-worker-lifecycle.mjs": {
+      "action": "runtime",
+      "candidateSha256": "af10fa43a5d7982b590b44f432ab206d15adf285fe3b617f8b286e13b3d2b374"
+    },
+    "windows-agent/src/alipay-poco-fallback-policy.mjs": {
+      "action": "runtime",
+      "candidateSha256": "53372e9f22adecb357d1c3a74f055110de2bb5c42d5ab74d77471c8d149a0df6"
+    },
+    "windows-agent/src/atomic-json-writer.mjs": {
+      "action": "runtime",
+      "candidateSha256": "c7aeda35d9fffed03eca35cfb290456e54d0f96e7078fbda858a4906d22f2294"
+    },
+    "windows-agent/src/config.mjs": {
+      "action": "runtime",
+      "candidateSha256": "b233775c589ab22e6662a23bb82e507c9a3f635f1112709bfdae24d854a5d254"
+    },
+    "windows-agent/src/config.pre-20260722-pacing-default.mjs": {
+      "action": "exclude",
+      "reason": "Historical backup, not imported by current Agent entry; preserve production copy",
+      "candidateSha256": "ade70095493249dfcb9047d950fad7fc258f2fadddd214036ef5318aebdaf7d1"
+    },
+    "windows-agent/src/device-actor.mjs": {
+      "action": "runtime",
+      "candidateSha256": "b1d97b76ce1d71d0fa3fd70757311e78f76255661288e9cd5199b6c3cba2a2cf"
+    },
+    "windows-agent/src/device-recovery-state.mjs": {
+      "action": "runtime",
+      "candidateSha256": "6315883802f283291f4eab489c6c2975e9dfaee2d035143732a2214f4e723293"
+    },
+    "windows-agent/src/device-scan-cache.mjs": {
+      "action": "runtime",
+      "candidateSha256": "1526782cd19841841535a790d78c350103aa50f12ae4e0ac5557828afd09e1a5"
+    },
+    "windows-agent/src/device-scan-pipeline.mjs": {
+      "action": "runtime",
+      "candidateSha256": "8ef31ead50d4b1bec3bc648d72d6cbe64fe4cc102c04a5c0d269240295a5a6c4"
+    },
+    "windows-agent/src/gallery-import.mjs": {
+      "action": "runtime",
+      "candidateSha256": "d0e64f21c1c3e85ca89929f08c7739c6e5ba21600a70b74e2318ba388a425d74"
+    },
+    "windows-agent/src/gallery-task-delivery.mjs": {
+      "action": "runtime",
+      "candidateSha256": "382c1e5b1519600e60405dae813687d4499c3770356969c0878c5dd934656a71"
+    },
+    "windows-agent/src/guarded-task-runner.mjs": {
+      "action": "runtime",
+      "candidateSha256": "150e14ea6fcdd6b0bb117d771bce084347cb26442a7674b0963cf9887df1d25f"
+    },
+    "windows-agent/src/index.mjs": {
+      "action": "runtime",
+      "candidateSha256": "85b2b2eea012a345f87b455ebbb994ef6ce9dd70b6e1dddc4769594781c29eff"
+    },
+    "windows-agent/src/lookup-account-policy.mjs": {
+      "action": "runtime",
+      "candidateSha256": "51f9a5a3368554efbd8d07e2e420f70da7086e1b592c5959cada4752c9301c98"
+    },
+    "windows-agent/src/lookup-cleanup-policy.mjs": {
+      "action": "runtime",
+      "candidateSha256": "a48d1d0ada71bbbc504e436f2fb0aff5beb963ff42dff23a21815bb304d08912"
+    },
+    "windows-agent/src/lookup-execution-metrics.mjs": {
+      "action": "runtime",
+      "candidateSha256": "880adc6afe1c2ae60a973bab7ed6aa375b77167966256df19737cb1c1cafae31"
+    },
+    "windows-agent/src/lookup-human-observer.mjs": {
+      "action": "runtime",
+      "candidateSha256": "dbd77ffb69215d26610a814d1c4013e89a3d1a7b81ea509c9570d7035808a8a5"
+    },
+    "windows-agent/src/lookup-page-recovery.mjs": {
+      "action": "runtime",
+      "candidateSha256": "1d0b95976a42752a240668f4caf957122b19ef04247bc40499c677ded1628e36"
+    },
+    "windows-agent/src/lookup-post-human-state.mjs": {
+      "action": "runtime",
+      "candidateSha256": "11be7e62af4193387a0ebeef09f8130abb9577d94d1ddef8c816513c7e3a0580"
+    },
+    "windows-agent/src/lookup-reader-admission-log.mjs": {
+      "action": "runtime",
+      "candidateSha256": "4ebddfa2371e85841745d8a8c1bab9e9fffcfb2622d44c32465adce319c6dd7d"
+    },
+    "windows-agent/src/lookup-reader-capacity-report.mjs": {
+      "action": "runtime",
+      "candidateSha256": "feb2f97e05ad631f4ece7a6e49491d8204d3118b7bfaa6322094afcc10b33900"
+    },
+    "windows-agent/src/lookup-reader-lifecycle.mjs": {
+      "action": "runtime",
+      "candidateSha256": "5fbf3f43a744560ae1e2ecd03e110abc27905eb06bb9b844748015344bbaa4c2"
+    },
+    "windows-agent/src/lookup-recovery-trace.mjs": {
+      "action": "runtime",
+      "candidateSha256": "7d9a1e353564327df4129a4f600a265e5e86dc26a0970d6b96f3b47d9d8b49c7"
+    },
+    "windows-agent/src/lookup-status-outbox.mjs": {
+      "action": "runtime",
+      "candidateSha256": "43c10101e982b3a6881a2a1d5b7ae691553833d4548bf5f11f5ea51fc49b4dc1"
+    },
+    "windows-agent/src/lookup-xml-failure.mjs": {
+      "action": "runtime",
+      "candidateSha256": "2e6097bbe3aa23c433e68d8bdb414137a1a12fa349447364de90dbb13a852539"
+    },
+    "windows-agent/src/managed-lookup-delivery.mjs": {
+      "action": "runtime",
+      "candidateSha256": "cfdc56ea307bf82fac3965a75b3d0a2115826e3ebeb1f3c2bfc48e2a74a8bce6"
+    },
+    "windows-agent/src/pnp-exact-actions.mjs": {
+      "action": "runtime",
+      "candidateSha256": "2e67e3fb1612ac79499055878caa042fd91c4e42caa28df4621d4cabf7172cab"
+    },
+    "windows-agent/src/pnp-missing-device-recovery.mjs": {
+      "action": "runtime",
+      "candidateSha256": "eddfcf36dd904bf2ca834fb8958d21c55fa62c45139d880399d565b1006825f6"
+    },
+    "windows-agent/src/pnp-recovery-admission.mjs": {
+      "action": "runtime",
+      "candidateSha256": "dede33101b9765342ffa50121a8edadf066d519c047646fcca82635ab6cc236f"
+    },
+    "windows-agent/src/pnp-recovery-control.mjs": {
+      "action": "runtime",
+      "candidateSha256": "92e2bcc37d7bc8b9d3e61d4385116db7181530d5fe125c6c2a3210c5142fde0f"
+    },
+    "windows-agent/src/pnp-recovery-policy.mjs": {
+      "action": "runtime",
+      "candidateSha256": "5a66a8ccb4defbf837c58cb473fd884ffe1763c17256ed6642d91dfe1be4e850"
+    },
+    "windows-agent/src/pnp-recovery-safety.mjs": {
+      "action": "runtime",
+      "candidateSha256": "ad7de7d0575476cb807201e88b1c12842d12af0d9864e54809f4b98913c6d355"
+    },
+    "windows-agent/src/pnp-recovery-verification.mjs": {
+      "action": "runtime",
+      "candidateSha256": "0658e51af5e109fa3d78588860f64face9f15c7062b97e575e0201b7c1f2915a"
+    },
+    "windows-agent/src/pnp-recovery-wake-scheduler.mjs": {
+      "action": "runtime",
+      "candidateSha256": "c0f98f5dac1454eba52317dda13f991cc1d765387b5256c67e892b599be678af"
+    },
+    "windows-agent/src/pnp-recovery-wave.mjs": {
+      "action": "runtime",
+      "candidateSha256": "cc9a01d0f80cf72f1de0b09288fee61d9c91919b8d59b60ec66aa6fde4b7d83c"
+    },
+    "windows-agent/src/pnp-screen-coordinator.mjs": {
+      "action": "runtime",
+      "candidateSha256": "5eb1551e7dedbef4eed8d941733fa20b4780a362196338c51db4651b78ab9003"
+    },
+    "windows-agent/src/pnp-windows-inventory.mjs": {
+      "action": "runtime",
+      "candidateSha256": "7fef1564a5159238064d207905326f1d8cd9b5f39274fe85ddcd951fdc3cef5d"
+    },
+    "windows-agent/src/post-task-scan-policy.mjs": {
+      "action": "runtime",
+      "candidateSha256": "a5bd899c70a9d1707fdaddc70b1adf1965260a7ce9d8bb10cccdc2de45842ec1"
+    },
+    "windows-agent/src/recovery-isolation.mjs": {
+      "action": "runtime",
+      "candidateSha256": "2fe4305e6ca9afabb72b0406a224786659d88f2d8f3a1351e4a8b2aa475e312f"
+    },
+    "windows-agent/src/recovery-observability.mjs": {
+      "action": "runtime",
+      "candidateSha256": "72ff0b2a548d78b323cf10d75184d69f51326b6343eb40b49c4d793b514675eb"
+    },
+    "windows-agent/src/runtime-metrics.mjs": {
+      "action": "runtime",
+      "candidateSha256": "78eab1cba502ade21ee3de1e686b207c3124562e2b67b7d85121c1918255b4d8"
+    },
+    "windows-agent/src/screen-backpressure.mjs": {
+      "action": "runtime",
+      "candidateSha256": "d0bd6f2a5ce497fa6d255f1e70a5b8d58d0725885a183c48f1bb4ee75debd1e4"
+    },
+    "windows-agent/src/screen-control-queue.mjs": {
+      "action": "runtime",
+      "candidateSha256": "27e6e5e39364817b2ee6a8ced3ecae8cee522904a7d4d3b0321bacd697212879"
+    },
+    "windows-agent/src/screen-stream.mjs": {
+      "action": "runtime",
+      "candidateSha256": "2a2dc815a6b9068b4ca9f234102fdb97eb8785474f587bb31eaf4b2707dbb569"
+    },
+    "windows-agent/src/screen-stream.pre-20260722-pacing-default.mjs": {
+      "action": "exclude",
+      "reason": "Historical backup, not imported by current Agent entry; preserve production copy",
+      "candidateSha256": "9b28020b8f97e79068d944fd484596cae4e4ab4ae5a53ecf165fc016030b95e0"
+    },
+    "windows-agent/src/screen-stream.pre-20260722-wire-pacing.mjs": {
+      "action": "exclude",
+      "reason": "Historical backup, not imported by current Agent entry; preserve production copy",
+      "candidateSha256": "c374bfd2e01376d07bfecb209388c3a1b6a2a34b71218852ad58aa3a9fca8538"
+    },
+    "windows-agent/src/screen-stream.pre-pli-loop-20260722.mjs": {
+      "action": "exclude",
+      "candidateSha256": "a7d113722291c2be02e3298d4364dc929c0ed3ca567e388272dfd2cea5efcb8b",
+      "reason": "Historical backup, not imported by current Agent entry; preserve production copy"
+    },
+    "windows-agent/src/screen-stream.verify.mjs": {
+      "action": "runtime",
+      "candidateSha256": "cc2678e743981d65d16d54eac928bce407275f5244921e67d56fb4808251beb1"
+    },
+    "windows-agent/src/screen-video-channel.mjs": {
+      "action": "runtime",
+      "candidateSha256": "9e8c1ccd1439568beca2e99595764aa598893cee576109c514ae503486c1ca25"
+    },
+    "windows-agent/src/screen-webrtc-publisher.mjs": {
+      "action": "runtime",
+      "candidateSha256": "b25a58b9227a6b89f735af9c9dbf02cb0754a8082db5aa274b096f2fdf334e04"
+    },
+    "windows-agent/src/screen-webrtc-publisher.pre-20260722-wire-pacing.mjs": {
+      "action": "exclude",
+      "reason": "Historical backup, not imported by current Agent entry; preserve production copy",
+      "candidateSha256": "d78b425dfdca9e3079cb9505a7b57d5d4d2bc7de3ce5174f52ab9e2c133d820c"
+    },
+    "windows-agent/src/serial-adb-activity.mjs": {
+      "action": "runtime",
+      "candidateSha256": "4668e7a416feac9860289d1d903849970645f45544eec77c77f26859b67132d9"
+    },
+    "windows-agent/src/serial-adb-health.mjs": {
+      "action": "runtime",
+      "candidateSha256": "ea6066d526ce12c6a1fd7d4e15b19f012ace259dbf7461549d951c40afb46334"
+    },
+    "windows-agent/src/serial-delay-scheduler.mjs": {
+      "action": "runtime",
+      "candidateSha256": "ee71bc11573cb0880f6017a4ef1c3ca186bf2441c6e7e167be4c2d3f14ab7ea1"
+    },
+    "windows-agent/src/serial-reservation.mjs": {
+      "action": "runtime",
+      "candidateSha256": "97fe332bc4877dc4ac70d613fc8c27f8c86a84072e90b95a277ca108e7895802"
+    },
+    "windows-agent/src/single-flight.mjs": {
+      "action": "runtime",
+      "candidateSha256": "59f57777a082c0b8ec10786788151eadfec78d99445dd80f5297b2f974b1f6fe"
+    },
+    "windows-agent/src/sms-content-query.mjs": {
+      "action": "runtime",
+      "candidateSha256": "2ec02795c765aea39edb18f4b4210c765a43297386973c38eb2dfba97958980f"
+    },
+    "windows-agent/src/sms-notification-source.mjs": {
+      "action": "runtime",
+      "candidateSha256": "c1a9af263945e376ed94e92163794e7f2349e40de2c27371e59d34336df972d2"
+    },
+    "windows-agent/src/sms-relay-health.mjs": {
+      "action": "runtime",
+      "candidateSha256": "5f6128ff30906093fceb294fdb25839d0f36e69bbd7c091d80d743af4e6a98c2"
+    },
+    "windows-agent/src/sms-subscription-map.mjs": {
+      "action": "runtime",
+      "candidateSha256": "f7581e9170a22d0a662a448172db8f46d39c15a2ca55c517bd9ed0a84fabd040"
+    },
+    "windows-agent/src/wecom-cleanup-protocol.mjs": {
+      "action": "runtime",
+      "candidateSha256": "918dfee2f090e94ad946266d2292fe73d0422a4485e87cdd04cfa522d5dbb9be"
+    },
+    "windows-agent/src/wecom-cleanup-verify.mjs": {
+      "action": "runtime",
+      "candidateSha256": "98213c21acb452458e9a3f06b8abdf6c56abce2a57e2d3fa569f91da69ff9bc2"
+    },
+    "windows-agent/src/wecom-diagnostics.mjs": {
+      "action": "runtime",
+      "candidateSha256": "a134b57bfcad0c5aa510049b605207a6b68c1d2aee05f094f71fc4471c3e213c"
+    },
+    "windows-agent/src/wecom-preview-task.mjs": {
+      "action": "runtime",
+      "candidateSha256": "2d5fb3354edde14d2673e7c25bc7e9e25e60e8ba3d1e1e76358b675e20847e24"
+    },
+    "windows-agent/src/windows-device-install-probe.mjs": {
+      "action": "runtime",
+      "candidateSha256": "c360457e2bcf820fb697a514627fc1c7c1761afe51935d464eb8240719f9401c"
+    },
+    "windows-agent/src/worker-shutdown.mjs": {
+      "action": "runtime",
+      "candidateSha256": "a685d487bbaff8f110bcef00629bdb830ede0fcc70807429b45ea4a4e6829b56"
+    },
+    "windows-agent/src/xhs-data-collection.mjs": {
+      "action": "runtime",
+      "candidateSha256": "e1c6812a079ff078492797fb5d928b731675cf68ef20f87e93ad768733c79ffe"
+    },
+    "windows-agent/scripts/xhs_native_ocr.ps1": {
+      "action": "runtime",
+      "reason": "Explicit native OCR asset outside inventory extension set",
+      "candidateSha256": "71f99a994c360bf41d434800dea268bd2289dfba9835dd9b945ccf1c49606a21"
+    },
+    "windows-agent/scripts/xhs_ocr_digits.png": {
+      "action": "runtime",
+      "reason": "Explicit native OCR asset outside inventory extension set",
+      "candidateSha256": "6a65dfb150ecbd4c56140b28fea51e89d11d8187031009447bab0d880164522f"
+    }
+  },
+  "invalidatedPreviousZipSha256": "425b45a8f0726d0312b02c474e84e974c2bdf51c435be2ddad3862976adbf114"
+}

@@ -1,0 +1,25 @@
+{
+  "baseCommit": "66c4eb89e3624e8ac92db999c38c8b9805c36c40",
+  "scope": "pure_leaf_only_not_atomic_exclusion",
+  "existing14ProductSourcesUnchanged": true,
+  "M2_M1_DDLUnchanged": true,
+  "importAllowlist": [
+    "server/wecom-cleanup-v2-claim.mjs",
+    "server/wecom-cleanup-v2-claim.test.mjs",
+    "verification/wecom-v2-claim-bundle-20261102/fixture.mjs"
+  ],
+  "files": {
+    "server/wecom-cleanup-v2-claim.mjs": "4c079cfcf3b77505b0cbc2aa1e416d8d446dfc1240d25fcb03401494264a18fd",
+    "server/wecom-cleanup-v2-claim.test.mjs": "4a14bb9f90d2e9ee0d5f2d79882a10bd5a57482ef710b4e88cbd8db79ca5ac8f",
+    "docs/PROJECT_DEVELOPMENT.md": "c46c2d2cbff02a25abd0b337173fed2e2bf2d19f386a30ee59d5c723c5a6fefc",
+    "verification/wecom-v2-claim-bundle-20261102/CLAIM_PURE_OUTPUT.txt": "c87850ba311fcd07942558c9347cc9face654b342cb31e8d99a0a8853643e30e",
+    "verification/wecom-v2-claim-bundle-20261102/INITIAL_OUTPUT.txt": "953e57af0d8b419332c21a517bccf51cdb499e38c56e0440d88ce5d8c4fbd515",
+    "verification/wecom-v2-claim-bundle-20261102/INITIAL_RECEIPT.json": "1bf0dcfb41de70a0748de02cdbe77b4acb1634b293c5c4303738e14d36ea336c",
+    "verification/wecom-v2-claim-bundle-20261102/PREVIEW_BUSINESS_OUTPUT.txt": "2e85bc9fc372832a1a0f519985af3084e977278d7708885255934938c2380dc8",
+    "verification/wecom-v2-claim-bundle-20261102/TASK.md": "db46862a24ec1342095ae643f29e0ccf0398cd81c9c9c098230fea5b6717019f",
+    "verification/wecom-v2-claim-bundle-20261102/TEST_RECEIPT.json": "adf058cd2a212e72ece37a39306274bf4e3698e4fa48294ab489c904e48a2f83",
+    "verification/wecom-v2-claim-bundle-20261102/fixture.mjs": "9acf7d46e50cc3e3957a6f3af968cf8af29a6ccb6f4cb6e9935b28c7a613854d",
+    "verification/wecom-v2-claim-bundle-20261102/wecom-cleanup-v2-claim.mjs.initial.txt": "e894d2dfba811fd1885916c46aa2e5a666e83f085014a8e95380e275f6daa320",
+    "verification/wecom-v2-claim-bundle-20261102/wecom-cleanup-v2-claim.test.mjs.initial.txt": "e3513506868ad7b89c9c8d5ff0806f67d4a2e4b2f00cadcd2bb83f38d4760b3f"
+  }
+}

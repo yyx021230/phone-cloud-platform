@@ -1,0 +1,17 @@
+{
+  "observedAt": "2026-10-28T09:32:27.293195+00:00",
+  "isolatedStopped": true,
+  "businessSubmitted": 0,
+  "devices": [
+    {
+      "number": "112",
+      "occupancyKind": null,
+      "ownTestLease": false
+    },
+    {
+      "number": "154",
+      "occupancyKind": null,
+      "ownTestLease": false
+    }
+  ]
+}

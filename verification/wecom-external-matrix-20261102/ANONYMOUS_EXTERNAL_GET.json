@@ -1,0 +1,53 @@
+{
+  "atUtc": "2026-11-02T08:41:47.918657+00:00",
+  "getOnly": true,
+  "phoneActions": 0,
+  "requests": [
+    {
+      "route": "/healthz",
+      "httpStatus": 200,
+      "elapsedMs": 73,
+      "sha256": "61210a178a741129220a2121f0fa35c0cb6d3da4aac8c61a8f74ee1fe35eba09",
+      "bytes": 43
+    },
+    {
+      "route": "/readyz",
+      "httpStatus": 200,
+      "elapsedMs": 64,
+      "sha256": "bb13446cfe5a0f89662a63efe63127903f81a97a9b0f39ff2086af9cb49564eb",
+      "bytes": 315
+    },
+    {
+      "route": "/api/v1/wecom/devices",
+      "httpStatus": 401,
+      "elapsedMs": 65,
+      "sha256": "782eeaa7f1915f6783146f8180751785584f0f24bd4e503165c7fc4a597da600",
+      "bytes": 24,
+      "fixedErrorCode": "unauthorized"
+    },
+    {
+      "route": "/api/v1/wecom/customer-invitations/00000000-0000-4000-8000-000000000000",
+      "httpStatus": 401,
+      "elapsedMs": 143,
+      "sha256": "782eeaa7f1915f6783146f8180751785584f0f24bd4e503165c7fc4a597da600",
+      "bytes": 24,
+      "fixedErrorCode": "unauthorized"
+    },
+    {
+      "route": "/wecom-integration-api.md",
+      "httpStatus": 200,
+      "elapsedMs": 86,
+      "sha256": "226c4d47377edd74cb916c0b457fd5a5a47bf6348f8d74c8f2d2a263ad76bcdb",
+      "bytes": 14635,
+      "mentionsAlwaysRealSend": true,
+      "mentionsLocalUnreleased": true
+    },
+    {
+      "route": "/api-docs.html",
+      "httpStatus": 200,
+      "elapsedMs": 423,
+      "sha256": "322cb59f3281babe976d60ee041fbb78f228758711fe16bc76d7c2297e220c32",
+      "bytes": 2872
+    }
+  ]
+}

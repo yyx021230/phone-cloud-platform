@@ -1,0 +1,30 @@
+{
+  "at": "2026-11-04T05:55:10.610Z",
+  "candidateOfflineOnly": true,
+  "rows": [
+    {
+      "deviceNumber": "59",
+      "eligible": true,
+      "kind": "registered_config_failure",
+      "originalTask": "a96959f8-91d1-43cb-ae37-84650ae6bd04"
+    },
+    {
+      "deviceNumber": "43",
+      "eligible": true,
+      "kind": "legacy_host_missing",
+      "originalTask": "d633cc58-318e-41eb-be22-0f300d0c90ee"
+    },
+    {
+      "deviceNumber": "23",
+      "eligible": true,
+      "kind": "legacy_host_missing",
+      "originalTask": "781489c2-6f52-4448-ac58-c4efa62103e8"
+    },
+    {
+      "deviceNumber": "155",
+      "eligible": true,
+      "kind": "legacy_host_missing",
+      "originalTask": "f0604d28-1db4-4b37-ac75-ffa3e9320914"
+    }
+  ]
+}

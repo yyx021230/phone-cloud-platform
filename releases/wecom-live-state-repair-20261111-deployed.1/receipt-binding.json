@@ -1,0 +1,12 @@
+{
+  "release": "wecom-live-state-repair-20261111-deployed.1",
+  "receiptCommit": "297b7b8dd07f5bd88f6bc17928603ebac18cbef6",
+  "receiptTag": "wecom-live-state-repair-20261111-deployed.1",
+  "codeCommit": "101e749fe0f0ba897754eb2418746cb4e87d94fe",
+  "receiptSha256": "cccb421e38a09b71cf5afd845b2b6b81c3d918ec23281c3da7565b670c4fbfd4",
+  "reportSha256": "3e7e3305f4440786141d0500c8f79d423b15da5fdf37ea1779c8af97ecca293f",
+  "activeBeforeBindingSha256": "66aecb79f664272134964756b5e84166730cb29890cdc56fbad92041909931e8",
+  "binding": "bound_to_committed_receipt",
+  "activeAfterBindingSha256": "b033757d557909e0d1c79b7ba375aae2b3efe302edc2c85897ff4244c3d391d5",
+  "boundAtUtc": "2026-11-11T03:09:35.038558+00:00"
+}

@@ -1,0 +1,54 @@
+{
+  "type": "local-http-to-windows-candidate",
+  "productionBusinessSubmitted": 0,
+  "rounds": [
+    {
+      "phones": [
+        51,
+        52
+      ],
+      "accountPreparation": "passed",
+      "readiness": false,
+      "businessCount": 0,
+      "failure": "fresh Poco visual_before/visual_after RPC timeout; Android cleanup not confirmed",
+      "getStateMs": [
+        15,
+        16
+      ],
+      "ordinaryCommandDiagnosticMs": 1000,
+      "ordinaryCommandDiagnosticTimedOut": true,
+      "localStopped": true
+    },
+    {
+      "phones": [
+        154,
+        164
+      ],
+      "accountPreparation": "passed",
+      "readiness": false,
+      "businessCount": 0,
+      "failureByPhone": {
+        "154": "real human verification",
+        "164": "Poco visual_before RPC timeout"
+      },
+      "localStopped": true
+    }
+  ],
+  "cleanup": {
+    "ownTestLeasesReleased": true,
+    "isolatedNativeProcessesRemaining": 0
+  },
+  "limitations": [
+    "SSH adapter does not exercise full shared resident manager",
+    "test control lease starts video",
+    "real business recovery not passed",
+    "no new production business queries"
+  ],
+  "sharedCapacityEvidence": {
+    "logTimeUTC": "2026-10-29T02:20:46.308Z",
+    "residentLimit": 8,
+    "configuredCloudConcurrency": 10,
+    "capacityFailurePhone": 188,
+    "configChanged": false
+  }
+}

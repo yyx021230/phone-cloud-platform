@@ -1,0 +1,24 @@
+{
+  "verifiedAt": "2026-11-06T17:23:33+08:00",
+  "branch": "codex/wecom-add-wechat-merge-20261106",
+  "candidateTag": "wecom-add-wechat-merge-20261106-rc.1",
+  "mergeCommit": "e5013300bffb45ef02c4a042c77f2d96d89a0f08",
+  "previousWeComBaseline": "326cf3a8f63453049b899bac871aafca5eebd2dd",
+  "validatedSource": "70271cb8cb3c83eb8279373b11c20e3bb9231849",
+  "mergedTree": "b4e8a96695a0054b31ac4a2a910904125d1136f7",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "checks": {
+    "cpsPassed": 64,
+    "cpsFailed": 0,
+    "cpsSkipped": 1,
+    "wecomPythonPassed": 615,
+    "rootSyntaxPassed": true,
+    "swiftTypecheckPassed": true,
+    "mergedTreeMatchesSource": true,
+    "protectedPathsChanged": 0
+  },
+  "firstCpsRun": "Three test files could not load pg in a fresh worktree. Installed locked dependencies from cache and reran.",
+  "skipped": "Independent real PostgreSQL fixture was not configured.",
+  "realDeviceEvidence": "verification/wecom-cps-real-integration-20261106/live-result.json",
+  "productionDeployment": false
+}

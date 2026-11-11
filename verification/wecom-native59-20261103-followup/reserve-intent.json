@@ -1,0 +1,10 @@
+{
+  "body": {
+    "expectedConfigRevision": 176,
+    "concurrency": 11
+  },
+  "oldConcurrency": 12,
+  "target": "59",
+  "candidate": "7e03499f09b981a74119276c98008e6be80de687",
+  "operationId": "reserve59-c0a1011713f64ab390e3fd80bc7afe76"
+}

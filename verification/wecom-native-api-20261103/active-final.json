@@ -1,0 +1,6 @@
+{
+  "sha256": "a5390dcc93b5f1393e7b95732ca4df679dc5065200f80cf509d96e0f759e2a2f",
+  "businessSourceCommit": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "runtimeCandidateCommit": "32c0091a534aa7f9038deb91aa33f202f72e0e6b",
+  "runtimeCandidateTag": "platform-integration-20261102-rc.1"
+}

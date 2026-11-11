@@ -1,0 +1,69 @@
+{
+  "baseCommit": "3caba67de5762213ca374afa87760fddadbeca53",
+  "branch": "codex/wecom-v1-causal-http-20261103",
+  "candidateTag": "wecom-v1-causal-http-20261103-rc.1",
+  "createdAt": "2026-11-02T18:07:01.901936+00:00",
+  "approvedOriginalHookSha256": "81e3afc1e34f4d1d7fca17d11b72a08ed001c31306cae56960d382390a3e0d08",
+  "approvedAdditionalScope": "startup causal task and linked original causal business lock protection only",
+  "sources": {
+    "docs/PROJECT_DEVELOPMENT.md": {
+      "baseSha256": "c93f61e5a4d911405ec5fa0e712c1307dc926a75b1ac4cc7272fa0f73c554e6b",
+      "currentSha256": "572a3070b32abde4330897571812c4a744d6102c5646f90e58a0dd3446a61b97"
+    },
+    "server/index.mjs": {
+      "baseSha256": "4bcecc8702ea577a77e5f17664b7833ced33b681f88e5beedcdc6875b6f047cc",
+      "currentSha256": "c656382f7815a660bc046ef17f50758d19d532aa7595c604debde2c464c1b382"
+    },
+    "server/lookup-startup-ownership.test.mjs": {
+      "baseSha256": "2b22450a13e6b1df4411eb9a1fe84abfb06caa7af127f8e068e568216fd9fe0c",
+      "currentSha256": "1c8fd44623647637886fc4447a50c66998d3ea265bc22e929ff704d75144bc12"
+    },
+    "server/wecom-causal-clock.mjs": {
+      "baseSha256": "4027ae717f1a5f8db05a925c27214cbd98dfbcd6e1760ddbb11a2358e85c77f0",
+      "currentSha256": "4510e6a7af21d7ad47a7e253ccffd90fa08c5b6ef5a08b069cb27d6a12720609"
+    },
+    "server/wecom-integration.e2e.test.mjs": {
+      "baseSha256": "200037da1655fd1470b766ae55845f3f7dd7c0d331eb33b8a08d4198ab6eda74",
+      "currentSha256": "943f7ce1ac7ba1912e07e78d68301b29fd0cd17d9a360eab12979e845e8995cb"
+    },
+    "server/wecom-physical-cleanup.http.test.mjs": {
+      "baseSha256": "8d42dcd4b35496eee0aeeca44813ea33cd33bbef304b9ca33cf24167d2a382b2",
+      "currentSha256": "74759b8997232c6cf9345e6155c3b66e5e01c753b8411e95749975475f208232"
+    },
+    "server/wecom-preview.http.test.mjs": {
+      "baseSha256": "e29bc99891419b56d6cc8dc0286f147596eff00002da425e2daa4e26c89e517b",
+      "currentSha256": "3d29f3ca65add1259ace82cb4eb49feb7d1b9ede688bf6e9e51ab85c14e73dd3"
+    },
+    "server/wecom-status-transport.http.test.mjs": {
+      "baseSha256": "24f097dcbf831fab765361ce5112c250397b54dabbce635d495f0862b70c73e1",
+      "currentSha256": "fb2d829d1b780f7cb2afceb6660ed81aa4755abcc7fc6f141b440085faeaeb13"
+    },
+    "windows-agent/src/index.mjs": {
+      "baseSha256": "85b2b2eea012a345f87b455ebbb994ef6ce9dd70b6e1dddc4769594781c29eff",
+      "currentSha256": "dd50f6f8e0cbbab45a36871326ef5285a332eb2377c19730e856e368dc076ace"
+    },
+    "server/wecom-causal-fixture.mjs": {
+      "baseSha256": null,
+      "currentSha256": "c8c3399638ef09bb0d4ed28012e9a530bccfb1c1f38ab1db4305411fd7eff762"
+    },
+    "verification/wecom-v1-causal-http-20261103/run_local.py": {
+      "baseSha256": null,
+      "currentSha256": "1cd22341311c9fac06af035d5559074a8d36e3de8aeb92fe057844413e010698"
+    },
+    "verification/wecom-v1-causal-http-20261103/simulated_worker.py": {
+      "baseSha256": null,
+      "currentSha256": "9372d65ccd2e363cc72dba99892136ef5d93e4fd28c278e86da2bee2fb2ea364"
+    }
+  },
+  "unchangedFromBase": {
+    "server/wecom-cleanup-fixture.mjs": "dba8629992d02cd08fd36b7543ac98ec59a8ee480f6b5bf882119b75e5ffb910",
+    "verification/wecom-external-api-20261029/simulated_worker.py": "57a59fd8cb7c7e17d5c2fdc1e170b9e6bffad16a6d586b828c37f57d977a432e",
+    "windows-agent/scripts/xhs_airtest_poco.py": "90f78465709fd24223c9cdceccc844c44f5463aab0aeafaa158d2f7aebd538e8",
+    "windows-agent/src/worker-shutdown.mjs": "a685d487bbaff8f110bcef00629bdb830ede0fcc70807429b45ea4a4e6829b56",
+    "deploy/mediamtx-pacing/production-baseline.json": "d5b260558469ee75add1f747de2f7e5ad1604c4c7e897592fc6cdf5b91de8561",
+    "package-lock.json": "0f52fdfd7458c3fc29799402d6d0a7ff2523b0d52bcc65cf835e1797dc2d3743",
+    "windows-agent/package-lock.json": "e9ed7d7a248b0114cbbdf00117a3ca13fd64a5c75a6c31e6ca8dbcd1cbe0f7d1"
+  },
+  "productionActions": false,
+  "nativeAcceptance": false
+}

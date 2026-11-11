@@ -173,7 +173,7 @@ class AdditionalBoundaryTests(unittest.TestCase):
     def test_login_profile_stops_without_touching_login_or_agreement(self):
         root=ET.fromstring('<hierarchy>'+''.join('<node package="com.xingin.xhs" text="'+text+'" bounds="[10,100][600,200]"/>' for text in ['登录后展示自己','微信登录','手机号登录'])+'</hierarchy>')
         current='mCurrentFocus=Window{x u0 com.xingin.xhs/.index.v2.IndexActivityV2}'
-        with patch.object(sync,'focus',return_value=current),patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'recover_known_overlay',return_value=False),patch.object(sync,'adb') as adb:
+        with patch.object(sync,'focus',return_value=current),patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'recover_known_overlay',return_value=False),patch.object(sync,'capture',return_value=root),patch.object(sync.time,'sleep'),patch.object(sync,'adb') as adb:
             with self.assertRaisesRegex(RuntimeError,'manual login is required'):
                 sync.ensure_creator_list('adb','serial',root,'app1',lambda:None,['collection_slot_requested:app1'])
         adb.assert_not_called()
@@ -236,7 +236,7 @@ class OneTapLoginTests(unittest.TestCase):
     def test_clone_one_tap_login_is_skipped_without_pressing_it(self):
         root=ET.fromstring('<hierarchy>'+''.join('<node package="com.xingin.xhs" text="'+text+'" bounds="[10,100][600,200]"/>' for text in ['登录后展示自己','微信登录','一键登录','其他登录方式'])+'</hierarchy>')
         current='mCurrentFocus=Window{x u999 com.xingin.xhs/.index.v2.IndexActivityV2}'
-        with patch.object(sync,'focus',return_value=current),patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'recover_known_overlay',return_value=False),patch.object(sync,'adb') as adb:
+        with patch.object(sync,'focus',return_value=current),patch.object(sync,'wake_if_asleep',return_value=False),patch.object(sync,'recover_known_overlay',return_value=False),patch.object(sync,'capture',return_value=root),patch.object(sync.time,'sleep'),patch.object(sync,'adb') as adb:
             with self.assertRaisesRegex(RuntimeError,'manual login is required'):
                 sync.ensure_creator_list('adb','serial',root,'app2',lambda:None,['collection_slot_requested:app2','clone_user_requested:999'])
         adb.assert_not_called()

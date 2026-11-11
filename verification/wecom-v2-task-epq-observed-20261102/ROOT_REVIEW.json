@@ -1,0 +1,136 @@
+{
+  "runnerCommit": "496a44ae3cacba400ee161be043c25ead3a26166",
+  "artifactRoot": "/private/tmp/pc-wecom-v2-epq-pg-5imxqwro",
+  "startedAtUtc": "2026-11-02T15:04:18.591576+00:00",
+  "actualCases": 4,
+  "tapPass": 4,
+  "tapFail": 0,
+  "bodyCases": 4,
+  "attempts": 4,
+  "cases": [
+    {
+      "name": "unsafe-not-exists",
+      "aBackend": 53667,
+      "bBackend": 53665,
+      "controlBackend": 53666,
+      "returnedRows": 1,
+      "finalHasClaim": false,
+      "m3Reconcile": "conflict",
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:01.000Z",
+      "lockProof": {
+        "waiter": 53665,
+        "blocker": 53667,
+        "controlBackend": 53666,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          53667
+        ],
+        "backendXmin": "739",
+        "queryStart": "2026-11-02T15:04:19.424Z",
+        "reads": 1,
+        "elapsedMs": 0.9828329999999994,
+        "exactStatementSnapshotExported": false
+      },
+      "originalFiveDml": 5
+    },
+    {
+      "name": "guarded-update",
+      "aBackend": 53667,
+      "bBackend": 53666,
+      "controlBackend": 53665,
+      "returnedRows": 0,
+      "finalHasClaim": true,
+      "m3Reconcile": "recorded",
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:01.000Z",
+      "lockProof": {
+        "waiter": 53666,
+        "blocker": 53667,
+        "controlBackend": 53665,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          53667
+        ],
+        "backendXmin": "747",
+        "queryStart": "2026-11-02T15:04:19.433Z",
+        "reads": 1,
+        "elapsedMs": 0.6673329999999993,
+        "exactStatementSnapshotExported": false
+      },
+      "originalFiveDml": 5
+    },
+    {
+      "name": "guarded-upsert",
+      "aBackend": 53667,
+      "bBackend": 53665,
+      "controlBackend": 53666,
+      "returnedRows": 0,
+      "finalHasClaim": true,
+      "m3Reconcile": "recorded",
+      "lateTimestamp": "2099-01-01T00:00:00.000Z",
+      "aTimestamp": "2026-11-02T05:00:01.000Z",
+      "lockProof": {
+        "waiter": 53665,
+        "blocker": 53667,
+        "controlBackend": 53666,
+        "state": "active",
+        "waitEventType": "Lock",
+        "blockingPids": [
+          53667
+        ],
+        "backendXmin": "755",
+        "queryStart": "2026-11-02T15:04:19.439Z",
+        "reads": 1,
+        "elapsedMs": 0.3595420000000047,
+        "exactStatementSnapshotExported": false
+      },
+      "originalFiveDml": 5
+    },
+    {
+      "name": "target-savepoint",
+      "holderBackend": 53666,
+      "writerBackend": 53665,
+      "trace": [
+        "first_target_SQL_NOWAIT_failed_and_savepoint_rolled_back",
+        "second_target_same_writer_transaction_COMMIT_confirmed"
+      ],
+      "firstTargetError": "55P03",
+      "readbackBackend": 53668,
+      "firstUnchanged": true,
+      "secondDataSha256": "37d694824d4d96e139402a752dd95c0a658301b287fdde7179a42b1622646ae8",
+      "secondStatus": "stalled",
+      "commitKnown": true,
+      "physicalPermission": false
+    }
+  ],
+  "sourceAfterMatched": true,
+  "nodeCleanup": {
+    "started": true,
+    "pid": 53663,
+    "exitCode": 0,
+    "groupAbsent": true
+  },
+  "postgresCleanup": {
+    "pid": 53650,
+    "exitCode": 0,
+    "confirmed": true
+  },
+  "successDbRemoved": true,
+  "oldFailedDbRetained": true,
+  "originalArtifacts": {
+    "fixture.json": "b60d329ceff5c2125b8bf6cb6e3dd4368632112064a680284d125acd327cf252",
+    "POSTGRES.txt": "0e8f1d3c94bf7d81b72857806fe8157fd260a441d012538bb5b7a8e58a4106a3",
+    "PG_EVIDENCE.json": "e3610bdc1308c2c5d070bab08e0ee82962a719935d6cb191426624713e9be3c6",
+    "CREATEDB.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "INITDB.txt": "7c8b4e1b6f1eb973db4af4077bf57f0cb42b6064114f5f1c8dc89d39a698ee68",
+    "NODE_TEST_OUTPUT.txt": "b2c1e541a17ebc6e8f085ba477b4f55e82929409ac8a5f284c3915bb441a3e06",
+    "RUN_RECEIPT.json": "ca8e68a34abe04ae71a139c57fe45dcd9b32bed567c813074e0b6784c4a7885d"
+  },
+  "originalProductionCauseProven": false,
+  "sharedWriterChanged": false,
+  "phoneAcceptance": false,
+  "productionChanged": false
+}

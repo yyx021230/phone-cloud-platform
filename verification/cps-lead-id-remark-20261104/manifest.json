@@ -1,0 +1,25 @@
+{
+  "baseline": "b11f2532b92644d9520d106c76b8b4cf7c926c3b",
+  "branch": "codex/cps-lead-id-remark-20261104",
+  "candidateTag": "cps-lead-id-remark-20261104-rc.1",
+  "deployed": false,
+  "masterBeforeSha256": "0a55f5561428eeb07c21cc7ed48c2866241bec266d92c54a5f9674ff3175e13a",
+  "checks": {
+    "syntax": "passed",
+    "passedAfterTargetedRetest": 48,
+    "skipped": 1,
+    "unresolvedFailures": 0
+  },
+  "sha256": {
+    "server/cps-wecom/domain.mjs": "b113e528e79d10c4357eaca8917b788a718a7405dacd3ad24e3e8225dc6b2871",
+    "server/cps-wecom.test.mjs": "0bc047f6a85fc4b76800d3727086b10c123f6a96aa9b61ff7a7335b6c510bb27",
+    "server/cps-wecom.client-http.test.mjs": "ef0b6aa6635202d593950b969cdceb0b2bb40cd23c4450fab34c061a8e1b951d",
+    "server/wecom-preview.http.test.mjs": "e9fefaa1aa6d119a959b2a2f22b6af8db2ae859fd484c001c69e1b66b80ff519",
+    "docs/CPS企微客户对接方案-v0.1.md": "c3fbd48241f6cdc479a92b6e8233139b6523b662b3e11c5649f35f91fd1f7111",
+    "docs/CPS企微接口本地候选验收与启用说明.md": "a1f43278a11c5d70f2a8a5dc67b9115a5d7c97206af53715de30c82676f33416",
+    "docs/PROJECT_DEVELOPMENT.md": "a4b11a594c440de4aa8830c4202316c8c8511006c09ea300d3f115be22640b55",
+    "verification/cps-lead-id-remark-20261104/REPORT.md": "5741649353f54c2f31c784f9c66ef0b1b9551b4ec091fbf4c9dc965d36ef06dc",
+    "verification/cps-lead-id-remark-20261104/initial-tests.txt": "46dfc54ecf731b1c63a0d3e13c75e162a1f742cc5c162c32e6df3e5b75a560a7",
+    "verification/cps-lead-id-remark-20261104/platform-http-retest.txt": "50e7dd37adbde5c5f3ea067dfa10172a23b922eb2043559b87cdb466ca191368"
+  }
+}

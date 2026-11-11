@@ -1,4 +1,5 @@
 import {ROUND_IDLE_MS,roundDeadline,roundIsActive} from './lookup-round-idle.mjs';
+import {readerCapacityWaiting} from './lookup-reader-capacity.mjs';
 import {roundStopping} from './lookup-round-stop.mjs';
 import {lookupDeviceUnavailable,devicePreparationRetryAt,preparationBlocked,pagePreparationRetryAt,recordLookupPreparationFailure,recordLookupPreparationSuccess} from './lookup-device-availability.mjs';
 import crypto from 'node:crypto';
@@ -149,10 +150,11 @@ export function createLookupReadiness({adapter,now=Date.now,probePhone='',idleMs
       // existing physical reservation budget, but do not stop other recovery.
       const pageRetryBusy=s.channels.some(c=>!['idle','human','recovery','quarantined'].includes(c.phase)&&s.requests.some(r=>r.lookupId===c.requestId&&r.pageReprobe));
       const lastPageRetry=Math.max(0,...s.preparations.map(x=>x.lastPageReprobeAt||0));
-      const deviceRetryBusy=s.channels.some(c=>s.requests.some(r=>r.lookupId===c.requestId&&r.deviceReprobe&&!TERMINAL.has(r.status)));
+      const deviceRetryBusy=s.channels.some(c=>!['human','recovery','quarantined'].includes(c.phase)&&s.requests.some(r=>r.lookupId===c.requestId&&r.deviceReprobe&&!TERMINAL.has(r.status)));
       const lastDeviceRetry=Math.max(0,...s.preparations.map(x=>x.lastDeviceReprobeAt||0));
       const candidates=[];
       for(const d of s.devices){
+        if(readerCapacityWaiting(s,adapter,d.deviceId,now()))continue;
         const deviceRetryAt=devicePreparationRetryAt(d),deviceRetry=deviceRetryAt!==null;
         if(deviceRetry&&(deviceRetryAt>now()||deviceRetryBusy||lastDeviceRetry&&now()-lastDeviceRetry<60000))continue;
         const retryAt=pagePreparationRetryAt(s,d,p.clientId),pageRetry=retryAt!==null;

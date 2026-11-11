@@ -1,0 +1,504 @@
+✖ business failure and elapsed time retain the physical fence, not another phone (3.531ms)
+✖ new verification alone releases; business result and send claim are untouched (0.173208ms)
+✖ wrong version cannot register, close or release (0.1115ms)
+✖ wrong obligationId cannot register, close or release (0.094917ms)
+✖ wrong originalTaskId cannot register, close or release (0.084625ms)
+✖ wrong executionId cannot register, close or release (0.08475ms)
+✖ wrong deviceId cannot register, close or release (0.066875ms)
+✖ wrong serial cannot register, close or release (0.0705ms)
+✖ wrong agentId cannot register, close or release (0.116417ms)
+✖ wrong appSlot cannot register, close or release (0.14275ms)
+✖ wrong androidUser cannot register, close or release (0.276375ms)
+✖ wrong nonce cannot register, close or release (0.290042ms)
+✖ proof rejects residual forward (0.244917ms)
+✖ proof rejects package present (0.074667ms)
+✖ proof rejects missing package (0.718875ms)
+✖ proof rejects one frame (0.0695ms)
+✖ proof rejects same time (0.046916ms)
+✖ proof rejects old generation (0.049667ms)
+✖ proof rejects old nonce (0.040208ms)
+✖ proof rejects wrong task (0.038042ms)
+✖ proof rejects future (0.043958ms)
+✖ proof rejects unknown field (0.0415ms)
+✖ stale proof, changed device owner and wrong Agent cannot release (0.1555ms)
+✖ host must be original machine, exact process creation token and real task child (0.134625ms)
+✖ failed persistence restores exact proof state and keeps physical fence (0.059292ms)
+✖ archive and restored JSON retain obligation and allow independently bound late proof (0.06575ms)
+✖ expired verify issues fresh generation; late old proof cannot clear it (0.051375ms)
+✖ conflicting phone activity blocks verify, but not another physical phone (0.047792ms)
+✖ reconcile survives lost verify request, deduplicates, never loops a failed generation (0.081583ms)
+✖ proof commits only exact original lock, rolls all three records back, ignores late failure (0.066375ms)
+✖ mismatched original lock cannot release any hold (0.05675ms)
+✖ serial-only dispatch stays blocked while release write is unresolved (0.063375ms)
+✔ legacy picked task creates a non-expiring maintenance hold without fabricated identity (0.11825ms)
+✔ picked legacy task without archived business still retains a maintenance fence (0.038208ms)
+✖ terminal missing host evidence is maintenance, not an endlessly automatic stage (0.248458ms)
+✔ only eight fixed physical identities and the verified Android users are allowed (1.68225ms)
+✔ API requires explicit known execution mode and rejects arbitrary flags or slots (0.248542ms)
+✔ custom remarks normalize blanks and newlines; bounds and controls fail before submission (0.168ms)
+✔ configured slots bind Android user; an unconfigured clone never falls back to main (0.075375ms)
+✖ live lease must agree with task, job, owner, physical phone, clone and lock expiry (1.022334ms)
+✔ duplicate submission waits for persistence; a blocked phone does not block another key (0.122875ms)
+✔ actual offline recovery never requeues a preview with uncertain UI writes; other kinds retain their policy (1.445291ms)
+✔ integration facade accepts four business fields and resolves public number without trusting an ADB serial (0.325166ms)
+✔ integration status never turns a native click or unknown persistence into confirmed customer delivery (0.154916ms)
+✔ integration inventory separates online/busy/WeCom eligibility and never exposes private device data (0.279625ms)
+✔ integration occupancy reads do not expire locks or invoke device recovery (1.362875ms)
+✔ fixed fixture binding is exact and cannot inherit another task or Agent (1.373417ms)
+✔ exact creation precision, machine and only actual task host roles are required (0.828542ms)
+✔ historical ID case is retained while the corrected actual selector stays exact (0.093667ms)
+✖ ready must bind the actual OS child and cannot invent a wrapper exit requirement (0.23425ms)
+✖ host registration ACK precedes release; close cannot be fabricated by final JSON (0.071791ms)
+✖ duplicate ready and mismatched precision are rejected without another grant (0.047875ms)
+✖ host and close each retry the exact body once for lost ACK only (0.062125ms)
+✖ permanent close uncertainty and exhausted original budget stay pending (0.053417ms)
+✔ lost proof response retries the same original bytes without restamping or rereading (0.187792ms)
+✔ two unknown proof ACKs retain unknown; known rejection does not trigger a new proof (0.167375ms)
+ℹ tests 56
+ℹ suites 0
+ℹ pass 17
+ℹ fail 39
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 81.639625
+
+✖ failing tests:
+
+test at server/wecom-physical-cleanup.test.mjs:43:1
+✖ business failure and elapsed time retain the physical fence, not another phone (3.531ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /host_unconfirmed/. Input:
+  
+  'Error: wecom_cleanup_causal_context_unconfirmed'
+  
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-physical-cleanup.test.mjs:49:3)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: wecom_cleanup_causal_context_unconfirmed
+        at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+        at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+        at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+        at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37),
+    expected: /host_unconfirmed/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:52:1
+✖ new verification alone releases; business result and send claim are untouched (0.173208ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:65:3
+✖ wrong version cannot register, close or release (0.1115ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:65:3
+✖ wrong obligationId cannot register, close or release (0.094917ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:65:3
+✖ wrong originalTaskId cannot register, close or release (0.084625ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:65:3
+✖ wrong executionId cannot register, close or release (0.08475ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:65:3
+✖ wrong deviceId cannot register, close or release (0.066875ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:65:3
+✖ wrong serial cannot register, close or release (0.0705ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:65:3
+✖ wrong agentId cannot register, close or release (0.116417ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:65:3
+✖ wrong appSlot cannot register, close or release (0.14275ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:65:3
+✖ wrong androidUser cannot register, close or release (0.276375ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:65:3
+✖ wrong nonce cannot register, close or release (0.290042ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:84:4
+✖ proof rejects residual forward (0.244917ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:84:4
+✖ proof rejects package present (0.074667ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:84:4
+✖ proof rejects missing package (0.718875ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:84:4
+✖ proof rejects one frame (0.0695ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:84:4
+✖ proof rejects same time (0.046916ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:84:4
+✖ proof rejects old generation (0.049667ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:84:4
+✖ proof rejects old nonce (0.040208ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:84:4
+✖ proof rejects wrong task (0.038042ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:84:4
+✖ proof rejects future (0.043958ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:84:4
+✖ proof rejects unknown field (0.0415ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:89:1
+✖ stale proof, changed device owner and wrong Agent cannot release (0.1555ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:97:1
+✖ host must be original machine, exact process creation token and real task child (0.134625ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /host_invalid/. Input:
+  
+  'Error: wecom_cleanup_causal_context_unconfirmed'
+  
+      at async TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-physical-cleanup.test.mjs:99:3)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: wecom_cleanup_causal_context_unconfirmed
+        at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+        at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+        at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+        at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37),
+    expected: /host_invalid/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:106:1
+✖ failed persistence restores exact proof state and keeps physical fence (0.059292ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:113:1
+✖ archive and restored JSON retain obligation and allow independently bound late proof (0.06575ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:122:1
+✖ expired verify issues fresh generation; late old proof cannot clear it (0.051375ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:130:1
+✖ conflicting phone activity blocks verify, but not another physical phone (0.047792ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:136:1
+✖ reconcile survives lost verify request, deduplicates, never loops a failed generation (0.081583ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:148:1
+✖ proof commits only exact original lock, rolls all three records back, ignores late failure (0.066375ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:161:1
+✖ mismatched original lock cannot release any hold (0.05675ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:168:1
+✖ serial-only dispatch stays blocked while release write is unresolved (0.063375ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-physical-cleanup.test.mjs:199:1
+✖ terminal missing host evidence is maintenance, not an endlessly automatic stage (0.248458ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:11:44)
+      at causal (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:52:146)
+      at file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:182:7
+      at serialize (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-cleanup-service.mjs:60:37) {
+    statusCode: 409
+  }
+
+test at server/wecom-preview.test.mjs:47:1
+✖ live lease must agree with task, job, owner, physical phone, clone and lock expiry (1.022334ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/server/wecom-preview.test.mjs:53:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at windows-agent/src/wecom-cleanup-protocol.test.mjs:36:1
+✖ ready must bind the actual OS child and cannot invent a wrapper exit requirement (0.23425ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-protocol.mjs:7:25)
+      at createPhysicalLifecycle (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-protocol.mjs:88:172)
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-protocol.test.mjs:38:28)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7)
+
+test at windows-agent/src/wecom-cleanup-protocol.test.mjs:42:1
+✖ host registration ACK precedes release; close cannot be fabricated by final JSON (0.071791ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-protocol.mjs:7:25)
+      at createPhysicalLifecycle (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-protocol.mjs:88:172)
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-protocol.test.mjs:44:14)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7)
+
+test at windows-agent/src/wecom-cleanup-protocol.test.mjs:53:1
+✖ duplicate ready and mismatched precision are rejected without another grant (0.047875ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-protocol.mjs:7:25)
+      at createPhysicalLifecycle (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-protocol.mjs:88:172)
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-protocol.test.mjs:54:14)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7)
+
+test at windows-agent/src/wecom-cleanup-protocol.test.mjs:58:1
+✖ host and close each retry the exact body once for lost ACK only (0.062125ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-protocol.mjs:7:25)
+      at createPhysicalLifecycle (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-protocol.mjs:88:172)
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-protocol.test.mjs:60:14)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7)
+
+test at windows-agent/src/wecom-cleanup-protocol.test.mjs:67:1
+✖ permanent close uncertainty and exhausted original budget stay pending (0.053417ms)
+  Error: wecom_cleanup_causal_context_unconfirmed
+      at fail (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-protocol.mjs:7:25)
+      at createPhysicalLifecycle (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-protocol.mjs:88:172)
+      at TestContext.<anonymous> (file:///Users/yyx/.codex/worktrees/wecom-status-20261029/phone-cloud-platform/windows-agent/src/wecom-cleanup-protocol.test.mjs:69:14)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7)

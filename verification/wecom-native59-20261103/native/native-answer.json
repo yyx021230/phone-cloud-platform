@@ -1,0 +1,171 @@
+{
+  "pending": false,
+  "node": {
+    "pid": 20436,
+    "createdAt": 1793671566.9582727
+  },
+  "native": {
+    "pid": 22728,
+    "createdAt": 1793671567.0479963
+  },
+  "hostExitCode": 0,
+  "pipeDrainComplete": true,
+  "stdoutBytes": 2011,
+  "stderrBytes": 106746,
+  "resourceRecordFailure": null,
+  "originalHosts": [
+    {
+      "pid": 20436,
+      "createdAt": 1793671566.9582727
+    },
+    {
+      "pid": 22728,
+      "createdAt": 1793671567.0479963
+    }
+  ],
+  "answer": {
+    "previewStatus": "blocked",
+    "previewCode": "device_lease_lost",
+    "invitationSent": false,
+    "sendStatus": "not_attempted",
+    "remarkSaveStatus": "unknown",
+    "diagnostic": {
+      "wecomExecution": {
+        "version": 1,
+        "phase": "cleanup",
+        "failurePhase": "poco_health",
+        "elapsedMs": 22656,
+        "cleanupConfirmed": false,
+        "events": [
+          {
+            "version": 1,
+            "step": 1,
+            "phase": "configuration",
+            "state": "begin",
+            "elapsedMs": 0
+          },
+          {
+            "version": 1,
+            "step": 2,
+            "phase": "configuration",
+            "state": "end",
+            "elapsedMs": 0
+          },
+          {
+            "version": 1,
+            "step": 3,
+            "phase": "adb_identity",
+            "state": "begin",
+            "elapsedMs": 0
+          },
+          {
+            "version": 1,
+            "step": 4,
+            "phase": "adb_identity",
+            "state": "end",
+            "elapsedMs": 125
+          },
+          {
+            "version": 1,
+            "step": 5,
+            "phase": "device_preflight",
+            "state": "begin",
+            "elapsedMs": 125
+          },
+          {
+            "version": 1,
+            "step": 6,
+            "phase": "device_preflight",
+            "state": "end",
+            "elapsedMs": 3625
+          },
+          {
+            "version": 1,
+            "step": 7,
+            "phase": "screen_prepare",
+            "state": "begin",
+            "elapsedMs": 3625
+          },
+          {
+            "version": 1,
+            "step": 8,
+            "phase": "screen_prepare",
+            "state": "end",
+            "elapsedMs": 6656
+          },
+          {
+            "version": 1,
+            "step": 9,
+            "phase": "poco_launch",
+            "state": "begin",
+            "elapsedMs": 6656
+          },
+          {
+            "version": 1,
+            "step": 10,
+            "phase": "poco_launch",
+            "state": "end",
+            "elapsedMs": 10452
+          },
+          {
+            "version": 1,
+            "step": 11,
+            "phase": "poco_health",
+            "state": "begin",
+            "elapsedMs": 10452
+          },
+          {
+            "version": 1,
+            "step": 12,
+            "phase": "poco_health",
+            "state": "error",
+            "elapsedMs": 22656
+          },
+          {
+            "version": 1,
+            "step": 13,
+            "phase": "cleanup",
+            "state": "begin",
+            "elapsedMs": 22656
+          },
+          {
+            "version": 1,
+            "step": 14,
+            "phase": "cleanup",
+            "state": "end",
+            "elapsedMs": 22656,
+            "cleanupConfirmed": false
+          }
+        ]
+      }
+    },
+    "isolation": {
+      "mode": "real_screen_reservation",
+      "resources": {
+        "readerStarted": true,
+        "pid": "27405",
+        "startToken": "34062869",
+        "forwards": [
+          [
+            58760,
+            10080
+          ],
+          [
+            58807,
+            10081
+          ]
+        ],
+        "cleanupConfirmed": false
+      },
+      "productionWindowsTask": false,
+      "primaryFailure": "device_lease_lost",
+      "authorityFailure": "qa_authority_unknown",
+      "authorityFailureStage": "proof_request",
+      "socketPeer": {
+        "executionConnections": 14,
+        "peerChecks": 97,
+        "revoked": true
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "tests": 61,
+  "pass": 61,
+  "fail": 0,
+  "newPgExecuted": false,
+  "sourceSha256": {
+    "encoder.mjs": "900af50074526be5acbb4b8b6f84559c54fe94ec76948f9ec874ba7b40dababb",
+    "encoder.test.mjs": "fee1d7899b9640fba7165b80dcec24c1e690fb6f372b9f186b385e175c0c5a76",
+    "LOCAL_OUTPUT.txt": "88aefb122637bfaaa3ba208b753c8adfdec25bb8d38c4efdee49bd62e689f8dc"
+  }
+}

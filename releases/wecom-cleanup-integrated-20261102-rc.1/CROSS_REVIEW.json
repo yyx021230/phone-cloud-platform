@@ -1,0 +1,18 @@
+{
+  "reviewedCodeCommit": "0d4f1a29f37db1b4a8f7029d803f8987eb59179d",
+  "reviewerThreadTitle": "查名字",
+  "reviewerThreadId": "01a1629d-affe-7c60-b7d7-26ca2aba9863",
+  "scope": "independent read-only Git-object review; no tests or live access by reviewer",
+  "protected181HashesAndAgent20HashesMatch": true,
+  "serverIndexSameAs6d": true,
+  "lookupXhsRuntimeAndLookupOutboxRecoveryBarriersPreserved": true,
+  "wecomOnlySharedIndexChanges": true,
+  "boundedDiagnosticsSameOnBothSides": true,
+  "newBlockingFinding": false,
+  "inference": "No observed lookup rollback or business replay bypass in the reviewed integration; not native acceptance",
+  "open": [
+    "SYSTEM positive and real phones",
+    "real network first-fact timing",
+    "legacy-compatible all-device-entry rollback isolation not implemented"
+  ]
+}

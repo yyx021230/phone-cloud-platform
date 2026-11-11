@@ -1,0 +1,14 @@
+{
+  "notTrimmed": true,
+  "onlyExceptions": {
+    "verification/wecom-v2-projection-policy2-20261102/red/LOCAL_OUTPUT.txt": {
+      "trailing": [
+        80,
+        84,
+        104,
+        110
+      ],
+      "newBlankEof": []
+    }
+  }
+}

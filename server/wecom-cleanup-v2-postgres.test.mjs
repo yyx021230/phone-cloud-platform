@@ -1,0 +1,298 @@
+// Unit lifecycle/validation fixtures ONLY. These tests do not verify SQL CAS,
+// PostgreSQL isolation/constraints or actual COMMIT/network failure semantics.
+import assert from "node:assert/strict";
+import test from "node:test";
+import { EventEmitter } from "node:events";
+import { createWecomV2PostgresRepository } from "./wecom-cleanup-v2-postgres.mjs";
+import { createWecomV2HostState, normalizeWecomV2HostRequest, validateWecomV2HostState } from "./wecom-cleanup-v2-host.mjs";
+import { fixture, row } from "../verification/wecom-v2-cas-m2-20261102/fixture.mjs";
+
+function unitPool(initial = null) {
+  const p = { state: initial ? structuredClone(initial) : null, trace: [], connections: 0, active: 0,
+    commitFailure: null, commitTag: "COMMIT", selectFailure: false, updateZero: false, changedRow: null,
+    hook: () => {}, configureClient: () => {}, clients: [] };
+  p.connect = async () => {
+    assert.equal(p.active, 0, "max1 fixture: original connection must be released before new checkout");
+    p.active++; const id = ++p.connections; let pending = p.state ? structuredClone(p.state) : null;
+    p.trace.push([id, "CONNECT"]);
+    const client = new EventEmitter(); p.clients.push(client);
+    client.query = async (sql, values = []) => {
+        const tag = sql.trim().split(/\s+/)[0]; p.trace.push([id, tag]);
+        if (tag === "INSERT" && !pending) pending = JSON.parse(values[2]);
+        if (tag === "SELECT") {
+          if (p.selectFailure) throw new Error("fixture_lock_timeout");
+          p.hook(tag, client);
+          return { rowCount: pending ? 1 : 0, rows: pending ? [row(pending)] : [] };
+        }
+        if (tag === "UPDATE") {
+          if (p.updateZero) return { rowCount: 0, rows: [] };
+          pending = JSON.parse(values[6]); p.hook(tag, client);
+          return { rowCount: 1, rows: [p.changedRow ? p.changedRow(row(pending)) : row(pending)] };
+        }
+        if (tag === "COMMIT") {
+          if (p.commitFailure === "before") { p.commitFailure = null; throw new Error("fixture_reply_unknown"); }
+          if (p.commitTag === "COMMIT") p.state = pending ? structuredClone(pending) : null;
+          p.hook(tag, client);
+          if (p.commitFailure === "after") { p.commitFailure = null; throw new Error("fixture_reply_unknown"); }
+          return { command: p.commitTag };
+        }
+        p.hook(tag, client); return { command: tag };
+    };
+    client.release = error => { assert.equal(p.active, 1); p.active--; client.releasedWith = error; p.trace.push([id, error ? "DESTROY" : "RELEASE"]); };
+    p.configureClient(client); return client;
+  };
+  return p;
+}
+function setup({ seeded = true } = {}) {
+  const f = fixture(), pool = unitPool(seeded ? f.initial : null);
+  return { ...f, pool, repo: createWecomV2PostgresRepository({ getPool: async () => pool, ...f.providers }) };
+}
+const writes = p => p.trace.filter(v => ["INSERT", "UPDATE"].includes(v[1]));
+
+test("repository requires explicit pool/auth/parent providers without I/O", () => {
+  for (const options of [{}, { getPool: async () => ({}) }, { getPool: true, readAuthenticatedBinding: true, readParentInstanceFacts: true }]) {
+    assert.throws(() => createWecomV2PostgresRepository(options), /trusted_providers_required/);
+  }
+});
+test("pure M1 exports normalize/clone/freeze and reject damaged state without authority", () => {
+  const f = fixture(), normalized = normalizeWecomV2HostRequest("host", f.body);
+  assert.deepEqual(normalized, f.body); assert.notEqual(normalized.readerHost, f.body.readerHost); assert.ok(Object.isFrozen(normalized.readerHost));
+  const restored = validateWecomV2HostState(JSON.parse(JSON.stringify(f.initial)));
+  assert.deepEqual(restored, f.initial); assert.notEqual(restored, f.initial); assert.ok(Object.isFrozen(restored.operations));
+  assert.throws(() => validateWecomV2HostState({ ...f.initial, fence: "released" }), /state_invalid/);
+  assert.throws(() => normalizeWecomV2HostRequest("host", { ...f.body, authenticated: true }), /request_invalid/);
+});
+for (const [label, mutate] of [
+  ["extra prepared flag", f => { f.body.prepared = true; }],
+  ["bad PID", f => { f.body.readerHost.pid = 2 ** 32; }],
+  ["request v1", f => { f.body.binding.version = 1; }],
+  ["wrong auth", f => { f.auth.agentId = "other"; }],
+  ["new epoch", f => { f.auth.serverEpoch = "new-epoch"; }],
+]) test(`bad ${label} is rejected before pool checkout`, async () => {
+  const f = setup(); mutate(f);
+  await assert.rejects(f.repo.commitHostOperation("host", f.body), /wecom_v2_/); assert.equal(f.pool.connections, 0);
+});
+test("createPending confirms only after COMMIT; repeated create never replaces revision", async () => {
+  const f = setup({ seeded: false }); const before = JSON.stringify(f.binding);
+  const first = await f.repo.createPending(f.binding), again = await f.repo.createPending(f.binding);
+  assert.equal(first.storageStatus, "committed"); assert.equal(first.commitKnown, true); assert.equal(first.protocolPermit, false);
+  assert.equal(first.fence, "held"); assert.equal(again.revision, 0); assert.equal(JSON.stringify(f.binding), before);
+  assert.equal(f.pool.trace.filter(v => v[1] === "UPDATE").length, 0);
+  assert.ok(f.pool.trace.some(v => v[1] === "COMMIT"));
+});
+test("new operation calls M1; duplicates return original stored result with canonical key order", async () => {
+  const f = setup(), first = await f.repo.commitHostOperation("host", f.body);
+  const reverse = value => Object.fromEntries(Object.entries(value).reverse());
+  const body = reverse({ ...f.body, binding: reverse(f.body.binding), readerHost: reverse(f.body.readerHost) });
+  const again = await f.repo.commitHostOperation("host", body);
+  assert.equal(first.commitKnown, true); assert.equal(first.storedOperation.replyCandidate.durable, false);
+  assert.equal(first.storedOperation.replyCandidate.requiresPersistence, true); assert.ok(Object.isFrozen(first.storedOperation.request.readerHost));
+  assert.deepEqual(again, first); assert.equal(writes(f.pool).length, 1);
+  await assert.rejects(f.repo.commitHostOperation("host", { ...f.body, expectedRevision: 1 }), /operation_conflict/);
+  assert.equal(f.pool.state.revision, 1);
+});
+test("late host replay after close returns original revision1 candidate, never current close reply", async () => {
+  const f = setup(), host = await f.repo.commitHostOperation("host", f.body);
+  f.facts.closeEventId = f.closeBody().closeEventId;
+  const closed = await f.repo.commitHostOperation("host-closed", f.closeBody());
+  const replay = await f.repo.reconcileOperation("host", f.body);
+  assert.equal(closed.revision, 2); assert.equal(replay.revision, 2);
+  assert.deepEqual(replay.storedOperation, host.storedOperation);
+  assert.equal(replay.storedOperation.replyCandidate.preparedRevision, 1); assert.equal(writes(f.pool).length, 2);
+});
+test("new operation cannot bypass actual M1 parent facts with request flags", async () => {
+  const f = setup(); f.facts.readerHost = { ...f.facts.readerHost, pid: 888 };
+  await assert.rejects(f.repo.commitHostOperation("host", f.body), /host_mismatch/);
+  assert.equal(writes(f.pool).length, 0); assert.equal(f.pool.state.revision, 0);
+});
+test("zero-row CAS and mismatching RETURNING are never storage confirmations", async () => {
+  const a = setup(); a.pool.updateZero = true;
+  await assert.rejects(a.repo.commitHostOperation("host", a.body), /revision_conflict/); assert.equal(a.pool.state.revision, 0);
+  const b = setup(); b.pool.changedRow = r => ({ ...r, revision: 0 });
+  await assert.rejects(b.repo.commitHostOperation("host", b.body), /row_invalid/); assert.equal(b.pool.state.revision, 0);
+});
+test("COMMIT unknown retires before max1 checkout and independently reconciles without second UPDATE", async () => {
+  const f = setup(); f.pool.commitFailure = "after";
+  const answer = await f.repo.commitHostOperation("host", f.body);
+  assert.equal(answer.storageStatus, "committed_reconciled"); assert.equal(answer.commitKnown, true);
+  assert.equal(answer.protocolPermit, false); assert.equal(writes(f.pool).length, 1);
+  assert.ok(f.pool.trace.findIndex(v => v[1] === "DESTROY") < f.pool.trace.findIndex(v => v[0] === 2 && v[1] === "CONNECT"));
+  assert.ok(!f.pool.trace.some(v => v[0] === 1 && v[1] === "ROLLBACK"));
+});
+test("unknown commit with old revision remains unknown and does not replay write", async () => {
+  const f = setup(); f.pool.commitFailure = "before";
+  const answer = await f.repo.commitHostOperation("host", f.body);
+  assert.equal(answer.storageStatus, "unknown"); assert.equal(answer.commitKnown, false); assert.equal(answer.protocolPermit, false);
+  assert.equal(f.pool.state.revision, 0); assert.equal(writes(f.pool).length, 1);
+});
+test("COMMIT returning ROLLBACK tag is not a successful COMMIT", async () => {
+  const f = setup(); f.pool.commitTag = "ROLLBACK";
+  const answer = await f.repo.commitHostOperation("host", f.body);
+  assert.equal(answer.storageStatus, "unknown"); assert.equal(answer.commitKnown, false); assert.equal(f.pool.state.revision, 0);
+  assert.equal(writes(f.pool).length, 1); assert.equal(f.pool.active, 0);
+});
+test("initial INSERT reply unknown is independently read back without second INSERT", async () => {
+  const f = setup({ seeded: false }); f.pool.commitFailure = "after";
+  const answer = await f.repo.createPending(f.binding);
+  assert.equal(answer.storageStatus, "committed_reconciled"); assert.equal(answer.commitKnown, true);
+  assert.equal(writes(f.pool).length, 1);
+  const g = setup({ seeded: false }); g.pool.commitFailure = "before";
+  const missing = await g.repo.createPending(g.binding);
+  assert.equal(missing.storageStatus, "unknown"); assert.equal(g.pool.state, null); assert.equal(writes(g.pool).length, 1);
+});
+test("missing row and lock error never initialize or rewrite during reconciliation", async () => {
+  const f = setup({ seeded: false });
+  assert.equal((await f.repo.reconcileOperation("host", f.body)).storageStatus, "unknown");
+  assert.equal((await f.repo.commitHostOperation("host", f.body)).storageStatus, "unknown");
+  assert.equal(writes(f.pool).length, 0);
+  const g = setup(); g.pool.selectFailure = true;
+  const answer = await g.repo.reconcileOperation("host", g.body);
+  assert.equal(answer.storageStatus, "unknown"); assert.equal(g.pool.connections, 1); assert.equal(writes(g.pool).length, 0);
+});
+test("post-COMMIT epoch change retains known storage fact without rollback or protocol permit", async () => {
+  const f = setup(); f.pool.hook = tag => { if (tag === "COMMIT") f.auth.serverEpoch = "new-epoch"; };
+  const answer = await f.repo.commitHostOperation("host", f.body);
+  assert.equal(answer.storageStatus, "obsolete_epoch"); assert.equal(answer.commitKnown, true); assert.equal(answer.protocolPermit, false);
+  assert.equal(answer.storedOperation.request.operationId, f.body.operationId); assert.equal(f.pool.state.revision, 1);
+  assert.equal(f.pool.trace.filter(v => v[1] === "ROLLBACK").length, 0);
+  const count = f.pool.connections;
+  await assert.rejects(f.repo.reconcileOperation("host", f.body), /obsolete_epoch/); assert.equal(f.pool.connections, count);
+});
+test("authentication changes before COMMIT abort candidate rather than submitting it", async () => {
+  const f = setup(); f.pool.hook = tag => { if (tag === "UPDATE") f.auth.serverEpoch = "new-epoch"; };
+  await assert.rejects(f.repo.commitHostOperation("host", f.body), /obsolete_epoch/);
+  assert.equal(f.pool.state.revision, 0); assert.equal(f.pool.trace.filter(v => v[1] === "COMMIT").length, 0);
+});
+test("damaged persisted state and stored old epoch fail closed without writes", async () => {
+  const f = setup(); f.pool.state.fence = "released";
+  assert.equal((await f.repo.reconcileOperation("host", f.body)).storageStatus, "unknown"); assert.equal(writes(f.pool).length, 0);
+  const g = setup(); g.pool.state = structuredClone(createWecomV2HostState({ ...g.binding, serverEpoch: "old-epoch" }));
+  await assert.rejects(g.repo.commitHostOperation("host", g.body), /obsolete_epoch/); assert.equal(writes(g.pool).length, 0);
+});
+test("provider/connection failure never returns a candidate or raw exception text", async () => {
+  const f = fixture();
+  const bad = createWecomV2PostgresRepository({ getPool: async () => { throw new Error("fixture_internal_db_error"); }, ...f.providers });
+  const answer = await bad.commitHostOperation("host", f.body);
+  assert.equal(answer.storageStatus, "unknown"); assert.equal(answer.commitKnown, false); assert.equal(answer.storedOperation, null);
+  assert.ok(!JSON.stringify(answer).includes("fixture_internal_db_error"));
+});
+test("wrong ready nonce is rejected before PG checkout", async () => {
+  const f = setup();
+  await assert.rejects(f.repo.commitHostOperation("host", { ...f.body, readyNonce: "other" }), /binding_mismatch/);
+  assert.equal(f.pool.connections, 0);
+});
+test("authentication changed while obtaining pool must reject before checkout", async () => {
+  const f = fixture(), pool = unitPool(f.initial);
+  const repo = createWecomV2PostgresRepository({ ...f.providers, getPool: async () => { f.auth.serverEpoch = "changed-before-checkout"; return pool; } });
+  await assert.rejects(repo.commitHostOperation("host", f.body), /obsolete_epoch/);
+  assert.equal(pool.connections, 0);
+});
+test("same-ID changed reconciliation content is explicitly conflict, never generic unknown", async () => {
+  const f = setup(); await f.repo.commitHostOperation("host", f.body);
+  const answer = await f.repo.reconcileOperation("host", { ...f.body, expectedRevision: 1 });
+  assert.equal(answer.storageStatus, "conflict"); assert.equal(answer.commitKnown, false); assert.equal(answer.protocolPermit, false);
+});
+test("post-COMMIT malformed context retains known stored operation as obsolete context", async () => {
+  const f = setup(); f.pool.hook = tag => { if (tag === "COMMIT") f.auth.version = 1; };
+  const answer = await f.repo.commitHostOperation("host", f.body);
+  assert.equal(answer.storageStatus, "obsolete_context"); assert.equal(answer.commitKnown, true);
+  assert.equal(answer.storedOperation.request.operationId, f.body.operationId); assert.equal(answer.protocolPermit, false);
+  assert.equal(f.pool.state.revision, 1); assert.ok(!f.pool.trace.some(v => v[1] === "ROLLBACK"));
+});
+test("normalization and state validation reject rather than mutate deeply frozen inputs", () => {
+  const f = fixture();
+  function freeze(v) { if (v && typeof v === "object") { for (const item of Object.values(v)) freeze(item); Object.freeze(v); } return v; }
+  freeze(f.body); freeze(f.initial);
+  const normalized = normalizeWecomV2HostRequest("host", f.body), restored = validateWecomV2HostState(f.initial);
+  assert.deepEqual(normalized, f.body); assert.deepEqual(restored, f.initial);
+  assert.notEqual(restored.binding, f.initial.binding); assert.notEqual(normalized.binding, f.body.binding);
+  assert.throws(() => { normalized.binding.agentId = "other"; }, TypeError);
+});
+for (const [label, initialize, malformed] of [["operation epoch", false, false], ["initialization epoch", true, false], ["operation malformed", false, true], ["initialization malformed", true, true]]) {
+  test(`COMMIT unknown plus changed ${label} retains structured unknown storage classification`, async () => {
+    const f = setup({ seeded: !initialize }); f.pool.commitFailure = "after";
+    f.pool.hook = tag => { if (tag === "COMMIT") { if (malformed) f.auth.version = 1; else f.auth.serverEpoch = "changed-with-unknown-commit"; } };
+    const answer = initialize ? await f.repo.createPending(f.binding) : await f.repo.commitHostOperation("host", f.body);
+    assert.equal(answer.storageStatus, malformed ? "unknown" : "obsolete_epoch");
+    assert.equal(answer.commitKnown, false); assert.equal(answer.storedOperation, null);
+    assert.equal(answer.fence, "held"); assert.equal(answer.protocolPermit, false);
+    assert.equal(f.pool.connections, 1); assert.equal(writes(f.pool).length, 1);
+    assert.ok(f.pool.trace.some(v => v[1] === "DESTROY")); assert.ok(!f.pool.trace.some(v => v[1] === "ROLLBACK"));
+    await assert.rejects(f.repo.reconcileOperation("host", f.body), /obsolete_epoch|context_unconfirmed/);
+    assert.equal(f.pool.connections, 1); // Public auth precheck remains strict.
+  });
+}
+test("owned client event precedes COMMIT Promise rejection without uncaught emitter or replay", async () => {
+  const f = setup(), fault = new Error("fixture_first_driver_event"), emitterThrows = [];
+  f.pool.commitFailure = "after";
+  f.pool.hook = (tag, client) => { if (tag === "COMMIT" && f.pool.connections === 1) queueMicrotask(() => {
+    try { client.emit("error", fault); } catch (e) { emitterThrows.push(e); }
+  }); };
+  const answer = await f.repo.commitHostOperation("host", f.body);
+  assert.deepEqual(emitterThrows, []); assert.equal(answer.storageStatus, "committed_reconciled");
+  assert.equal(f.pool.clients[0].releasedWith, fault); assert.equal(writes(f.pool).length, 1);
+  assert.ok(f.pool.clients.every(c => c.listenerCount("error") === 0));
+});
+test("event between queries stops before UPDATE, retaining first error and no unknown replay", async () => {
+  const f = setup(), first = new Error("fixture_first_between_queries"), second = new Error("fixture_second_between_queries"), emitterThrows = [];
+  f.pool.hook = (tag, client) => { if (tag === "SELECT") queueMicrotask(() => {
+    for (const e of [first, second]) try { client.emit("error", e); } catch (thrown) { emitterThrows.push(thrown); }
+  }); };
+  const answer = await f.repo.commitHostOperation("host", f.body);
+  assert.deepEqual(emitterThrows, []); assert.equal(answer.storageStatus, "unknown"); assert.equal(answer.commitKnown, false);
+  assert.equal(f.pool.clients[0].releasedWith, first); assert.equal(writes(f.pool).length, 0);
+  assert.equal(f.pool.connections, 1); assert.ok(!f.pool.trace.some(v => v[1] === "COMMIT"));
+});
+test("successful transaction removes only its owned listener and preserves pre-existing owner", async () => {
+  const f = setup(), external = () => {}, counts = [];
+  f.pool.configureClient = c => c.on("error", external);
+  f.pool.hook = (tag, client) => { if (tag === "SELECT") counts.push(client.listenerCount("error")); };
+  await f.repo.commitHostOperation("host", f.body);
+  assert.deepEqual(counts, [2]); assert.deepEqual(f.pool.clients[0].listeners("error"), [external]);
+});
+test("client event during BEGIN prevents every later query and destroys the client", async () => {
+  const f = setup(), fault = new Error("fixture_begin_error"), emitterThrows = [];
+  f.pool.hook = (tag, client) => { if (tag === "BEGIN") queueMicrotask(() => {
+    try { client.emit("error", fault); } catch (e) { emitterThrows.push(e); }
+  }); };
+  const answer = await f.repo.commitHostOperation("host", f.body);
+  assert.deepEqual(emitterThrows, []); assert.equal(answer.storageStatus, "unknown"); assert.equal(answer.commitKnown, false);
+  assert.deepEqual(f.pool.trace.map(v => v[1]), ["CONNECT", "BEGIN", "DESTROY"]);
+  assert.equal(f.pool.clients[0].releasedWith, fault); assert.equal(f.pool.clients[0].listenerCount("error"), 0);
+});
+test("COMMIT event alone invalidates a fulfilled query and requires independent reconciliation", async () => {
+  const f = setup(), fault = new Error("fixture_commit_event_only"), emitterThrows = [];
+  f.pool.hook = (tag, client) => { if (tag === "COMMIT" && f.pool.connections === 1) queueMicrotask(() => {
+    try { client.emit("error", fault); } catch (e) { emitterThrows.push(e); }
+  }); };
+  const answer = await f.repo.commitHostOperation("host", f.body);
+  assert.deepEqual(emitterThrows, []); assert.equal(answer.storageStatus, "committed_reconciled");
+  assert.equal(f.pool.connections, 2); assert.equal(f.pool.clients[0].releasedWith, fault);
+  assert.equal(writes(f.pool).length, 1); assert.ok(f.pool.clients.every(c => c.listenerCount("error") === 0));
+});
+test("protocol failure cleanup preserves external listener and removes only transaction observer", async () => {
+  const f = setup(), external = () => {}; f.pool.configureClient = c => c.on("error", external);
+  f.facts.readerHost = { ...f.facts.readerHost, pid: 888 };
+  await assert.rejects(f.repo.commitHostOperation("host", f.body), /host_mismatch/);
+  assert.deepEqual(f.pool.clients[0].listeners("error"), [external]); assert.equal(f.pool.clients[0].releasedWith, undefined);
+  assert.equal(writes(f.pool).length, 0);
+});
+test("query rejection without client event retains that error and never reuses failed connection", async () => {
+  const f = setup(); f.pool.commitFailure = "before";
+  const answer = await f.repo.commitHostOperation("host", f.body);
+  assert.equal(answer.storageStatus, "unknown"); assert.equal(f.pool.clients[0].releasedWith.message, "fixture_reply_unknown");
+  assert.equal(f.pool.clients[0].listenerCount("error"), 0); assert.equal(writes(f.pool).length, 1);
+});
+test("repository adds no global handler and does not own unrelated client errors", async () => {
+  const counts = [process.listenerCount("uncaughtException"), process.listenerCount("unhandledRejection")];
+  const f = setup(); await f.repo.commitHostOperation("host", f.body);
+  assert.deepEqual([process.listenerCount("uncaughtException"), process.listenerCount("unhandledRejection")], counts);
+  const unrelated = new EventEmitter(), fault = new Error("fixture_unrelated_client");
+  assert.throws(() => unrelated.emit("error", fault), e => e === fault);
+});
+test("client without owned event interface fails closed before BEGIN", async () => {
+  const f = setup(); f.pool.configureClient = c => { c.on = undefined; c.removeListener = undefined; };
+  const answer = await f.repo.commitHostOperation("host", f.body);
+  assert.equal(answer.storageStatus, "unknown"); assert.equal(answer.protocolPermit, false);
+  assert.deepEqual(f.pool.trace.map(v => v[1]), ["CONNECT", "DESTROY"]);
+});
