@@ -1,0 +1,7 @@
+{
+  "services": {
+    "phone-cloud": {
+      "image": "phone-cloud-platform:wecom-xhs-joint-20261111-rc.2"
+    }
+  }
+}

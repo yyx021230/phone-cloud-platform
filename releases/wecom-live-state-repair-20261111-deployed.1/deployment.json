@@ -1,0 +1,93 @@
+{
+  "version": "wecom-live-state-repair-20261111-deployed.1",
+  "atUtc": "2026-11-11T03:07:31.865047+00:00",
+  "branch": "codex/wecom-live-state-repair-20261111",
+  "candidateTag": "wecom-live-state-repair-20261111-rc.3",
+  "codeCommit": "101e749fe0f0ba897754eb2418746cb4e87d94fe",
+  "previousActiveSha256": "020ae5afef9ae2c5fdd1531b2fa0367761115836ca447f79b819347835f2a7bf",
+  "runningImageId": "sha256:fc0bb8c3458470ad21397fa16aed8b5207882a0fe112f4107d7b89ef094c52ce",
+  "nextImageId": "sha256:e6a2bf5e7754890b93b1fc52aeb0bb159af58850d2a059622d7f127ebf53747f",
+  "nextImageTag": "phone-cloud-platform:wecom-xhs-joint-20261111-rc.2",
+  "runtimeFileHashes": {
+    "server/wecom-preinput-recovery.mjs": "9061288bb756fe4091c074220abfa74bfacc27c7af0d0d153c1fb5223defaae7"
+  },
+  "agentHotFileHashes": {
+    "scripts/wecom_preinput_recovery.py": "8855e920032c76346ca0280b7d8798595bd8c6b4de60e21a40ed4bd3ecab1601",
+    "scripts/wecom_cleanup_verify.py": "f801f860b28439965e6efd28fda408046ba1f9400a25f4dd8504ef769a8c73a6"
+  },
+  "agentIndexSha256Unchanged": "dd15cc1f6ab588d45ba5f2a19c3cebc06b663e6315f08c68025d5df904e27041",
+  "containerId": "55de67a8cf46fc71094d8759a0d44bca8fb4d1f410002eca9747027f4b661308",
+  "cloudPid": 1730700,
+  "cloudStartedAt": "2026-11-11T01:13:54.196513707Z",
+  "agentPid": 15224,
+  "adbPid": 20016,
+  "agentOwner": "NT AUTHORITY\\SYSTEM",
+  "adbOwner": "NT AUTHORITY\\SYSTEM",
+  "mediaPid": 2503525,
+  "mediaLiveVerified": true,
+  "health": {
+    "healthz": 200,
+    "readyz": 200
+  },
+  "inspector": "closed",
+  "unchangedOriginalTerminalFields": {
+    "jobs": true,
+    "tasks": true
+  },
+  "cleanupProofs": [
+    {
+      "deviceNumber": "202",
+      "lockId": "4033f958-4db8-4fb9-a4e8-466f6ed1987c",
+      "status": "released",
+      "phase": "maintenance_verified",
+      "verificationTaskId": "933eec0c-b548-43a2-a7fc-0d8338391b78",
+      "attempts": 4,
+      "completedAt": "2026-11-11T02:56:30.468Z",
+      "snapshotElapsedMs": [
+        47.0000000204891,
+        1219.0000000409782
+      ],
+      "observerPid": 15224,
+      "proofSha256": "468f65a3e16a036c6d60f925b7a23235f2e8e8d7d45d09e8e373567985c9cc52"
+    },
+    {
+      "deviceNumber": "200",
+      "lockId": "7c03a63f-8659-403b-b8f5-6fbc956e8220",
+      "status": "released",
+      "phase": "maintenance_verified",
+      "verificationTaskId": "b4a27d1d-9612-4775-a36c-6efafd0af3d2",
+      "attempts": 5,
+      "completedAt": "2026-11-11T03:02:59.762Z",
+      "snapshotElapsedMs": [
+        61.99999991804361,
+        1452.999999979511
+      ],
+      "observerPid": 15224,
+      "proofSha256": "b03d4b2ffd6d037d5e7f5d5940b7954adc7aef2cc9f5bbeedeea3aa23d27a623"
+    }
+  ],
+  "composeOnlyImageChanged": true,
+  "composeComparison": "no-interpolate/no-env-resolution; existing env files preserved",
+  "cloudRuntimeHashCount": 708,
+  "cloudRuntimeDiffs": [
+    "server/wecom-preinput-recovery.mjs"
+  ],
+  "tests": {
+    "localWecomPython": 622,
+    "windowsRecovery": 25,
+    "windowsCleanup": 11,
+    "screenRegression": 53
+  },
+  "restartedComponents": [],
+  "realInvitations": 0,
+  "formalCallbacks": 0,
+  "notVerified": [
+    "Agent in-memory result compactor rc.2 not activated",
+    "New 200/202 API previews not rerun",
+    "Formal CPS dispatch and business callback not accepted"
+  ],
+  "rollbackDirectory": "/opt/phone-cloud-staging/wecom-live-state-repair-20261111-rc.1",
+  "receiptCommitPending": true,
+  "activeSha256": "66aecb79f664272134964756b5e84166730cb29890cdc56fbad92041909931e8",
+  "composeSha256": "687b23cfcd936ec51450e7f04ecd10ac97bf12f784e9f895c9b866688ceee709"
+}
