@@ -8,7 +8,7 @@ stage=Path('/opt/phone-cloud-staging/device18-replacement-20261111-rc.1')
 old_id='adb:2e74c3a20920';new_id='adb:10CF3B074E002N1'
 repo_hash='e8d42324f5e67922d5b558abd31bc995c8af796c8e39e439a2556692f415634e'
 factory_hash='7073b32ca02e1dd11d150398234ee33d36a9e9fc78e569b2be6876112e06c415'
-apply=sys.argv[1:]==['--apply'];assert not sys.argv[1:] or apply
+resume=sys.argv[1:]==['--resume-retirement'];apply=sys.argv[1:]==['--apply'] or resume;assert not sys.argv[1:] or apply
 def command(args):return subprocess.check_output(args,text=True,timeout=30).strip()
 def digest(v):return hashlib.sha256(json.dumps(v,ensure_ascii=False,separators=(',',':')).encode()).hexdigest()
 def accounts(d):return [{k:a.get(k)for k in('appSlot','label','xhsId','accountName','enabled')}for a in d['xhsAccounts']]
@@ -38,7 +38,8 @@ try:
  old,new=rows[old_id],rows[new_id]
  assert old['deviceName']==new['deviceName']=='18' and old['adb']['state']!='device' and old['recovery']['physicalPresent']is False and new['adb']['state']=='device'
  assert old['occupancy']is None and new['occupancy']is None and old['listingStatus']=='unlisted'
- assert len([a for a in old['xhsAccounts']if a['xhsId']])==2 and not any(a['xhsId']for a in new['xhsAccounts'])
+ if resume:assert not any(a['xhsId']for a in old['xhsAccounts']) and len([a for a in new['xhsAccounts']if a['xhsId']])==2
+ else:assert len([a for a in old['xhsAccounts']if a['xhsId']])==2 and not any(a['xhsId']for a in new['xhsAccounts'])
  assert sims(old)==sims(new),'sim_number_binding_different'
  stage.mkdir(mode=0o700,exist_ok=True)
  if not apply:
@@ -50,16 +51,20 @@ try:
   result=runtime('inspect');assert result['bothIdle'] and result['userDeviceReferences']==0
   (stage/'preflight.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps({'prepared':True,'oldDeviceId':old_id,'newDeviceId':new_id,'xhsAccountsToMove':2,'simNumbersAlreadyMatch':True,'historicalTaskOrSmsChanges':0,'runtime':result}));sys.exit(0)
  backup=json.loads((stage/'devices.before.private.json').read_text());plan=json.loads((stage/'plan.json').read_text())
- assert digest(accounts(old))==plan['accountsSha256'] and digest(sims(new))==plan['simsSha256']
- guard=runtime('activate');assert guard['activated'] and guard['restarted']is False
- (stage/'repository-activated.json').write_text(json.dumps(guard,indent=2)+'\n')
+ assert digest(accounts(new if resume else old))==plan['accountsSha256'] and digest(sims(new))==plan['simsSha256']
+ if not resume:
+  guard=runtime('activate');assert guard['activated'] and guard['restarted']is False
+  (stage/'repository-activated.json').write_text(json.dumps(guard,indent=2)+'\n')
+ else:assert json.loads((stage/'repository-activated.json').read_text())['activated']
  moved=False;retired=False
  try:
   put(new_id,'',{'listingStatus':'unlisted'})
   status,p=api('/api/v1/devices',token=token);assert status==200
   targets=[d for d in p['devices']if d['deviceId']in(old_id,new_id)];assert len(targets)==2 and all(d['occupancy']is None for d in targets)
-  put(old_id,'/xhs-accounts',{'accounts':[]})
-  updated=put(new_id,'/xhs-accounts',{'accounts':backup['old']['xhsAccounts']});assert digest(accounts(updated))==plan['accountsSha256'];moved=True
+  if not resume:
+   put(old_id,'/xhs-accounts',{'accounts':[]})
+   updated=put(new_id,'/xhs-accounts',{'accounts':backup['old']['xhsAccounts']});assert digest(accounts(updated))==plan['accountsSha256']
+  moved=True
   result=runtime('retire');assert result['archived']and result['removedFromInventory']and result['remainingNumber18']==1;retired=True
   (stage/'retired.json').write_text(json.dumps(result,indent=2)+'\n')
  finally:

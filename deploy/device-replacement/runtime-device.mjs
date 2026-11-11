@@ -55,7 +55,13 @@ try{
    const old=this.devices.find(d=>d.deviceId===plan.oldDeviceId),next=this.devices.find(d=>d.deviceId===plan.newDeviceId);
    if(!old||!next||old.deviceName!=='18'||next.deviceName!=='18'||old.adb?.state==='device'||old.recovery?.physicalPresent!==false||next.adb?.state!=='device'||next.listingStatus!=='unlisted'||old.listingStatus!=='unlisted'||publicDevice(old).occupancy||publicDevice(next).occupancy||old.xhsAccounts.some(a=>a.xhsId)||digest(accounts(next))!==plan.accountsSha256||digest(sims(next))!==plan.simsSha256)throw Error('replacement_scope_changed');
    const pool=await getPool();await new Promise(r=>setImmediate(r));const until=Date.now()+3000;
-   while(pool.waitingCount||pool.idleCount!==pool.totalCount){if(Date.now()>until)throw Error('existing_repository_writes_busy');await new Promise(r=>setTimeout(r,25));}
+   // Dedicated coordinator leases keep pool clients checked out while idle.
+   // Drain pre-activation transactions, not unrelated post-activation traffic.
+   while(true){
+    const before=await pool.query({text:"SELECT count(*)::int AS n FROM pg_stat_activity WHERE datname=current_database() AND usename=current_user AND pid<>pg_backend_pid() AND xact_start<=to_timestamp($1/1000.0)",values:[symbol.appliedAt],query_timeout:2000});
+    if(!pool.waitingCount&&before.rows[0].n===0)break;
+    if(Date.now()>until)throw Error('pre_activation_repository_writes_busy');await new Promise(r=>setTimeout(r,25));
+   }
    const client=await pool.connect();const at=new Date().toISOString();let committed=false;
    const audit={auditId:plan.auditId,action:'device_hardware_replaced',actor:'admin',createdAt:at,detail:{oldDeviceId:plan.oldDeviceId,newDeviceId:plan.newDeviceId,movedXhsAccounts:2,simsChanged:false,backupSha256:plan.backupSha256}};
    try{
