@@ -36,8 +36,10 @@ try{
   },[{value:plan},arg(captured.publicDevice)]);console.log(JSON.stringify({mode,...result,noPause:true}));
  }else if(mode==='activate'){
   const bytes=await fs.readFile('/app/server/postgres-repositories.mjs');if(hash(bytes)!==plan.repositorySha256)throw Error('candidate_file_drift');
-  const imported=await rpc('Runtime.evaluate',{expression:"import('file:///app/server/postgres-repositories.mjs?device18-retirement="+encodeURIComponent(plan.operationId)+"')",awaitPromise:true,objectGroup:groups});if(imported.exceptionDetails)throw Error('candidate_import_failed');
-  const factory=(await props(imported.result.objectId)).result.find(p=>p.name==='createPostgresRepositories')?.value;if(!factory?.objectId)throw Error('candidate_factory_missing');
+  const fresh='/app/server/postgres-repositories.device18-replacement-20261111-rc1.mjs';
+  if(hash(await fs.readFile(fresh))!==plan.repositorySha256)throw Error('fresh_factory_file_drift');
+  const imported=await rpc('Runtime.evaluate',{expression:"process.getBuiltinModule('node:module').createRequire('file:///app/server/index.mjs')('"+fresh+"').createPostgresRepositories",awaitPromise:false,objectGroup:groups});if(imported.exceptionDetails)throw Error('candidate_import_failed');
+  const factory=imported.result;if(!factory?.objectId)throw Error('candidate_factory_missing');
   const result=await call(captured.structuredRepos.objectId,function(factory,getPool,stringify,plan){
    const symbol=Symbol.for('phonecloud.device18.retirement.repositories');if(globalThis[symbol])throw Error('repository_patch_already_applied');
    const replacement=factory({getPool,stringify});const keys=Object.keys(this).sort();if(keys.join('|')!==Object.keys(replacement).sort().join('|')||keys.some(k=>typeof this[k]!=='function'||typeof replacement[k]!=='function'||Object.getOwnPropertyDescriptor(this,k)?.writable!==true))throw Error('repository_shape_changed');
