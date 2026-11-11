@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Phone Cloud Platform</title>
   <link rel="stylesheet" href="./styles.css?v=20261028-wecom-slots-rc3" />
+  <link rel="stylesheet" href="./xhs-daily-admin.css?v=20261110" />
   </head>
   <body class="booting">
     <div class="boot-loader" aria-label="正在加载 Phone Cloud">
@@ -68,6 +69,7 @@
         <button data-page-button="sms" type="button">短信接收</button>
         <button data-page-button="xhs" type="button">小红书扫码</button>
         <span class="nav-section-label">系统维护</span>
+        <button data-page-button="xhs-daily-admin" data-role-page="admin" type="button">小红书采集日志</button>
         <button data-page-button="workflow-scripts" type="button">自动化脚本</button>
         <button data-page-button="release" type="button">APK 发布</button>
         <button data-page-button="diagnostics" type="button">诊断检查</button>
@@ -115,6 +117,7 @@
       </header>
 
       <section class="page hidden" data-page="lookup-admin"><div id="lookupAdminHost"></div></section>
+      <section class="page hidden" data-page="xhs-daily-admin"><div id="xhsDailyAdminHost"></div></section>
       <section class="page" data-page="dashboard">
         <div id="overviewGrid" class="metric-grid"></div>
       </section>
@@ -977,6 +980,6 @@
     </main>
 
     <script type="module" src="./vendor/screen-control.js?v=20260828-receiver-feedback-v1"></script>
-    <script type="module" src="./app.js?v=20261103-wecom-errors-rc1"></script>
+    <script type="module" src="./app.js?v=20261110-xhs-daily-admin"></script>
   </body>
 </html>

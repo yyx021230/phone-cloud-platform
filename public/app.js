@@ -1,4 +1,4 @@
-import { createWecomAutomationPanel } from "./wecom-automation-ui.js?v=20261103-errors-rc1";
+import { createWecomAutomationPanel } from "./wecom-automation-ui.js?v=20261029-invitation-rc5";
 import { renderLookupCardStatus } from "./lookup-card-status.js?v=20261021-scheduling-rc2";
 
 import { ScreenInactivityGuard } from "./screen-inactivity-guard.js?v=20260902-screen-idle-10m-baseline-v2";
@@ -665,6 +665,7 @@ function windowsTaskButtonLabel(type) {
 function pageCopy(page) {
   return {
     "lookup-admin": ["查名字", "手机账号、任务过程与失败现场"],
+    "xhs-daily-admin": ["小红书采集日志", "每天定时批次的成功、失败和跳过明细"],
     dashboard: ["总览", "平台、Windows 管理器和手机状态"],
     "user-workbench": ["用户工作台", "查看设备短信库和提交自动化扫码任务"],
     users: ["用户账号", "创建、查看和停用平台用户"],
@@ -691,8 +692,30 @@ function allowedPages() {
     .map((button) => button.dataset.pageButton);
 }
 
+function renderXhsDailyAdmin(active) {
+  const host = document.getElementById("xhsDailyAdminHost");
+  if (!host) return;
+  if (!active) {
+    host.dailyView?.cleanup?.();
+    if (host.dailyView) host.replaceChildren();
+    host.dailyView = null;
+    return;
+  }
+  if (host.dailyView) return;
+  const view = {};
+  host.dailyView = view;
+  import("./xhs-daily-admin.js?v=20261110").then(module => {
+    if (host.dailyView === view) view.cleanup = module.mountXhsDailyAdmin(host);
+  }).catch(() => {
+    if (host.dailyView !== view) return;
+    host.dailyView = null;
+    host.textContent = "采集日志加载失败，请刷新页面重试。";
+  });
+}
+
 function renderShell() {
   const isAuthenticated = Boolean(state.user);
+  renderXhsDailyAdmin(state.user?.role === "admin" && state.page === "xhs-daily-admin");
   document.body.classList.remove("booting");
   document.body.classList.toggle("auth-screen", !isAuthenticated);
   document.body.classList.toggle("admin-chrome", isAuthenticated && state.user?.role === "admin");

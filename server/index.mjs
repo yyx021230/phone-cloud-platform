@@ -12,6 +12,7 @@ import { spoolSnapshot, writeSpooledSnapshot, loadStreamedSnapshot } from './sna
 import {aiVisionConfig,createAiVisionReader} from './lookup-ai-vision.mjs';
 import {createLookupAiRecovery} from './lookup-ai-recovery.mjs';
 import {buildLookupAdminOverview,requestDetail,jobDetail,jobEvidence,lookupJobContext,parseLookupCursor} from './lookup-admin-console.mjs';
+import { listDailyBatches, readDailyBatch } from "./xhs-batch/admin-history.mjs";
 import { verifyLookupApiKey } from "./lookup-api-key.mjs";
 import { createRecoveryControls, recoverySerial, normalizeRecoveryControlAck, RECOVERY_CONTROL_PROTOCOL } from './recovery-controls.mjs';
 import { createManagedLookupStore, MANAGED_LOOKUP_PROTOCOL } from './managed-lookup-store.mjs';
@@ -682,6 +683,27 @@ async function routeApi(req, res, url) {
       finally {res.removeListener('close',disconnect);}return;
     } catch (e) {if(res.destroyed)return;if(!e.statusCode)return json(res,503,{ok:false,name:'',code:'lookup_storage_unavailable'});if(e.statusCode===429)res.setHeader('Retry-After','3');return json(res,e.statusCode,{ok:false,name:'',code:e.message});}
   }
+  if (req.method === "GET" && (url.pathname === "/api/v1/admin/xhs-daily-batches"
+      || url.pathname.startsWith("/api/v1/admin/xhs-daily-batches/"))) {
+    requireAuth(req, ["admin"]);
+    res.setHeader("Cache-Control", "no-store");
+    if (STORAGE_BACKEND !== "postgres") return json(res, 503, { error: "batch_history_unavailable" });
+    try {
+      const db = await getPostgresPool();
+      if (url.pathname === "/api/v1/admin/xhs-daily-batches") {
+        const offset = Number(url.searchParams.get("offset") ?? 0);
+        if (!Number.isSafeInteger(offset) || offset < 0) return json(res, 400, { error: "invalid_pagination" });
+        return json(res, 200, await listDailyBatches(db, { offset }));
+      }
+      const runId = url.pathname.slice("/api/v1/admin/xhs-daily-batches/".length);
+      const batch = await readDailyBatch(db, runId);
+      return batch ? json(res, 200, { batch }) : json(res, 404, { error: "batch_not_found" });
+    } catch (error) {
+      if (error.code === "42P01") return json(res, 503, { error: "batch_history_unavailable" });
+      throw error;
+    }
+  }
+
   if(url.pathname.startsWith('/api/v1/admin/lookup-pool')) {
     const ctx=requireAuth(req,['admin']);if(!managedLookup)return json(res,404,{error:'managed_lookup_not_enabled'});
     if(req.method==='GET'&&url.pathname.startsWith('/api/v1/admin/lookup-pool/console')){
