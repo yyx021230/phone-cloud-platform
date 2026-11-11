@@ -959,8 +959,8 @@ class FocuslessDisplayTests(unittest.TestCase):
 
     def test_xml_failure_with_empty_focus_recaptures_only_after_confirmed_wake(self):
         ready=ET.Element('hierarchy');events=list(self.events)
-        with patch.object(sync,'capture',side_effect=[RuntimeError('UIAutomator did not return an XML hierarchy'),ready]) as capture,patch.object(sync,'focus',return_value=''),patch.object(sync,'wake_focusless_display',return_value=True) as wake:
+        with patch.object(sync,'capture',side_effect=[RuntimeError('UIAutomator did not return an XML hierarchy'),ready]) as capture,patch.object(sync,'focus',return_value=''),patch.object(sync,'wake_if_asleep',return_value=False) as asleep,patch.object(sync,'wake_focusless_display',return_value=True) as wake:
             self.assertIs(sync.navigation_capture('adb','serial',lambda:None,events),ready)
-        self.assertEqual(capture.call_count,2);wake.assert_called_once()
+        self.assertEqual(capture.call_count,2);asleep.assert_called_once();wake.assert_called_once()
 
 if __name__ == '__main__':unittest.main()

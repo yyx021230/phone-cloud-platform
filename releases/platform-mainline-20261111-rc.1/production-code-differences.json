@@ -1,0 +1,36 @@
+{
+  "cloudRuntimeFiles": {
+    "sameCount": 689,
+    "different": [
+      "docs/PROJECT_DEVELOPMENT.md",
+      "docs/wecom-integration-api.md",
+      "package.json",
+      "public/app.js",
+      "public/index.html",
+      "public/wecom-automation-ui.js",
+      "public/wecom-integration-api.md",
+      "public/wecom-preview.html",
+      "public/wecom-preview.js",
+      "server/automation-center-ui.test.mjs",
+      "server/lookup-startup-ownership.test.mjs",
+      "server/postgres-repositories.test.mjs",
+      "server/wecom-diagnostics.test.mjs",
+      "server/wecom-integration.e2e.test.mjs",
+      "server/wecom-physical-cleanup.http.test.mjs",
+      "server/wecom-physical-cleanup.test.mjs",
+      "server/wecom-preview.http.test.mjs",
+      "server/wecom-preview.test.mjs",
+      "server/wecom-status-transport.http.test.mjs"
+    ],
+    "missing": []
+  },
+  "agentFiles": {
+    "sameCount": 107,
+    "different": [
+      "windows-agent/src/index.mjs",
+      "windows-agent/src/recovery-isolation.mjs"
+    ],
+    "missing": []
+  },
+  "note": "Git main includes pending recovery observation fix and UI/test/documentation source ahead of runtime; not a deployment. Added versioned assets preserve old fixed files."
+}

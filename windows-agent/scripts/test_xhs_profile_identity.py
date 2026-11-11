@@ -18,73 +18,21 @@ def login_tree():
 def milestone():return ET.parse(S/'fixtures/xhs/profile-milestone-500-likes-86.xml').getroot()
 def notification():return ET.parse(S/'fixtures/xhs/profile-index-notification-71.xml').getroot()
 class ProfileIdentityTests(unittest.TestCase):
- def test_oppo_system_prompt_uses_only_back_and_then_reads_own_profile_twice(self):
+ def test_unactivated_oppo_prompt_stops_without_back_or_native_read(self):
   ota='mCurrentFocus=Window{x u0 com.oplus.ota}'
-  dump=ota+'\nmFocusedApp=ActivityRecord{y u0 com.xingin.xhs/.index.v2.IndexActivityV2} t202}'
-  read_state=call('adb','serial','shell','dumpsys','window',timeout=8)
-  back=call('adb','serial','shell','input','keyevent','4',timeout=7)
-  dialog=ET.Element('hierarchy')
-  for rid, title, kind in [('com.oplus.ota:id/alertTitle','发现系统新版本','TextView'),
-                            ('com.oplus.ota:id/select_dialog_listview','','ListView'),
-                            ('android:id/text1','下载并安装','TextView'), ('android:id/text1','稍后安装','TextView')]:
-   ET.SubElement(dialog,'node',{'package':'com.oplus.ota','resource-id':rid,'text':title,
-                                'class':'android.widget.'+kind,'enabled':'true','bounds':'[1,1][2,2]'})
-  a=args(); ev=events()
-  with patch.object(sync,'focus',side_effect=[ota,INDEX,INDEX,INDEX,INDEX,INDEX]),patch.object(sync,'navigation_capture',return_value=dialog),patch.object(sync,'native_window_capture',side_effect=[tree(),tree(),tree()]) as read,patch.object(sync.time,'sleep'),patch.object(sync,'adb',side_effect=[dump,dump,'']) as adb:
-   sync.prove_profile_identity(a,tree(),Mock(),ev,'SYNTH_123')
-   self.assertEqual(adb.call_args_list,[read_state,read_state,back])
-   self.assertEqual(read.call_count,3)
-   self.assertEqual(a.verified_account_identity['sample_count'],2)
-  a.app_slot='app2'
-  with patch.object(sync,'navigation_capture') as capture,patch.object(sync,'adb') as adb:
-   self.assertIsNone(sync.recover_profile_system_prompt(a,ota,Mock(),[]))
-   capture.assert_not_called();adb.assert_not_called()
-  a.app_slot='app1'
-  with patch.object(sync,'navigation_capture',return_value=dialog),patch.object(sync,'adb',side_effect=[dump,INDEX]) as adb:
-   with self.assertRaisesRegex(sync.ElementListReadError,'foreground changed before Back'):
-    sync.recover_profile_system_prompt(a,ota,Mock(),[])
-   self.assertEqual(adb.call_args_list,[read_state,read_state])
-  for invalid in (ota,dump.replace('com.xingin.xhs/','com.other/'),dump+'\n'+dump):
-   with patch.object(sync,'navigation_capture') as capture,patch.object(sync,'adb',return_value=invalid) as adb:
-    self.assertIsNone(sync.recover_profile_system_prompt(a,ota,Mock(),[]))
-    self.assertEqual(adb.call_args_list,[read_state])
-    capture.assert_not_called()
-  for readings, error in ((['', ota, INDEX], None), ([ota]*4, 'did not return'),
-                          ([INDEX.replace('u0','u999')], 'unexpected foreground')):
-   with self.subTest(readings=readings),patch.object(sync,'focus',side_effect=readings),patch.object(sync,'navigation_capture',return_value=dialog),patch.object(sync,'native_window_capture',return_value=dialog) as capture,patch.object(sync.time,'sleep'),patch.object(sync,'adb',side_effect=[dump,dump,'']) as adb:
-    if error is None:
-     self.assertIs(sync.recover_profile_system_prompt(a,ota,Mock(),events()),dialog)
-     capture.assert_called_once()
-    else:
-     with self.assertRaisesRegex(sync.ElementListReadError,error):
-      sync.recover_profile_system_prompt(a,ota,Mock(),[])
-     capture.assert_not_called()
-    self.assertEqual(adb.call_args_list,[read_state,read_state,back])
+  with patch.object(sync,'focus',return_value=ota),patch.object(sync,'navigation_capture') as capture,patch.object(sync,'native_window_capture') as native,patch.object(sync,'adb') as adb:
+   with self.assertRaisesRegex(sync.ElementListReadError,'unsupported foreground'):
+    sync.prove_profile_identity(args(),tree(),Mock(),events(),'SYNTH_123')
+   capture.assert_not_called();native.assert_not_called();adb.assert_not_called()
 
- def test_clone_notification_back_only_for_exact_app_and_user(self):
-  p='com.android.permissioncontroller'
-  activity='.permission.ui.GrantPermissionsActivity'
-  prompt=f'mCurrentFocus=Window{{a u999 {p}/{p}{activity} type=1}}'
-  dump=prompt+f'\nmFocusedApp=ActivityRecord{{b u999 {p}/{activity} t1}}'
-  dialog=ET.Element('hierarchy')
-  for rid,title,kind in [('permission_message','“Ⅱ·小红书”请求向您发送通知','TextView'),
-                          ('permission_allow_button','允许','Button'),
-                          ('permission_deny_and_dont_ask_again_button','禁止且不再询问','Button')]:
-   ET.SubElement(dialog,'node',{'package':p,'resource-id':p+':id/'+rid,'text':title,
-                                'class':'android.widget.'+kind,'enabled':'true','bounds':'[1,1][2,2]'})
-  a=args(); a.app_slot='app2'; ev=['collection_slot_requested:app2','clone_user_requested:999']; native=tree()
-  with patch.object(sync,'focus',return_value=INDEX.replace('u0','u999')),patch.object(sync,'navigation_capture',return_value=dialog),patch.object(sync,'native_window_capture',return_value=native),patch.object(sync.time,'sleep'),patch.object(sync,'adb',side_effect=[dump,dump,'']) as adb:
-   self.assertIs(sync.recover_profile_system_prompt(a,prompt,Mock(),ev),native)
-   self.assertEqual(adb.call_args_list,[call('adb','serial','shell','dumpsys','window',timeout=8)]*2+
-                    [call('adb','serial','shell','input','keyevent','4',timeout=7)])
-  dialog[0].set('text','“Ⅱ·小红书”请求定位权限')
-  with patch.object(sync,'navigation_capture',return_value=dialog) as capture,patch.object(sync,'adb',return_value=dump) as adb:
-   self.assertIsNone(sync.recover_profile_system_prompt(a,prompt,Mock(),ev[:1]))
-   capture.assert_not_called()
-   adb.assert_not_called()
-   self.assertIsNone(sync.recover_profile_system_prompt(a,prompt,Mock(),ev[:2]))
-   capture.assert_called_once()
-   adb.assert_called_once_with('adb','serial','shell','dumpsys','window',timeout=8)
+ def test_unactivated_clone_notification_is_not_a_location_permission(self):
+  a=args();a.app_slot='app2'
+  prompt='mCurrentFocus=Window{x u999 com.android.permissioncontroller/.permission.ui.GrantPermissionsActivity}'
+  ev=['collection_slot_requested:app2','clone_user_requested:999']
+  with patch.object(sync,'focus',return_value=prompt),patch.object(sync,'navigation_capture') as capture,patch.object(sync,'native_window_capture') as native,patch.object(sync,'adb',return_value=prompt) as adb:
+   with self.assertRaisesRegex(sync.ElementListReadError,'unsupported foreground'):
+    sync.prove_profile_identity(a,tree(),Mock(),ev,'SYNTH_123')
+   capture.assert_not_called();native.assert_not_called();adb.assert_called_once_with('adb','serial','shell','dumpsys','window',timeout=8)
 
  def test_known_notification_fresh_tree_closes_icon_not_confirmation_then_proves_profile(self):
   home=tree();home[-1].set('selected','false');ev=events();a=args();focus=INDEX.replace('.index.v2.IndexActivityV2','com.xingin.xhs.index.v2.IndexActivityV2')

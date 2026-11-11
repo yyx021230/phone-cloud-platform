@@ -288,9 +288,25 @@ class LeaseBoundary(unittest.TestCase):
                 if name.endswith('window'):
                     for pair in (False,True):
                         with self.subTest(pair=pair),self.assertRaises(AtGuard):
-                            mod.read('adb','s',never,never,guard,'u0 com.xingin.xhs/.xywebview.activity.WebViewActivityV2}',pair=pair)
+                            mod.read('adb','s',never,never,guard,'mCurrentFocus=Window{x u0 com.xingin.xhs/com.xingin.xywebview.activity.WebViewActivityV2}',pair=pair)
                 else:
                     with self.assertRaises(AtGuard):mod.perform('menu','adb','s',never,never,guard,'focus')
+
+    def test_candidate_assets_reject_corruption_before_staging(self):
+        import shutil
+        from unittest.mock import patch
+        files=candidate_files()
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            for name,source in files.items():
+                if name.startswith('scripts/native/') or name in ('scripts/xhs_native_window.py','scripts/xhs_native_navigation.py'):
+                    target=root/'windows-agent'/name
+                    target.parent.mkdir(parents=True,exist_ok=True)
+                    shutil.copyfile(source,target)
+            (root/'windows-agent/scripts/native/xhs-native-navigation.jar').write_bytes(b'corrupt')
+            with patch.dict(candidate_files.__globals__,{'ROOT':root}):
+                with self.assertRaisesRegex(RuntimeError,'qa_native_asset_hash_mismatch'):
+                    candidate_files()
 
     def test_native_commands_bind_asset_hash_remote_name_and_action(self):
         import hashlib

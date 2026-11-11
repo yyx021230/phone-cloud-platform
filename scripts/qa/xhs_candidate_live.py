@@ -3,6 +3,7 @@
 Only creates target screen sessions via the formal API, writes its own staging
 directory, and runs candidate modules there. No shared Agent/files/cache changes.
 """
+import ast
 import base64
 import concurrent.futures
 import hashlib
@@ -72,6 +73,21 @@ def candidate_files():
     for name in ('小红书数据同步.py','xhs_native_window.py','xhs_native_navigation.py',
                  'native/xhs-native-window.jar','native/xhs-native-pair.jar','native/xhs-native-navigation.jar'):
         files['scripts/'+name]=ROOT/'windows-agent/scripts'/name
+    # Stage current pinned bytes under the private runner's existing fixed names.
+    # Never overwrite the shared Agent's old fixed files or execute a helper here.
+    for kind,helper,key in [('window','window','ASSET_SHA256'),('pair','window','PAIR_SHA256'),('navigation','navigation','ASSET_SHA256')]:
+        source=files['scripts/xhs_native_'+helper+'.py']
+        values=[n.value.value for n in ast.parse(source.read_text()).body
+                if isinstance(n,ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0],ast.Name)
+                and n.targets[0].id==key and isinstance(n.value,ast.Constant)]
+        if len(values)!=1 or not isinstance(values[0],str) or len(values[0])!=64 or any(c not in '0123456789abcdef' for c in values[0]):
+            raise RuntimeError('qa_native_asset_hash_unproven')
+        digest=values[0];name='scripts/native/xhs-native-'+kind+'.jar'
+        versioned=source.parent/'native'/('xhs-native-'+kind+'-'+digest+'.jar')
+        selected=versioned if versioned.is_file() else files[name]
+        if hashlib.sha256(selected.read_bytes()).hexdigest()!=digest:
+            raise RuntimeError('qa_native_asset_hash_mismatch')
+        files[name]=selected
     return files
 
 

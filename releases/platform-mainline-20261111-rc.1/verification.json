@@ -1,0 +1,68 @@
+{
+  "atUtc": "2026-11-11T10:00:21.790988+00:00",
+  "workflowSha256": "0a06c335eb36a017fc84bfdd4b067dedee27041e88ad746963f02f1f9a532e2b",
+  "scope": "Local mainline source reconciliation only; not a production deployment",
+  "node": {
+    "total": 2593,
+    "pass": 2586,
+    "skip": 7,
+    "fail": 0,
+    "log": "evidence/combined-initial.log.gz",
+    "note": "Node portion passed before Python fixture repair; subsequent changes are Python QA/tests and documentation only."
+  },
+  "python": {
+    "pass": 2122,
+    "fail": 0,
+    "nodeRunnerPythonDirectoriesAllCovered": true,
+    "logs": [
+      "evidence/python-current.log.gz",
+      "evidence/remaining-current.log.gz"
+    ],
+    "note": "First six directory groups passed in python-current; its QA stage failed; current QA and all remaining groups passed in remaining-current."
+  },
+  "postgres": {
+    "pass": 3,
+    "temporaryLoopbackCluster": true,
+    "productionCredentialsLoaded": false,
+    "cases": [
+      "device retirement race and old snapshot",
+      "pending original context cold-load over 5005 new rows",
+      "rollback/history/sentinel/lost COMMIT and recovery proof ACK"
+    ]
+  },
+  "targeted": {
+    "conflictAndScreen": 87,
+    "xhsFocused": 76,
+    "xhsBroadExternalProcessBlocked": 152
+  },
+  "syntax": "pass",
+  "smoke": "pass; fake Agent and temporary JSON state",
+  "d075": "repository-only pass; no media deployment performed",
+  "initialFailures": {
+    "pythonDiscovery": "2 failures and 13 errors: missing legacy fixtures, candidate-only assertions, incomplete mocks; corrected without changing production collector bytes",
+    "qa": "3 dependency-closure errors: pinned helper with old fixed assets; packaging selection and current focus fixture corrected; 82 current QA tests pass",
+    "oldPgRunner": "Rejected by JSON-only isolation assertion; obsolete opt-in runner is not current PG acceptance; three current real PG tests passed separately",
+    "invalidD075Invocation": "Initial invocation omitted required mode and failed; explicit --repository passed; no media repair attempted"
+  },
+  "notVerified": [
+    "4 other opt-in PostgreSQL integration scenarios",
+    "Native Windows execution and Java asset rebuild",
+    "Real phones, fresh CPS invitation receipt and automatic callback; previous pending production acceptance remains pending"
+  ],
+  "preserved": {
+    "existingWorktreesAndUncommittedChanges": true,
+    "productionRuntimeUnchanged": true,
+    "frozenControlHashesUnchanged": true,
+    "oldTagsUnmoved": true
+  },
+  "productionPostcheck": {
+    "activeManifestSha256": "7bb60f27ef2612fd6bca524d5875084a37253aa0f6fffa0a75033c39bb765f53",
+    "version": "device18-replacement-20261111-deployed.1",
+    "mainPid": 1730700,
+    "agentPid": 11604,
+    "adbPid": 20016,
+    "healthz": 200,
+    "readyz": 200,
+    "cpsHealthz": 200
+  }
+}

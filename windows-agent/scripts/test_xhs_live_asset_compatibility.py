@@ -25,7 +25,9 @@ class LiveAssetCompatibility(unittest.TestCase):
   return scripts,hashes
  def publish_scripts(self,scripts):
   for kind in ['window','pair','navigation']:
-   src=S/'native'/('xhs-native-'+kind+'.jar');target=scripts/'native'/('xhs-native-'+kind+'-'+digest(src)+'.jar');target.write_bytes(src.read_bytes())
+   assets=list((S/'native').glob('xhs-native-'+kind+'-*.jar'))
+   self.assertEqual(len(assets),1,'one current additive pinned asset per helper')
+   src=assets[0];target=scripts/'native'/('xhs-native-'+kind+'-'+digest(src)+'.jar');target.write_bytes(src.read_bytes())
   for name in ['xhs_native_window.py','xhs_native_navigation.py','小红书数据同步.py']:
    temp=scripts/(name+'.new');temp.write_bytes((S/name).read_bytes());temp.replace(scripts/name)
  def exercise_old(self,collector,window,nav):

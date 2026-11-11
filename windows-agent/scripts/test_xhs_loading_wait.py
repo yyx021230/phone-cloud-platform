@@ -40,40 +40,14 @@ class LoadingWaitTests(unittest.TestCase):
         return sync.wait_data_center_loading('adb', 'serial', root if root is not None else self.missing,
                                              guard, self.events, require_content=content)
 
-    def test_vivo_store_redirect_only_returns_to_proven_clone_works(self):
-        current = ('mCurrentFocus=Window{x u0 com.bbk.appstore/'
-                   'com.bbk.appstore.ui.details.AppDetailActivity type=1}')
-        store = ET.fromstring(
-            '<hierarchy><node package="com.bbk.appstore" resource-id="com.bbk.appstore:id/package_detail_title"'
-            ' text="极简记账" bounds="[0,200][200,280]"/><node package="com.bbk.appstore"'
-            ' resource-id="com.bbk.appstore:id/originui_vtoolbar_navigation_view_btn_rom14_0"'
-            ' content-desc="返回" class="android.widget.ImageButton" enabled="true" clickable="true"'
-            ' bounds="[12,82][104,174]"/></hierarchy>')
-        self.events.extend(['xhs_cold_started', 'account_identity:verified_public_id_two_reads'])
-        self.focus.side_effect = [current, current, CURRENT, CURRENT, CURRENT]
-        self.adb.side_effect = ['VIVO', '']
-        with patch.object(sync, 'capture', return_value=store) as capture, \
-                patch.object(sync, 'navigation_capture', return_value=self.good), \
-                patch.object(sync, 'element_page_signature', return_value='stable'):
-            self.assertIs(self.run_wait(content=True), self.good)
-        capture.assert_called_once_with('adb', 'serial')
-        self.assertEqual(self.adb.call_count, 2)
-        self.assertEqual(self.adb.call_args.args[2:], ('shell', 'input', 'keyevent', '4'))
-        self.assertIn('vivo_store_detail_back', self.events)
-        for reason in ('unknown_ad', 'identity_missing', 'already_scanning'):
-            trial = [e for e in self.events if e != 'vivo_store_detail_back']
-            original_title = store[0].get('text')
-            if reason == 'unknown_ad':
-                store[0].set('text', '未知应用')
-            elif reason == 'identity_missing':
-                trial.remove('account_identity:verified_public_id_two_reads')
-            else:
-                trial.append('collection_scan_as_of:fixture')
-            with self.subTest(reason=reason):
-                self.assertFalse(sync.recover_vivo_store_detail(
-                    'adb', 'serial', store, 'app2', current, lambda: None, trial, works_loading=True))
-            store[0].set('text', original_title)
-        self.assertEqual(self.adb.call_count, 2)
+    def test_loading_refuses_foreign_store_without_unapproved_back_action(self):
+        current = 'mCurrentFocus=Window{x u0 com.bbk.appstore/com.bbk.appstore.ui.details.AppDetailActivity}'
+        self.focus.return_value = current
+        with patch.object(sync, 'navigation_capture') as capture:
+            with self.assertRaisesRegex(RuntimeError, 'requested slot'):
+                self.run_wait(content=True)
+        capture.assert_not_called()
+        self.adb.assert_not_called()
 
     def test_observed_missing_tab_waits_twenty_seconds_then_clicks_once(self):
         self.assertFalse(sync.data_center_tab_header(self.missing))
@@ -130,7 +104,7 @@ class LoadingWaitTests(unittest.TestCase):
         self.assertEqual(capture.call_count, 2)
         self.assertEqual(sync.element_page_signature(result), sync.element_page_signature(changed))
 
-    def test_blank_overview_retry_uses_proven_more_route(self):
+    def test_blank_overview_retry_uses_proven_overview_route(self):
         center = ET.fromstring('<hierarchy><node text="创作中心" bounds="[0,0][100,100]"/>'
                                '<node text="最新笔记" bounds="[0,100][100,200]"/>'
                                '<node text="更多" bounds="[0,200][100,300]"/></hierarchy>')
@@ -141,35 +115,30 @@ class LoadingWaitTests(unittest.TestCase):
                 patch.object(sync, 'tap_label') as tap, patch.object(sync, 'tap_creator_overview') as overview:
             result = sync.reopen_loading_data_center('adb', 'serial', self.missing, lambda: None, self.events)
         self.assertIs(result, self.good)
-        self.assertEqual(tap.call_args.args[3], '更多')
-        overview.assert_not_called()
+        tap.assert_not_called()
+        overview.assert_called_once()
         self.assertEqual(self.adb.call_count, 1)
-        self.assertIn('data_center_loading_reopened_via_more', self.events)
+        self.assertNotIn('data_center_loading_reopened_via_more', self.events)
 
-    def test_blank_stock_loading_can_use_two_complete_native_reads(self):
-        def native(adb, serial, current, guard, events):
-            events.append('native_window_elements_enabled')
-            return copy.deepcopy(self.good)
-        with patch.object(sync, 'blank_works_loading', return_value=True), \
-                patch.object(sync, 'navigation_capture', return_value=self.missing), \
-                patch.object(sync, 'native_window_capture', side_effect=native) as capture, \
+    def test_loading_accepts_two_complete_navigation_reads_without_direct_probe(self):
+        with patch.object(sync, 'navigation_capture', return_value=copy.deepcopy(self.good)) as reads, \
+                patch.object(sync, 'native_window_capture') as native, \
                 patch.object(sync, 'reopen_loading_data_center') as reopen:
             result = self.run_wait(content=True)
         self.assertEqual(sync.element_page_signature(result), sync.element_page_signature(self.good))
-        self.assertEqual(capture.call_count, 2)
+        self.assertEqual(reads.call_count, 2)
+        native.assert_not_called()
         reopen.assert_not_called()
         self.adb.assert_not_called()
-        self.assertIn('native_window_elements_enabled', self.events)
-        self.assertIn('data_center_blank_native_probe_ready', self.events)
 
-    def test_blank_native_probe_does_not_accept_a_partial_second_tree(self):
+    def test_partial_second_navigation_tree_cannot_become_empty_success(self):
         self.events.extend(['data_center_loading_reopen:1', 'data_center_loading_reopen:2'])
-        with patch.object(sync, 'blank_works_loading', return_value=True), \
-                patch.object(sync, 'navigation_capture', return_value=self.missing), \
-                patch.object(sync, 'native_window_capture', side_effect=[self.good, self.missing]) as capture:
+        with patch.object(sync, 'navigation_capture', side_effect=[self.good] + [self.missing]*30) as reads, \
+                patch.object(sync, 'native_window_capture') as native:
             with self.assertRaisesRegex(sync.ElementListReadError, 'loading timed out'):
                 self.run_wait(content=True)
-        self.assertEqual(capture.call_count, 2)
+        self.assertGreater(reads.call_count, 2)
+        native.assert_not_called()
         self.assertNotIn('native_window_elements_enabled', self.events)
         self.adb.assert_not_called()
 

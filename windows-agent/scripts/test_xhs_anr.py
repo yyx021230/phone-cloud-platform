@@ -33,6 +33,6 @@ class AnrTests(unittest.TestCase):
  def test_remaining_anr_stops_after_single_wait(self):
   events=['collection_slot_requested:app1']
   with patch.object(sync,'focus',return_value=ANR),patch.object(sync,'adb') as adb,patch.object(sync.time,'sleep'):
-   with self.assertRaisesRegex(RuntimeError,'requested slot'):sync.recover_known_overlay('adb','s',self.tree(),lambda:None,events)
+   with self.assertRaisesRegex(RuntimeError,'app is not responding'):sync.recover_known_overlay('adb','s',self.tree(),lambda:None,events)
    self.assertEqual(adb.call_count,1);self.assertIn('xhs_anr_wait_selected',events)
 if __name__=='__main__':unittest.main()
