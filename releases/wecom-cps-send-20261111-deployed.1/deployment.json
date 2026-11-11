@@ -1,0 +1,181 @@
+{
+  "version": "wecom-cps-send-20261111-deployed.1",
+  "atUtc": "2026-11-11T07:32:46.567050+00:00",
+  "branch": "codex/wecom-cps-send-20261111",
+  "candidateTag": "wecom-cps-send-20261111-rc.5",
+  "codeCommit": "6116477bdb12fa56169e7dab7051db44de4917d9",
+  "previousActiveSha256": "cfd4dcf0bc510ead8ba2556f6c4e3b33d722b0d8114f4f67e26a9394cf85203c",
+  "activation": {
+    "atUtc": "2026-11-11T07:28:04.665969+00:00",
+    "applied": true,
+    "imageUnchanged": "sha256:4c3823e7aab5328c6e9ecfa37683ea210405fdddb14c0d52f61664812f755b33",
+    "containerBefore": "13de64066b3d0cd2a5d92e0355b421153ff4328de6ee93406352cd59c9fe97a4",
+    "containerAfter": "88703bcbe6da15af62e45258f09320e782f82b6514e6f73fb19d6bbc3b261241",
+    "modeBefore": "preview",
+    "modeAfter": "send",
+    "stateKeyAfter": "production",
+    "onlyEnvChanges": [
+      "CPS_EXECUTION_MODE",
+      "CPS_STATE_KEY"
+    ],
+    "mainPidUnchanged": 1730700,
+    "agentReloaded": false,
+    "adbTouched": false,
+    "preflight": {
+      "atUtc": "2026-11-11T07:28:04.526Z",
+      "apply": false,
+      "targetStateKey": "production",
+      "sourceJournals": [
+        {
+          "key": "preview-20261110",
+          "revision": 152,
+          "sha256": "441bff6bba800c6d71a16fdd4b01bcc791761a730c1a2aa99d8e5338a4fef811",
+          "leadCount": 5
+        },
+        {
+          "key": "preview-20261110-pilot200",
+          "revision": 45,
+          "sha256": "d3d2f0762dd1de420a95f610392d37b6b76dd2d649354bccde641479b83a7af5",
+          "leadCount": 2
+        },
+        {
+          "key": "preview-20261110-pilot202",
+          "revision": 79,
+          "sha256": "3fe4a75a88aab2b34d7472d727e0cc3ab155d8631116509147142295c8dc42df",
+          "leadCount": 2
+        }
+      ],
+      "seedSha256": "f040ceabe3a2ee92e0723b6bc15b62bff0fb9032fc28d2bc8929fcd4c7862026",
+      "seedLeads": 9,
+      "seedRecipients": 4,
+      "seedNonces": 7,
+      "seedLimits": 0,
+      "originalPreviewJobsChecked": 9,
+      "historicSendsOnCurrentPhones": 0,
+      "oldPreviewJobsReplayed": 0,
+      "callbacksInvoked": 0
+    },
+    "retiredIdlePilotServices": [
+      {
+        "name": "phone-cloud-cps-preview-200",
+        "containerId": "470867f98e1b9d7cd3fc9dc44bc6fdc6d434074b1a61bfc9d45df334bedab48c",
+        "wasRunning": false
+      },
+      {
+        "name": "phone-cloud-cps-preview-202",
+        "containerId": "5d1a9232a06bacd65b16ae582d1d24b435102aab3da7a7260274e1721cb5899f",
+        "wasRunning": false
+      }
+    ],
+    "completedAtUtc": "2026-11-11T07:28:05.731897+00:00",
+    "independentCpsSwitchElapsedSeconds": 1.04,
+    "journalProof": {
+      "atUtc": "2026-11-11T07:28:05.178Z",
+      "apply": true,
+      "targetStateKey": "production",
+      "sourceJournals": [
+        {
+          "key": "preview-20261110",
+          "revision": 152,
+          "sha256": "441bff6bba800c6d71a16fdd4b01bcc791761a730c1a2aa99d8e5338a4fef811",
+          "leadCount": 5
+        },
+        {
+          "key": "preview-20261110-pilot200",
+          "revision": 45,
+          "sha256": "d3d2f0762dd1de420a95f610392d37b6b76dd2d649354bccde641479b83a7af5",
+          "leadCount": 2
+        },
+        {
+          "key": "preview-20261110-pilot202",
+          "revision": 79,
+          "sha256": "3fe4a75a88aab2b34d7472d727e0cc3ab155d8631116509147142295c8dc42df",
+          "leadCount": 2
+        }
+      ],
+      "seedSha256": "f040ceabe3a2ee92e0723b6bc15b62bff0fb9032fc28d2bc8929fcd4c7862026",
+      "seedLeads": 9,
+      "seedRecipients": 4,
+      "seedNonces": 7,
+      "seedLimits": 0,
+      "originalPreviewJobsChecked": 9,
+      "historicSendsOnCurrentPhones": 0,
+      "oldPreviewJobsReplayed": 0,
+      "callbacksInvoked": 0
+    },
+    "rollbackContainer": "phone-cloud-cps-wecom-preview-rollback-20261111",
+    "realInvitationsByOperator": 0,
+    "formalAcceptanceComplete": false
+  },
+  "mode": "send",
+  "stateKey": "production",
+  "formalAdmissionOpen": true,
+  "formalAcceptanceComplete": false,
+  "oldPreviewLeadsRetained": 9,
+  "recipientGuardsRetained": 4,
+  "oldSourcesAndLeadsUnchanged": true,
+  "newFormalLeadsObserved": 0,
+  "oldPreviewsReplayed": 0,
+  "callbackAttemptsOnOldPreviews": 0,
+  "mainContainerId": "55de67a8cf46fc71094d8759a0d44bca8fb4d1f410002eca9747027f4b661308",
+  "mainPid": 1730700,
+  "mainStartedAt": "2026-11-11T01:13:54.196513707Z",
+  "mainReloads": 0,
+  "agentReloads": 0,
+  "adbChanges": 0,
+  "cpsImageId": "sha256:4c3823e7aab5328c6e9ecfa37683ea210405fdddb14c0d52f61664812f755b33",
+  "cpsUser": "node",
+  "cpsContainerId": "88703bcbe6da15af62e45258f09320e782f82b6514e6f73fb19d6bbc3b261241",
+  "cpsStartedAt": "2026-11-11T07:28:05.380344732Z",
+  "runningMainImageId": "sha256:fc0bb8c3458470ad21397fa16aed8b5207882a0fe112f4107d7b89ef094c52ce",
+  "nextMainImageId": "sha256:16e06c48a5fb32a92ba14b8d22d9c814341bb143f23c4fe1205426bab6b322d7",
+  "nextMainImageTag": "phone-cloud-platform:wecom-cps-send-20261111-rc.5",
+  "cloudRuntimeFilesVerified": 708,
+  "cloudChangedFiles": {
+    "public/cps-wecom-integration-api.md": "ee761208e5e81707cd246e02f59ed97df08da30291e1540e5049031ccb6f5a6e"
+  },
+  "health": {
+    "main": 200,
+    "ready": 200,
+    "cps": 200
+  },
+  "mediaVerification": {
+    "decision": "D-075",
+    "verified": "live",
+    "pid": 2503525,
+    "binarySha256": "d3a9eab65555680f1a7efe6d1746f315e25c69059d49aff40a0a45d292feec35",
+    "bitsPerSecond": 8000000,
+    "packetsPerGroup": 2
+  },
+  "publicSignedDeviceQuery": {
+    "http": 200,
+    "targetsOnlineAvailable": [
+      "200",
+      "202"
+    ],
+    "legacyCorpMemberIdsAbsent": true
+  },
+  "publicMalformedDispatch": {
+    "http": 200,
+    "code": 2003,
+    "taskCreated": false
+  },
+  "callbackTlsHead": 200,
+  "callbackBusinessPostTested": false,
+  "configSha256": "8b5ec703776e56c74c23e0899a2100967b04bb8838cd5c86ab207e145c0a48ce",
+  "testSummary": {
+    "localPassed": 59,
+    "localSkippedOptionalPg": 1,
+    "localFailed": 0,
+    "sourceSeedGuardCases": 11,
+    "realDbReadOnlyPreflight": true,
+    "realDbTransactionalSeed": true
+  },
+  "rollbackDirectory": "/opt/phone-cloud-staging/wecom-cps-send-20261111-rc.1",
+  "notVerified": [
+    "First fresh CPS lead actual invitation, confirmation and automatic business callback",
+    "202 new non-contact remark/send-page path"
+  ],
+  "receiptCommitPending": true,
+  "activeBeforeReceiptBindingSha256": "53f8cb80185c68a5f7abdf2d39e226bec3da6cfdd08ee22fce364a88cbe44003"
+}
