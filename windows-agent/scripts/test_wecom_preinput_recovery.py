@@ -1,6 +1,9 @@
 import copy
 import types
 import unittest
+import json
+import hashlib
+from unittest.mock import patch
 from wecom_preinput_recovery import execute,quiescent_processes,PeerSocket
 from wecom_physical_verify import HostRef,VerifyStop
 
@@ -149,6 +152,64 @@ class OtherPhoneTests(unittest.TestCase):
                 elif mutation=='orphan':f.workers.append(OwnedProcess(701,['python','-I'],parent=999))
                 elif mutation=='cycle':f.workers.extend([OwnedProcess(701,['python','-I'],parent=702),OwnedProcess(702,['python','-I'],parent=701)])
                 with self.assertRaisesRegex(VerifyStop,'worker_present'):f.run()
+
+class IsolatedXhsTests(unittest.TestCase):
+    def fixture(self):
+        stage='D:/PhoneCloud/staging/xhs-qa-live-0123456789ab-139-app1-01234567'
+        args=['python',stage+'/xhs_isolated_runner.py','--serial','other-phone','--adb',r'D:\PhoneCloud\tools\android-sdk\platform-tools\adb.exe',
+              '--device-name','139','--device-cache','D:/PhoneCloud/agent/data/device-scan-cache.json','--app-slot','app1',
+              '--task-id','fixture-job','--cancel-file',stage+'/cancel','--days','7','--output',stage+'/result.json']
+        process=OwnedProcess(710,args,owner=r'FIXTURE\Administrator',parent=999)
+        process.environ=lambda:{'XHS_QA_CONFIG':stage+'/config.json'}
+        config=dict(stage=stage,serial='other-phone',deviceName='139',appSlot='app1',jobId='fixture-job',agentPid=200,
+                    pythonPath=r'D:\PhoneCloud\tools\python39\python.exe',adbPath=args[5],inventoryPath=args[9],
+                    brokerUrl='http://127.0.0.1:12345',brokerToken='fixture-secret-never-returned')
+        files={'config.json':lambda:json.dumps(config).encode(),'xhs_isolated_runner.py':lambda:b'audited runner','xhs_isolated_guard.py':lambda:b'audited guard'}
+        def read(path,limit):
+            from pathlib import PureWindowsPath
+            return files[PureWindowsPath(path).name]()
+        hashes=tuple(hashlib.sha256(v).hexdigest()for v in (b'audited runner',b'audited guard'))
+        return process,config,files,read,hashes
+    def run_fixture(self,p,read,hashes,target='synthetic155'):
+        with patch('wecom_preinput_recovery.bounded_file',read),patch('wecom_preinput_recovery.ISOLATED_XHS_HASHES',hashes):
+            return quiescent_processes(lambda:[Process(200,'node.exe',['node',r'D:\PhoneCloud\agent\src\index.mjs']),p],self_pid=300,agent_pid=200,budget=lambda:None,target_serial=target)
+    def test_audited_other_device_standalone_runner_does_not_block(self):
+        p,c,files,read,hashes=self.fixture();self.assertTrue(self.run_fixture(p,read,hashes))
+    def test_unproven_or_same_device_runner_remains_blocked(self):
+        mutations=('same_serial','case_serial','unknown_version','unknown_guard','missing_config','config_serial','config_agent','config_stage',
+                   'config_python','config_adb','config_inventory','remote_broker','script_path','exe','owner','duplicate_flag',
+                   'qa_adb_mode','output_scope','cancel_scope','missing_target','wrong_config_path')
+        for change in mutations:
+            with self.subTest(change=change):
+                p,c,files,read,hashes=self.fixture();target='synthetic155'
+                if change=='same_serial':target='other-phone'
+                elif change=='case_serial':target='OTHER-PHONE'
+                elif change=='unknown_version':files['xhs_isolated_runner.py']=lambda:b'changed runner'
+                elif change=='unknown_guard':files['xhs_isolated_guard.py']=lambda:b'changed guard'
+                elif change=='missing_config':files.pop('config.json')
+                elif change.startswith('config_'):
+                    key={'serial':'serial','agent':'agentPid','stage':'stage','python':'pythonPath','adb':'adbPath','inventory':'inventoryPath'}[change[7:]]
+                    c[key]='wrong'
+                elif change=='remote_broker':c['brokerUrl']='http://remote:12345'
+                elif change=='script_path':p.args[1]=r'C:\unrelated\xhs_isolated_runner.py'
+                elif change=='exe':p.path=r'C:\other\python.exe'
+                elif change=='owner':p.owner=r'FIXTURE\someone'
+                elif change=='duplicate_flag':p.args[-2]='--serial'
+                elif change=='qa_adb_mode':p.args=p.args[:2]+['--qa-adb','devices']
+                elif change=='output_scope':p.args[-1]='D:/elsewhere/result.json'
+                elif change=='cancel_scope':p.args[p.args.index('--cancel-file')+1]='D:/elsewhere/cancel'
+                elif change=='missing_target':target=None
+                elif change=='wrong_config_path':p.environ=lambda:{'XHS_QA_CONFIG':'D:/elsewhere/config.json'}
+                with self.assertRaisesRegex(VerifyStop,'worker_present'):self.run_fixture(p,read,hashes,target)
+    def test_budget_and_read_failure_cannot_grant_scope(self):
+        from wecom_preinput_recovery import isolated_xhs_other_device
+        p,c,files,read,hashes=self.fixture()
+        with patch('wecom_preinput_recovery.bounded_file',read),patch('wecom_preinput_recovery.ISOLATED_XHS_HASHES',hashes):
+            def expired():raise VerifyStop('wecom_cleanup_verify_timeout')
+            with self.assertRaisesRegex(VerifyStop,'timeout'):isolated_xhs_other_device(p,p.args,200,'target',expired)
+        with patch('wecom_preinput_recovery.bounded_file',side_effect=PermissionError):
+            self.assertFalse(isolated_xhs_other_device(p,p.args,200,'target',lambda:None))
+
 
 class Wire:
     def __init__(self):self.sent=[];self.fd=10

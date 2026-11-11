@@ -21,6 +21,8 @@ from wecom_qa_tcp_runtime import WindowsTcpRuntime
 from wecom_cleanup_verify import lease,proof_time
 
 PROTOCOL='wecom-preinput-recovery-v1'
+ISOLATED_XHS_HASHES=('edb6d11bc1614f75eb33d2c4938f936851b9d3af0b064bfc0891f3417950cb99',
+                     '2e86f85094cc6b4a53f564e6ea9fc6e56e7b00095dd6c6217c90ba08151df47b')
 FIELDS={'taskId','deviceId','serial','agentId','serverBaseUrl','agentToken','physicalCleanup','preinputRecovery',
         'verificationId','verificationNonce','verificationTaskId','issuedAt','retiredProducer','causalLease','challenge'}
 
@@ -48,6 +50,48 @@ def validate(value):
     return value
 
 
+def bounded_file(path,limit):
+    from pathlib import Path
+    with Path(path).open('rb')as source:raw=source.read(limit+1)
+    if len(raw)>limit:raise ValueError('bounded')
+    return raw
+
+
+def isolated_xhs_other_device(process,args,agent_pid,target_serial,budget):
+    """Recognize only the audited, serial-pinned standalone QA runner.
+
+    Unknown versions/modes still fence recovery. Never return or log its config,
+    which contains broker credentials; no QA process or phone is changed.
+    """
+    import hashlib
+    try:
+        if not target_serial or len(args)!=20:return False
+        script=path_key(args[1]);stage=PureWindowsPath(script).parent
+        if not re.fullmatch(r'd:/phonecloud/staging/xhs-qa-live-[a-f0-9]{12}-\d{1,4}-app[12]-[a-f0-9]{8}/xhs_isolated_runner\.py',script):return False
+        if path_key(process.exe())!='d:/phonecloud/tools/python39/python.exe'or process.username().split('\\')[-1].casefold()!='administrator':return False
+        flags={'--serial','--adb','--device-name','--device-cache','--app-slot','--task-id','--cancel-file','--days','--output'}
+        if set(args[2::2])!=flags or len(set(args[2::2]))!=9:return False
+        values=dict(zip(args[2::2],args[3::2]));serial=values['--serial']
+        if not re.fullmatch(r'[A-Za-z0-9_.:-]{1,160}',serial)or serial.casefold()==target_serial.casefold():return False
+        config_path=process.environ().get('XHS_QA_CONFIG','')
+        if path_key(config_path)!=path_key(str(stage/'config.json')):return False
+        budget();config=json.loads(bounded_file(config_path,65536))
+        if not isinstance(config,dict)or any(config.get(k)!=values[v]for k,v in (
+                ('serial','--serial'),('deviceName','--device-name'),('appSlot','--app-slot'),('jobId','--task-id'))):return False
+        if(config.get('agentPid')!=agent_pid or path_key(config.get('stage',''))!=path_key(str(stage))
+            or path_key(config.get('pythonPath',''))!='d:/phonecloud/tools/python39/python.exe'
+            or path_key(config.get('adbPath',''))!=ADB_EXE or path_key(values['--adb'])!=ADB_EXE
+            or path_key(config.get('inventoryPath',''))!='d:/phonecloud/agent/data/device-scan-cache.json'
+            or path_key(values['--device-cache'])!=path_key(config['inventoryPath'])
+            or not re.fullmatch(r'http://127\.0\.0\.1:\d{1,5}',config.get('brokerUrl',''))):return False
+        if any(PureWindowsPath(path_key(values[k])).parent!=stage for k in ('--cancel-file','--output')):return False
+        if tuple(hashlib.sha256(bounded_file(p,131072)).hexdigest()for p in
+                 (args[1],str(stage/'xhs_isolated_guard.py')))!=ISOLATED_XHS_HASHES:return False
+        budget();return True
+    except VerifyStop:raise
+    except Exception:return False
+
+
 def quiescent_processes(processes,*,self_pid,agent_pid,budget,target_serial=None):
     """Keep unknown Python fenced; identify existing other-phone Agent workers."""
     from psutil import NoSuchProcess
@@ -67,6 +111,8 @@ def quiescent_processes(processes,*,self_pid,agent_pid,budget,target_serial=None
                 meta=None
                 if len(args)>1 and(path_key(args[1])=='d:/phonecloud/agent/scripts/xhs_airtest_poco.py'or args[1]=='-I'):
                     meta={'exe':path_key(process.exe()),'owner':process.username(),'parent':process.ppid(),'created':process.create_time()}
+                elif len(args)>1 and PureWindowsPath(str(args[1])).name=='xhs_isolated_runner.py':
+                    meta={'isolatedOtherDevice':isolated_xhs_other_device(process,args,agent_pid,target_serial,budget)}
                 python[pid]=(args,meta)
         except VerifyStop:raise
         except NoSuchProcess as error:
@@ -80,6 +126,7 @@ def quiescent_processes(processes,*,self_pid,agent_pid,budget,target_serial=None
         args,meta=python[pid]
         try:
             if not meta:return False
+            if meta.get('isolatedOtherDevice')is True:return True
             exe=meta['exe']
             if exe not in{'d:/phonecloud/tools/python39/python.exe','d:/phonecloud/agent/runtime/lookup-ocr/scripts/python.exe'}or meta['owner']!=r'NT AUTHORITY\SYSTEM':return False
             parent=meta['parent']
