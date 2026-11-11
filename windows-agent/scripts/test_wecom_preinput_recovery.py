@@ -126,6 +126,18 @@ class OwnedProcess(Process):
     def create_time(self):return float(self.pid)
 
 class OtherPhoneTests(unittest.TestCase):
+    def collector(self):
+        job='01234567-0123-4567-89ab-0123456789ab';task='11234567-0123-4567-89ab-0123456789ab';cache='D:/PhoneCloud/agent/cache/xhs-data-collection/'
+        return OwnedProcess(750,['python',r'D:\PhoneCloud\agent\scripts\小红书数据同步.py','--serial','other-phone','--adb',r'D:\PhoneCloud\tools\android-sdk\platform-tools\adb.exe','--device-name','139','--device-cache','D:/PhoneCloud/agent/data/device-scan-cache.json','--app-slot','app1','--task-id',job,'--cancel-file',cache+task+'.cancel','--days','30','--output',cache+task+'.json'])
+    def test_exact_other_device_production_collector_does_not_block(self):
+        f=Fixture();f.workers=[self.collector()];self.assertTrue(f.run()['snapshots'][1]['wecomWorkersAbsent'])
+    def test_production_collector_foreign_or_target_scope_remains_blocked(self):
+        for key,value in [('owner','Administrator'),('parent',999),('--serial','SYNTHETIC155'),('--adb','other'),('--output','other.json'),('--device-cache','other'),('--task-id','other'),('--days','60')]:
+            with self.subTest(key=key):
+                f=Fixture();p=self.collector();f.workers=[p]
+                if key in('owner','parent'):setattr(p,key,value)
+                else:p.args[p.args.index(key)+1]=value
+                with self.assertRaisesRegex(VerifyStop,'worker_present'):f.run()
     def root(self,serial='other-phone'):
         return OwnedProcess(700,['python',r'D:\PhoneCloud\agent\scripts\xhs_airtest_poco.py','--serial',serial,'--mode','worker','--adb-path',r'D:\PhoneCloud\tools\android-sdk\platform-tools\adb.exe'])
     def test_actual_other_phone_worker_and_nested_isolated_helpers_do_not_block(self):

@@ -112,7 +112,7 @@ def quiescent_processes(processes,*,self_pid,agent_pid,budget,target_serial=None
                 if any(path_key(a)==AGENT_ENTRY for a in args):agents.append(pid)
             elif pid!=self_pid:
                 meta=None
-                if len(args)>1 and(path_key(args[1])=='d:/phonecloud/agent/scripts/xhs_airtest_poco.py'or args[1]=='-I'):
+                if len(args)>1 and(path_key(args[1])in('d:/phonecloud/agent/scripts/xhs_airtest_poco.py','d:/phonecloud/agent/scripts/小红书数据同步.py')or args[1]=='-I'):
                     meta={'exe':path_key(process.exe()),'owner':process.username(),'parent':process.ppid(),'created':process.create_time()}
                 elif len(args)>1 and PureWindowsPath(str(args[1])).name=='xhs_isolated_runner.py':
                     meta={'isolatedOtherDevice':isolated_xhs_other_device(process,args,agent_pid,target_serial,budget)}
@@ -138,6 +138,19 @@ def quiescent_processes(processes,*,self_pid,agent_pid,budget,target_serial=None
                 def value(key):return args[args.index(key)+1]
                 serial=value('--serial')
                 return value('--mode')=='worker'and path_key(value('--adb-path'))==ADB_EXE and bool(re.fullmatch(r'[A-Za-z0-9_.:-]{1,160}',serial))and serial.casefold()!=target_serial.casefold()
+            if len(args)==20 and path_key(args[1])=='d:/phonecloud/agent/scripts/小红书数据同步.py':
+                flags={'--serial','--adb','--device-name','--device-cache','--app-slot','--task-id','--cancel-file','--days','--output'}
+                if exe!='d:/phonecloud/tools/python39/python.exe'or parent!=agent_pid or set(args[2::2])!=flags or len(set(args[2::2]))!=9:return False
+                values=dict(zip(args[2::2],args[3::2]));serial=values['--serial'];job=values['--task-id']
+                cache=PureWindowsPath('d:/phonecloud/agent/cache/xhs-data-collection')
+                cancel=PureWindowsPath(path_key(values['--cancel-file']));output=PureWindowsPath(path_key(values['--output']))
+                return(bool(re.fullmatch(r'[A-Za-z0-9_.:-]{1,160}',serial))and serial.casefold()!=target_serial.casefold()
+                    and path_key(values['--adb'])==ADB_EXE and re.fullmatch(r'\d{1,6}',values['--device-name'])is not None
+                    and path_key(values['--device-cache'])=='d:/phonecloud/agent/data/device-scan-cache.json'
+                    and values['--app-slot']in('app1','app2')and values['--days']=='30'
+                    and re.fullmatch(r'[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}',job)is not None
+                    and cancel.parent==cache and output.parent==cache and cancel.suffix=='.cancel'and output.suffix=='.json'
+                    and cancel.stem==output.stem and re.fullmatch(r'[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}',cancel.stem)is not None)
             # Only the observed isolated OCR executable/script chain may inherit
             # the known worker's other-device scope; arbitrary -I code stays unknown.
             return len(args)==4 and args[1:3]==['-I','-u']and path_key(args[3])=='d:/phonecloud/agent/scripts/lookup_ocr_worker.py'and parent in python and python[parent][1]is not None and python[parent][1]['created']<=meta['created']and other_phone(parent,seen+(pid,))
