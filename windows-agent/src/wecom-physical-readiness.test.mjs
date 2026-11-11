@@ -6,6 +6,7 @@ import os from 'node:os';
 import {spawn,execFile} from 'node:child_process';
 import {once} from 'node:events';
 import {promisify} from 'node:util';
+import {fileURLToPath} from 'node:url';
 import http from 'node:http';
 import {runWecomPreviewTask} from './wecom-preview-task.mjs';
 
@@ -32,7 +33,7 @@ print('WECOM_PHYSICAL_READY '+json.dumps({'version':1,'hosts':[host],'bootstrap'
 line=sys.stdin.readline()
 if line:
  payload=json.loads(line)
- ${validateAgentEnvelope?`sys.path.insert(0,${JSON.stringify(path.resolve('windows-agent/scripts'))})
+ ${validateAgentEnvelope?`sys.path.insert(0,${JSON.stringify(fileURLToPath(new URL('../scripts/',import.meta.url)))})
  import wecom_platform_preview as real_host
  real_host.DEVICES={payload['deviceNumber']:{'serial':payload['serial'],'defaultAppSlot':'main','appSlots':{'main':0}}}
  real_host.physical_bootstrap_hosts=[host]
