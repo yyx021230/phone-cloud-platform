@@ -1,5 +1,7 @@
 # 一次维护加载 Agent 补丁并启用双机预览
 
+本候选已执行，最终结果见[生产预览灰度回执](../wecom-cps-preview-20261111-deployed.1/README.md)。下方保留执行前方案，不代表当前仍待维护；本轮只重载共享Agent一次，后续修复均未追加共享中断。
+
 用户最新要求完成本轮上线并把中断集中到一个窗口，覆盖原先“暂不重载”的暂停指示。只重载原 SYSTEM Agent 一次；CPS 独立接入切换启用两成员，保持 preview 模式和原账本。主平台、ADB、身份/密钥/启动动作、Windows、USB、媒体不变。测试客户由用户既有授权提供，仅发送前预览。
 
 基线：分支 codex/wecom-cps-preview-20261111，主平台 ACTIVE b033757d（wecom-live-state-repair-20261111-deployed.1），主 PID1730700、Agent15224、SYSTEM ADB20016；708 项云端文件全部吻合。Agent入口只有已审阅的十行上传扩展，dd15cc1f → 8a94d6a5。既有 109 项 Agent 清单中另有三项已经在生产的 XHS 热补，锁定实测值并保持，不作为本轮部署内容：xhs_native_navigation.py 2337eeb2、xhs_native_window.py 5ffff3ca、收藏脚本 41214445。前两项可在现有 XHS 分支的提交中核对，第三项尚未匹配本地提交；不得覆盖、代其提交或宣称全部 Agent 源码都属于本候选。
