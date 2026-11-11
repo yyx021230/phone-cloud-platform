@@ -193,11 +193,31 @@ def customer_detail_phone(screen):
     try:guard(screen)
     except StopPreview:return None
     layout=(('n26','客户详情'),('cii','描述'),('cii','设置标签'),('bg6','发消息'))
-    if (screen.has(SEND) or screen.has('添加为联系人') or any(n.visible and is_phone_editor(n)for n in screen.nodes)
-        or not all(len(screen.matching(lambda n:n.kind=='android.widget.TextView'
+    # 202's observed already-added native page. Its title and action IDs differ
+    # from 23; bind the unlabelled phone value to the actual 电话 row, never a
+    # phone-looking nickname or description elsewhere on the screen.
+    layout_202=(('o64','客户详情'),('cxu','描述'),('cxu','设置标签'),('cxu','添加时间'),
+                ('bsc','发消息'),('bsa','语音通话'))
+    def has_layout(values):
+        return all(len(screen.matching(lambda n:n.kind=='android.widget.TextView'
             and n.name=='com.tencent.wework:id/'+resource and n.text==label))==1
-            for resource,label in layout)):
+            for resource,label in values)
+    if (screen.has(SEND) or screen.has('添加为联系人') or any(n.visible and is_phone_editor(n)for n in screen.nodes)
+        or not (has_layout(layout)or has_layout(layout_202))):
         return None
+    if has_layout(layout_202):
+        labels=screen.matching(lambda n:n.kind=='android.widget.TextView'and n.text=='电话'and not n.name)
+        if len(labels)!=1:return None
+        label=labels[0];phones=[]
+        for node in screen.matching(lambda n:n.kind=='android.widget.TextView'and not n.name):
+            value=re.sub(r'[\s-]','',node.text)
+            if not re.fullmatch(r'1[3-9][0-9]{9}',value):continue
+            lx,ly=label.position;lw,lh=label.size;nx,ny=node.position;nw,nh=node.size
+            if (all(math.isfinite(v)for v in(lx,ly,lw,lh,nx,ny,nw,nh))
+                and all(0<=v<=1 for v in(lx,ly,nx,ny))and all(0<v<=1 for v in(lw,lh,nw,nh))
+                and nx>lx and lx+lw/2<=nx-nw/2+.015 and abs(ly-ny)<=min(lh,nh)/4):
+                phones.append(value)
+        return phones[0]if len(phones)==1 else None
     phones=[]
     for node in screen.nodes:
         if not node.visible:continue

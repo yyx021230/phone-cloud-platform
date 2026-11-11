@@ -1,0 +1,125 @@
+{
+  "source": "202 native customer detail layout; all personal values removed or replaced",
+  "nodes": [
+    {
+      "kind": "android.widget.TextView",
+      "text": "客户详情",
+      "name": "com.tencent.wework:id/o64",
+      "enabled": true,
+      "visible": true,
+      "position": [
+        0.22777777777777777,
+        0.07458333333333333
+      ],
+      "size": [
+        0.18888888888888888,
+        0.028333333333333332
+      ]
+    },
+    {
+      "kind": "android.widget.TextView",
+      "text": "电话",
+      "name": "",
+      "enabled": true,
+      "visible": true,
+      "position": [
+        0.18055555555555555,
+        0.3647916666666667
+      ],
+      "size": [
+        0.20555555555555555,
+        0.05625
+      ]
+    },
+    {
+      "kind": "android.widget.TextView",
+      "text": "19900000001",
+      "name": "",
+      "enabled": true,
+      "visible": true,
+      "position": [
+        0.6027777777777777,
+        0.3647916666666667
+      ],
+      "size": [
+        0.6388888888888888,
+        0.05625
+      ]
+    },
+    {
+      "kind": "android.widget.TextView",
+      "text": "描述",
+      "name": "com.tencent.wework:id/cxu",
+      "enabled": true,
+      "visible": true,
+      "position": [
+        0.18055555555555555,
+        0.421875
+      ],
+      "size": [
+        0.20555555555555555,
+        0.027083333333333334
+      ]
+    },
+    {
+      "kind": "android.widget.TextView",
+      "text": "设置标签",
+      "name": "com.tencent.wework:id/cxu",
+      "enabled": true,
+      "visible": true,
+      "position": [
+        0.4888888888888889,
+        0.47854166666666664
+      ],
+      "size": [
+        0.8222222222222222,
+        0.027083333333333334
+      ]
+    },
+    {
+      "kind": "android.widget.TextView",
+      "text": "添加时间",
+      "name": "com.tencent.wework:id/cxu",
+      "enabled": true,
+      "visible": true,
+      "position": [
+        0.18055555555555555,
+        0.5522916666666666
+      ],
+      "size": [
+        0.20555555555555555,
+        0.027083333333333334
+      ]
+    },
+    {
+      "kind": "android.widget.TextView",
+      "text": "发消息",
+      "name": "com.tencent.wework:id/bsc",
+      "enabled": true,
+      "visible": true,
+      "position": [
+        0.25,
+        0.9202083333333333
+      ],
+      "size": [
+        0.43333333333333335,
+        0.030416666666666668
+      ]
+    },
+    {
+      "kind": "android.widget.TextView",
+      "text": "语音通话",
+      "name": "com.tencent.wework:id/bsa",
+      "enabled": true,
+      "visible": true,
+      "position": [
+        0.7333333333333333,
+        0.9202083333333333
+      ],
+      "size": [
+        0.4666666666666667,
+        0.030416666666666668
+      ]
+    }
+  ]
+}
