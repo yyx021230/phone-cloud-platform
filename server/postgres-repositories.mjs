@@ -23,7 +23,8 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
     `insert into phone_cloud_devices (device_id, data, updated_at)
      values ($1, $2::jsonb, now())
      on conflict (device_id) do update
-       set data = excluded.data, updated_at = now()`,
+       set data = excluded.data, updated_at = now()
+       where coalesce(phone_cloud_devices.data->>'inventoryRetiredAt','') = ''`,
     [requiredId(device?.deviceId, "device.deviceId"), stringify(device)]
   );
 
@@ -414,7 +415,8 @@ export function createPostgresRepositories({ getPool, stringify = JSON.stringify
 export function applyStructuredOverlay(state, overlay = {}) {
   state.users = mergeByKey(overlay.users, state.users, "userId");
   state.sessions = mergeByKey(overlay.sessions, state.sessions, "sessionId");
-  state.devices = mergeByKey(overlay.devices, state.devices, "deviceId");
+  state.devices = mergeByKey(overlay.devices, state.devices, "deviceId")
+    .filter(device => !device.inventoryRetiredAt);
   state.smsMessages = mergeByComputedKey(overlay.smsMessages, state.smsMessages, smsMessageBusinessKey);
   state.windowsTasks = mergeByKey(overlay.windowsTasks, state.windowsTasks, "taskId");
   state.xhsQrTasks = mergeByKey(overlay.xhsTasks, state.xhsQrTasks, "taskId");
