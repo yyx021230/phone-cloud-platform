@@ -2,8 +2,8 @@
   "scope": "Imported source, conflict resolutions, local integration edits and preserved freeze baselines; metadata and evidence hashes are below separately",
   "files": {
     "deploy/mediamtx-pacing/production-baseline.json": "d5b260558469ee75add1f747de2f7e5ad1604c4c7e897592fc6cdf5b91de8561",
-    "docs/PRODUCTION_VERSION.md": "8bdf7c9c9795da67057c629019addac877c8825e636be8a8d929d2c4836f63de",
-    "docs/PROJECT_DEVELOPMENT.md": "d2513facf33da35f70fa5e563e84b6b8c97240522d1e72acae8e4ac830c77575",
+    "docs/PRODUCTION_VERSION.md": "f93e58d243494b41751104985ed3bc399e6cae567a266d8a17927b309473a8a8",
+    "docs/PROJECT_DEVELOPMENT.md": "0757302ef2857fd60065b7bfcee1c8bb1ced16198a2043a700cac07e2048fd67",
     "public/index.html": "53665bca7228c23aa9892378cef8c1c54249bb73e4564418fe57d1739b609e42",
     "releases/platform-mainline-20261111-rc.1/production-baseline.json": "9df2caac203ce63bbebb759f2c2d32bb8ed1e974a3ba62306bd6c15ae7ebb3db",
     "releases/platform-mainline-20261111-rc.1/production-source-imports.json": "357a75d8cce85c111b14b811cadf587aaf2cca055122d55b8045de9dd5e9f98a",

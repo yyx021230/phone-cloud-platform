@@ -1,0 +1,47 @@
+{
+  "atUtc": "2026-11-11T10:02:48.009232+00:00",
+  "integrationCodeCommit": "7ddea8d0a73725fb83d0e022d44b0d1eec24d2ec",
+  "integrationCodeTag": "platform-mainline-20261111-rc.1",
+  "finalMetadataTag": "platform-mainline-20261111-synced.1",
+  "historicalCommitCountAtCodeMerge": 1198,
+  "previousMain": {
+    "origin": "3bdb9467de10f41ff2159180c7c8fa2d74e09c10",
+    "gitlab": "ec378680a7ac4ded60f7ade63ad2590ff04cb275"
+  },
+  "remotes": {
+    "origin": {
+      "refsReadBack": {
+        "refs/heads/codex/mainline-production-20261111": "7ddea8d0a73725fb83d0e022d44b0d1eec24d2ec",
+        "refs/heads/main": "7ddea8d0a73725fb83d0e022d44b0d1eec24d2ec",
+        "refs/tags/device18-replacement-20261111-deployed.1": "2e06d0f95446b1d1a110836d04370735f692e759",
+        "refs/tags/device18-replacement-20261111-deployed.1^{}": "2cd85d8e6dd71a1c533f92f052012f7dc792ea03",
+        "refs/tags/platform-mainline-20261111-rc.1": "776d8ac85e825404c52c9be9b7de8887139e49f4",
+        "refs/tags/platform-mainline-20261111-rc.1^{}": "7ddea8d0a73725fb83d0e022d44b0d1eec24d2ec"
+      },
+      "allMatchedExpected": true,
+      "forceUsed": false,
+      "atomicPush": true
+    },
+    "gitlab": {
+      "refsReadBack": {
+        "refs/heads/codex/mainline-production-20261111": "7ddea8d0a73725fb83d0e022d44b0d1eec24d2ec",
+        "refs/heads/main": "7ddea8d0a73725fb83d0e022d44b0d1eec24d2ec",
+        "refs/tags/device18-replacement-20261111-deployed.1": "2e06d0f95446b1d1a110836d04370735f692e759",
+        "refs/tags/device18-replacement-20261111-deployed.1^{}": "2cd85d8e6dd71a1c533f92f052012f7dc792ea03",
+        "refs/tags/platform-mainline-20261111-rc.1": "776d8ac85e825404c52c9be9b7de8887139e49f4",
+        "refs/tags/platform-mainline-20261111-rc.1^{}": "7ddea8d0a73725fb83d0e022d44b0d1eec24d2ec"
+      },
+      "allMatchedExpected": true,
+      "forceUsed": false,
+      "atomicPush": true
+    }
+  },
+  "verifiedAncestors": [
+    "3bdb9467de10f41ff2159180c7c8fa2d74e09c10",
+    "ec378680a7ac4ded60f7ade63ad2590ff04cb275",
+    "2cd85d8e6dd71a1c533f92f052012f7dc792ea03",
+    "95c54db4d6c9b49ffa2481c28033f75b3ab6a439"
+  ],
+  "productionChanged": false,
+  "note": "This receipt verifies the code-merge push. The following metadata-only commit/tag records this receipt and is pushed normally to both main refs; other checked-out local main worktrees are not reset."
+}
